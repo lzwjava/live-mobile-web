@@ -5,14 +5,12 @@
     <markdown class="markdown-preview" v-show="showPreview" :content="content" :show = "showPreview"></markdown>
 
     <div class="markdown-actions" v-show="!showPreview">
-<!--       <a href="#" @click="image" v-show="!uploading">Image</a> -->
       <a href="#" @click="preview">预览模式</a>
     </div>
     <div class="markdown-actions" v-show="showPreview">
       <a href="#" @click="focus">编辑模式</a>
     </div>
-<!--     <input type="file" style="opacity: 0; left: -99999px; position: absolute" v-el:file accept="image/*" @change="upload">
- -->  </div>
+   </div>
 </template>
 
 <script>

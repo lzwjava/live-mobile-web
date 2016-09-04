@@ -2,7 +2,6 @@
 
   <div class="home-view">
     <div class="big-word">研发中，敬请期待…</div>
-    <img class="absolute-center" :src="'api/qrcodes/gen?code=' + code" alt="" />
   </div>
 
 </template>
@@ -40,32 +39,6 @@ export default {
   destroyed () {
   },
   methods: {
-    poll () {
-      this.$http.get('qrcodes/scanned', {
-        'code': this.code
-      }).then((res) => {
-        if (util.filterError(this, res)) {
-          if (res.data.result.scanned) {
-            // scanned
-            window.location.href = '#/edit'
-          } else {
-            // not scanned
-            this.poll()
-          }
-        }
-      })
-    },
-    genCode() {
-      return 'quzhibo-' + this.randomString(32)
-    },
-    randomString(length) {
-      var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-      var result = ''
-      for (var i = length; i > 0; --i) {
-        result += chars[Math.floor(Math.random() * chars.length)]
-      }
-      return result
-    }
   },
 
   filters: {
