@@ -22,7 +22,7 @@
 
     </div>
   </nav>
-    
+
 </template>
 
 <script type="text/javascript">

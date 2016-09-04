@@ -5,8 +5,8 @@ from fabric.contrib.project import rsync_project
 from fabric.contrib.files import exists, sed
 from fabric.utils import puts
 
-server_dir = '/home/project/live-web'
-tmp_dir = '/tmp/live-web' + str(os.getpid())
+server_dir = '/home/project/live-mobile-web'
+tmp_dir = '/tmp/live-mobile-web' + str(os.getpid())
 
 def _set_user_dir():
   global server_dir
