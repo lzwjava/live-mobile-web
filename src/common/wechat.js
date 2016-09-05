@@ -3,9 +3,12 @@ var debug = require('debug')('wechat');
 var util = require('./util');
 
 var weixinAppId = 'wx7b5f277707699557'
-var redirectUrl = 'http://m.quzhiboapp.com'
+var weixinSecret = '3d85c980817fd92eac4530b3c0ce667a'
+var redirectUrl = encodeURIComponent('http://m.quzhiboapp.com')
 var weixinOauthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?' +
-'appid=' + weixinAppId + '&redirect_uri=' + redirectUrl + '&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect'
+'appid=' + weixinAppId + '&redirect_uri=' + redirectUrl + '&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
+var accessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?' +
+'appid=' + weixinAppId + '&secret=' + weixinSecret + '&grant_type=authorization_code&code='
 
 function makeSignature(jsapi_ticket,noncestr,timestamp,url) {
     var tmpStr = "jsapi_ticket="+jsapi_ticket+"&noncestr="+noncestr+"&timestamp="+timestamp+"&url="+url;
@@ -21,9 +24,6 @@ function getAccessToken(comp) {
     .then((resp) => {
       if (util.filterError(comp, resp)) {
         var data = resp.data.result;
-        debug('signature: %j', data.signature)
-        debug('appId: %j', data.appId)
-        debug('nonce: %j', data.nonceStr)
         wx.config({
             debug: true,
             appId: data.appId,
@@ -34,19 +34,29 @@ function getAccessToken(comp) {
         });
         wx.ready(function () {
           debug('ready')
-          console.log('ready')
         })
         wx.error(function(res){
-          console.log('error')
           debug('error: %j', res)
         });
       }
   }, util.httpErrorFn(comp))
 }
 
+function getUserAccessToken(comp, code) {
+  var url = accessTokenUrl + code
+  comp.$http.get(url)
+    .then((resp) => {
+      debug(resp.data)
+    }, function (error) {
+      debug('accessToken error: %j', error)
+    })
+}
+
 function oauth2() {
   window.location = weixinOauthUrl
 }
 
-exports.getAccessToken = getAccessToken;
-exports.weixinAppId = weixinAppId;
+exports.getAccessToken = getAccessToken
+exports.weixinAppId = weixinAppId
+exports.oauth2 = oauth2
+exports.getUserAccessToken = getUserAccessToken

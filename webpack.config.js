@@ -12,11 +12,6 @@ module.exports = {
     publicPath: '/static/',
     filename: 'build.js'
   },
-  resolve: {
-    root: srcPath,
-    extensions: ['', '.js', '.css'],
-    modulesDirectories: ['node_modules', srcPath]
-  },
   module: {
     // avoid webpack trying to shim process
     noParse: /es6-promise\.js$/,

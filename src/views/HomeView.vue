@@ -35,10 +35,13 @@ export default {
 
   created () {
     //window.location = util.weixinOauthUrl;
-
-    wechat.getAccessToken(this)
-
-
+    // wechat.getAccessToken(this)
+    var params = util.getParams()
+    if (params.code) {
+      wechat.getUserAccessToken(this, params.code)
+    } else {
+      wechat.oauth2()
+    }
   },
 
   destroyed () {

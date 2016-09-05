@@ -33,3 +33,10 @@ exports.httpErrorFn = (component) => {
 exports.show = (component, type, text, duration) => {
   component.$dispatch('show-msg', type, text)
 };
+
+function getParams () {
+      var prmstr = window.location.search.substr(1);
+      return prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
+}
+
+exports.getParams = getParams

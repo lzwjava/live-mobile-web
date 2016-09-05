@@ -4,7 +4,7 @@ var config = require('./webpack.config');
 
 // 当修改时，让 webpack 自动刷新页面
 for (entryPoint in config.entry) {
-  config.entry[entryPoint].unshift("webpack-dev-server/client?http://localhost:9090", "webpack/hot/dev-server");
+  config.entry[entryPoint].unshift("webpack-dev-server/client?http://localhost:9060", "webpack/hot/dev-server");
 }
 
 config.plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -46,8 +46,8 @@ var app = new WebpackDevServer(webpack(config), {
   noInfo: true
 });
 
-app.listen(8080, '0.0.0.0', function (err, result) {
-  console.log('http://localhost:8080');
+app.listen(9060, '0.0.0.0', function (err, result) {
+  console.log('http://localhost:9060');
   if (err) {
     console.log(err);
   }
