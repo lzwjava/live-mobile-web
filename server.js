@@ -4,10 +4,10 @@ var config = require('./webpack.config');
 
 // 当修改时，让 webpack 自动刷新页面
 for (entryPoint in config.entry) {
-  config.entry[entryPoint].unshift("webpack-dev-server/client?http://localhost:9060", "webpack/hot/dev-server");
+  //config.entry[entryPoint].unshift("webpack-dev-server/client?http://localhost:9060", "webpack/hot/dev-server");
 }
 
-config.plugins.push(new webpack.HotModuleReplacementPlugin());
+//config.plugins.push(new webpack.HotModuleReplacementPlugin());
 
 config.devtool = 'eval';
 

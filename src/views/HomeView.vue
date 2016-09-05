@@ -24,7 +24,7 @@ export default {
   data () {
     return {
       code: '',
-      tokenResult: ''
+      tokenResult: 'Result'
     }
   },
   computed: {
@@ -39,19 +39,27 @@ export default {
   created () {
     //window.location = util.weixinOauthUrl;
     // wechat.getAccessToken(this)
-    var params = util.getParams()
-    if (params.code) {
-      wechat.getUserAccessToken(this, params.code, function (data) {
-        this.tokenResult = data
-      })
-    } else {
-      wechat.oauth2()
-    }
+    this.oauthOrRegister()
   },
 
   destroyed () {
   },
   methods: {
+    oauthOrRegister: function () {
+      var params = util.getParams()
+      if (params.code) {
+        var comp = this;
+        wechat.wechatRegister(this, params.code, function(user) {
+          if (user.userId != null) {
+            comp.tokenResult = JSON.stringify(user);
+          } else {
+            comp.tokenResult = 'empty user';
+          }
+        });
+      } else {
+        wechat.oauth2()
+      }
+    }
   },
 
   filters: {

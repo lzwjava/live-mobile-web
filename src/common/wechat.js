@@ -3,12 +3,9 @@ var debug = require('debug')('wechat');
 var util = require('./util');
 
 var weixinAppId = 'wx7b5f277707699557'
-var weixinSecret = '3d85c980817fd92eac4530b3c0ce667a'
 var redirectUrl = encodeURIComponent('http://m.quzhiboapp.com')
 var weixinOauthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?' +
 'appid=' + weixinAppId + '&redirect_uri=' + redirectUrl + '&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect'
-var accessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?' +
-'appid=' + weixinAppId + '&secret=' + weixinSecret + '&grant_type=authorization_code&code='
 
 function makeSignature(jsapi_ticket,noncestr,timestamp,url) {
     var tmpStr = "jsapi_ticket="+jsapi_ticket+"&noncestr="+noncestr+"&timestamp="+timestamp+"&url="+url;
@@ -42,14 +39,33 @@ function getAccessToken(comp) {
   }, util.httpErrorFn(comp))
 }
 
-function getUserAccessToken(comp, code, fn) {
-  var url = accessTokenUrl + code
-  comp.$http.get(url)
-    .then((resp) => {
-      fn && fn(resp.data)
-    }, function (error) {
-      debug('accessToken error: %j', error)
-    })
+function wechatRegister(comp, code, fn) {
+  comp.$http.post('wechat/register', {
+    code: code
+  }).then((resp) => {
+    if (util.filterError(comp, resp)) {
+      var user = resp.data.result;
+      if (user.userId != null) {
+        setUser(user);
+      }
+      fn && fn(user)
+    }
+  }, util.httpErrorFn(comp))
+}
+
+function loadUser() {
+  if(window.localStorage.getItem('qzb.user')){
+    return JSON.parse(window.localStorage.getItem('qzb.user'));
+  }
+  return null;
+}
+
+function setUser(user) {
+  if (user && user.username) {
+    window.localStorage.setItem('qzb.user',JSON.stringify(user));
+    return true
+  }
+  return false
 }
 
 function oauth2() {
@@ -59,4 +75,4 @@ function oauth2() {
 exports.getAccessToken = getAccessToken
 exports.weixinAppId = weixinAppId
 exports.oauth2 = oauth2
-exports.getUserAccessToken = getUserAccessToken
+exports.wechatRegister = wechatRegister

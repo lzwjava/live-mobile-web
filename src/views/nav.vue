@@ -5,6 +5,8 @@
     </div>
   </nav>
 
+  <tip v-el:msg-tip><tip>
+
 </template>
 
 <script type="text/javascript">
