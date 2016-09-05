@@ -3,6 +3,8 @@
   <div class="home-view">
     <div class="big-word">研发中，敬请期待…</div>
     <button class="weui_btn_primary">按钮</button>
+
+    <div class="">{{tokenResult}}</div>
   </div>
 
 </template>
@@ -21,7 +23,8 @@ export default {
 
   data () {
     return {
-      code: ''
+      code: '',
+      tokenResult: ''
     }
   },
   computed: {
@@ -38,7 +41,9 @@ export default {
     // wechat.getAccessToken(this)
     var params = util.getParams()
     if (params.code) {
-      wechat.getUserAccessToken(this, params.code)
+      wechat.getUserAccessToken(this, params.code, function (data) {
+        this.tokenResult = data
+      })
     } else {
       wechat.oauth2()
     }

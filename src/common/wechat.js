@@ -6,7 +6,7 @@ var weixinAppId = 'wx7b5f277707699557'
 var weixinSecret = '3d85c980817fd92eac4530b3c0ce667a'
 var redirectUrl = encodeURIComponent('http://m.quzhiboapp.com')
 var weixinOauthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?' +
-'appid=' + weixinAppId + '&redirect_uri=' + redirectUrl + '&response_type=code&scope=snsapi_base&state=123#wechat_redirect'
+'appid=' + weixinAppId + '&redirect_uri=' + redirectUrl + '&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect'
 var accessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?' +
 'appid=' + weixinAppId + '&secret=' + weixinSecret + '&grant_type=authorization_code&code='
 
@@ -42,11 +42,11 @@ function getAccessToken(comp) {
   }, util.httpErrorFn(comp))
 }
 
-function getUserAccessToken(comp, code) {
+function getUserAccessToken(comp, code, fn) {
   var url = accessTokenUrl + code
   comp.$http.get(url)
     .then((resp) => {
-      debug(resp.data)
+      fn && fn(resp.data)
     }, function (error) {
       debug('accessToken error: %j', error)
     })
