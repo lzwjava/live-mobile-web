@@ -2,6 +2,7 @@
 
   <div class="home-view">
     <div class="big-word">研发中，敬请期待…</div>
+    <button class="weui_btn_primary">按钮</button>
   </div>
 
 </template>
@@ -9,6 +10,7 @@
 <script>
 
 import util from '../common/util'
+import wechat from '../common/wechat'
 
 var debug = require('debug')('HomeView');
 
@@ -32,8 +34,11 @@ export default {
   },
 
   created () {
-    this.code = this.genCode()
-    this.poll()
+    //window.location = util.weixinOauthUrl;
+
+    wechat.getAccessToken(this)
+
+
   },
 
   destroyed () {

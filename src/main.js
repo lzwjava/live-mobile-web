@@ -5,7 +5,7 @@ import Ajax from 'vue-resource'
 import filters from './filters'
 import App from './views/App.vue'
 import HomeView from './views/HomeView.vue'
-import EditView from './views/EditView.vue'
+import util from './common/util'
 
 // install router
 Vue.use(Router)
@@ -28,8 +28,10 @@ console.log('env ' + process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
-  localStorage.debug = 'HomeView,EditView,markdown-area,nav,util';
+  localStorage.debug = 'HomeView,markdown-area,nav,util,wechat';
 }
+
+require('weui')
 
 // routing
 var router = new Router()
@@ -37,9 +39,6 @@ var router = new Router()
 router.map({
   '/': {
     component: HomeView
-  },
-  '/edit' : {
-    component: EditView
   }
 })
 

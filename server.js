@@ -46,8 +46,8 @@ var app = new WebpackDevServer(webpack(config), {
   noInfo: true
 });
 
-app.listen(9090, '0.0.0.0', function (err, result) {
-  console.log('http://localhost:9090');
+app.listen(8080, '0.0.0.0', function (err, result) {
+  console.log('http://localhost:8080');
   if (err) {
     console.log(err);
   }

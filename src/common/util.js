@@ -2,7 +2,7 @@ var debug = require('debug')('util');
 
 exports.filterError = (component, res) => {
   debug('resp:%j', res.data)
-  if (res.data.status != "success") {    
+  if (res.data.status != "success") {
     component.$dispatch('show-msg', 'error', res.data.error)
     return false;
   } else {
