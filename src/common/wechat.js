@@ -34,8 +34,10 @@ function getAccessToken(comp) {
         });
         wx.ready(function () {
           debug('ready')
+          console.log('ready')
         })
         wx.error(function(res){
+          console.log('error')
           debug('error: %j', res)
         });
       }
