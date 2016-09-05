@@ -1,5 +1,5 @@
 {
-  "name": "live-web",
+  "name": "live-mobile-web",
   "version": "1.0.0",
   "description": "live-web",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lzwjava/live-web.git"
+    "url": "https://github.com/lzwjava/live-mobile-web.git"
   },
   "author": "lzwjava",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lzwjava/live-web/issues"
+    "url": "https://github.com/lzwjava/live-mobile-web/issues"
   },
-  "homepage": "https://github.com/lzwjava/live-web/issues",
+  "homepage": "https://github.com/lzwjava/live-mobile-web/issues",
   "devDependencies": {
     "babel-core": "6.13.0",
     "babel-loader": "6.2.5",

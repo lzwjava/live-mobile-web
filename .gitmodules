@@ -1,3 +1,0 @@
-[submodule "plupload"]
-	path = plupload
-	url = git@github.com:moxiecode/plupload.git
