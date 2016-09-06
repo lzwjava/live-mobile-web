@@ -31,7 +31,7 @@
       </div>
 
       <div class="attend-action section">
-        <button class="btn btn-blue attend-btn" @click="attendLive">支持并参与活动(¥ {{live.amount | moneyAsYuan}})</button>
+        <button class="btn btn-blue attend-btn" @click="attendLive">{{btnTitle}}</button>
       </div>
 
     </div>
@@ -93,6 +93,13 @@ export default {
         return this.attendedUsers.splice(0,5)
       } else {
         return this.attendedUsers
+      }
+    },
+    btnTitle: function () {
+      if (this.live.canJoin) {
+        return '已报名，进入直播间'
+      } else {
+        return '支持并参与活动(¥' + (live.amount /100) + ')'
       }
     }
   },
@@ -171,8 +178,11 @@ export default {
       }
     },
     attendLive: function () {
-      // window.location = "#/live?liveId=" + this.liveId      
-      this.overlayStatus = true
+      if (this.live.canJoin) {
+        window.location = "#/live/" + this.liveId
+      } else {
+        this.overlayStatus = true
+      }
     }
   },
 
