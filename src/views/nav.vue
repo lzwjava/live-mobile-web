@@ -1,4 +1,5 @@
 <template>
+
   <nav class="navbar">
     <div class="container">
 
@@ -21,7 +22,7 @@ export default {
   name: 'Nav',
   components: {
     'tip': Tip,
-    'user-avatar': UserAvatar
+    'user-avatar': UserAvatar,
   },
   data () {
     return {

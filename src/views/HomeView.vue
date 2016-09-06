@@ -31,7 +31,7 @@
       </div>
 
       <div class="attend-action section">
-        <button class="attend-btn">支持并参与活动(¥ {{live.amount}})</button>
+        <button class="btn btn-blue attend-btn" @click="attendLive">支持并参与活动(¥ {{live.amount | moneyAsYuan}})</button>
       </div>
 
     </div>
@@ -45,6 +45,10 @@
 
     </div>
 
+    <overlay :overlay.sync="overlayStatus">
+      <register-form :cur-user="curUser"></register-form>
+    </overlay>
+
   </div>
 
 </template>
@@ -55,6 +59,9 @@ import util from '../common/util'
 import wechat from '../common/wechat'
 import UserAvatar from '../components/user-avatar.vue'
 import Markdown from '../components/markdown.vue'
+import http from '../common/http'
+import Overlay from '../components/overlay.vue'
+import RegisterForm from '../components/register-form.vue'
 
 var debug = require('debug')('HomeView');
 
@@ -62,7 +69,9 @@ export default {
   name: 'HomeView',
   components: {
     'user-avatar': UserAvatar,
-    'markdown': Markdown
+    'markdown': Markdown,
+    'overlay': Overlay,
+    'register-form': RegisterForm
   },
 
   data () {
@@ -74,7 +83,8 @@ export default {
       },
       attendedUsers: [],
       liveId: 0,
-      isDebug: true,
+      isDebug: false,
+      overlayStatus: false
     }
   },
   computed: {
@@ -123,12 +133,10 @@ export default {
       this.fetchUsers()
     },
     fetchLive: function () {
-      this.$http.get('lives/' + this.liveId)
-      .then((resp) => {
-        if (util.filterError(this, resp)) {
-          this.live = resp.data.result
-        }
-      }, util.httpErrorFn(this))
+      var comp = this
+      http.fetchLive(this, this.liveId, function (live) {
+        comp.live = live
+      })
     },
     fetchUsers: function() {
       this.$http.get('lives/' + this.liveId +'/users')
@@ -161,11 +169,21 @@ export default {
       } else {
         wechat.oauth2()
       }
+    },
+    attendLive: function () {
+      // window.location = "#/live?liveId=" + this.liveId      
+      this.overlayStatus = true
     }
   },
 
   filters: {
-
+    moneyAsYuan: function (money) {
+      if (!money) {
+        return 0
+      } else {
+        return money / 100
+      }
+    }
   }
 }
 </script>
@@ -179,7 +197,8 @@ export default {
       background-color #fff
     .header-section
       .avatar
-        width 25%
+        width 80px
+        height 80px
         display inline-block
       .header-right
         width 70%
@@ -204,6 +223,10 @@ export default {
       .attend-summary
         float right
         line-height 25px
+      .attend-action
+        text-align center
+        .attend-btn
+          width 90%
     .card-group
       margin-bottom 10px
       background-color #fff

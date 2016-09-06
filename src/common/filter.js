@@ -16,18 +16,17 @@ export function fromNow (time) {
   }
 }
 
-function pluralize(time, label) {
+export function pluralize(time, label) {
     if (time === 1) {
         return time + label
     }
-
-    return time + label + 's';
+    return time + label + 's'
 }
 
-exports.moneyAsYuan = (money) => {
+export function moneyAsYuan (money) {
   if (!money) {
-    return 0;
+    return 0
   } else {
-    return money / 100;
+    return money / 100
   }
 }

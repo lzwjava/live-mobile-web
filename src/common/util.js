@@ -46,6 +46,7 @@ function transformToAssocArray( prmstr ) {
 
 function getParams () {
       var prmstr = window.location.search.substr(1);
+      debug('paramStr:' + window.location.search)
       return prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
 }
 

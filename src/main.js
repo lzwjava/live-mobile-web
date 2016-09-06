@@ -2,16 +2,19 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Ajax from 'vue-resource'
 
-import filters from './filters'
+require('weui')
+
 import App from './views/App.vue'
 import HomeView from './views/HomeView.vue'
+import LiveView from './views/LiveView.vue'
+
+import filters from './common/filter'
 import util from './common/util'
 
 // install router
 Vue.use(Router)
 
 // register filters globally
-
 for(let  k in filters){
     Vue.filter(k, filters[k])
 }
@@ -28,10 +31,8 @@ console.log('env ' + process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
-  localStorage.debug = 'HomeView,markdown-area,nav,util,wechat';
+  localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form';
 }
-
-require('weui')
 
 // routing
 var router = new Router()
@@ -39,6 +40,9 @@ var router = new Router()
 router.map({
   '/': {
     component: HomeView
+  },
+  '/live/:liveId': {
+    component: LiveView
   }
 })
 
