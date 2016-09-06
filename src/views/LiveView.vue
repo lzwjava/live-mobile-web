@@ -8,6 +8,9 @@
 
 <script type="text/javascript">
 
+var Hls = require('../../node_modules/hls.js/dist/hls.min.js')
+var plyr = require('plyr')
+
 var util = require('../common/util')
 var http = require('../common/http')
 var debug = require('debug')('LiveView')
@@ -27,17 +30,6 @@ export default {
   created() {
   },
   ready() {
-    var playerId = 'the-player'
-    var video = document.querySelector('#' + playerId + ' video')
-    if(Hls.isSupported()) {
-      var hls = new Hls();
-      hls.loadSource('http://content.jwplatform.com/manifests/vM7nH0Kl.m3u8');
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED,function() {
-        video.play();
-      });
-    }
-    plyr.setup('#' + playerId);
   },
   route: {
     data ({ to }) {
@@ -54,7 +46,21 @@ export default {
       var comp = this
       http.fetchLive(comp, this.liveId, function (live) {
         comp.live = live
+        comp.playHls()
       })
+    },
+    playHls: function () {
+      var playerId = 'the-player'
+      var video = document.querySelector('#' + playerId + ' video')
+      if(Hls.isSupported()) {
+        var hls = new Hls();
+        hls.loadSource(this.live.hlsUrl);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED,function() {
+          video.play();
+        });
+      }
+      plyr.setup('#' + playerId);
     }
   }
 }
