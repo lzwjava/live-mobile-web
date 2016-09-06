@@ -2,21 +2,22 @@
 
   <div class="home-view">
 
-    <div class="header-section">
+    <div class="header-section card-group">
       <user-avatar :user="live.owner"></user-avatar>
 
       <div class="header-right">
         <div class="subject">{{live.subject}}</div>
         <div class="ownername">{{live.owner.username}}</div>
       </div>
+
+      <div class="time-section">
+        <div class="time-label">时间</div>
+        <div class="plan-time">{{live.planTs}}</div>
+      </div>
+
     </div>
 
-    <div class="time-section">
-      <div class="time-label">时间</div>
-      <div class="plan-time">{{live.planTs}}</div>
-    </div>
-
-    <div class="attend-section">
+    <div class="attend-section card-group">
       <div class="attend-info">
         <ul class="attended-users">
           <li v-for="u in firstFiveUsers">
@@ -29,18 +30,18 @@
         </div>
       </div>
 
-      <div class="attend-action">
+      <div class="attend-action section">
         <button class="attend-btn">支持并参与活动(¥ {{live.amount}})</button>
       </div>
 
-      <div class="live-detail">
-        <div class="detail-label">
-          直播详情
-        </div>
+    </div>
 
-        <markdown :content="live.detail" :show=true></markdown>
-
+    <div class="live-detail card-group">
+      <div class="detail-label">
+        直播详情
       </div>
+
+      <markdown :content="live.detail" :show=true></markdown>
 
     </div>
 
@@ -71,7 +72,8 @@ export default {
       live: {
         owner: {}
       },
-      attendedUsers: []
+      attendedUsers: [],
+      isDebug: true
     }
   },
   computed: {
@@ -101,7 +103,11 @@ export default {
     }
     if (params.liveId) {
       window.localStorage.setItem('liveId', params.liveId)
-      this.oauthOrRegister()
+      if (this.isDebug) {
+        this.fetchLive()
+      } else {
+        this.oauthOrRegister()
+      }
     } else {
       this.oauthOrRegister()
     }
@@ -122,10 +128,9 @@ export default {
     oauthOrRegister: function () {
       var params = util.getParams()
       if (params.code) {
-        var isDebug = true
         var comp = this
         var isLoalhost = window.location.hostname == 'localhost'
-        if (!isDebug) {
+        if (!this.isDebug) {
           wechat.wechatRegister(this, params.code, function(user) {
             comp.curUser = user
             comp.fetchLive()
@@ -157,6 +162,27 @@ export default {
 @import "../stylus/base.styl"
 
 .home-view
-    min-height 500px
+    .section
+      background-color #fff
+    .header-section
+      .avatar
+        width 25%
+        display inline-block
+      .header-right
+        width 70%
+        display inline-block
+        .subject
+          font-size 18px
+          font-weight bold
+        .ownername
+          font-size 16px
+    .time-section
+      border-top 1px dashed #e7e7e7
+      .plan-time
+        font-size 16px
+    .card-group
+      margin-bottom 10px
+      background-color #fff
+      padding 10px
 
 </style>

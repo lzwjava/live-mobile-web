@@ -52,14 +52,8 @@ export default {
   width 100%
   transition opacity .2s ease
   box-sizing border-box
-  padding 8px 20px
+  background-color #e7e7e7
   &.v-enter, &.v-leave
     opacity 0
-
-@media screen and (max-width: 700px)
-  html, body
-    margin 0
-  #wrapper
-    width 100%
 
 </style>

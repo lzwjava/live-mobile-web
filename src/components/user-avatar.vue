@@ -47,12 +47,11 @@
     opacity 0.8
   img
     position relative
-    vertical-align middle
 
 .avatar span, .avatar img
   display inline-block
-  width 70%
-  height 70%
+  width 100%
+  height 100%
   color white
   text-align center
   font-size 24px
