@@ -20,7 +20,7 @@
     <div class="attend-section card-group">
       <div class="attend-info">
         <ul class="attended-users">
-          <li v-for="u in firstFiveUsers">
+          <li class="avatar-cell" v-for="u in firstFiveUsers">
             <user-avatar :user="u"></user-avatar>
           </li>
         </ul>
@@ -73,7 +73,8 @@ export default {
         owner: {}
       },
       attendedUsers: [],
-      isDebug: true
+      liveId: 0,
+      isDebug: true,
     }
   },
   computed: {
@@ -91,7 +92,6 @@ export default {
       document.title = '趣直播'
     }
   },
-
   created () {
     //window.location = util.weixinOauthUrl;
     // wechat.getAccessToken(this)
@@ -104,7 +104,7 @@ export default {
     if (params.liveId) {
       window.localStorage.setItem('liveId', params.liveId)
       if (this.isDebug) {
-        this.fetchLive()
+        this.fetchData()
       } else {
         this.oauthOrRegister()
       }
@@ -116,12 +116,25 @@ export default {
   destroyed () {
   },
   methods: {
-    fetchLive: function () {
+    fetchData: function () {
       var liveId = window.localStorage.getItem('liveId')
-      this.$http.get('lives/' + liveId)
+      this.liveId = liveId
+      this.fetchLive()
+      this.fetchUsers()
+    },
+    fetchLive: function () {
+      this.$http.get('lives/' + this.liveId)
       .then((resp) => {
         if (util.filterError(this, resp)) {
           this.live = resp.data.result
+        }
+      }, util.httpErrorFn(this))
+    },
+    fetchUsers: function() {
+      this.$http.get('lives/' + this.liveId +'/users')
+      .then((resp) => {
+        if (util.filterError(this, resp)) {
+          this.attendedUsers = resp.data.result
         }
       }, util.httpErrorFn(this))
     },
@@ -133,13 +146,13 @@ export default {
         if (!this.isDebug) {
           wechat.wechatRegister(this, params.code, function(user) {
             comp.curUser = user
-            comp.fetchLive()
+            comp.fetchData()
           });
         } else {
           if (isLoalhost) {
             wechat.wechatRegister(this, params.code, function(user) {
               comp.curUser = user
-              comp.fetchLive()
+              comp.fetchData()
             });
           } else {
             window.location = 'http://localhost:9060?code=' + params.code
@@ -180,6 +193,17 @@ export default {
       border-top 1px dashed #e7e7e7
       .plan-time
         font-size 16px
+    .attend-section
+      ul
+        display inline-block
+        li
+          display inline-block
+          .avatar
+            width 25px
+            height 25px
+      .attend-summary
+        float right
+        line-height 25px
     .card-group
       margin-bottom 10px
       background-color #fff
