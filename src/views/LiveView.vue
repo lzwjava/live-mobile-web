@@ -1,5 +1,8 @@
 <template>
-  <div class="">
+  <div class="live-view">
+    <div id="the-player">
+      <video preload="none" class="player-video" autoplay controls crossorigin></video>
+    </div>
   </div>
 </template>
 
@@ -22,6 +25,19 @@ export default {
   computed: {
   },
   created() {
+  },
+  ready() {
+    var playerId = 'the-player'
+    var video = document.querySelector('#' + playerId + ' video')
+    if(Hls.isSupported()) {
+      var hls = new Hls();
+      hls.loadSource('http://content.jwplatform.com/manifests/vM7nH0Kl.m3u8');
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED,function() {
+        video.play();
+      });
+    }
+    plyr.setup('#' + playerId);
   },
   route: {
     data ({ to }) {
@@ -46,5 +62,8 @@ export default {
 </script>
 
 <style lang="stylus">
+.live-view
+  .player-video
+    width 100%
 
 </style>

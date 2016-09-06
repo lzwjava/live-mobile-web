@@ -99,7 +99,7 @@ export default {
       if (this.live.canJoin) {
         return '已报名，进入直播间'
       } else {
-        return '支持并参与活动(¥' + (live.amount /100) + ')'
+        return '支持并参与活动(¥' + (this.live.amount /100) + ')'
       }
     }
   },
