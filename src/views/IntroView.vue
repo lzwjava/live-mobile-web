@@ -2,6 +2,10 @@
 
   <div class="intro-view">
 
+    <div class="cover-section card-group">
+      <img class="cover-img" :src="live.coverUrl" alt="cover" />
+    </div>
+
     <div class="header-section card-group">
       <user-avatar :user="live.owner"></user-avatar>
 
@@ -11,8 +15,8 @@
       </div>
 
       <div class="time-section">
-        <div class="time-label">时间</div>
-        <div class="plan-time">{{live.planTs}}</div>
+        <div class="time-label">直播时间</div>
+        <div class="plan-time">{{live.planTs}} ({{timeGap}})</div>
       </div>
 
     </div>
@@ -36,7 +40,7 @@
 
     </div>
 
-    <div class="live-detail card-group">
+    <div class="detail-section card-group">
       <div class="detail-label">
         直播详情
       </div>
@@ -65,8 +69,11 @@ import http from '../common/http'
 import Overlay from '../components/overlay.vue'
 import RegisterForm from '../components/register-form.vue'
 import {Button, Toast} from 'vue-weui'
+import moment from 'moment'
 
 var debug = require('debug')('IntroView');
+
+moment.locale('zh-cn')
 
 export default {
   name: 'IntroView',
@@ -103,8 +110,11 @@ export default {
       if (this.live.canJoin) {
         return '已报名，进入直播间'
       } else {
-        return '支持并参与活动(¥' + (this.live.amount /100) + ')'
+        return '赞助并参与直播(¥' + (this.live.amount /100) + ')'
       }
+    },
+    timeGap: function() {
+      return moment(this.live.planTs, "YYYY-MM-DD hh:mm::ss").fromNow()
     }
   },
   route: {
@@ -174,6 +184,11 @@ export default {
 .intro-view
     .section
       background-color #fff
+    .cover-section
+      padding 0px !important
+      .cover-img
+        width 100%
+        max-height 250px
     .header-section
       .avatar
         width 80px
@@ -183,19 +198,24 @@ export default {
         width 70%
         display inline-block
         .subject
-          font-size 18px
+          font-size 16px
           font-weight bold
         .ownername
           font-size 16px
     .time-section
       border-top 1px dashed #e7e7e7
+      .time-label
+        margin-top 10px
       .plan-time
         font-size 16px
     .attend-section
+      .attend-info
+        margin 5px 0
       ul
         display inline-block
         li
           display inline-block
+          margin 0 2px
           .avatar
             width 25px
             height 25px
@@ -206,6 +226,10 @@ export default {
         text-align center
         .attend-btn
           width 90%
+    .detail-section
+      .detail-label
+        font-size 16px
+        margin 10px 0
     .card-group
       margin-bottom 10px
       background-color #fff
