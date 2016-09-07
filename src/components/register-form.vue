@@ -29,6 +29,8 @@
       <img class="wepay" src="../img/wechat.png" alt="" />
     </div>
 
+    <toast type="loading" v-show="loading">加载中</toast>
+
   </div>
 
 </template>
@@ -36,6 +38,7 @@
 
 <script type="text/javascript">
 
+import {Button, Toast} from 'vue-weui'
 var util = require('../common/util')
 var http = require('../common/http')
 var debug = require('debug')('register-form')
@@ -44,6 +47,8 @@ export default {
   name: 'RegisterForm',
   props: ['curUser'],
   components: {
+    'weui-button': Button,
+    'toast': Toast
   },
   data() {
     return {
@@ -51,7 +56,8 @@ export default {
       liveId: 0,
       mobile: '',
       code: '',
-      isSignup: false
+      isSignup: false,
+      loading: false
     }
   },
   computed: {
@@ -84,9 +90,11 @@ export default {
         util.show(this, 'error', '请输入手机号码');
         return
       }
+      this.loading = true
       this.$http.post('requestSmsCode',{
         mobilePhoneNumber: this.mobile
       }).then((resp) => {
+        this.loading = false
         if (util.filterError(this, resp)) {
           this.step = 1
         }
@@ -97,12 +105,14 @@ export default {
         util.show(this, 'error', '请输入验证码');
         return
       }
+      this.loading = true
       this.$http.post('users/registerBySns', {
         openId: this.curUser.openId,
         platform: 'wechat',
         mobilePhoneNumber: this.mobile,
         smsCode: this.code
       }).then((resp) => {
+        this.loading = false
         if (util.filterError(this, resp)) {
           this.step = 2
         }
@@ -147,5 +157,7 @@ export default {
     .wepay
       width 80px
       margin-left 110px
+  .weui_toast
+    margin-top 70px
 
 </style>

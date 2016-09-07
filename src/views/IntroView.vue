@@ -49,6 +49,8 @@
       <register-form :cur-user="curUser"></register-form>
     </overlay>
 
+    <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
+
   </div>
 
 </template>
@@ -62,6 +64,7 @@ import Markdown from '../components/markdown.vue'
 import http from '../common/http'
 import Overlay from '../components/overlay.vue'
 import RegisterForm from '../components/register-form.vue'
+import {Button, Toast} from 'vue-weui'
 
 var debug = require('debug')('IntroView');
 
@@ -71,7 +74,9 @@ export default {
     'user-avatar': UserAvatar,
     'markdown': Markdown,
     'overlay': Overlay,
-    'register-form': RegisterForm
+    'register-form': RegisterForm,
+    'weui-button': Button,
+    'toast': Toast
   },
 
   data () {
