@@ -1,10 +1,12 @@
 <template>
   <div class="live-view">
-    <div id="the-player">
-      <video id="player1" width="100%" height="350" controls="controls">
-        <source type="application/x-mpegURL" :src="live.hlsUrl" />
-      </video>
-    </div>
+    <loading>
+      <div id="the-player">
+        <video id="player1" width="100%" height="350" controls="controls">
+          <source type="application/x-mpegURL" :src="live.hlsUrl" />
+        </video>
+      </div>
+    </loading>
   </div>
 </template>
 
@@ -12,13 +14,17 @@
 
 require('../../node_modules/mediaelement/build/mediaelement-and-player.js')
 require('../../node_modules/mediaelement/build/mediaelementplayer.min.css')
-var util = require('../common/util')
-var http = require('../common/http')
+
+import util from '../common/util'
+import http from '../common/http'
+import Loading from '../components/loading.vue'
+
 var debug = require('debug')('LiveView')
 
 export default {
   name: 'LiveView',
   components: {
+    'loading': Loading
   },
   data() {
     return {
@@ -45,20 +51,27 @@ export default {
   methods: {
     fetchLive: function () {
       var comp = this
+      comp.$broadcast('loading')
       http.fetchLive(comp, this.liveId, function (live) {
         comp.live = live
+        comp.$broadcast('loaded')
+        if (!live.canJoin) {
+          util.show(comp, 'error', '请先报名直播')
+          return
+        }
         comp.playHls()
       })
     },
     playHls: function() {
+      this.$broadcast('loading')
+      var comp = this
       $('video').mediaelementplayer({
       	success: function(media, node, player) {
-          debug('success')
+          comp.$broadcast('loaded')
       		$('#' + node.id + '-mode').html('mode: ' + media.pluginType);
       	},
         error: function(player) {
-          debug('error')
-          debug(player)
+          util.show(comp, 'error', '加载直播出错了')
         }
       });
     }
@@ -68,11 +81,5 @@ export default {
 </script>
 
 <style lang="stylus">
-
-.live-view
-  .player-video
-    #player1
-      width 640px
-      height 360px
 
 </style>
