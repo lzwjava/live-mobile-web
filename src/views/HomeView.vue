@@ -2,116 +2,27 @@
 
   <div class="home-view">
 
-    <div class="header-section card-group">
-      <user-avatar :user="live.owner"></user-avatar>
-
-      <div class="header-right">
-        <div class="subject">{{live.subject}}</div>
-        <div class="ownername">{{live.owner.username}}</div>
-      </div>
-
-      <div class="time-section">
-        <div class="time-label">时间</div>
-        <div class="plan-time">{{live.planTs}}</div>
-      </div>
-
-    </div>
-
-    <div class="attend-section card-group">
-      <div class="attend-info">
-        <ul class="attended-users">
-          <li class="avatar-cell" v-for="u in firstFiveUsers">
-            <user-avatar :user="u"></user-avatar>
-          </li>
-        </ul>
-
-        <div class="attend-summary">
-          已有{{attendedUsers.length}}人参与 >
-        </div>
-      </div>
-
-      <div class="attend-action section">
-        <button class="btn btn-blue attend-btn" @click="attendLive">{{btnTitle}}</button>
-      </div>
-
-    </div>
-
-    <div class="live-detail card-group">
-      <div class="detail-label">
-        直播详情
-      </div>
-
-      <markdown :content="live.detail" :show=true></markdown>
-
-    </div>
-
-    <overlay :overlay.sync="overlayStatus">
-      <register-form :cur-user="curUser"></register-form>
-    </overlay>
-
   </div>
 
 </template>
 
-<script>
+
+<script type="text/javascript">
 
 import util from '../common/util'
 import wechat from '../common/wechat'
-import UserAvatar from '../components/user-avatar.vue'
-import Markdown from '../components/markdown.vue'
-import http from '../common/http'
-import Overlay from '../components/overlay.vue'
-import RegisterForm from '../components/register-form.vue'
-
-var debug = require('debug')('HomeView');
+var debug = require('debug')('HomeView')
 
 export default {
   name: 'HomeView',
   components: {
-    'user-avatar': UserAvatar,
-    'markdown': Markdown,
-    'overlay': Overlay,
-    'register-form': RegisterForm
   },
-
-  data () {
+  data() {
     return {
-      code: '',
-      curUser: {},
-      live: {
-        owner: {}
-      },
-      attendedUsers: [],
-      liveId: 0,
-      isDebug: false,
-      overlayStatus: false
+      isDebug: false
     }
   },
-  computed: {
-    firstFiveUsers: function () {
-      if (this.attendedUsers.length > 5)  {
-        return this.attendedUsers.splice(0,5)
-      } else {
-        return this.attendedUsers
-      }
-    },
-    btnTitle: function () {
-      if (this.live.canJoin) {
-        return '已报名，进入直播间'
-      } else {
-        return '支持并参与活动(¥' + (this.live.amount /100) + ')'
-      }
-    }
-  },
-  route: {
-    data ({ to }) {
-      const page = +to.params.page
-      document.title = '趣直播'
-    }
-  },
-  created () {
-    //window.location = util.weixinOauthUrl;
-    // wechat.getAccessToken(this)
+  created() {
     var params = util.getParams()
     debug('params: %j', params)
     if (!params.code && !params.liveId) {
@@ -121,7 +32,7 @@ export default {
     if (params.liveId) {
       window.localStorage.setItem('liveId', params.liveId)
       if (this.isDebug) {
-        this.fetchData()
+        this.jumpToIntro()
       } else {
         this.oauthOrRegister()
       }
@@ -129,29 +40,11 @@ export default {
       this.oauthOrRegister()
     }
   },
-
-  destroyed () {
-  },
   methods: {
-    fetchData: function () {
+    jumpToIntro: function () {
+      window.localStorage.setItem('qzb.curUser', this.curUser)
       var liveId = window.localStorage.getItem('liveId')
-      this.liveId = liveId
-      this.fetchLive()
-      this.fetchUsers()
-    },
-    fetchLive: function () {
-      var comp = this
-      http.fetchLive(this, this.liveId, function (live) {
-        comp.live = live
-      })
-    },
-    fetchUsers: function() {
-      this.$http.get('lives/' + this.liveId +'/users')
-      .then((resp) => {
-        if (util.filterError(this, resp)) {
-          this.attendedUsers = resp.data.result
-        }
-      }, util.httpErrorFn(this))
+      window.location = '/#intro/' + liveId
     },
     oauthOrRegister: function () {
       var params = util.getParams()
@@ -161,13 +54,13 @@ export default {
         if (!this.isDebug) {
           wechat.wechatRegister(this, params.code, function(user) {
             comp.curUser = user
-            comp.fetchData()
+            comp.jumpToIntro()
           });
         } else {
           if (isLoalhost) {
             wechat.wechatRegister(this, params.code, function(user) {
               comp.curUser = user
-              comp.fetchData()
+              comp.jumpToIntro()
             });
           } else {
             window.location = 'http://localhost:9060?code=' + params.code
@@ -176,73 +69,12 @@ export default {
       } else {
         wechat.oauth2()
       }
-    },
-    attendLive: function () {
-      if (this.live.canJoin) {
-        var url = window.location.href
-        var arr = url.split("/");
-        var result = arr[0] + "//" + arr[2]
-        window.location.href = result + '/#live/' + this.liveId
-      } else {
-        this.overlayStatus = true
-      }
-    }
-  },
-
-  filters: {
-    moneyAsYuan: function (money) {
-      if (!money) {
-        return 0
-      } else {
-        return money / 100
-      }
     }
   }
 }
+
 </script>
 
 <style lang="stylus">
-
-@import "../stylus/base.styl"
-
-.home-view
-    .section
-      background-color #fff
-    .header-section
-      .avatar
-        width 80px
-        height 80px
-        display inline-block
-      .header-right
-        width 70%
-        display inline-block
-        .subject
-          font-size 18px
-          font-weight bold
-        .ownername
-          font-size 16px
-    .time-section
-      border-top 1px dashed #e7e7e7
-      .plan-time
-        font-size 16px
-    .attend-section
-      ul
-        display inline-block
-        li
-          display inline-block
-          .avatar
-            width 25px
-            height 25px
-      .attend-summary
-        float right
-        line-height 25px
-      .attend-action
-        text-align center
-        .attend-btn
-          width 90%
-    .card-group
-      margin-bottom 10px
-      background-color #fff
-      padding 10px
 
 </style>

@@ -7,6 +7,7 @@ require('weui')
 import App from './views/App.vue'
 import HomeView from './views/HomeView.vue'
 import LiveView from './views/LiveView.vue'
+import IntroView from './views/IntroView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -31,7 +32,7 @@ console.log('env ' + process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
-  localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading';
+  localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading,IntroView';
 }
 
 // routing
@@ -40,6 +41,9 @@ var router = new Router()
 router.map({
   '/': {
     component: HomeView
+  },
+  '/intro/:liveId': {
+    component: IntroView
   },
   '/live/:liveId': {
     component: LiveView
