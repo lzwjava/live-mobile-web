@@ -1,16 +1,17 @@
 <template>
   <div class="live-view">
     <div id="the-player">
-      <video preload="none" class="player-video" autoplay controls crossorigin></video>
+      <video id="player1" width="100%" height="350" controls="controls">
+        <source type="application/x-mpegURL" :src="live.hlsUrl" />
+      </video>
     </div>
   </div>
 </template>
 
 <script type="text/javascript">
 
-var Hls = require('../../node_modules/hls.js/dist/hls.min.js')
-var plyr = require('plyr')
-
+require('../../node_modules/mediaelement/build/mediaelement-and-player.js')
+require('../../node_modules/mediaelement/build/mediaelementplayer.min.css')
 var util = require('../common/util')
 var http = require('../common/http')
 var debug = require('debug')('LiveView')
@@ -49,18 +50,17 @@ export default {
         comp.playHls()
       })
     },
-    playHls: function () {
-      var playerId = 'the-player'
-      var video = document.querySelector('#' + playerId + ' video')
-      if(Hls.isSupported()) {
-        var hls = new Hls();
-        hls.loadSource(this.live.hlsUrl);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED,function() {
-          video.play();
-        });
-      }
-      plyr.setup('#' + playerId);
+    playHls: function() {
+      $('video').mediaelementplayer({
+      	success: function(media, node, player) {
+          debug('success')
+      		$('#' + node.id + '-mode').html('mode: ' + media.pluginType);
+      	},
+        error: function(player) {
+          debug('error')
+          debug(player)
+        }
+      });
     }
   }
 }
@@ -68,8 +68,11 @@ export default {
 </script>
 
 <style lang="stylus">
+
 .live-view
   .player-video
-    width 100%
+    #player1
+      width 640px
+      height 360px
 
 </style>

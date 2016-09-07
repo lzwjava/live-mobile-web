@@ -179,7 +179,10 @@ export default {
     },
     attendLive: function () {
       if (this.live.canJoin) {
-        window.location = "#/live/" + this.liveId
+        var url = window.location.href
+        var arr = url.split("/");
+        var result = arr[0] + "//" + arr[2]
+        window.location.href = result + '/#live/' + this.liveId
       } else {
         this.overlayStatus = true
       }

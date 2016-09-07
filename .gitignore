@@ -1,5 +1,6 @@
 .DS_Store
 node_modules
-static/build.js
+static/*
+!static/logo.png
 fabfile.pyc
 npm-debug.log

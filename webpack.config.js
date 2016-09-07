@@ -12,6 +12,12 @@ module.exports = {
     publicPath: '/static/',
     filename: 'build.js'
   },
+  resolve: {
+    alias: {
+      jquery: path.join(__dirname, './node_modules/jquery'),
+      mediaelement: path.join(__dirname, './node_modules/mediaelement')
+    }
+  },
   module: {
     // avoid webpack trying to shim process
     noParse: /es6-promise\.js$/,
@@ -33,6 +39,10 @@ module.exports = {
       {
         test: /\.(png|jpg|gif)$/,
         loader: 'url-loader?limit=8190'
+      },
+      {
+        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: "file-loader"
       }
     ]
   },
@@ -41,6 +51,10 @@ module.exports = {
     plugins: ['transform-runtime']
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
+    })
   ],
   debug: true,
   displayErrorDetails: true,
