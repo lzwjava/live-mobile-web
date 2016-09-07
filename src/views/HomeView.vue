@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     jumpToIntro: function () {
-      window.localStorage.setItem('qzb.curUser', this.curUser)
+      window.localStorage.setItem('qzb.curUser', JSON.stringify(this.curUser))
       var liveId = window.localStorage.getItem('liveId')
       window.location = '/#intro/' + liveId
     },

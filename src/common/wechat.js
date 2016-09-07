@@ -39,18 +39,30 @@ function getAccessToken(comp) {
   }, util.httpErrorFn(comp))
 }
 
-function wechatRegister(comp, code, fn) {
-  comp.$http.post('wechat/register', {
-    code: code
-  }).then((resp) => {
+function logout(comp, fn) {
+  comp.$http.get('logout')
+  .then((resp) => {
     if (util.filterError(comp, resp)) {
-      var user = resp.data.result;
-      if (user.userId != null) {
-        setUser(user);
-      }
-      fn && fn(user)
+      fn && fn()
     }
   }, util.httpErrorFn(comp))
+}
+
+function wechatRegister(comp, code, fn) {
+  logout(comp, function () {
+    comp.$http.post('wechat/register', {
+      code: code
+    }).then((resp) => {
+      if (util.filterError(comp, resp)) {
+        var user = resp.data.result;
+        debug('wechar user: %j', user)
+        if (user.userId != null) {
+          setUser(user);
+        }
+        fn && fn(user)
+      }
+    }, util.httpErrorFn(comp))
+  })
 }
 
 function loadUser() {

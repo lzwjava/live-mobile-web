@@ -83,7 +83,6 @@ export default {
       },
       attendedUsers: [],
       liveId: 0,
-      isDebug: false,
       overlayStatus: false
     }
   },
@@ -104,7 +103,7 @@ export default {
     }
   },
   route: {
-    data ({ to }) {      
+    data ({ to }) {
       this.liveId = to.params.liveId
       this.loadCurUser()
       this.fetchData()
@@ -116,7 +115,10 @@ export default {
   },
   methods: {
     loadCurUser: function () {
-      this.curUser = window.localStorage.getItem('qzb.curUser')
+      var item = window.localStorage.getItem('qzb.curUser')
+      this.curUser = JSON.parse(item)
+      debug('load user')
+      debug(this.curUser)
     },
     fetchData: function () {
       this.fetchLive()
