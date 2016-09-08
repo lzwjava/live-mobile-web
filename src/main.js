@@ -8,6 +8,7 @@ import App from './views/App.vue'
 import HomeView from './views/HomeView.vue'
 import LiveView from './views/LiveView.vue'
 import IntroView from './views/IntroView.vue'
+import UsersView from './views/UsersView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -32,7 +33,8 @@ console.log('env ' + process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
-  localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading,IntroView';
+  localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading,IntroView,' +
+    'UsersView';
 }
 
 // routing
@@ -47,6 +49,9 @@ router.map({
   },
   '/live/:liveId': {
     component: LiveView
+  },
+  '/live/:liveId/users': {
+    component: UsersView
   }
 })
 

@@ -6,13 +6,10 @@
     </div>
   </nav>
 
-  <tip v-el:msg-tip><tip>
-
 </template>
 
 <script type="text/javascript">
 
-import Tip from '../components/tip.vue'
 import UserAvatar from '../components/user-avatar.vue'
 import util from '../common/util'
 
@@ -21,8 +18,7 @@ var debug = require('debug')('nav')
 export default {
   name: 'Nav',
   components: {
-    'tip': Tip,
-    'user-avatar': UserAvatar,
+    'user-avatar': UserAvatar
   },
   data () {
     return {
@@ -45,5 +41,8 @@ export default {
 </script>
 
 <style lang="stylus">
+
+.navbar
+  width 100%
 
 </style>

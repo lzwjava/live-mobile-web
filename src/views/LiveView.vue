@@ -50,19 +50,20 @@ export default {
   },
   methods: {
     fetchLive: function () {
-      var comp = this
-      comp.$broadcast('loading')
-      http.fetchLive(comp, this.liveId, function (live) {
-        comp.live = live
-        comp.$broadcast('loaded')
-        live.canJoin = true
-        live.hlsUrl = 'http://cheer.quzhiboapp.com/live/GAXRrVWD_ff.m3u8'
-        if (!live.canJoin) {
-          util.show(comp, 'error', '请先登录或报名直播')
-          return
-        }
-        comp.playHls()
-      })
+      this.$broadcast('loading')
+      http.fetchLive(this, this.liveId)
+       .then((live) => {
+         this.live = live
+         this.$broadcast('loaded')
+         live.canJoin = true
+         live.hlsUrl = 'http://cheer.quzhiboapp.com/live/GAXRrVWD_ff.m3u8'
+         if (!live.canJoin) {
+           util.show(this, 'error', '请先登录或报名直播')
+           return
+         }
+         this.playHls()
+       })
+       .catch(util.promiseErrorFn(this))
     },
     playHls: function() {
       this.$broadcast('loading')

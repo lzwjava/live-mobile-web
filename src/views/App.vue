@@ -10,30 +10,39 @@
       transition-mode="out-in">
     </router-view>
 
+    <toast type="loading" v-show="loading">加载中</toast>
 
+    <tip><tip>
   </div>
 </template>
 
 <script type="text/javascript">
 
 import Nav from './nav.vue'
+import {Toast} from 'vue-weui'
+import Tip from '../components/tip.vue'
+
+var debug = require('debug')('nav')
 
 export default {
   name: 'App',
   components: {
-    'my-nav': Nav
+    'my-nav': Nav,
+    'toast': Toast,
+    'tip': Tip
   },
   data() {
     return {
+      loading: false
     }
   },
   events: {
     'show-msg': function (type, message) {
       this.$broadcast('show-tip-msg', type, message)
     },
-    'updateUser': function (user) {
-      this.$broadcast('updateNavUser', user)
-    },
+    'setLoading': function(loading) {
+      this.loading = loading
+    }
   }
 }
 
@@ -54,7 +63,6 @@ export default {
   width 100%
   transition opacity .2s ease
   box-sizing border-box
-  background-color #e7e7e7
   &.v-enter, &.v-leave
     opacity 0
 

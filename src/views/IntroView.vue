@@ -135,23 +135,23 @@ export default {
       debug('load user')
       debug(this.curUser)
     },
-    fetchData: function () {
+    fetchData: () => {
       this.fetchLive()
       this.fetchUsers()
     },
-    fetchLive: function () {
-      var comp = this
-      http.fetchLive(this, this.liveId, function (live) {
-        comp.live = live
+    fetchLive: () => {
+      http.fetchLive(this, this.liveId)
+      .then((data) => {
+        this.live = data
       })
+      .catch(util.promiseErrorFn(this))
     },
-    fetchUsers: function() {
-      this.$http.get('lives/' + this.liveId +'/users')
-      .then((resp) => {
-        if (util.filterError(this, resp)) {
-          this.attendedUsers = resp.data.result
-        }
-      }, util.httpErrorFn(this))
+    fetchUsers: () => {
+      http.fetchUsers(this, this.liveId)
+      .then((data) => {
+        this.attendedUsers = data
+      })
+      .catch(util.promiseErrorFn(this))
     },
     attendLive: function () {
       if (this.live.canJoin) {

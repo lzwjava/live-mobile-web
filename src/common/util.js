@@ -1,6 +1,6 @@
 var debug = require('debug')('util');
 
-exports.filterError = (component, res) => {
+var filterError = (component, res) => {
   debug('resp:%j', res.data)
   if (res.data.status != "success") {
     component.$dispatch('show-msg', 'error', res.data.error)
@@ -10,7 +10,7 @@ exports.filterError = (component, res) => {
   }
 };
 
-exports.escape = (html) => {
+var escape = (html) => {
   html = html || '';
   return html
   .replace(/&/g, '&amp;')
@@ -20,7 +20,7 @@ exports.escape = (html) => {
   .replace(/'/g, '&#39;');
 };
 
-exports.httpErrorFn = (component) => {
+var httpErrorFn = (component) => {
   return function (res) {
     var text = res.statusText
     if (text == '') {
@@ -28,13 +28,19 @@ exports.httpErrorFn = (component) => {
     }
     component.$dispatch('show-msg', 'error', text)
   }
-};
+}
 
-exports.show = (component, type, text, duration) => {
+var show = (component, type, text, duration) => {
   component.$dispatch('show-msg', type, text)
-};
+}
 
-function transformToAssocArray( prmstr ) {
+var promiseErrorFn = (comp) => {
+  return (error) => {
+    show(comp, 'error', error)
+  }
+}
+
+var transformToAssocArray = (prmstr) => {
     var params = {};
     var prmarr = prmstr.split("&");
     for ( var i = 0; i < prmarr.length; i++) {
@@ -44,10 +50,15 @@ function transformToAssocArray( prmstr ) {
     return params;
 }
 
-function getParams () {
+var getParams = () => {
       var prmstr = window.location.search.substr(1);
       debug('paramStr:' + window.location.search)
       return prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
 }
 
 exports.getParams = getParams
+exports.show = show
+exports.promiseErrorFn = promiseErrorFn
+exports.httpErrorFn = httpErrorFn
+exports.escape = escape
+exports.filterError = filterError
