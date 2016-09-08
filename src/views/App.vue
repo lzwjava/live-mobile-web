@@ -56,7 +56,7 @@ export default {
 #wrapper
   position relative
   width 100%
-  min-height 80px
+  min-height 100%
 
 .view
   position absolute

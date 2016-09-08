@@ -1,23 +1,21 @@
 <template>
   <div class="live-view">
-    <loading>
-      <div id="the-player">
-        <video id="player1" width="100%" height="350" controls="controls">
-          <source type="application/x-mpegURL" :src="live.hlsUrl" />
-        </video>
-      </div>
-      <div class="chat-area">
-        <ul class="msg-list">
-          <li class="msg" v-for="msg in msgs">
-            <span class="name">{{msg.name}}:</span><span class="text">{{msg.text}}</span>
-          </li>
-        </ul>
+    <div id="player-area">
+      <video id="player1" width="100%" height="350px" controls="controls">
+        <source type="application/x-mpegURL" :src="live.hlsUrl" />
+      </video>
+    </div>
+    <div class="chat-area">
+      <ul class="msg-list">
+        <li class="msg" v-for="msg in msgs">
+          <span class="name">{{msg.name}}:</span><span class="text">{{msg.text}}</span>
+        </li>
+      </ul>
 
-        <div class="send-area">
-          <input type="text" v-model="inputMsg">  <button class="btn btn-blue" type="button" @click="sendMsg">发送</button>
-        </div>
+      <div class="send-area">
+        <input type="text" v-model="inputMsg">  <button class="btn btn-blue" type="button" @click="sendMsg">发送</button>
       </div>
-    </loading>
+    </div>
   </div>
 </template>
 
@@ -128,7 +126,7 @@ export default {
         this.conv = conv
         this.conv.join().then((conv) => {
           this.addSystemMsg('加入聊天室成功')
-        }).catch(this.handleError)        
+        }).catch(this.handleError)
       }).catch(this.handleError)
     },
     fetchCurUser () {
@@ -172,15 +170,32 @@ export default {
 
 <style lang="stylus">
 
-.chat-area
-  .msg-list
+.live-view
+  height 100%
+  display flex
+  flex-direction column
+  align-item strech
+  .player-area
+    height 350px
     width 100%
-    height 200px
-    .msg
-      .name
-        color #00CFF5
-  .send-area
-    input
-      width 70%
+  .chat-area
+    flex-grow 1
+    overflow auto
+    display flex
+    flex-direction column
+    padding 5px
+    .msg-list
+      width 100%
+      flex-grow 1
+      .msg
+        .name
+          color #00CFF5
+    .send-area
+      height 50px
+      input
+        width 80%
+        height 30px
+      button
+        width 15%
 
 </style>
