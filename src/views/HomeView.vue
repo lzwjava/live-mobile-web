@@ -49,18 +49,17 @@ export default {
     oauthOrRegister: function () {
       var params = util.getParams()
       if (params.code) {
-        var comp = this
         var isLoalhost = window.location.hostname == 'localhost'
         if (!this.isDebug) {
-          wechat.wechatRegister(this, params.code, function(user) {
-            comp.curUser = user
-            comp.jumpToIntro()
+          wechat.wechatRegister(this, params.code, (user) => {
+            this.curUser = user
+            this.jumpToIntro()
           });
         } else {
           if (isLoalhost) {
-            wechat.wechatRegister(this, params.code, function(user) {
-              comp.curUser = user
-              comp.jumpToIntro()
+            wechat.wechatRegister(this, params.code, (user) => {
+              this.curUser = user
+              this.jumpToIntro()
             });
           } else {
             window.location = 'http://localhost:9060?code=' + params.code
