@@ -13,6 +13,8 @@ import UsersView from './views/UsersView.vue'
 import filters from './common/filter'
 import util from './common/util'
 
+const debug = require('debug')('main')
+
 // install router
 Vue.use(Router)
 
@@ -28,13 +30,13 @@ Vue.http.options.root = '/api';
 Vue.http.options.emulateJSON = true;
 Vue.http.options.timeout = 1000 * 10;
 
-console.log('env ' + process.env.NODE_ENV)
+debug('env ' + process.env.NODE_ENV)
 
 if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading,IntroView,' +
-    'UsersView';
+    'UsersView,main';
 }
 
 // routing

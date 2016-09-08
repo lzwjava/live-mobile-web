@@ -29,7 +29,7 @@
           </li>
         </ul>
 
-        <div class="attend-summary">
+        <div class="attend-summary" @click="goUsers">
           已有{{attendedUsers.length}}人参与 >
         </div>
       </div>
@@ -129,31 +129,29 @@ export default {
   destroyed () {
   },
   methods: {
-    loadCurUser: function () {
+    loadCurUser () {
       var item = window.localStorage.getItem('qzb.curUser')
       this.curUser = JSON.parse(item)
-      debug('load user')
-      debug(this.curUser)
     },
-    fetchData: () => {
+    fetchData () {
       this.fetchLive()
       this.fetchUsers()
     },
-    fetchLive: () => {
+    fetchLive () {
       http.fetchLive(this, this.liveId)
       .then((data) => {
         this.live = data
       })
       .catch(util.promiseErrorFn(this))
     },
-    fetchUsers: () => {
+    fetchUsers () {
       http.fetchUsers(this, this.liveId)
       .then((data) => {
         this.attendedUsers = data
       })
       .catch(util.promiseErrorFn(this))
     },
-    attendLive: function () {
+    attendLive () {
       if (this.live.canJoin) {
         var url = window.location.href
         var arr = url.split("/");
@@ -162,6 +160,9 @@ export default {
       } else {
         this.overlayStatus = true
       }
+    },
+    goUsers() {
+      this.$router.go('/live/' + this.liveId + '/users')
     }
   },
 

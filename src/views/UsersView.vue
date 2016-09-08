@@ -3,7 +3,7 @@
   <div class="users-view">
     <ul>
       <li class="title">
-        已有 {{attendUsers.length}} 人参与
+        已有 {{attendUsers.length}} 人参与直播
       </li>
 
       <li v-for="u in attendUsers">
@@ -34,7 +34,7 @@ export default {
       attendUsers: []
     }
   },
-  created() {    
+  created() {
   },
   route: {
     data ({to}) {
