@@ -6,7 +6,7 @@
       </video>
     </div>
     <div class="chat-area">
-      <ul class="msg-list">
+      <ul class="msg-list" v-el:msg-list>
         <li class="msg" v-for="msg in msgs">
           <span class="name">{{msg.name}}:</span><span class="text">{{msg.text}}</span>
         </li>
@@ -60,6 +60,12 @@ export default {
   computed: {
   },
   created() {
+    setTimeout(() => {
+      for(var i = 0; i< 12;i++) {
+        this.inputMsg = i + '';
+        this.sendMsg()
+      }
+    }, 1000)
   },
   ready() {
   },
@@ -80,6 +86,10 @@ export default {
     },
     addMsg(name, text) {
       this.msgs.push({name: name, text: text})
+      setTimeout(() => {
+        var msgList = this.$els.msgList
+        msgList.scrollTop = msgList.scrollHeight
+      },10)      
     },
     addChatMsg(msg) {
       this.addMsg(msg.from, msg.text)
@@ -174,24 +184,25 @@ export default {
   height 100%
   display flex
   flex-direction column
-  align-item strech
   .player-area
     height 350px
     width 100%
   .chat-area
     flex-grow 1
-    overflow auto
     display flex
     flex-direction column
     padding 5px
     .msg-list
       width 100%
       flex-grow 1
+      overflow hidden
+      overflow-y scroll
       .msg
+        font-size 14px
         .name
           color #00CFF5
     .send-area
-      height 50px
+      flex-basis 50px
       input
         width 80%
         height 30px
