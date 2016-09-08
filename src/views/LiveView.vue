@@ -60,12 +60,12 @@ export default {
   computed: {
   },
   created() {
-    setTimeout(() => {
-      for(var i = 0; i< 12;i++) {
-        this.inputMsg = i + '';
-        this.sendMsg()
-      }
-    }, 1000)
+    // setTimeout(() => {
+    //   for(var i = 0; i< 12;i++) {
+    //     this.inputMsg = i + '';
+    //     this.sendMsg()
+    //   }
+    // }, 1000)
   },
   ready() {
   },
@@ -89,16 +89,19 @@ export default {
       setTimeout(() => {
         var msgList = this.$els.msgList
         msgList.scrollTop = msgList.scrollHeight
-      },10)      
+      },10)
     },
     addChatMsg(msg) {
-      this.addMsg(msg.from, msg.text)
+      var name = msg.attributes.username
+      this.addMsg(name, msg.text)
     },
     addSystemMsg(msg) {
       this.addMsg('系统', msg)
     },
     sendMsg() {
-      this.conv.send(new TextMessage(this.inputMsg))
+      var textMsg = new TextMessage(this.inputMsg)
+      textMsg.setAttributes({username:this.curUser.username})
+      this.conv.send(textMsg)
       .then((message) => {
         this.addChatMsg(message)
         this.inputMsg = ''

@@ -47,6 +47,17 @@ var fetchCurUser = (comp) => {
   });
 }
 
+var fetchOneUser = (comp, userId) => {
+  return new Promise(
+    function(resolve, reject) {
+      comp.$http.get('users/' + userId)
+      .then(callback.success(resolve, reject),
+            callback.failure(reject))
+    }
+  )
+}
+
 exports.fetchLive = fetchLive
 exports.fetchUsers = fetchUsers
 exports.fetchCurUser = fetchCurUser
+exports.fetchOneUser = fetchOneUser
