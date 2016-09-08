@@ -1,7 +1,7 @@
 <template>
   <div class="live-view">
     <div id="player-area">
-      <video id="player1" width="100%" height="350px" controls="controls">
+      <video id="player1" width="100%" height="300px" controls="controls">
         <source type="application/x-mpegURL" :src="live.hlsUrl" />
       </video>
     </div>
@@ -188,7 +188,7 @@ export default {
   display flex
   flex-direction column
   .player-area
-    height 350px
+    height 300px
     width 100%
   .chat-area
     flex-grow 1
