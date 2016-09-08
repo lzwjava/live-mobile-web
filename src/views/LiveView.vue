@@ -6,6 +6,17 @@
           <source type="application/x-mpegURL" :src="live.hlsUrl" />
         </video>
       </div>
+      <div class="chat-area">
+        <ul class="msg-list">
+          <li class="msg" v-for="msg in msgs">
+            <span class="name">{{msg.name}}:</span><span class="text">{{msg.text}}</span>
+          </li>
+        </ul>
+
+        <div class="send-area">
+          <input type="text" v-model="inputMsg">  <button class="btn btn-blue" type="button" @click="sendMsg">发送</button>
+        </div>
+      </div>
     </loading>
   </div>
 </template>
@@ -20,6 +31,17 @@ import http from '../common/http'
 import Loading from '../components/loading.vue'
 
 var debug = require('debug')('LiveView')
+var Realtime = require('leancloud-realtime').Realtime;
+var TextMessage = require('leancloud-realtime').TextMessage;
+
+var prodAppId = 's83aTX5nigX1KYu9fjaBTxIa-gzGzoHsz'
+var testAppId = 'YY3S7uNlnXUgX48BHTJlJx4i-gzGzoHsz'
+
+var realtime = new Realtime({
+  appId: testAppId,
+  region: 'cn',
+  noBinary: true
+})
 
 export default {
   name: 'LiveView',
@@ -29,7 +51,12 @@ export default {
   data() {
     return {
       liveId: 0,
-      live: {}
+      live: {},
+      client: {},
+      conv: {},
+      curUser: {},
+      msgs: [],
+      inputMsg: ''
     }
   },
   computed: {
@@ -46,10 +73,73 @@ export default {
         return
       }
       this.fetchLive()
+      this.fetchCurUser()
     }
   },
   methods: {
-    fetchLive: function () {
+    handleError (error) {
+      util.show(this, 'error', error)
+    },
+    addMsg(name, text) {
+      this.msgs.push({name: name, text: text})
+    },
+    addChatMsg(msg) {
+      this.addMsg(msg.from, msg.text)
+    },
+    addSystemMsg(msg) {
+      this.addMsg('系统', msg)
+    },
+    sendMsg() {
+      this.conv.send(new TextMessage(this.inputMsg))
+      .then((message) => {
+        this.addChatMsg(message)
+        this.inputMsg = ''
+      }).catch(this.handleError)
+    },
+    registerEvent() {
+      this.client.on('message', (message, conversation) => {
+        debug('on message')
+        this.addChatMsg(message)
+      })
+      this.client.on('reuse', () => {
+        this.addSystemMsg('服务器正在重连...')
+      })
+      this.client.on('error', (error) => {
+        this.addSystemMsg('遇到错误 ' + error)
+      })
+    },
+    openClient() {
+      realtime.createIMClient(this.curUser.userId + '')
+      .then((client) => {
+        this.client = client
+        this.addSystemMsg('聊天室连接成功')
+        this.registerEvent()
+        this.fetchConv()
+      }).catch(this.handleError)
+    },
+    fetchConv() {
+      debug('convid:' + this.live.conversationId)
+      this.client.getConversation(this.live.conversationId)
+      .then((conv) => {
+        if (conv == null) {
+          this.handleError('获取对话失败');
+          return
+        }
+        this.conv = conv
+        this.conv.join().then((conv) => {
+          this.addSystemMsg('加入聊天室成功')
+        }).catch(this.handleError)        
+      }).catch(this.handleError)
+    },
+    fetchCurUser () {
+      http.fetchCurUser(this)
+      .then((user) => {
+        debug('user: %j', user)
+        this.curUser = user
+        this.openClient()
+      }).catch(util.promiseErrorFn(this))
+    },
+    fetchLive () {
       this.$broadcast('loading')
       http.fetchLive(this, this.liveId)
        .then((live) => {
@@ -65,16 +155,13 @@ export default {
        })
        .catch(util.promiseErrorFn(this))
     },
-    playHls: function() {
-      this.$broadcast('loading')
-      var comp = this
+    playHls () {
       $('video').mediaelementplayer({
-      	success: function(media, node, player) {
-          comp.$broadcast('loaded')
+      	success: (media, node, player) => {
       		$('#' + node.id + '-mode').html('mode: ' + media.pluginType);
       	},
-        error: function(player) {
-          util.show(comp, 'error', '加载直播出错了')
+        error: (player) => {
+          util.show(this, 'error', '加载直播出错了')
         }
       });
     }
@@ -84,5 +171,16 @@ export default {
 </script>
 
 <style lang="stylus">
+
+.chat-area
+  .msg-list
+    width 100%
+    height 200px
+    .msg
+      .name
+        color #00CFF5
+  .send-area
+    input
+      width 70%
 
 </style>

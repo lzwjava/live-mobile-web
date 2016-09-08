@@ -1,4 +1,5 @@
 var util = require('./util')
+var debug = require('debug')('http')
 
 var callback = {
   success: (resolve,reject) => {
@@ -38,5 +39,14 @@ var fetchUsers = (comp, liveId) => {
   )
 }
 
+var fetchCurUser = (comp) => {
+  return new Promise(function(resolve, reject) {
+        comp.$http.get('self')
+        .then(callback.success(resolve, reject),
+              callback.failure(reject))
+  });
+}
+
 exports.fetchLive = fetchLive
 exports.fetchUsers = fetchUsers
+exports.fetchCurUser = fetchCurUser

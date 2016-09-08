@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading,IntroView,' +
-    'UsersView,main';
+    'UsersView,main,http';
 }
 
 // routing

@@ -25,6 +25,10 @@ export default {
   created() {
     var params = util.getParams()
     debug('params: %j', params)
+    if (params.sessionToken) {
+      this.checkSessionToken()
+      return
+    }
     if (!params.code && !params.liveId) {
       util.show(this, 'error', '缺少参数')
       return
@@ -68,6 +72,21 @@ export default {
       } else {
         wechat.oauth2()
       }
+    },
+    checkSessionToken: function () {
+      var params = util.getParams()
+      debug('token:%j', params.sessionToken)
+      if (params.sessionToken) {
+        this.$http.get('self', {
+          sessionToken: params["sessionToken"]
+        }).then((resp) => {
+          if (util.filterError(this, resp)) {
+            var token = resp.data.result.sessionToken;
+            document.cookie = "SessionToken=" + token;
+            window.location.href = '.';
+          }
+        }, util.httpErrorFn(this));
+       }
     }
   }
 }
