@@ -18,46 +18,51 @@ var callback = {
   }
 }
 
-var fetchLive = (comp, liveId) => {
-  var promise = new Promise(
+var fetchPromise = (comp, url) => {
+  return new Promise(
     function(resolve, reject) {
-      comp.$http.get('lives/' + liveId)
+      comp.$http.get(url)
       .then(callback.success(resolve, reject),
             callback.failure(reject))
     }
   )
-  return promise
+}
+
+var postPromise = (comp, url, params) => {
+  return new Promise(
+    function(resolve, reject) {
+      comp.$http.post(url, params)
+      .then(callback.success(resolve, reject),
+            callback.failure(reject))
+    }
+  )
+}
+
+var fetchLive = (comp, liveId) => {
+  return fetchPromise(comp, 'lives/' + liveId)
 }
 
 var fetchUsers = (comp, liveId) => {
-  return new Promise(
-    function(resolve, reject) {
-      comp.$http.get('lives/' + liveId +'/users')
-      .then(callback.success(resolve, reject),
-            callback.failure(reject))
-    }
-  )
+  return fetchPromise(comp, 'lives/' + liveId +'/users')
 }
 
 var fetchCurUser = (comp) => {
-  return new Promise(function(resolve, reject) {
-        comp.$http.get('self')
-        .then(callback.success(resolve, reject),
-              callback.failure(reject))
-  });
+  return fetchPromise(comp, 'self')
 }
 
 var fetchOneUser = (comp, userId) => {
-  return new Promise(
-    function(resolve, reject) {
-      comp.$http.get('users/' + userId)
-      .then(callback.success(resolve, reject),
-            callback.failure(reject))
-    }
-  )
+  return fetchPromise(comp, 'users/' + userId)
+}
+
+var createState = (comp, liveId) => {
+  return postPromise(comp, 'states', {liveId: liveId})
+     .then((data) => {
+       return Promise.resolve(data.hash)
+     })
 }
 
 exports.fetchLive = fetchLive
 exports.fetchUsers = fetchUsers
 exports.fetchCurUser = fetchCurUser
 exports.fetchOneUser = fetchOneUser
+exports.createState = createState

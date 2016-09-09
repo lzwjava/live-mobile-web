@@ -34,10 +34,9 @@ export default {
       return
     }
     if (params.liveId) {
-      window.localStorage.setItem('liveId', params.liveId)
-      wechat.oauth2()
+      wechat.silentOauth2(this, params.liveId)
     } else {
-      this.wechatRegister(params.code)
+      //this.wechatRegister(params.code)
     }
   },
   methods: {

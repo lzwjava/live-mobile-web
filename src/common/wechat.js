@@ -1,19 +1,24 @@
-var crypto = require('crypto');
+import crypto from 'crypto'
+import util from './util'
+import http from './http'
+import {sprintf} from 'sprintf-js'
 var debug = require('debug')('wechat');
-var util = require('./util');
 
 var weixinAppId = 'wx7b5f277707699557'
-var redirectUrl = encodeURIComponent('http://m.quzhiboapp.com')
-var weixinOauthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?' +
-'appid=' + weixinAppId + '&redirect_uri=' + redirectUrl + '&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect'
 
-function makeSignature(jsapi_ticket,noncestr,timestamp,url) {
-    var tmpStr = "jsapi_ticket="+jsapi_ticket+"&noncestr="+noncestr+"&timestamp="+timestamp+"&url="+url;
-    var shasum = crypto.createHash('sha1');
-    shasum.update(tmpStr);
-    var shaResult = shasum.digest('hex');
-    console.log('signature:'+shaResult);
-    return shaResult;
+var baseOauthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?' +
+'appid=' + weixinAppId + '&response_type=code&state=%s&scope=%s'
+
+var weixinOauthUrl = (state, scope, redirectUrl) => {
+  return sprintf(baseOauthUrl, state, scope) +  '&redirect_uri=' + encodeURIComponent(redirectUrl)
+}
+
+var weixinOauthUserUrl = (state) => {
+  return weixinOauthUrl(state, 'snsapi_userinfo', 'http://api.quzhiboapp.com/wechat/oauth')
+}
+
+var weixinSilentOauthUrl = (state) => {
+  return weixinOauthUrl(state, 'snsapi_base', 'http://api.quzhiboapp.com/wechat/silentOauth')
 }
 
 function getAccessToken(comp) {
@@ -80,11 +85,30 @@ function setUser(user) {
   return false
 }
 
-function oauth2() {
-  window.location = weixinOauthUrl
+function oauth2(comp, liveId) {
+  baseOauth2(comp, liveId, false)
+}
+
+function baseOauth2(comp, liveId, silent) {
+  http.createState(comp, liveId)
+    .then((hash) => {
+      var url;
+      if (silent) {
+        url = weixinSilentOauthUrl(hash)
+      } else {
+        url = weixinOauthUserUrl(hash)
+      }
+      debug('url:%j', url)
+      window.location = url
+    }, util.promiseErrorFn(comp))
+}
+
+function silentOauth2(comp, liveId) {
+  baseOauth2(comp, liveId, true)
 }
 
 exports.getAccessToken = getAccessToken
 exports.weixinAppId = weixinAppId
 exports.oauth2 = oauth2
 exports.wechatRegister = wechatRegister
+exports.silentOauth2 = silentOauth2
