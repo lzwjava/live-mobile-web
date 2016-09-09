@@ -88,13 +88,13 @@ if (process.env.NODE_ENV === 'production') {
         NODE_ENV: '"production"'
       }
     }),
+    new ExtractTextPlugin('[name].[contenthash].css'),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
       }
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new ExtractTextPlugin('[name].[contenthash].css')
+    new webpack.optimize.OccurenceOrderPlugin()
   ])
 } else {
   config.devtool = '#source-map'

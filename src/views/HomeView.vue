@@ -26,7 +26,7 @@ export default {
     var params = util.getParams()
     debug('params: %j', params)
     if (params.sessionToken) {
-      this.checkSessionToken()
+      this.loginBySessionToken(params.sessionToken)
       return
     }
     if (!params.code && !params.liveId) {
@@ -35,8 +35,9 @@ export default {
     }
     if (params.liveId) {
       window.localStorage.setItem('liveId', params.liveId)
+      wechat.oauth2()
     } else {
-      this.oauthOrRegister()
+      this.wechatRegister(params.code)
     }
   },
   methods: {
@@ -45,44 +46,29 @@ export default {
       var liveId = window.localStorage.getItem('liveId')
       window.location = '/#intro/' + liveId
     },
-    oauthOrRegister: function () {
-      var params = util.getParams()
-      if (params.code) {
-        var hostname = window.location.hostname
-        var isLoalhost = hostname  == 'localhost' || hostname == '192.168.31.102'
-        if (!this.isDebug) {
-          wechat.wechatRegister(this, params.code, (user) => {
-            this.curUser = user
-            this.jumpToIntro()
-          });
-        } else {
-          if (isLoalhost) {
-            wechat.wechatRegister(this, params.code, (user) => {
-              this.curUser = user
-              this.jumpToIntro()
-            });
-          } else {
-            window.location = 'http://' + hostname + ':9060?code=' + params.code
-          }
-        }
+    wechatRegister(code) {
+      var hostname = window.location.hostname
+      var isLoalhost = hostname  == 'localhost'
+      if (this.isDebug && !isLoalhost) {
+        // debug 模式且是服务器
+        window.location = 'http://localhost:9060?code=' + code
       } else {
-        wechat.oauth2()
+        wechat.wechatRegister(this, code, (user) => {
+          this.curUser = user
+          this.jumpToIntro()
+        });
       }
     },
-    checkSessionToken: function () {
-      var params = util.getParams()
-      debug('token:%j', params.sessionToken)
-      if (params.sessionToken) {
-        this.$http.get('self', {
-          sessionToken: params["sessionToken"]
-        }).then((resp) => {
-          if (util.filterError(this, resp)) {
-            var token = resp.data.result.sessionToken;
-            document.cookie = "SessionToken=" + token;
-            window.location.href = '.';
-          }
-        }, util.httpErrorFn(this));
-       }
+    loginBySessionToken: function (sessionToken) {
+      this.$http.get('self', {
+        sessionToken: sessionToken
+      }).then((resp) => {
+        if (util.filterError(this, resp)) {
+          var token = resp.data.result.sessionToken;
+          document.cookie = "SessionToken=" + token;
+          window.location.href = '.';
+        }
+      }, util.httpErrorFn(this));
     }
   }
 }
