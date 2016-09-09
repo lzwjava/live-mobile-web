@@ -4,13 +4,13 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 var srcPath = path.join(__dirname, 'src');
 
-module.exports = {
+var config = {
   entry: {
-    index:['./src/index.js']
+    main:['./src/main.js']
   },
   output: {
     path: path.resolve(__dirname, 'static/'),
-    publicPath: '/static/',
+    publicPath: '',
     filename: '[name].js'
   },
   resolve: {
@@ -55,6 +55,10 @@ module.exports = {
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery"
+    }),
+    new  HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: 'src/index.html'
     })
   ],
   debug: true,
@@ -62,23 +66,10 @@ module.exports = {
   outputPathinfo: true
 }
 
-var devConfig = ['index.html'];
-
-function htmlConfig(type) {
-  var filePath = '';
-  // if (type == 'production') {
-  //   filePath = '../';
-  // }
-  return devConfig.map(function(el, index) {
-    return new HtmlWebpackPlugin({
-      filename: filePath + el,
-      template: 'src/' + el
-    })
-  });
-}
-
 if (process.env.NODE_ENV === 'production') {
-  module.exports.plugins = (module.exports.plugins || []).concat([
+  config.output.filename = '[name].[chunkhash].js'
+  config.output.chunkFilename = '[id].[chunkhash].js'
+  config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
@@ -90,8 +81,9 @@ if (process.env.NODE_ENV === 'production') {
       }
     }),
     new webpack.optimize.OccurenceOrderPlugin()
-  ]).concat(htmlConfig('prod'))
+  ])
 } else {
-  module.exports.plugins = (module.exports.plugins || []).concat(htmlConfig('dev'))
-  module.exports.devtool = '#source-map'
+  config.devtool = '#source-map'
 }
+
+module.exports = config

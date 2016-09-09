@@ -4,3 +4,4 @@ static/*
 !static/logo.png
 fabfile.pyc
 npm-debug.log
+webpack.json
