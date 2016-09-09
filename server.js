@@ -43,7 +43,7 @@ var app = new WebpackDevServer(webpack(config), {
   hot: true,
   debug: true,
   // suppress useless text
-  noInfo: true
+  noInfo: false
 });
 
 app.listen(9060, '0.0.0.0', function (err, result) {

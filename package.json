@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --hot --no-info",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "deploy": "fab -H root@quzhiboapp.com deploy"
+    "deploy": "fab -H root@m.quzhiboapp.com deploy"
   },
   "repository": {
     "type": "git",

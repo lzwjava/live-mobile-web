@@ -8,7 +8,7 @@
     <div class="chat-area">
       <ul class="msg-list" v-el:msg-list>
         <li class="msg" v-for="msg in msgs">
-          <span class="name">{{msg.name}}:</span><span class="text">{{msg.text}}</span>
+          <span class="name">{{msg.name}}: </span><span class="text">{{msg.text}}</span>
         </li>
       </ul>
 
@@ -99,6 +99,10 @@ export default {
       this.addMsg('系统', msg)
     },
     sendMsg() {
+      if(!this.inputMsg) {
+        this.handleError('请输入点什么~')
+        return
+      }
       var textMsg = new TextMessage(this.inputMsg)
       textMsg.setAttributes({username:this.curUser.username})
       this.conv.send(textMsg)
@@ -123,7 +127,7 @@ export default {
       realtime.createIMClient(this.curUser.userId + '')
       .then((client) => {
         this.client = client
-        this.addSystemMsg('聊天室连接成功')
+        this.addSystemMsg('聊天服务器连接成功')
         this.registerEvent()
         this.fetchConv()
       }).catch(this.handleError)
@@ -138,7 +142,7 @@ export default {
         }
         this.conv = conv
         this.conv.join().then((conv) => {
-          this.addSystemMsg('加入聊天室成功')
+          this.addSystemMsg('加入直播聊天室成功')
         }).catch(this.handleError)
       }).catch(this.handleError)
     },
