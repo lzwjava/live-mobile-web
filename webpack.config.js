@@ -1,6 +1,7 @@
 var webpack = require('webpack')
 var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 var srcPath = path.join(__dirname, 'src');
 
@@ -61,6 +62,11 @@ var config = {
         template: 'src/index.html'
     })
   ],
+  vue: {
+    loaders: {
+      js: 'babel'
+    }
+  },
   debug: true,
   displayErrorDetails: true,
   outputPathinfo: true
@@ -69,6 +75,13 @@ var config = {
 if (process.env.NODE_ENV === 'production') {
   config.output.filename = '[name].[chunkhash].js'
   config.output.chunkFilename = '[id].[chunkhash].js'
+  config.vue.loaders = {
+    js: 'babel',
+    css: ExtractTextPlugin.extract('style-loader', 'css-loader'),
+    less: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader'),
+    sass: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader'),
+    stylus: ExtractTextPlugin.extract('style-loader', 'css-loader!stylus-loader')
+  }
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
@@ -80,7 +93,8 @@ if (process.env.NODE_ENV === 'production') {
         warnings: false
       }
     }),
-    new webpack.optimize.OccurenceOrderPlugin()
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new ExtractTextPlugin('[name].[contenthash].css')
   ])
 } else {
   config.devtool = '#source-map'

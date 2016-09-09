@@ -5,3 +5,4 @@ static/*
 fabfile.pyc
 npm-debug.log
 webpack.json
+.idea

@@ -19,7 +19,7 @@ export default {
   },
   data() {
     return {
-      isDebug: false
+      isDebug: true
     }
   },
   created() {
@@ -35,11 +35,6 @@ export default {
     }
     if (params.liveId) {
       window.localStorage.setItem('liveId', params.liveId)
-      if (this.isDebug) {
-        this.jumpToIntro()
-      } else {
-        this.oauthOrRegister()
-      }
     } else {
       this.oauthOrRegister()
     }
