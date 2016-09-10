@@ -26,8 +26,9 @@
 <script type="text/javascript">
 
 import {Button, Toast} from 'vue-weui'
-var util = require('../common/util')
-var http = require('../common/http')
+import util from '../common/util'
+import http from '../common/http'
+
 var debug = require('debug')('register-form')
 
 export default {
@@ -44,20 +45,18 @@ export default {
       mobile: '',
       code: '',
       loading: false,
-      openId: '',
-      toastShow: false
+      openId: ''
     }
   },
   computed: {
   },
   created() {
-    var params = this.$route.query;
-    debug('query:%j', params)
-    if (!params.liveId && !params.openId) {
+    var query = this.$route.query;
+    if (!query.liveId && !query.openId) {
       return util.show(this, 'error', '缺少参数')
     }
-    this.openId = params.openId
-    this.liveId =  params.liveId
+    this.openId = query.openId
+    this.liveId =  query.liveId
   },
   methods: {
     stop (e){

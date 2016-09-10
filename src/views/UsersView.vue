@@ -20,6 +20,7 @@
 import http from '../common/http'
 import util from '../common/util'
 import UserAvatar from '../components/user-avatar.vue'
+
 var debug = require('debug')('UsersView')
 
 export default {

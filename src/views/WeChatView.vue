@@ -5,9 +5,10 @@
 
 <script type="text/javascript">
 
-var debug = require('debug')('WeChatView')
 import util from '../common/util'
 import http from '../common/http'
+
+var debug = require('debug')('WeChatView')
 
 export default {
   name: 'WeChatView',
@@ -25,7 +26,6 @@ export default {
   },
   created() {
     var params = this.$route.params
-    debug('params:%j', params)
     if (!params.type) {
       util.show(this, 'error', '路径错误')
       return
