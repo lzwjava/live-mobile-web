@@ -14,6 +14,7 @@ import WeChatView from './views/WeChatView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
+import wechat from './common/wechat'
 
 const debug = require('debug')('main')
 

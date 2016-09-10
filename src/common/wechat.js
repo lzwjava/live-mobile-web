@@ -21,29 +21,6 @@ var weixinSilentOauthUrl = (state) => {
   return weixinOauthUrl(state, 'snsapi_base', 'http://m.quzhiboapp.com/#wechat/silentOauth')
 }
 
-function getAccessToken(comp) {
-  comp.$http.get('wechat/sign')
-    .then((resp) => {
-      if (util.filterError(comp, resp)) {
-        var data = resp.data.result;
-        wx.config({
-            debug: true,
-            appId: data.appId,
-            timestamp: data.timestamp,
-            nonceStr: data.nonceStr,
-            signature: data.signature,
-            jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage']
-        });
-        wx.ready(function () {
-          debug('ready')
-        })
-        wx.error(function(res){
-          debug('error: %j', res)
-        });
-      }
-  }, util.httpErrorFn(comp))
-}
-
 function logout(comp, fn) {
   comp.$http.get('logout')
   .then((resp) => {
@@ -87,7 +64,34 @@ function silentOauth2(comp, liveId) {
   baseOauth2(comp, liveId, true)
 }
 
-exports.getAccessToken = getAccessToken
+function configWeixin(comp) {
+  var url = window.location.href.split('#')[0]
+  debug('wechat sign url: %j', url)
+  comp.$http.get('wechat/sign', {
+    url: encodeURIComponent(url)
+  }).then((resp) => {
+    if (resp.data) {
+      var data = resp.data.result;
+      debug('sign data:%j', data)
+      wx.config({
+          debug: true,
+          appId: data.appId,
+          timestamp: data.timestamp,
+          nonceStr: data.nonceStr,
+          signature: data.signature,
+          jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage']
+      });
+      wx.ready(function () {
+        debug('ready')
+      })
+      wx.error(function(res){
+        debug('error: %j', res)
+      });
+    }
+  })
+}
+
 exports.weixinAppId = weixinAppId
 exports.oauth2 = oauth2
 exports.silentOauth2 = silentOauth2
+exports.configWeixin = configWeixin
