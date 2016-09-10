@@ -49,10 +49,6 @@
 
     </div>
 
-    <overlay :overlay.sync="overlayStatus">
-      <register-form :cur-user="curUser"></register-form>
-    </overlay>
-
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
 
   </div>
@@ -67,7 +63,6 @@ import UserAvatar from '../components/user-avatar.vue'
 import Markdown from '../components/markdown.vue'
 import http from '../common/http'
 import Overlay from '../components/overlay.vue'
-import RegisterForm from '../components/register-form.vue'
 import {Button, Toast} from 'vue-weui'
 import moment from 'moment'
 
@@ -81,7 +76,6 @@ export default {
     'user-avatar': UserAvatar,
     'markdown': Markdown,
     'overlay': Overlay,
-    'register-form': RegisterForm,
     'weui-button': Button,
     'toast': Toast
   },
@@ -109,8 +103,10 @@ export default {
     btnTitle: function () {
       if (this.live.canJoin) {
         return '已报名，进入直播间'
-      } else {
+      } else if (this.curUser.userId) {
         return '赞助并参与直播(¥' + (this.live.amount /100) + ')'
+      } else {
+        return '请登录后参与直播'
       }
     },
     timeGap: function() {
@@ -122,6 +118,11 @@ export default {
       this.liveId = to.params.liveId
       this.loadCurUser()
       this.fetchData()
+      if (to.query.action == 'pay') {
+        setTimeout(()=> {
+          this.pay()
+        }, 500)
+      }
     }
   },
   created () {
@@ -130,8 +131,11 @@ export default {
   },
   methods: {
     loadCurUser () {
-      var item = window.localStorage.getItem('qzb.curUser')
-      this.curUser = JSON.parse(item)
+      http.fetchCurUser(this)
+      .then((user) => {
+        this.curUser = user
+      }).catch((error) => {
+      })
     },
     fetchData () {
       this.fetchLive()
@@ -157,9 +161,16 @@ export default {
         var arr = url.split("/");
         var result = arr[0] + "//" + arr[2]
         window.location.href = result + '/#live/' + this.liveId
+      } else if (this.curUser.userId){
+        // this.overlayStatus = true
+        // this.$router.go('/register', {liveId: this.liveId})
+        this.pay()
       } else {
-        this.overlayStatus = true
+        wechat.oauth2(this, this.liveId)
       }
+    },
+    pay() {
+      debug('支付中')
     },
     goUsers() {
       this.$router.go('/live/' + this.liveId + '/users')

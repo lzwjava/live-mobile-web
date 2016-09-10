@@ -23,10 +23,14 @@ export default {
     }
   },
   created() {
-    var params = util.getParams()
-    debug('params: %j', params)
+    var params = this.$route.query;
+    debug('params: %j', params)    
     if (params.sessionToken) {
       this.loginBySessionToken(params.sessionToken)
+      return
+    }
+    if (params.action == 'logout') {
+      this.logout()
       return
     }
     if (!params.code && !params.liveId) {
@@ -68,6 +72,16 @@ export default {
           window.location.href = '.';
         }
       }, util.httpErrorFn(this));
+    },
+    logout() {
+      this.$http.get('logout')
+      .then((resp) => {
+        if (util.filterError(this, resp)) {
+          this.$dispatch('toast', '已注销', 1000, () => {
+            window.location = '/'
+          })
+        }
+      }, util.httpErrorFn(this))
     }
   }
 }

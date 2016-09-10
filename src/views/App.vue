@@ -12,6 +12,8 @@
 
     <toast type="loading" v-show="loading">加载中</toast>
 
+    <toast v-show="toastShow">{{toastText}}</toast>
+
     <tip><tip>
   </div>
 </template>
@@ -33,7 +35,9 @@ export default {
   },
   data() {
     return {
-      loading: false
+      loading: false,
+      toastShow: false,
+      toastText: ''
     }
   },
   events: {
@@ -42,6 +46,17 @@ export default {
     },
     'setLoading': function(loading) {
       this.loading = loading
+    },
+    'toast': function (text, timeout, callback) {
+      this.toastText = text
+      this.toastShow = true
+      if (!timeout) {
+        timeout = 1000
+      }
+      setTimeout(() => {
+        this.toastShow = false
+        callback && callback()
+      }, timeout)
     }
   }
 }

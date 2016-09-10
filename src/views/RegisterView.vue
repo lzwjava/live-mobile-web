@@ -1,7 +1,5 @@
 <template>
-
-  <div class="absolute-center register-form" @click="stop($event)">
-
+  <div class="absolute-center register-view">
     <div v-show="step == 0" class="step-one">
       <div class="tips input-mobile-tips">请输入您的手机号码，<br>我们将在直播前短信通知您。</div>
 
@@ -21,20 +19,9 @@
 
     </div>
 
-    <div v-show="step == 2" class="step-three">
-      <div class="tips">
-        {{lastStepTip}}
-      </div>
-
-      <img class="wepay" src="../img/wechat.png" alt="" />
-    </div>
-
     <toast type="loading" v-show="loading">加载中</toast>
-
   </div>
-
 </template>
-
 
 <script type="text/javascript">
 
@@ -44,8 +31,8 @@ var http = require('../common/http')
 var debug = require('debug')('register-form')
 
 export default {
-  name: 'RegisterForm',
-  props: ['curUser'],
+  name: 'RegisterView',
+  props: [],
   components: {
     'weui-button': Button,
     'toast': Toast
@@ -56,30 +43,21 @@ export default {
       liveId: 0,
       mobile: '',
       code: '',
-      isSignup: false,
-      loading: false
+      loading: false,
+      openId: '',
+      toastShow: false
     }
   },
   computed: {
-    lastStepTip: function () {
-      if (this.isSignup) {
-        return '请支付门票。'
-      } else {
-        return '已完成手机号码的绑定，请支付门票。'
-      }
-    }
   },
   created() {
-    if (this.curUser.openId) {
-      this.isSignup = false
-    } else if (this.curUser.userId){
-      this.isSignup = true
+    var params = this.$route.query;
+    debug('query:%j', params)
+    if (!params.liveId && !params.openId) {
+      return util.show(this, 'error', '缺少参数')
     }
-    if (this.isSignup) {
-      this.step = 2
-    } else {
-      this.step = 0
-    }
+    this.openId = params.openId
+    this.liveId =  params.liveId
   },
   methods: {
     stop (e){
@@ -106,28 +84,32 @@ export default {
         return
       }
       this.loading = true
-      this.$http.post('users/registerBySns', {
-        openId: this.curUser.openId,
+      http.postPromise(this, 'users/registerBySns', {
+        openId: this.openId,
         platform: 'wechat',
         mobilePhoneNumber: this.mobile,
         smsCode: this.code
-      }).then((resp) => {
+      }).then((data) => {
         this.loading = false
-        if (util.filterError(this, resp)) {
-          this.step = 2
-        }
-      })
+        debug('register succeed')
+        this.$dispatch('toast', 1000, () => {
+          this.$router.go('/intro/' + this.liveId + '?action=pay')
+        })
+      }, util.promiseErrorFn(this, () => {
+        this.loading = false
+      }))
     }
   }
 }
 
 </script>
 
+
 <style lang="stylus">
 
 @import "../stylus/base.styl"
 
-.register-form
+.register-view
   width 300px
   height 250px
   background-color #fff

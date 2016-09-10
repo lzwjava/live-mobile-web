@@ -34,9 +34,10 @@ var show = (component, type, text, duration) => {
   component.$dispatch('show-msg', type, text)
 }
 
-var promiseErrorFn = (comp) => {
+var promiseErrorFn = (comp, callback) => {
   return (error) => {
     show(comp, 'error', error)
+    callback && callback
   }
 }
 

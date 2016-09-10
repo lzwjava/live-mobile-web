@@ -14,9 +14,11 @@ config.devtool = 'eval';
 var rewriteUrl = function(replacePath) {
     return function(req, opt) {  // gets called with request and proxy object
         var queryIndex = req.url.indexOf('?');
+        var originalUrl = req.url
         var query = queryIndex >= 0 ? req.url.substr(queryIndex) : "";
         req.url = req.path.replace(opt.path, replacePath) + query;
-        console.log("rewriting ", req.originalUrl, req.url, req.hostname);
+        console.log("rewriting ",'originalUrl:', originalUrl,'after url:', req.url,
+        'host:', req.headers.host, 'cookie:', req.headers.cookie);
     };
 };
 

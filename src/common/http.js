@@ -13,7 +13,11 @@ var callback = {
   },
   failure: (reject) => {
     return (res) => {
-      reject(res.statusText)
+      var error = res.statusText
+      if (!error) {
+        error = '网络超时错误'
+      }
+      reject(error)
     }
   }
 }
@@ -66,3 +70,5 @@ exports.fetchUsers = fetchUsers
 exports.fetchCurUser = fetchCurUser
 exports.fetchOneUser = fetchOneUser
 exports.createState = createState
+exports.postPromise = postPromise
+exports.fetchPromise = fetchPromise

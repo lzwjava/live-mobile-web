@@ -9,6 +9,7 @@ import HomeView from './views/HomeView.vue'
 import LiveView from './views/LiveView.vue'
 import IntroView from './views/IntroView.vue'
 import UsersView from './views/UsersView.vue'
+import RegisterView from './views/RegisterView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -36,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading,IntroView,' +
-    'UsersView,main,http';
+    'UsersView,main,http,RegisterView';
 }
 
 // routing
@@ -54,6 +55,9 @@ router.map({
   },
   '/live/:liveId/users': {
     component: UsersView
+  },
+  '/register': {
+    component: RegisterView
   }
 })
 
