@@ -19,12 +19,10 @@ export default {
   },
   data() {
     return {
-      isDebug: true
     }
   },
   created() {
     var params = this.$route.query;
-    debug('params: %j', params)
     if (params.sessionToken) {
       this.loginBySessionToken(params.sessionToken)
       return
@@ -33,36 +31,14 @@ export default {
       this.logout()
       return
     }
-    if (!params.code && !params.liveId) {
+    if (!params.liveId) {
       util.show(this, 'error', '缺少参数')
       return
     }
-    if (params.liveId) {
-      window.localStorage.setItem('liveId', params.liveId)
-      wechat.silentOauth2(this, params.liveId)
-    } else {
-      //this.wechatRegister(params.code)
-    }
+    window.localStorage.setItem('liveId', params.liveId)
+    wechat.silentOauth2(this, params.liveId)
   },
   methods: {
-    jumpToIntro: function () {
-      window.localStorage.setItem('qzb.curUser', JSON.stringify(this.curUser))
-      var liveId = window.localStorage.getItem('liveId')
-      window.location = '/#intro/' + liveId
-    },
-    wechatRegister(code) {
-      var hostname = window.location.hostname
-      var isLoalhost = hostname  == 'localhost'
-      if (this.isDebug && !isLoalhost) {
-        // debug 模式且是服务器
-        window.location = 'http://localhost:9060?code=' + code
-      } else {
-        wechat.wechatRegister(this, code, (user) => {
-          this.curUser = user
-          this.jumpToIntro()
-        });
-      }
-    },
     loginBySessionToken: function (sessionToken) {
       this.$http.get('self', {
         sessionToken: sessionToken

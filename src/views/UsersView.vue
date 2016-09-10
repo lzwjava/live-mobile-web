@@ -46,10 +46,10 @@ export default {
   },
   methods: {
     fetchData: function () {
-      this.$dispatch('setLoading', true)
+      this.$dispatch('loading', true)
       http.fetchUsers(this, this.liveId)
       .then((data) => {
-        this.$dispatch('setLoading', false)
+        this.$dispatch('loading', false)
         this.attendUsers = data
       })
       .catch(util.promiseErrorFn(this))

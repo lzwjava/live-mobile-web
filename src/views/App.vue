@@ -44,7 +44,7 @@ export default {
     'show-msg': function (type, message) {
       this.$broadcast('show-tip-msg', type, message)
     },
-    'setLoading': function(loading) {
+    'loading': function(loading) {
       this.loading = loading
     },
     'toast': function (text, timeout, callback) {

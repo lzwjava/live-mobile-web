@@ -53,23 +53,6 @@ function logout(comp, fn) {
   }, util.httpErrorFn(comp))
 }
 
-function wechatRegister(comp, code, fn) {
-  logout(comp, function () {
-    comp.$http.post('wechat/register', {
-      code: code
-    }).then((resp) => {
-      if (util.filterError(comp, resp)) {
-        var user = resp.data.result;
-        debug('wechar user: %j', user)
-        if (user.userId != null) {
-          setUser(user);
-        }
-        fn && fn(user)
-      }
-    }, util.httpErrorFn(comp))
-  })
-}
-
 function loadUser() {
   if(window.localStorage.getItem('qzb.user')){
     return JSON.parse(window.localStorage.getItem('qzb.user'));
@@ -107,5 +90,4 @@ function silentOauth2(comp, liveId) {
 exports.getAccessToken = getAccessToken
 exports.weixinAppId = weixinAppId
 exports.oauth2 = oauth2
-exports.wechatRegister = wechatRegister
 exports.silentOauth2 = silentOauth2

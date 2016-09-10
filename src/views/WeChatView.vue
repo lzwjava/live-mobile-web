@@ -47,14 +47,18 @@ export default {
       var code = query.code
       var state = query.state
       if (params.type == 'silentOauth') {
+        this.$dispatch('loading', true)
         http.get(this, 'wechat/silentOauth', {code: code})
           .then((data) => {
+            this.$dispatch('loading', false)
             var liveId = window.localStorage.getItem('liveId')
             this.$router.go('/intro/' + liveId)
           }, util.promiseErrorFn(this))
       } else {
+        this.$dispatch('loading', true)
         http.get(this, 'wechat/oauth', {code: code})
           .then((data) => {
+            this.$dispatch('loading', false)
             var liveId = window.localStorage.getItem('liveId')
             this.$router.go('/register?liveId=' + liveId +'&openId=' + data.openId)
           }, util.promiseErrorFn(this))
