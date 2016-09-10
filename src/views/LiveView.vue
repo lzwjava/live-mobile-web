@@ -26,6 +26,7 @@ require('../../node_modules/mediaelement/build/mediaelementplayer.min.css')
 
 import util from '../common/util'
 import http from '../common/http'
+import wechat from '../common/wechat'
 import Loading from '../components/loading.vue'
 
 var debug = require('debug')('LiveView')
@@ -60,6 +61,7 @@ export default {
   computed: {
   },
   created() {
+    wechat.configWeixin(this)
     // setTimeout(() => {
     //   for(var i = 0; i< 12;i++) {
     //     this.inputMsg = i + '';
@@ -166,6 +168,8 @@ export default {
            util.show(this, 'error', '请先登录或报名直播')
            return
          }
+         wechat.showMenu()
+         wechat.shareLive(this.live)
          this.playHls()
        })
        .catch(util.promiseErrorFn(this))

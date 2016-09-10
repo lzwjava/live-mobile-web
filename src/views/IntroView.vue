@@ -129,6 +129,7 @@ export default {
     wechat.configWeixin(this)
   },
   destroyed () {
+
   },
   methods: {
     loadCurUser () {
@@ -146,6 +147,8 @@ export default {
       http.fetchLive(this, this.liveId)
       .then((data) => {
         this.live = data
+        wechat.showMenu()
+        wechat.shareLive(this.live)
       })
       .catch(util.promiseErrorFn(this))
     },
