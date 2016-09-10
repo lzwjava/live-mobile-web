@@ -72,7 +72,7 @@ function configWeixin(comp) {
     if (resp.data) {
       var data = resp.data.result;
       wx.config({
-          debug: true,
+          debug: false,
           appId: data.appId,
           timestamp: data.timestamp,
           nonceStr: data.nonceStr,
