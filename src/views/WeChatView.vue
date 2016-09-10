@@ -16,7 +16,7 @@ export default {
   },
   data() {
     return {
-      isDebug: true
+      isDebug: false
     }
   },
   methods: {

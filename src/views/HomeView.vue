@@ -35,6 +35,10 @@ export default {
       util.show(this, 'error', '缺少参数')
       return
     }
+    if (!util.isWeixinBrowser()) {
+      this.$router.go('/intro/' + params.liveId)
+      return
+    }
     window.localStorage.setItem('liveId', params.liveId)
     wechat.silentOauth2(this, params.liveId)
   },

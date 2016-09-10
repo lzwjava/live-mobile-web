@@ -155,14 +155,13 @@ function hideMenu() {
 
 function shareLive(live) {
   var title = live.owner.username + '的直播：' + live.subject
-  wechat.share(title, live.coverUrl, title, 'http://m.quzhiboapp.com?liveId=' + live.liveId)
+  share(title, live.coverUrl, title, 'http://m.quzhiboapp.com?liveId=' + live.liveId)
 }
 
 exports.weixinAppId = weixinAppId
 exports.oauth2 = oauth2
 exports.silentOauth2 = silentOauth2
 exports.configWeixin = configWeixin
-exports.share = share
 exports.hideMenu = hideMenu
 exports.showMenu = showMenu
 exports.shareLive = shareLive

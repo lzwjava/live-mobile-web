@@ -57,9 +57,14 @@ var getParams = () => {
       return prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
 }
 
+function isWeixinBrowser() {
+  return /micromessenger/.test(navigator.userAgent.toLowerCase())
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
 exports.httpErrorFn = httpErrorFn
 exports.escape = escape
 exports.filterError = filterError
+exports.isWeixinBrowser = isWeixinBrowser
