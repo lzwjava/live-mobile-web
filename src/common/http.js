@@ -22,17 +22,17 @@ var callback = {
   }
 }
 
-var fetchPromise = (comp, url) => {
+var get = (comp, url, params) => {
   return new Promise(
     function(resolve, reject) {
-      comp.$http.get(url)
+      comp.$http.get(url, params)
       .then(callback.success(resolve, reject),
             callback.failure(reject))
     }
   )
 }
 
-var postPromise = (comp, url, params) => {
+var post = (comp, url, params) => {
   return new Promise(
     function(resolve, reject) {
       comp.$http.post(url, params)
@@ -43,32 +43,24 @@ var postPromise = (comp, url, params) => {
 }
 
 var fetchLive = (comp, liveId) => {
-  return fetchPromise(comp, 'lives/' + liveId)
+  return get(comp, 'lives/' + liveId)
 }
 
 var fetchUsers = (comp, liveId) => {
-  return fetchPromise(comp, 'lives/' + liveId +'/users')
+  return get(comp, 'lives/' + liveId +'/users')
 }
 
 var fetchCurUser = (comp) => {
-  return fetchPromise(comp, 'self')
+  return get(comp, 'self')
 }
 
 var fetchOneUser = (comp, userId) => {
-  return fetchPromise(comp, 'users/' + userId)
-}
-
-var createState = (comp, liveId) => {
-  return postPromise(comp, 'states', {liveId: liveId})
-     .then((data) => {
-       return Promise.resolve(data.hash)
-     })
+  return get(comp, 'users/' + userId)
 }
 
 exports.fetchLive = fetchLive
 exports.fetchUsers = fetchUsers
 exports.fetchCurUser = fetchCurUser
 exports.fetchOneUser = fetchOneUser
-exports.createState = createState
-exports.postPromise = postPromise
-exports.fetchPromise = fetchPromise
+exports.post = post
+exports.get = get

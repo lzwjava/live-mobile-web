@@ -84,15 +84,15 @@ export default {
         return
       }
       this.loading = true
-      http.postPromise(this, 'users/registerBySns', {
+      http.post(this, 'users/registerBySns', {
         openId: this.openId,
         platform: 'wechat',
         mobilePhoneNumber: this.mobile,
         smsCode: this.code
       }).then((data) => {
         this.loading = false
-        debug('register succeed')
-        this.$dispatch('toast', 1000, () => {
+        this.$dispatch('toast', '注册成功', 1000, () => {
+          debug('router go')
           this.$router.go('/intro/' + this.liveId + '?action=pay')
         })
       }, util.promiseErrorFn(this, () => {

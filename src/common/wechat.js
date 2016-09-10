@@ -14,11 +14,11 @@ var weixinOauthUrl = (state, scope, redirectUrl) => {
 }
 
 var weixinOauthUserUrl = (state) => {
-  return weixinOauthUrl(state, 'snsapi_userinfo', 'http://api.quzhiboapp.com/wechat/oauth')
+  return weixinOauthUrl(state, 'snsapi_userinfo', 'http://m.quzhiboapp.com/#wechat/oauth')
 }
 
 var weixinSilentOauthUrl = (state) => {
-  return weixinOauthUrl(state, 'snsapi_base', 'http://api.quzhiboapp.com/wechat/silentOauth')
+  return weixinOauthUrl(state, 'snsapi_base', 'http://m.quzhiboapp.com/#wechat/silentOauth')
 }
 
 function getAccessToken(comp) {
@@ -90,17 +90,14 @@ function oauth2(comp, liveId) {
 }
 
 function baseOauth2(comp, liveId, silent) {
-  http.createState(comp, liveId)
-    .then((hash) => {
-      var url;
-      if (silent) {
-        url = weixinSilentOauthUrl(hash)
-      } else {
-        url = weixinOauthUserUrl(hash)
-      }
-      debug('url:%j', url)
-      window.location = url
-    }, util.promiseErrorFn(comp))
+  var url;
+  var hash = '123'
+  if (silent) {
+    url = weixinSilentOauthUrl(hash)
+  } else {
+    url = weixinOauthUserUrl(hash)
+  }
+  window.location = url
 }
 
 function silentOauth2(comp, liveId) {

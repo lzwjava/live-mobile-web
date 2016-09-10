@@ -24,7 +24,7 @@ export default {
   },
   created() {
     var params = this.$route.query;
-    debug('params: %j', params)    
+    debug('params: %j', params)
     if (params.sessionToken) {
       this.loginBySessionToken(params.sessionToken)
       return
@@ -38,6 +38,7 @@ export default {
       return
     }
     if (params.liveId) {
+      window.localStorage.setItem('liveId', params.liveId)
       wechat.silentOauth2(this, params.liveId)
     } else {
       //this.wechatRegister(params.code)

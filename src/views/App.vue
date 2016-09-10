@@ -53,6 +53,7 @@ export default {
       if (!timeout) {
         timeout = 1000
       }
+      debug('callback: %j', callback)
       setTimeout(() => {
         this.toastShow = false
         callback && callback()

@@ -10,6 +10,7 @@ import LiveView from './views/LiveView.vue'
 import IntroView from './views/IntroView.vue'
 import UsersView from './views/UsersView.vue'
 import RegisterView from './views/RegisterView.vue'
+import WeChatView from './views/WeChatView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -29,7 +30,7 @@ Vue.config.debug = true;
 Vue.use(Ajax);
 Vue.http.options.root = '/api';
 Vue.http.options.emulateJSON = true;
-Vue.http.options.timeout = 1000 * 10;
+Vue.http.options.timeout = 1000 * 15;
 
 debug('env ' + process.env.NODE_ENV)
 
@@ -37,7 +38,7 @@ if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading,IntroView,' +
-    'UsersView,main,http,RegisterView';
+    'UsersView,main,http,RegisterView,WeChatView';
 }
 
 // routing
@@ -58,6 +59,9 @@ router.map({
   },
   '/register': {
     component: RegisterView
+  },
+  'wechat/:type': {
+    component: WeChatView
   }
 })
 
