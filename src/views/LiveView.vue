@@ -1,8 +1,8 @@
 <template>
   <div class="live-view">
     <div class="player-area">
-      <video id="player1" width="100%" height="350px" controls webkit-playsinline :src="live.hlsUrl">
-      </video>
+      <video id="player1" width="100%" height="100%" :poster="live.coverUrl"
+         controls webkit-playsinline autoplay :src="live.hlsUrl"></video>
     </div>
     <div class="chat-area">
       <ul class="msg-list" v-el:msg-list>
@@ -172,8 +172,11 @@ export default {
        .catch(util.promiseErrorFn(this))
     },
     playHls () {
-      var video = document.querySelector('video');
+      var video = document.querySelector('video')
       makeVideoPlayableInline(video);
+      debug('video')
+      debug(video)
+      //video.play()
     }
   }
 }
@@ -186,10 +189,8 @@ export default {
   height 100%
   display flex
   flex-direction column
-  #player-area
+  .player-area
     width 100%
-    .mejs-fullscreen-button
-      float right
   .chat-area
     flex-grow 1
     display flex
