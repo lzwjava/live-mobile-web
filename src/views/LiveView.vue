@@ -1,7 +1,7 @@
 <template>
   <div class="live-view">
-    <div id="player-area">
-      <video id="player1" width="100%" height="300px" controls="controls">
+    <div class="player-area">
+      <video id="player1" width="100%" height="350px" controls="controls">
         <source type="application/x-mpegURL" :src="live.hlsUrl" />
       </video>
     </div>
@@ -175,14 +175,29 @@ export default {
        .catch(util.promiseErrorFn(this))
     },
     playHls () {
-      $('video').mediaelementplayer({
-      	success: (media, node, player) => {
-      		$('#' + node.id + '-mode').html('mode: ' + media.pluginType);
-      	},
+      var player = new MediaElementPlayer('video', {
+        features: ['fullscreen'],
+        success: (media, node, player) => {
+      		//$('#' + node.id + '-mode').html('mode: ' + media.pluginType);
+          debug('media')
+          debug(media)
+          debug(node)
+          debug(player)
+          var events = ['loadstart', 'play','pause', 'ended'];
+          for (var i=0, il=events.length; i<il; i++) {
+            var eventName = events[i];
+            media.addEventListener(events[i], function(e) {
+              debug('event!!: ' + e.type)
+              if (e.type == 'loadstart') {
+                player.play()
+              }
+            });
+          }
+        },
         error: (player) => {
           util.show(this, 'error', '加载直播出错了')
         }
-      });
+      })
     }
   }
 }
@@ -195,9 +210,10 @@ export default {
   height 100%
   display flex
   flex-direction column
-  .player-area
-    height 300px
+  #player-area
     width 100%
+    .mejs-fullscreen-button
+      float right
   .chat-area
     flex-grow 1
     display flex
