@@ -1,8 +1,7 @@
 <template>
   <div class="live-view">
     <div class="player-area">
-      <video id="player1" width="100%" height="350px" controls="controls">
-        <source type="application/x-mpegURL" :src="live.hlsUrl" />
+      <video id="player1" width="100%" height="350px" controls webkit-playsinline :src="live.hlsUrl">
       </video>
     </div>
     <div class="chat-area">
@@ -21,13 +20,11 @@
 
 <script type="text/javascript">
 
-require('../../node_modules/mediaelement/build/mediaelement-and-player.js')
-require('../../node_modules/mediaelement/build/mediaelementplayer.min.css')
-
 import util from '../common/util'
 import http from '../common/http'
 import wechat from '../common/wechat'
 import Loading from '../components/loading.vue'
+import makeVideoPlayableInline from 'iphone-inline-video'
 
 var debug = require('debug')('LiveView')
 var Realtime = require('leancloud-realtime').Realtime;
@@ -175,29 +172,8 @@ export default {
        .catch(util.promiseErrorFn(this))
     },
     playHls () {
-      var player = new MediaElementPlayer('video', {
-        features: ['fullscreen'],
-        success: (media, node, player) => {
-      		//$('#' + node.id + '-mode').html('mode: ' + media.pluginType);
-          debug('media')
-          debug(media)
-          debug(node)
-          debug(player)
-          var events = ['loadstart', 'play','pause', 'ended'];
-          for (var i=0, il=events.length; i<il; i++) {
-            var eventName = events[i];
-            media.addEventListener(events[i], function(e) {
-              debug('event!!: ' + e.type)
-              if (e.type == 'loadstart') {
-                player.play()
-              }
-            });
-          }
-        },
-        error: (player) => {
-          util.show(this, 'error', '加载直播出错了')
-        }
-      })
+      var video = document.querySelector('video');
+      makeVideoPlayableInline(video);
     }
   }
 }
