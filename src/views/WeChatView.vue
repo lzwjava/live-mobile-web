@@ -32,6 +32,7 @@ export default {
     var type = params.type
     var hostname = window.location.hostname
     var isLoalhost = hostname  == 'localhost'
+    debug('WeChatView created')
 
     if (this.isDebug && !isLoalhost) {
       var url = window.location.href
@@ -45,22 +46,30 @@ export default {
       }
       var code = query.code
       var state = query.state
+      var errorFn = (error) => {
+        if (error && error.indexOf('invalid code') != -1) {
+          debug('history back')
+          window.history.back()
+        } else {
+          util.show(this, 'error', error)
+        }
+      }
       if (params.type == 'silentOauth') {
         this.$dispatch('loading', true)
         http.get(this, 'wechat/silentOauth', {code: code})
           .then((data) => {
             this.$dispatch('loading', false)
             var liveId = window.localStorage.getItem('liveId')
-            this.$router.go('/intro/' + liveId)
-          }, util.promiseErrorFn(this))
+            this.$router.replace('/intro/' + liveId)
+          }, errorFn)
       } else {
         this.$dispatch('loading', true)
         http.get(this, 'wechat/oauth', {code: code})
           .then((data) => {
             this.$dispatch('loading', false)
             var liveId = window.localStorage.getItem('liveId')
-            this.$router.go('/register?liveId=' + liveId +'&openId=' + data.openId)
-          }, util.promiseErrorFn(this))
+            this.$router.replace('/register?liveId=' + liveId +'&openId=' + data.openId)
+          }, errorFn)
       }
     }
   }
