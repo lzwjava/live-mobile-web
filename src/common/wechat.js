@@ -7,10 +7,10 @@ var debug = require('debug')('wechat');
 var weixinAppId = 'wx7b5f277707699557'
 
 var baseOauthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?' +
-'appid=' + weixinAppId + '&response_type=code&state=%s&scope=%s'
+'appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s'
 
 var weixinOauthUrl = (state, scope, redirectUrl) => {
-  return sprintf(baseOauthUrl, state, scope) +  '&redirect_uri=' + encodeURIComponent(redirectUrl)
+  return sprintf(baseOauthUrl, weixinAppId, encodeURIComponent(redirectUrl),scope,state)
 }
 
 var weixinOauthUserUrl = (state) => {
@@ -51,7 +51,7 @@ function oauth2(comp, liveId) {
 
 function baseOauth2(comp, liveId, silent) {
   var url;
-  var hash = '123'
+  var hash = util.randomString(6)
   if (silent) {
     url = weixinSilentOauthUrl(hash)
   } else {

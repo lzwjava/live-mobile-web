@@ -22,7 +22,6 @@ export default {
   methods: {
   },
   computed: {
-
   },
   created() {
     var params = this.$route.params

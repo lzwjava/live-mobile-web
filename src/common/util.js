@@ -37,7 +37,7 @@ var show = (component, type, text, duration) => {
 var promiseErrorFn = (comp, callback) => {
   return (error) => {
     show(comp, 'error', error)
-    callback && callback
+    callback && callback()
   }
 }
 
@@ -61,6 +61,13 @@ function isWeixinBrowser() {
   return /micromessenger/.test(navigator.userAgent.toLowerCase())
 }
 
+function randomString(length) {
+    var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
@@ -68,3 +75,4 @@ exports.httpErrorFn = httpErrorFn
 exports.escape = escape
 exports.filterError = filterError
 exports.isWeixinBrowser = isWeixinBrowser
+exports.randomString = randomString
