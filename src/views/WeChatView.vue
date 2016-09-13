@@ -60,7 +60,8 @@ export default {
           .then((data) => {
             this.$dispatch('loading', false)
             var liveId = window.localStorage.getItem('liveId')
-            this.$router.replace('/intro/' + liveId)
+            window.location.href = '/#intro/' + liveId
+            //this.$router.replace('/intro/' + liveId)
           }, errorFn)
       } else {
         this.$dispatch('loading', true)

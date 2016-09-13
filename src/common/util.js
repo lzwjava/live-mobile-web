@@ -37,6 +37,7 @@ var show = (component, type, text, duration) => {
 var promiseErrorFn = (comp, callback) => {
   return (error) => {
     show(comp, 'error', error)
+    comp.$dispatch('loading', false)
     callback && callback()
   }
 }
@@ -68,6 +69,14 @@ function randomString(length) {
     return result;
 }
 
+function loading(comp) {
+  comp.$dispatch('loading', true)
+}
+
+function loaded(comp) {
+  comp.$dispatch('loaded', false)
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
@@ -76,3 +85,5 @@ exports.escape = escape
 exports.filterError = filterError
 exports.isWeixinBrowser = isWeixinBrowser
 exports.randomString = randomString
+exports.loading = loading
+exports.loaded =loaded

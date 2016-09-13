@@ -91,7 +91,8 @@ export default {
       }).then((data) => {
         this.loading = false
         this.$dispatch('toast', '注册成功', 1000, () => {
-          this.$router.go('/intro/' + this.liveId + '?action=pay')
+          window.location.href = '/#intro/' + liveId + '?action=pay'
+          //this.$router.go('/intro/' + this.liveId + '?action=pay')
         })
       }, util.promiseErrorFn(this, () => {
         this.loading = false

@@ -72,15 +72,15 @@ function configWeixin(comp) {
     if (resp.data) {
       var data = resp.data.result;
       wx.config({
-          debug: false,
+          debug: true,
           appId: data.appId,
           timestamp: data.timestamp,
           nonceStr: data.nonceStr,
           signature: data.signature,
-          jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'hideMenuItems', 'showMenuItems']
+          jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'hideMenuItems', 'showMenuItems', 'chooseWXPay']
       })
       wx.error(function(res){
-        util.show(comp, 'error', '配置失败' + JSON.stringify(res))
+        util.show(comp, 'error', '微信出错' + JSON.stringify(res))
       })
     }
   })
@@ -158,6 +158,32 @@ function shareLive(live) {
   share(title, live.coverUrl, title, 'http://m.quzhiboapp.com?liveId=' + live.liveId)
 }
 
+function attendLiveAndPay(comp, liveId) {
+  return http.post(comp, 'attendances/create', {
+    liveId: liveId,
+    channel: 'wechat_h5'
+  }).then((data) => {
+    return new Promise(function (resolve, reject){
+      wx.ready(() => {
+        wx.chooseWXPay({
+          timestamp: data.timeStamp,
+          nonceStr: data.nonceStr,
+          package: data.package,
+          paySign: data.paySign,
+          signType: data.signType,
+          success: (res) => {
+            if (res.errMsg == 'chooseWXPay:ok') {
+              resolve()
+            } else {
+              reject('微信支付出错: ' + res.errMsg)
+            }
+          }
+        })
+      })
+    })
+  })
+}
+
 exports.weixinAppId = weixinAppId
 exports.oauth2 = oauth2
 exports.silentOauth2 = silentOauth2
@@ -165,3 +191,4 @@ exports.configWeixin = configWeixin
 exports.hideMenu = hideMenu
 exports.showMenu = showMenu
 exports.shareLive = shareLive
+exports.attendLiveAndPay = attendLiveAndPay
