@@ -74,7 +74,7 @@ function loading(comp) {
 }
 
 function loaded(comp) {
-  comp.$dispatch('loaded', false)
+  comp.$dispatch('loading', false)
 }
 
 exports.getParams = getParams

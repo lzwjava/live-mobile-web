@@ -72,7 +72,7 @@ function configWeixin(comp) {
     if (resp.data) {
       var data = resp.data.result;
       wx.config({
-          debug: true,
+          debug: false,
           appId: data.appId,
           timestamp: data.timestamp,
           nonceStr: data.nonceStr,
@@ -172,11 +172,13 @@ function attendLiveAndPay(comp, liveId) {
           paySign: data.paySign,
           signType: data.signType,
           success: (res) => {
-            if (res.errMsg == 'chooseWXPay:ok') {
-              resolve()
-            } else {
-              reject('微信支付出错: ' + res.errMsg)
-            }
+            resolve()
+          },
+          cancel: (res) => {
+            reject('已取消微信支付:' + res.errMsg)
+          },
+          fail: (res) => {
+            reject('支付失败:' + res.errMsg)
           }
         })
       })

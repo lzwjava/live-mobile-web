@@ -143,10 +143,10 @@ export default {
       this.fetchUsers()
     },
     fetchLive () {
-      util.loading()
+      util.loading(this)
       http.fetchLive(this, this.liveId)
       .then((data) => {
-        util.loaded()
+        util.loaded(this)
         this.live = data
         wechat.showMenu()
         wechat.shareLive(this.live)
@@ -154,24 +154,18 @@ export default {
       .catch(util.promiseErrorFn(this))
     },
     fetchUsers () {
-      util.loading()
+      util.loading(this)
       http.fetchUsers(this, this.liveId)
       .then((data) => {
-        util.loaded()
+        util.loaded(this)
         this.attendedUsers = data
       })
       .catch(util.promiseErrorFn(this))
     },
     attendLive () {
       if (this.live.canJoin) {
-        // var url = window.location.href
-        // var arr = url.split("/");
-        // var result = arr[0] + "//" + arr[2]
-        // window.location.href = result + '/#live/' + this.liveId
         this.$router.go('/live/' + this.liveId)
       } else if (this.curUser.userId){
-        // this.overlayStatus = true
-        // this.$router.go('/register', {liveId: this.liveId})
         this.pay()
       } else {
         wechat.oauth2(this, this.liveId)
