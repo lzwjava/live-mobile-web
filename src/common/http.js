@@ -4,6 +4,7 @@ var debug = require('debug')('http')
 var callback = {
   success: (resolve,reject) => {
     return (resp) => {
+      debug('resp:%j', resp.data)
       if (resp.data.status == 'success') {
         resolve(resp.data.result)
       } else {

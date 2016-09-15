@@ -64,11 +64,8 @@ import Markdown from '../components/markdown.vue'
 import http from '../common/http'
 import Overlay from '../components/overlay.vue'
 import {Button, Toast} from 'vue-weui'
-import moment from 'moment'
 
 var debug = require('debug')('IntroView');
-
-moment.locale('zh-cn')
 
 export default {
   name: 'IntroView',
@@ -110,7 +107,7 @@ export default {
       }
     },
     timeGap: function() {
-      return moment(this.live.planTs, "YYYY-MM-DD hh:mm::ss").fromNow()
+      return util.timeGap(this.live.planTs)
     }
   },
   route: {

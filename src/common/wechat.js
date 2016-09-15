@@ -77,9 +77,10 @@ function configWeixin(comp) {
           timestamp: data.timestamp,
           nonceStr: data.nonceStr,
           signature: data.signature,
-          jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'hideMenuItems', 'showMenuItems', 'chooseWXPay']
+          jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'hideMenuItems',
+                      'showMenuItems', 'chooseWXPay', 'scanQRCode']
       })
-      wx.error(function(res){
+      wx.error((res) => {
         util.show(comp, 'error', '微信出错' + JSON.stringify(res))
       })
     }
@@ -186,6 +187,18 @@ function attendLiveAndPay(comp, liveId) {
   })
 }
 
+function scanQRcode() {
+  wx.ready(() => {
+    wx.scanQRCode({
+      needResult: 1,
+      scanType: ['qrCode'],
+      success: function (res) {
+        var result = res.resultStr;
+      }
+    });
+  })
+}
+
 exports.weixinAppId = weixinAppId
 exports.oauth2 = oauth2
 exports.silentOauth2 = silentOauth2
@@ -194,3 +207,4 @@ exports.hideMenu = hideMenu
 exports.showMenu = showMenu
 exports.shareLive = shareLive
 exports.attendLiveAndPay = attendLiveAndPay
+exports.scanQRcode = scanQRcode

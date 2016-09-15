@@ -1,5 +1,8 @@
 var debug = require('debug')('util');
 
+import moment from 'moment'
+moment.locale('zh-cn')
+
 var filterError = (component, res) => {
   debug('resp:%j', res.data)
   if (res.data.status != "success") {
@@ -77,6 +80,10 @@ function loaded(comp) {
   comp.$dispatch('loading', false)
 }
 
+function timeGap(ts) {
+  return moment(ts, "YYYY-MM-DD hh:mm::ss").fromNow()
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
@@ -87,3 +94,4 @@ exports.isWeixinBrowser = isWeixinBrowser
 exports.randomString = randomString
 exports.loading = loading
 exports.loaded =loaded
+exports.timeGap = timeGap
