@@ -242,14 +242,13 @@ export default {
 
 .full-space
     position absolute
-    width 100%
     top 0
     left 0
     bottom 0
     right 0
 
 .live-view
-  height 100%
+  @extend .full-space
   .player-area
     width 100%
     height 280px
@@ -290,6 +289,13 @@ export default {
             background-size 100% 100%
   .chat-area
     padding 5px
+    box-sizing border-box
+    width 100%
+    position absolute
+    top 280px
+    bottom 0
+    left 0
+    right 0
     .msg-list
       width 100%
       overflow hidden
@@ -299,8 +305,13 @@ export default {
         .name
           color #00CFF5
     .send-area
+      position absolute
+      bottom 0
+      left 0
+      right 0
       input
-        width 80%
+        margin-left 2%
+        width 78%
         height 30px
       button
         width 15%
