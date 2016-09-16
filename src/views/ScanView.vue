@@ -15,7 +15,6 @@ var debug = require('debug')('ScanView')
 export default {
   name: 'ScanView',
   components: {
-
   },
   data() {
     return {

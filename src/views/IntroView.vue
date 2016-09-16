@@ -221,6 +221,7 @@ export default {
       border-top 1px dashed #e7e7e7
       .time-label
         margin-top 10px
+        color #828282
       .plan-time
         font-size 16px
     .attend-section
@@ -245,6 +246,7 @@ export default {
       .detail-label
         font-size 16px
         margin 10px 0
+        color #828282
     .card-group
       margin-bottom 10px
       background-color #fff
