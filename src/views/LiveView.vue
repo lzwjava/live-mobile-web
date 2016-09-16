@@ -21,17 +21,27 @@
         <p class="small-title">谢谢您的参与，下次再会~</p>
       </div>
     </div>
+
     <div class="chat-area">
       <ul class="msg-list" v-el:msg-list>
+
         <li class="msg" v-for="msg in msgs">
-          <span class="name">{{msg.name}}: </span><span class="text">{{msg.text}}</span>
+          <div class="text-msg" v-if="msg.type == -1">
+            <span class="name">{{msg.attributes.username}}</span><span class="text">：{{msg.text}}</span>
+          </div>
+          <div class="audio-msg" v-if="msg.type == 1">
+            <span class="name">{{msg.attributes.username}}</span> <button class="btn" @click="playVoice(msg.attributes.serverId)">播放</button>
+          </div>
         </li>
+
       </ul>
 
       <div class="send-area">
-        <input type="text" v-model="inputMsg">  <button class="btn btn-blue" type="button" @click="sendMsg">发送</button>
+        <button v-el:press-btn class="btn btn-gray" type="button" onselectstart="return false;"
+          @touchstart="holdToTalk" @touchend="mouseUp">{{btnTitle}}</button>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -45,8 +55,17 @@ import makeVideoPlayableInline from 'iphone-inline-video'
 import {Toast} from 'vue-weui'
 
 var debug = require('debug')('LiveView')
-var Realtime = require('leancloud-realtime').Realtime;
-var TextMessage = require('leancloud-realtime').TextMessage;
+var lcChat = require('leancloud-realtime')
+var Realtime = lcChat.Realtime;
+var TextMessage = lcChat.TextMessage
+var messageType = lcChat.messageType
+var TypedMessage = lcChat.TypedMessage
+
+var inherit = require('inherit');
+export const WxAudioMessage = inherit(TypedMessage)
+
+var WxAudioType = 1
+messageType(WxAudioType)(WxAudioMessage)
 
 var prodAppId = 's83aTX5nigX1KYu9fjaBTxIa-gzGzoHsz'
 var testAppId = 'YY3S7uNlnXUgX48BHTJlJx4i-gzGzoHsz'
@@ -56,6 +75,8 @@ var realtime = new Realtime({
   region: 'cn',
   noBinary: true
 })
+
+realtime.register(WxAudioMessage)
 
 export default {
   name: 'LiveView',
@@ -72,17 +93,28 @@ export default {
       curUser: {},
       msgs: [],
       inputMsg: '',
-      playStatus: 0   // 0: none, 1: loading 2: play
+      playStatus: 0,   // 0: none, 1: loading 2: play,
+      isRecording: false
     }
   },
   computed: {
     timeGap () {
       return util.timeGap(this.live.planTs)
+    },
+    btnTitle() {
+      if (this.isRecording) {
+        return '松开发送语音'
+      } else {
+        return '按住说话'
+      }
     }
   },
   created() {
     wechat.configWeixin(this)
     //this.testSendMsgs()
+    // setTimeout(() => {
+    //   this.sendAudioMsg('asss')
+    // }, 1000)
   },
   ready() {
     debug('ready')
@@ -109,6 +141,10 @@ export default {
       this.openClient()
 
     }, util.promiseErrorFn(this))
+
+    this.$els.pressBtn.addEventListener('selectstart', (e) => {
+      alert('selectstart')
+    })
   },
   route: {
     data ({to}) {
@@ -123,6 +159,9 @@ export default {
   },
   methods: {
     handleError (error) {
+      if (typeof error != 'string') {
+        error = JSON.stringify(error)
+      }
       util.show(this, 'error', error)
     },
     testSendMsgs() {
@@ -136,10 +175,10 @@ export default {
         }
       }, 2000)
     },
-    addMsg(name, text) {
+    addMsg(msg) {
       var msgList = this.$els.msgList
       var isTouchBottom = msgList.scrollHeight < msgList.scrollTop + msgList.offsetHeight + 5
-      this.msgs.push({name: name, text: text})
+      this.msgs.push(msg)
       setTimeout(() => {
         if (isTouchBottom) {
           var msgList = this.$els.msgList
@@ -148,11 +187,15 @@ export default {
       },0)
     },
     addChatMsg(msg) {
-      var name = msg.attributes.username
-      this.addMsg(name, msg.text)
+      this.addMsg(msg)
+    },
+    addAudioMsg(msg) {
+      this.addMsg(msg)
     },
     addSystemMsg(msg) {
-      this.addMsg('系统', msg)
+      var textMsg = new TextMessage(msg)
+      textMsg.setAttributes({username:'系统'})
+      this.addMsg(textMsg)
     },
     sendMsg() {
       if(!this.inputMsg) {
@@ -167,10 +210,71 @@ export default {
         this.inputMsg = ''
       }).catch(this.handleError)
     },
+    holdToTalk (e) {
+      e.preventDefault()
+      wx.startRecord({
+        success: () => {
+          this.isRecording = true
+        }
+      });
+      wx.onVoiceRecordEnd({
+          complete: (res) => {
+              this.isRecording = false
+              var localId = res.localId;
+              util.show(this, 'success', '录音超过一分钟而停止')
+              this.uploadVoice(localId)
+          }
+      });
+    },
+    sendAudioMsg(serverId) {
+      var audioMsg = new WxAudioMessage()
+      audioMsg.setAttributes({username: this.curUser.username, serverId: serverId})
+      this.conv.send(audioMsg)
+      .then((msg) => {
+        this.addAudioMsg(msg)
+      }).catch(this.handleError)
+    },
+    uploadVoice(localId) {
+      wx.uploadVoice({
+        localId: localId,
+        success: (res) => {
+          this.sendAudioMsg(res.serverId)
+        },
+        fail: this.handleError
+      });
+    },
+    mouseUp(e) {
+      e.preventDefault()
+      wx.stopRecord({
+        success: (res) => {
+           this.isRecording = false
+           var localId = res.localId;
+           this.uploadVoice(localId)
+        },
+        fail: this.handleError
+      })
+    },
+    playVoice(serverId) {
+      wx.downloadVoice({
+            serverId: serverId,
+            success: function (res) {
+              wx.playVoice({
+                localId: res.localId
+              })
+            },
+            fail: this.handleError
+      });
+    },
     registerEvent() {
       this.client.on('message', (message, conversation) => {
         debug('on message')
-        this.addChatMsg(message)
+        if (message.type == TextMessage.TYPE) {
+          this.addChatMsg(message)
+        } else if (message.type == WxAudioType) {
+          debug('receive audio')
+          this.addAudioMsg(message)
+        } else {
+        }
       })
       this.client.on('reuse', () => {
         this.addSystemMsg('服务器正在重连...')
@@ -320,15 +424,15 @@ export default {
       left 5px
       right 5px
       height 40px
-      input
-        width 83%
-        height 35px
-        padding-left 5px
-        padding-right 5px
-        box-sizing border-box
+      text-align center
       button
-        width 15%
-        height 30px
+        width 95%
+        height 35px
+      .btn-gray
+        border 1px solid rgb(203, 204, 208)
+        background-color rgb(242,242,245)
+        &:active
+          background-color rgb(186, 187, 190)
 
 @keyframes circle
   0%

@@ -48,6 +48,7 @@
     "firebase": "^2.3.1",
     "github-markdown-css": "^2.4.0",
     "highlight.js": "^9.6.0",
+    "inherit": "^2.2.6",
     "iphone-inline-video": "^1.9.3",
     "jquery": "^3.1.0",
     "leancloud-realtime": "^3.2.3",

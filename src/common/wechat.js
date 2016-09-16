@@ -72,13 +72,14 @@ function configWeixin(comp) {
     if (resp.data) {
       var data = resp.data.result;
       wx.config({
-          debug: true,
+          debug: false,
           appId: data.appId,
           timestamp: data.timestamp,
           nonceStr: data.nonceStr,
           signature: data.signature,
           jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'hideMenuItems',
-                      'showMenuItems', 'chooseWXPay', 'scanQRCode']
+                      'showMenuItems', 'chooseWXPay', 'scanQRCode', 'startRecord','stopRecord',
+                      'onRecordEnd','playVoice','pauseVoice','stopVoice','uploadVoice','downloadVoice']
       })
       wx.error((res) => {
         util.show(comp, 'error', '微信出错' + JSON.stringify(res))
