@@ -26,12 +26,24 @@
       <ul class="msg-list" v-el:msg-list>
 
         <li class="msg" v-for="msg in msgs">
-          <div class="text-msg" v-if="msg.type == -1">
-            <span class="name">{{msg.attributes.username}}</span><span class="text">：{{msg.text}}</span>
+
+          <span class="name">{{msg.attributes.username}}</span>
+
+          <div class="content">
+            <div class="bubble">
+              <div class="text-content bubble-cont" v-if="msg.type == -1">
+                <div class="plain">
+                  <pre class="text">{{msg.text}}</pre>
+                </div>
+              </div>
+              <div class="audio-content bubble-cont" v-if="msg.type == 1">
+                <div class="voice" @click="playVoice(msg.attributes.serverId)">
+                  <i class="voice-gray"> </i>                  
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="audio-msg" v-if="msg.type == 1">
-            <span class="name">{{msg.attributes.username}}</span> <button class="btn" @click="playVoice(msg.attributes.serverId)">播放</button>
-          </div>
+
         </li>
 
       </ul>
@@ -141,15 +153,10 @@ export default {
       this.openClient()
 
     }, util.promiseErrorFn(this))
-
-    this.$els.pressBtn.addEventListener('selectstart', (e) => {
-      alert('selectstart')
-    })
   },
   route: {
     data ({to}) {
       var liveId = to.params.liveId
-      debug('get liveId: ' + liveId)
       this.liveId = liveId
       if (!this.liveId) {
         util.show(this, 'error', '缺少参数')
@@ -251,27 +258,28 @@ export default {
            var localId = res.localId;
            this.uploadVoice(localId)
         },
-        fail: this.handleError
+        fail: (error) => {
+          this.isRecording = false
+          util.show(this, 'error', error.errMsg)
+        }
       })
     },
     playVoice(serverId) {
       wx.downloadVoice({
-            serverId: serverId,
-            success: function (res) {
-              wx.playVoice({
-                localId: res.localId
-              })
-            },
-            fail: this.handleError
+        serverId: serverId,
+        success: function (res) {
+          wx.playVoice({
+            localId: res.localId
+          })
+        },
+        fail: this.handleError
       });
     },
     registerEvent() {
       this.client.on('message', (message, conversation) => {
-        debug('on message')
         if (message.type == TextMessage.TYPE) {
           this.addChatMsg(message)
         } else if (message.type == WxAudioType) {
-          debug('receive audio')
           this.addAudioMsg(message)
         } else {
         }
@@ -301,10 +309,17 @@ export default {
           return
         }
         this.conv = conv
-        this.conv.join().then((conv) => {
-          this.inputMsg = '进入了房间'
-          this.sendMsg()
-        }).catch(this.handleError)
+        return this.conv.queryMessages({
+          limit:10
+        })
+      }).then((msgs)=> {
+        for(var i = 0; i < msgs.length; i++) {
+          this.addMsg(msgs[i])
+        }
+        return this.conv.join()
+      }).then((conv) => {
+        this.inputMsg = '进入了房间'
+        this.sendMsg()
       }).catch(this.handleError)
     },
     playHls () {
@@ -415,9 +430,47 @@ export default {
       left 5px
       right 5px
       .msg
-        font-size 14px
+        margin-bottom 5px
         .name
-          color #00CFF5
+          color #868686
+          float left
+        .content
+          .bubble
+            max-width 80%
+            min-height 14px
+            margin 0 10px
+            border-radius 3px
+            verticle-align top
+            background-color #fff
+            display inline-block
+            position relative
+            &:before
+            &:after
+              border 5px solid transparent
+              content " "
+              position absolute
+              top 8px
+              right 100%
+            &:after
+              border-right-color #fff
+              border-right-width 5px
+            .bubble-cont
+              min-height 25px
+            .audio-content
+              .voice
+                width 40px
+                padding 0px 0px
+                .voice-gray
+                  background url("../img/sprite.png") 0 -2427px
+                  width 23px
+                  height 23px
+                  display inline-block
+                  vertical-align middle
+                  background-size 150px 2489px
+            .text-content
+              .plain
+                padding 3px 5px
+                font-size 14px
     .send-area
       position absolute
       bottom 0
