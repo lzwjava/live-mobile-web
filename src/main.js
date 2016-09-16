@@ -11,6 +11,9 @@ import IntroView from './views/IntroView.vue'
 import UsersView from './views/UsersView.vue'
 import RegisterView from './views/RegisterView.vue'
 import WeChatView from './views/WeChatView.vue'
+import ScanView from './views/ScanView.vue'
+import ListView from './views/ListView.vue'
+import ProfileView from './views/ProfileView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -63,6 +66,15 @@ router.map({
   },
   'wechat/:type': {
     component: WeChatView
+  },
+  'scan': {
+    component: ScanView
+  },
+  'lives': {
+    component: ListView
+  },
+  'profile': {
+    component: ProfileView
   }
 })
 

@@ -72,7 +72,7 @@ function configWeixin(comp) {
     if (resp.data) {
       var data = resp.data.result;
       wx.config({
-          debug: false,
+          debug: true,
           appId: data.appId,
           timestamp: data.timestamp,
           nonceStr: data.nonceStr,
@@ -187,15 +187,25 @@ function attendLiveAndPay(comp, liveId) {
   })
 }
 
-function scanQRcode() {
-  wx.ready(() => {
-    wx.scanQRCode({
-      needResult: 1,
-      scanType: ['qrCode'],
-      success: function (res) {
-        var result = res.resultStr;
-      }
-    });
+function scanQRcode(comp) {
+  return new Promise(function (resolve, reject) {
+    wx.ready(() => {
+      wx.scanQRCode({
+        needResult: 1,
+        scanType: ['qrCode'],
+        success: (res) => {
+          var result = res.resultStr
+          resolve(result)
+        },
+        fail: (res) => {
+          reject('扫描失败' + res.errMsg)
+        }
+      })
+    })
+  }).then((code) => {
+    return http.post(comp, 'qrcodes', {
+      code: code
+    })
   })
 }
 
