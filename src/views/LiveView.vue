@@ -82,64 +82,69 @@ export default {
   },
   created() {
     wechat.configWeixin(this)
-    // setTimeout(() => {
-    //   for(var i = 0; i< 20;i++) {
-    //     var text = i + ''
-    //     setTimeout(() => {
-    //       this.inputMsg = text;
-    //       this.sendMsg()
-    //     }, i * 100)
-    //   }
-    // }, 2000)
+    //this.testSendMsgs()
   },
   ready() {
+    debug('ready')
+    util.loading(this)
+    Promise.all([
+      http.fetchLive(this, this.liveId),
+      http.fetchCurUser(this)
+    ]).then(values => {
+      util.loaded(this)
+
+      this.live = values[0]
+      this.curUser = values[1]
+
+      this.live.canJoin = true
+      this.live.hlsUrl = 'http://cheer.quzhiboapp.com/live/GAXRrVWD_ff.m3u8'
+      if (!this.live.canJoin) {
+        util.show(this, 'error', '请先登录或报名直播')
+        return
+      }
+
+      wechat.showMenu()
+      wechat.shareLive(this.live)
+      this.playHls()
+      this.openClient()
+
+    }, util.promiseErrorFn(this))
   },
   route: {
     data ({to}) {
       var liveId = to.params.liveId
-      debug('liveId: ' + liveId)
-      this.liveId = liveId
+      debug('get liveId: ' + liveId)
       this.liveId = liveId
       if (!this.liveId) {
         util.show(this, 'error', '缺少参数')
         return
       }
-      util.loading(this)
-      Promise.all([
-        http.fetchLive(this, liveId),
-        http.fetchCurUser(this)
-      ]).then(values => {
-        util.loaded(this)
-
-        this.live = values[0]
-        this.curUser = values[1]
-
-        this.live.canJoin = true
-        this.live.status = 10
-        this.live.hlsUrl = 'http://cheer.quzhiboapp.com/live/GAXRrVWD_ff.m3u8'
-        if (!this.live.canJoin) {
-          util.show(this, 'error', '请先登录或报名直播')
-          return
-        }
-
-        wechat.showMenu()
-        wechat.shareLive(this.live)
-        this.playHls()
-        this.openClient()
-
-      }, util.promiseErrorFn(this))
     }
   },
   methods: {
     handleError (error) {
       util.show(this, 'error', error)
     },
+    testSendMsgs() {
+      setTimeout(() => {
+        for(var i = 0; i< 20;i++) {
+          var text = i + ''
+          setTimeout(() => {
+            this.inputMsg = util.randomString(3);
+            this.sendMsg()
+          }, i * 100)
+        }
+      }, 2000)
+    },
     addMsg(name, text) {
+      var msgList = this.$els.msgList
+      var isTouchBottom = msgList.scrollHeight < msgList.scrollTop + msgList.offsetHeight + 5
       this.msgs.push({name: name, text: text})
       setTimeout(() => {
-        // 如果在底部的话才滚动到底
-        var msgList = this.$els.msgList
-        msgList.scrollTop = msgList.scrollHeight
+        if (isTouchBottom) {
+          var msgList = this.$els.msgList
+          msgList.scrollTop = msgList.scrollHeight
+        }
       },0)
     },
     addChatMsg(msg) {
@@ -193,15 +198,16 @@ export default {
         }
         this.conv = conv
         this.conv.join().then((conv) => {
-          this.addSystemMsg('加入聊天室成功')
+          this.inputMsg = '进入了房间'
+          this.sendMsg()
         }).catch(this.handleError)
       }).catch(this.handleError)
     },
     playHls () {
       var video = document.querySelector('video')
-      makeVideoPlayableInline(video);
       debug('video')
       debug(video)
+      makeVideoPlayableInline(video)
       video.addEventListener('error', (ev) => {
         debug('event')
         debug(ev)
@@ -251,7 +257,7 @@ export default {
   @extend .full-space
   .player-area
     width 100%
-    height 280px
+    height 250px
     position relative
     background-color #383838
     p.big-title
@@ -292,14 +298,18 @@ export default {
     box-sizing border-box
     width 100%
     position absolute
-    top 280px
+    top 250px
     bottom 0
     left 0
     right 0
     .msg-list
-      width 100%
+      position absolute
       overflow hidden
       overflow-y scroll
+      bottom 45px
+      top 5px
+      left 5px
+      right 5px
       .msg
         font-size 14px
         .name
@@ -307,14 +317,18 @@ export default {
     .send-area
       position absolute
       bottom 0
-      left 0
-      right 0
+      left 5px
+      right 5px
+      height 40px
       input
-        margin-left 2%
-        width 78%
-        height 30px
+        width 83%
+        height 35px
+        padding-left 5px
+        padding-right 5px
+        box-sizing border-box
       button
         width 15%
+        height 30px
 
 @keyframes circle
   0%
