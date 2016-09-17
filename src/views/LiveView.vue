@@ -38,7 +38,7 @@
               </div>
               <div class="audio-content bubble-cont" v-if="msg.type == 1">
                 <div class="voice" @click="playVoice(msg.attributes.serverId)">
-                  <i class="voice-gray"> </i>                  
+                  <i class="voice-gray"> </i>
                 </div>
               </div>
             </div>
@@ -309,6 +309,7 @@ export default {
           return
         }
         this.conv = conv
+        this.addSystemMsg('正在加载聊天记录...')
         return this.conv.queryMessages({
           limit:10
         })
