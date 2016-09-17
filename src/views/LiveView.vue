@@ -83,7 +83,7 @@ var prodAppId = 's83aTX5nigX1KYu9fjaBTxIa-gzGzoHsz'
 var testAppId = 'YY3S7uNlnXUgX48BHTJlJx4i-gzGzoHsz'
 
 var realtime = new Realtime({
-  appId: testAppId,
+  appId: prodAppId,
   region: 'cn',
   noBinary: true
 })

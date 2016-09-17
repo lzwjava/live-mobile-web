@@ -10,7 +10,7 @@
     <div class="markdown-actions" v-show="showPreview">
       <a href="#" @click="focus">编辑模式</a>
     </div>
-   </div>
+  </div>
 </template>
 
 <script>
