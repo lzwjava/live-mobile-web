@@ -211,6 +211,7 @@ export default {
         display inline-block
       .header-right
         width 70%
+        vertical-align top
         display inline-block
         .subject
           font-size 16px

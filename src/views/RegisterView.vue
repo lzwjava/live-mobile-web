@@ -2,7 +2,7 @@
   <div class="register-view">
     <div class="register-inside">
       <div v-show="step == 0" class="step-one">
-        <div class="tips input-mobile-tips">嘿，Dear <br> 请输入手机号</div>
+        <div class="tips input-mobile-tips">嘿，微信登录成功<br> 请接着绑定手机号</div>
 
         <input class="mobile-input" type="number" v-model="mobile">
 
@@ -14,7 +14,7 @@
 
       <div v-show="step == 1" class="step-two">
         <div class="tips sms-code-tips">
-          请输入我们发送<br>给您的验证码
+          验证码已发送给您 <br>请输入验证码
         </div>
 
         <input class="sms-code-input" type="number" v-model="code">
