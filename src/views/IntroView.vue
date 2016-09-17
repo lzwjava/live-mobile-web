@@ -165,7 +165,7 @@ export default {
       } else if (this.curUser.userId){
         this.pay()
       } else {
-        wechat.oauth2(this, this.liveId)
+        this.$router.go('/register?redirectUrl=/intro/1')
       }
     },
     pay() {

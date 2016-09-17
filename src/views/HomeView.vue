@@ -40,7 +40,7 @@ export default {
       return
     }
     window.localStorage.setItem('liveId', params.liveId)
-    wechat.silentOauth2(this, params.liveId)
+    wechat.silentOauth2(this)
   },
   methods: {
     loginBySessionToken: function (sessionToken) {

@@ -140,8 +140,8 @@ export default {
       this.live = values[0]
       this.curUser = values[1]
 
-      this.live.canJoin = true
-      this.live.hlsUrl = 'http://cheer.quzhiboapp.com/live/GAXRrVWD_ff.m3u8'
+      // this.live.canJoin = true
+      // this.live.hlsUrl = 'http://cheer.quzhiboapp.com/live/GAXRrVWD_ff.m3u8'
       if (!this.live.canJoin) {
         util.show(this, 'error', '请先登录或报名直播')
         return

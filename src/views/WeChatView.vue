@@ -68,8 +68,7 @@ export default {
         http.get(this, 'wechat/oauth', {code: code})
           .then((data) => {
             this.$dispatch('loading', false)
-            var liveId = window.localStorage.getItem('liveId')
-            this.$router.replace('/register?liveId=' + liveId +'&openId=' + data.openId)
+            this.$router.replace('/register?openId=' + data.openId)
           }, errorFn)
       }
     }

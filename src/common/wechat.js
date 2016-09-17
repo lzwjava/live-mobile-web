@@ -45,11 +45,11 @@ function setUser(user) {
   return false
 }
 
-function oauth2(comp, liveId) {
-  baseOauth2(comp, liveId, false)
+function oauth2(comp) {
+  baseOauth2(comp, false)
 }
 
-function baseOauth2(comp, liveId, silent) {
+function baseOauth2(comp, silent) {
   var url;
   var hash = util.randomString(6)
   if (silent) {
@@ -60,8 +60,8 @@ function baseOauth2(comp, liveId, silent) {
   window.location = url
 }
 
-function silentOauth2(comp, liveId) {
-  baseOauth2(comp, liveId, true)
+function silentOauth2(comp) {
+  baseOauth2(comp, true)
 }
 
 function configWeixin(comp) {

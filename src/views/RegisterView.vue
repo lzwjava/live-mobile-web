@@ -36,6 +36,7 @@
 import {Button, Toast} from 'vue-weui'
 import util from '../common/util'
 import http from '../common/http'
+import wechat from '../common/wechat'
 
 var debug = require('debug')('register-form')
 
@@ -53,7 +54,8 @@ export default {
       mobile: '',
       code: '',
       loading: false,
-      openId: ''
+      openId: '',
+      redirectUrl: ''
     }
   },
   computed: {
@@ -61,11 +63,15 @@ export default {
   created() {
     document.title = '趣直播-注册'
     var query = this.$route.query;
-    if (!query.liveId && !query.openId) {
-      return util.show(this, 'error', '缺少参数')
+
+    if (query.openId) {
+      this.openId = query.openId
+    } else {
+      if (query.redirectUrl) {
+        window.localStorage.setItem('redirectUrl', query.redirectUrl)
+      }
+      wechat.oauth2(this)
     }
-    this.openId = query.openId
-    this.liveId =  query.liveId
   },
   methods: {
     requestSms: function () {
@@ -98,7 +104,8 @@ export default {
         this.loading = false
         this.$dispatch('toast', '注册成功', 1000, () => {
           //window.location.href = '/#intro/' + liveId + '?action=pay'
-          this.$router.go('/intro/' + this.liveId + '?action=pay')
+          var url = window.localStorage.getItem('redirectUrl')
+          this.$router.go(url)
         })
       }, util.promiseErrorFn(this, () => {
         this.loading = false
