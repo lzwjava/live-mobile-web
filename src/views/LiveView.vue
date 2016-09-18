@@ -552,7 +552,7 @@ export default {
             font-size 16px
             vertical-align middle
           button
-            width 50px
+            width 18%
             vertical-align middle
             padding 7px 5px
 
