@@ -1,6 +1,6 @@
 <template>
   <div class="live-view">
-    <div class="player-area">
+    <div class="player-area" :style="{height: videoHeight + 'px'}">
       <div class="video-wait" v-show="live.status == 10">
         <p class="big-title">离直播开始还有 {{timeGap}}</p>
         <p class="small-title">感谢参与，开播时您请收到一条短信通知~</p>
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="chat-area">
+    <div class="chat-area" :style="{top: videoHeight + 'px'}">
       <ul class="msg-list" v-el:msg-list>
 
         <li class="msg" v-for="msg in msgs">
@@ -106,7 +106,8 @@ export default {
       msgs: [],
       inputMsg: '',
       playStatus: 0,   // 0: none, 1: loading 2: play,
-      isRecording: false
+      isRecording: false,
+      videoHeight: 250
     }
   },
   computed: {
@@ -311,7 +312,7 @@ export default {
         this.conv = conv
         this.addSystemMsg('正在加载聊天记录...')
         return this.conv.queryMessages({
-          limit:10
+          limit:30
         })
       }).then((msgs)=> {
         for(var i = 0; i < msgs.length; i++) {
@@ -327,7 +328,7 @@ export default {
       var video = document.querySelector('video')
       debug('video')
       debug(video)
-      makeVideoPlayableInline(video)
+      // makeVideoPlayableInline(video)
       video.addEventListener('error', (ev) => {
         debug('event')
         debug(ev)
@@ -338,13 +339,20 @@ export default {
       var events = ['abort', 'canplay', 'canplaythrough', 'durationchange', 'emptied', 'loadeddata',
         'loadeddata', 'loadstart', 'pause', 'play', 'playing','ratechange', 'seeked', 'seeking', 'stalled',
           'suspend', 'waiting','timeupdate', 'volumechange']
+      //var events = ['playing', 'waiting']
       for (var i = 0; i < events.length; i++) {
         var name = events[i]
         video.addEventListener(name, (ev) => {
           debug('event ' + ev.type + ' fired')
           debug(ev)
+          if (ev.type == 'canplay') {
+            var videoElm = ev.srcElement
+            debug('client height' + videoElm.clientHeight)
+            debug('video height' + videoElm.videoHeight)
+            this.videoHeight = videoElm.clientHeight
+          }
           if (ev.type == 'waiting') {
-            //util.loading(this)
+            // util.loading(this)
             this.playStatus = 1
           }
           if (ev.type == 'playing') {
@@ -377,7 +385,6 @@ export default {
   @extend .full-space
   .player-area
     width 100%
-    height 250px
     position relative
     background-color #383838
     p.big-title
@@ -418,7 +425,6 @@ export default {
     box-sizing border-box
     width 100%
     position absolute
-    top 250px
     bottom 0
     left 0
     right 0
