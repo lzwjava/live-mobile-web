@@ -211,12 +211,22 @@ export default {
         display inline-block
       .header-right
         width 70%
+        margin-left 5px
         vertical-align top
         display inline-block
         .subject
-          font-size 16px
+          margin-top 5px
+          font-size 18px
           font-weight bold
+          overflow hidden
+          line-height 30px
+          max-height 60px
+          text-overflow ellipsis
+          display -webkit-box
+          -webkit-box-orient vertical
+          -webkit-line-clamp 2
         .ownername
+          margin-top 5px
           font-size 16px
     .time-section
       border-top 1px dashed #e7e7e7

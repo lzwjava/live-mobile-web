@@ -551,6 +551,7 @@ export default {
             padding-right 10px
             font-size 16px
             vertical-align middle
+            border-radius 5px
           button
             width 18%
             vertical-align middle
