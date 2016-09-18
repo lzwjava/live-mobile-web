@@ -462,12 +462,13 @@ export default {
           color #868686
           float left
         .content
+          overflow hidden
           .bubble
-            max-width 80%
+            max-width 85%
             min-height 14px
             margin 0 10px
             border-radius 3px
-            verticle-align top
+            vertical-align top
             background-color #fff
             display inline-block
             position relative
@@ -482,6 +483,8 @@ export default {
               border-right-color #fff
               border-right-width 5px
             .bubble-cont
+              word-wrap break-word
+              word-break break-all
               min-height 25px
             .audio-content
               .voice
@@ -535,8 +538,8 @@ export default {
             background-color rgb(186, 187, 190)
         .voice-input
           width 100%
-          height 34px
-          vertical-align middle
+          height 32px
+          margin-top 3px
         .text-input
           width 100%
           height 34px
@@ -549,7 +552,7 @@ export default {
             font-size 16px
             vertical-align middle
           button
-            width 60px
+            width 50px
             vertical-align middle
             padding 7px 5px
 
