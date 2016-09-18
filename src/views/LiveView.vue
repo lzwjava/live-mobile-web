@@ -49,8 +49,20 @@
       </ul>
 
       <div class="send-area">
-        <button v-el:press-btn class="btn btn-gray" type="button" onselectstart="return false;"
-          @touchstart="holdToTalk" @touchend="mouseUp">{{btnTitle}}</button>
+
+        <a class="toggle-btn" v-bind:class="{'voice-btn': inputMode == 0, 'text-btn': inputMode == 1}"
+           href="javascript:;" @click="toggleMode"></a>
+
+        <div class="input-ways">
+
+          <button v-show="inputMode == 1" v-el:press-btn class="btn btn-gray voice-input" type="button" onselectstart="return false;"
+            @touchstart="holdToTalk" @touchend="mouseUp">{{btnTitle}}</button>
+
+          <div class="text-input" v-show="inputMode == 0">
+            <input type="text" v-model="inputMsg"> <button type="button" class="btn btn-gray" @click="sendMsg">发送</button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -107,7 +119,8 @@ export default {
       inputMsg: '',
       playStatus: 0,   // 0: none, 1: loading 2: play,
       isRecording: false,
-      videoHeight: 250
+      videoHeight: 250,
+      inputMode: 0   // 0: text 1: voice
     }
   },
   computed: {
@@ -126,8 +139,8 @@ export default {
     wechat.configWeixin(this)
     //this.testSendMsgs()
     // setTimeout(() => {
-    //   this.sendAudioMsg('asss')
-    // }, 1000)
+    //   this.addSystemMsg(navigator.userAgent.toLowerCase())
+    // }, 2000)
   },
   ready() {
     debug('ready')
@@ -276,6 +289,9 @@ export default {
         fail: this.handleError
       });
     },
+    toggleMode() {
+      this.inputMode = !this.inputMode
+    },
     registerEvent() {
       this.client.on('message', (message, conversation) => {
         if (message.type == TextMessage.TYPE) {
@@ -345,11 +361,15 @@ export default {
         video.addEventListener(name, (ev) => {
           debug('event ' + ev.type + ' fired')
           debug(ev)
-          if (ev.type == 'canplay') {
+          if (ev.type == 'playing' || ev.type == 'canplay') {
             var videoElm = ev.srcElement
+
             debug('client height' + videoElm.clientHeight)
             debug('video height' + videoElm.videoHeight)
-            this.videoHeight = videoElm.clientHeight
+            // TODO: android videoHeight 为 0 的问题
+            if (videoElm.videoHeight != 0) {
+              this.videoHeight = videoElm.clientHeight
+            }
           }
           if (ev.type == 'waiting') {
             // util.loading(this)
@@ -478,21 +498,60 @@ export default {
               .plain
                 padding 3px 5px
                 font-size 14px
+                pre
+                  word-wrap break-word
+                  word-break normal
+                  white-space pre-wrap
     .send-area
       position absolute
       bottom 0
       left 5px
       right 5px
       height 40px
-      text-align center
-      button
-        width 95%
-        height 35px
-      .btn-gray
-        border 1px solid rgb(203, 204, 208)
-        background-color rgb(242,242,245)
-        &:active
-          background-color rgb(186, 187, 190)
+      box-sizing border-box
+      padding-top 3px
+      padding-bottom 3px
+      .toggle-btn
+        width 34px
+        height 34px
+        display inline-block
+        &.voice-btn
+          background url("../img/voice.png")
+          background-size contain
+        &.text-btn
+          background url("../img/keyboard.png")
+          background-size contain
+      .input-ways
+        position absolute
+        left 40px
+        top 0
+        right 0
+        bottom 0
+        font-size 16px
+        .btn-gray
+          border 1px solid rgb(203, 204, 208)
+          background-color rgb(242,242,245)
+          &:active
+            background-color rgb(186, 187, 190)
+        .voice-input
+          width 100%
+          height 34px
+          vertical-align middle
+        .text-input
+          width 100%
+          height 34px
+          line-height 34px
+          input
+            width 80%
+            height 30px
+            padding-left 10px
+            padding-right 10px
+            font-size 16px
+            vertical-align middle
+          button
+            width 60px
+            vertical-align middle
+            padding 7px 5px
 
 @keyframes circle
   0%

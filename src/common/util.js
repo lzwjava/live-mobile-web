@@ -65,6 +65,10 @@ function isWeixinBrowser() {
   return /micromessenger/.test(navigator.userAgent.toLowerCase())
 }
 
+function isAndroidBrowser() {
+  return /android/.test(navigator.userAgent.toLowerCase())
+}
+
 function randomString(length) {
     var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     var result = '';
@@ -84,6 +88,10 @@ function timeGap(ts) {
   return moment(ts, "YYYY-MM-DD hh:mm::ss").fromNow()
 }
 
+function isDebug() {
+  return process.env.NODE_ENV != 'production'
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
@@ -95,3 +103,5 @@ exports.randomString = randomString
 exports.loading = loading
 exports.loaded =loaded
 exports.timeGap = timeGap
+exports.isAndroidBrowser = isAndroidBrowser
+exports.isDebug == isDebug
