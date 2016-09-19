@@ -24,13 +24,13 @@
     <div class="attend-section card-group">
       <div class="attend-info">
         <ul class="attended-users">
-          <li class="avatar-cell" v-for="u in firstFiveUsers">
+          <li class="avatar-cell" v-for="u in firstBatchUsers">
             <user-avatar :user="u"></user-avatar>
           </li>
         </ul>
 
         <div class="attend-summary" @click="goUsers">
-          已有{{attendedUsers.length}}人参与 >
+          {{attendedUsers.length}}人已参与 >
         </div>
       </div>
 
@@ -96,9 +96,10 @@ export default {
     }
   },
   computed: {
-    firstFiveUsers: function () {
-      if (this.attendedUsers.length > 5)  {
-        return this.attendedUsers.splice(0,5)
+    firstBatchUsers: function () {
+      var num = 7
+      if (this.attendedUsers.length > 7)  {
+        return this.attendedUsers.splice(0,7)
       } else {
         return this.attendedUsers
       }
@@ -174,7 +175,7 @@ export default {
         this.$router.go('/register?redirectUrl=/intro/1')
       }
     },
-    createLive() {      
+    createLive() {
       this.$router.go('/scan')
     },
     pay() {
@@ -261,12 +262,15 @@ export default {
       .attend-action
         text-align center
         .attend-btn
+          font-size 16px
           width 90%
     .detail-section
       .detail-label
         font-size 16px
         margin 10px 0
         color #828282
+      .markdown-body
+        font-size 16px
     .card-group
       margin-bottom 10px
       background-color #fff
