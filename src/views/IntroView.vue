@@ -49,6 +49,12 @@
 
     </div>
 
+    <div class="create-section">
+      <a class="create-link" @click.prevent="createLive">创建您的直播?</a>
+    </div>
+
+
+
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
 
   </div>
@@ -168,6 +174,9 @@ export default {
         this.$router.go('/register?redirectUrl=/intro/1')
       }
     },
+    createLive() {      
+      this.$router.go('/scan')
+    },
     pay() {
       wechat.attendLiveAndPay(this, this.liveId)
         .then(() => {
@@ -262,5 +271,12 @@ export default {
       margin-bottom 10px
       background-color #fff
       padding 10px
+    .create-section
+      margin-top 60px
+      text-align center
+      font-size 12px
+      margin-bottom 30px
+      a
+        color #8A8A8A
 
 </style>
