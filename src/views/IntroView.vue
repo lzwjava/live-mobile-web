@@ -30,7 +30,7 @@
         </ul>
 
         <div class="attend-summary" @click="goUsers">
-          {{attendedUsers.length}}人已参与 >
+          {{live.attendanceCount}}人已参与 >
         </div>
       </div>
 
@@ -270,7 +270,10 @@ export default {
         margin 10px 0
         color #828282
       .markdown-body
+        padding 25px
         font-size 16px
+        color rgb(112, 112, 112)
+        line-height 28px !important
     .card-group
       margin-bottom 10px
       background-color #fff
