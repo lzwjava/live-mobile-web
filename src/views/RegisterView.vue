@@ -103,9 +103,14 @@ export default {
       }).then((data) => {
         this.loading = false
         this.$dispatch('toast', '注册成功', 1000, () => {
-          //window.location.href = '/#intro/' + liveId + '?action=pay'
+          //window.location.href = ''
           var url = window.localStorage.getItem('redirectUrl')
-          this.$router.go(url)
+          if (url) {
+            this.$router.go(url)
+          } else {
+            var liveId = window.localStorage.getItem('liveId')
+            this.$router.go('/intro/' + liveId)
+          }
         })
       }, util.promiseErrorFn(this, () => {
         this.loading = false

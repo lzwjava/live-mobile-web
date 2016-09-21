@@ -172,7 +172,7 @@ export default {
       } else if (this.curUser.userId){
         this.pay()
       } else {
-        this.$router.go('/register?redirectUrl=/intro/1')
+        this.$router.go('/register?redirectUrl=/intro/' + this.liveId)
       }
     },
     createLive() {
@@ -281,7 +281,7 @@ export default {
     .create-section
       margin-top 60px
       text-align center
-      font-size 12px
+      font-size 15px
       margin-bottom 30px
       a
         color #8A8A8A

@@ -5,7 +5,7 @@
         <p class="big-title">离直播开始还有 {{timeGap}}</p>
         <p class="small-title">感谢参与，开播时您请收到一条短信通知~</p>
       </div>
-      <div class="video-on" v-show="live.status == 20">
+      <div class="video-on" v-show="live.status == 20 || live.status == 30">
         <video id="player1" width="100%" height="100%" preload="preload"
            controls webkit-playsinline :src="live.hlsUrl"></video>
         <div class="video-poster-cover" v-show="playStatus != 2">
@@ -16,10 +16,10 @@
           </div>
         </div>
       </div>
-      <div class="video-end" v-show="live.status == 30">
+      <!-- <div class="video-end" v-show="live.status == 30">
         <p class="big-title">直播已结束</p>
         <p class="small-title">谢谢您的参与，下次再会~</p>
-      </div>
+      </div> -->
     </div>
 
     <div class="chat-area" :style="{top: videoHeight + 'px'}">
