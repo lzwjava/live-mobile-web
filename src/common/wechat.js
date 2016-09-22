@@ -157,7 +157,7 @@ function hideMenu() {
 
 function shareLive(live) {
   var title = live.owner.username + '的直播：' + live.subject
-  share(title, live.coverUrl, title, 'http://m.quzhiboapp.com?liveId=' + live.liveId)
+  share(title, live.coverUrl, title, 'http://m.quzhiboapp.com/?liveId=' + live.liveId)
 }
 
 function attendLiveAndPay(comp, liveId) {
