@@ -188,24 +188,46 @@ function attendLiveAndPay(comp, liveId) {
   })
 }
 
-function scanQRcode(comp) {
+function wechatScan() {
   return new Promise(function (resolve, reject) {
-    wx.ready(() => {
-      wx.scanQRCode({
-        needResult: 1,
-        scanType: ['qrCode'],
-        success: (res) => {
-          var result = res.resultStr
-          resolve(result)
-        },
-        fail: (res) => {
-          reject('扫描失败' + res.errMsg)
-        }
+    if (util.isDebug()) {
+      resolve('quzhibo-IdfuPYUOqRraAM0KcwdWPeQzws6tpN7L')
+    } else {
+      wx.ready(() => {
+        wx.scanQRCode({
+          needResult: 1,
+          scanType: ['qrCode'],
+          success: (res) => {
+            var result = res.resultStr
+            resolve(result)
+          },
+          fail: (res) => {
+            reject('扫描失败' + res.errMsg)
+          }
+        })
       })
-    })
-  }).then((code) => {
+    }
+  })
+}
+
+function scanQRcode(comp) {
+  return wechatScan()
+  .then((code) => {
     return http.post(comp, 'qrcodes', {
-      code: code
+      code: code,
+      type: 0
+    })
+  })
+}
+
+function scanQRcodeWithLive(comp, liveId) {
+  return wechatScan()
+  .then((code) => {
+    var data = {liveId: liveId}
+    return http.post(comp, 'qrcodes', {
+      code: code,
+      type: 1,
+      data: JSON.stringify(data)
     })
   })
 }
@@ -219,3 +241,4 @@ exports.showMenu = showMenu
 exports.shareLive = shareLive
 exports.attendLiveAndPay = attendLiveAndPay
 exports.scanQRcode = scanQRcode
+exports.scanQRcodeWithLive = scanQRcodeWithLive

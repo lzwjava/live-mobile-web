@@ -104,4 +104,4 @@ exports.loading = loading
 exports.loaded =loaded
 exports.timeGap = timeGap
 exports.isAndroidBrowser = isAndroidBrowser
-exports.isDebug == isDebug
+exports.isDebug = isDebug
