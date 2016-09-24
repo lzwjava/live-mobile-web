@@ -157,7 +157,7 @@ function hideMenu() {
 
 function shareLive(live) {
   var title = live.owner.username + '的直播：' + live.subject
-  share(title, live.coverUrl, title, 'http://m.quzhiboapp.com/?liveId=' + live.liveId)
+  share(title, live.owner.avatarUrl, title, 'http://m.quzhiboapp.com/?liveId=' + live.liveId)
 }
 
 function attendLiveAndPay(comp, liveId) {
@@ -205,7 +205,8 @@ function scanQRcode(comp) {
     })
   }).then((code) => {
     return http.post(comp, 'qrcodes', {
-      code: code
+      code: code,
+      type: 0
     })
   })
 }
