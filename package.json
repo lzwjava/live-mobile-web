@@ -43,6 +43,7 @@
     "webpack-dev-server": "1.14.0"
   },
   "dependencies": {
+    "api": "file:///Users/lzw/square-root/api",
     "debug": "^2.2.0",
     "es6-promise": "^3.0.2",
     "firebase": "^2.3.1",

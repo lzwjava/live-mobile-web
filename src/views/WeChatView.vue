@@ -6,7 +6,7 @@
 <script type="text/javascript">
 
 import util from '../common/util'
-import http from '../common/http'
+import http from 'api'
 
 var debug = require('debug')('WeChatView')
 

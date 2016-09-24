@@ -67,7 +67,7 @@ import util from '../common/util'
 import wechat from '../common/wechat'
 import UserAvatar from '../components/user-avatar.vue'
 import Markdown from '../components/markdown.vue'
-import http from '../common/http'
+import http from 'api'
 import Overlay from '../components/overlay.vue'
 import {Button, Toast} from 'vue-weui'
 

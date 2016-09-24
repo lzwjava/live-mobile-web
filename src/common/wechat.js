@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import util from './util'
-import http from './http'
+import http from 'api'
 import {sprintf} from 'sprintf-js'
 var debug = require('debug')('wechat');
 

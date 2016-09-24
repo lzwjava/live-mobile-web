@@ -72,7 +72,7 @@
 <script type="text/javascript">
 
 import util from '../common/util'
-import http from '../common/http'
+import http from 'api'
 import wechat from '../common/wechat'
 import Loading from '../components/loading.vue'
 import makeVideoPlayableInline from 'iphone-inline-video'
