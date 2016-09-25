@@ -50,6 +50,8 @@
 
       <div class="send-area">
 
+        <a class="computer-btn" @click="goComputer"></a>
+
         <a class="toggle-btn" v-bind:class="{'voice-btn': inputMode == 0, 'text-btn': inputMode == 1}"
            href="javascript:;" @click="toggleMode"></a>
 
@@ -386,6 +388,9 @@ export default {
       this.playStatus = 1
       var video = document.querySelector('video')
       video.play()
+    },
+    goComputer() {
+      this.$router.go('/scan?liveId' + this.live.liveId)
     }
   }
 }
@@ -524,9 +529,15 @@ export default {
         &.text-btn
           background url("../img/keyboard.png")
           background-size contain
+      .computer-btn
+          width 34px
+          height 34px
+          display inline-block
+          background url("../img/keyboard.png")
+          background-size contain
       .input-ways
         position absolute
-        left 40px
+        left 80px
         top 0
         right 0
         bottom 0
