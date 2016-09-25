@@ -49,6 +49,7 @@
     "debug": "^2.2.0",
     "es6-promise": "^3.0.2",
     "firebase": "^2.3.1",
+    "font-awesome": "^4.6.3",
     "github-markdown-css": "^2.4.0",
     "highlight.js": "^9.6.0",
     "inherit": "^2.2.6",

@@ -70,7 +70,7 @@ export default {
 .scan-view
   text-align center
   img
-    margin-top 60px
+    margin-top 30px
   h4
     margin-top 10px
   button
