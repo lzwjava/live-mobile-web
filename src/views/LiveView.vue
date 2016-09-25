@@ -390,7 +390,7 @@ export default {
       video.play()
     },
     goComputer() {
-      this.$router.go('/scan?liveId' + this.live.liveId)
+      this.$router.go('/scan?liveId=' + this.live.liveId)
     }
   }
 }
