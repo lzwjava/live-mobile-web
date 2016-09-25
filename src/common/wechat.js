@@ -205,7 +205,8 @@ function scanQRcode(comp) {
     })
   }).then((code) => {
     return http.post(comp, 'qrcodes', {
-      code: code
+      code: code,
+      type: 0
     })
   })
 }

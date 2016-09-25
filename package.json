@@ -6,6 +6,7 @@
     "dev": "webpack-dev-server --inline --hot --no-info",
     "build": "find static/ -type f -not -name 'logo.png' -print0 | xargs -0 rimraf && cross-env NODE_ENV=production webpack --progress --hide-modules",
     "update-local": " rm -rf node_modules/api && npm install",
+    "beta": "fab -H root@test.quzhiboapp.com deploy",
     "deploy": "fab -H root@m.quzhiboapp.com deploy"
   },
   "repository": {
