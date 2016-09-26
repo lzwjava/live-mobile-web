@@ -2,13 +2,11 @@
   <div class="register-view">
     <div class="register-inside">
       <div v-show="step == 0" class="step-one">
-        <div class="tips input-mobile-tips">嘿，微信登录成功<br> 请接着绑定手机号</div>
+        <div class="tips input-mobile-tips">嘿，微信登录成功<br> 请接着绑定手机号 <br>以便短信通知您直播开始</div>
 
         <input class="mobile-input" type="number" v-model="mobile">
 
         <button class="btn btn-blue" @click="requestSms">继续</button>
-
-        <p class="small-tips">我们将在直播前短信通知您。</p>
 
       </div>
 
