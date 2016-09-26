@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --hot --no-info",
     "build": "find static/ -type f -not -name 'logo.png' -print0 | xargs -0 rimraf && cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "update-local": " rm -rf node_modules/api && npm install",
     "beta": "fab -H root@test.quzhiboapp.com deploy",
     "deploy": "fab -H root@m.quzhiboapp.com deploy"
   },
@@ -45,7 +44,6 @@
     "webpack-dev-server": "1.14.0"
   },
   "dependencies": {
-    "api": "file:///Users/lzw/square-root/api",
     "debug": "^2.2.0",
     "es6-promise": "^3.0.2",
     "firebase": "^2.3.1",
