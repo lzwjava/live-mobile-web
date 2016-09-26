@@ -17,7 +17,7 @@
 
 <script type="text/javascript">
 
-import http from 'api'
+import http from '../common/api'
 import util from '../common/util'
 import UserAvatar from '../components/user-avatar.vue'
 

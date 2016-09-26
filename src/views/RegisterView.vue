@@ -35,7 +35,7 @@
 
 import {Button, Toast} from 'vue-weui'
 import util from '../common/util'
-import http from 'api'
+import http from '../common/api'
 import wechat from '../common/wechat'
 
 var debug = require('debug')('register-form')

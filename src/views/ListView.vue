@@ -33,7 +33,7 @@
 <script type="text/javascript">
 
 import util from '../common/util'
-import http from 'api'
+import http from '../common/api'
 import UserAvatar from '../components/user-avatar.vue'
 
 export default {
