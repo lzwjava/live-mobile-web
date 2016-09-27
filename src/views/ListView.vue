@@ -48,8 +48,10 @@ export default {
     }
   },
   created() {
+    util.loading(this)
     http.get(this, 'lives/on')
      .then((data) => {
+       util.loaded(this)
        this.lives = data
      }, util.promiseErrorFn(this))
   },
@@ -96,7 +98,7 @@ export default {
           word-wrap break-word
         .on-label
           color #fff
-          background-color #00abd8
+          background-color #00BDEF
           border-color #64b3f1
           border-radius 3px
           font-size 14px

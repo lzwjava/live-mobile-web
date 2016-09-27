@@ -53,6 +53,10 @@
       <a class="create-link" @click.prevent="createLive">创建您的直播?</a>
     </div>
 
+    <div class="list-section card-group">
+      <a @click.prevent="seeLives">查看全部的直播</a>
+    </div>
+
 
 
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
@@ -187,6 +191,9 @@ export default {
     },
     goUsers() {
       this.$router.go('/live/' + this.liveId + '/users')
+    },
+    seeLives() {
+      this.$router.go('/lives')
     }
   },
 
@@ -279,11 +286,15 @@ export default {
       background-color #fff
       padding 10px
     .create-section
-      margin-top 60px
+      margin 40px auto
       text-align center
       font-size 15px
-      margin-bottom 30px
       a
         color #8A8A8A
+    .list-section
+      text-align center
+      margin-bottom 0px !important
+      a
+        color #00ABD8
 
 </style>

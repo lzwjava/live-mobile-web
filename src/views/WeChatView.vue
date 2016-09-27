@@ -76,12 +76,12 @@ export default {
       } else if (params.type == 'oauthTest') {
         var url = window.location.href
         var newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
-        newUrl = url.replace('oauthTest', 'oauth')
+        newUrl = newUrl.replace('oauthTest', 'oauth')
         window.location = newUrl
       } else if (params.type == 'silentOauthTest') {
         var url = window.location.href
         var newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
-        newUrl = url.replace('silentOauthTest', 'silentOauth')
+        newUrl = newUrl.replace('silentOauthTest', 'silentOauth')
         window.location = newUrl
       } else {
         util.show(this, 'error', '无法识别的跳转类型')
