@@ -31,15 +31,23 @@ export default {
       this.logout()
       return
     }
-    if (!params.liveId) {
-      util.show(this, 'error', '缺少参数')
-      return
-    }
+    // if (!params.liveId) {
+    //   util.show(this, 'error', '缺少参数')
+    //   return
+    // }
     if (!util.isWeixinBrowser()) {
-      this.$router.go('/intro/' + params.liveId)
+      if (params.liveId) {
+        this.$router.go('/intro/' + params.liveId)
+      } else {
+        this.$router.go('/lives')
+      }
       return
     }
-    window.localStorage.setItem('liveId', params.liveId)
+    if (params.liveId) {
+      window.localStorage.setItem('liveId', params.liveId)
+    } else {
+      window.localStorage.removeItem('liveId')
+    }
     wechat.silentOauth2(this)
   },
   methods: {

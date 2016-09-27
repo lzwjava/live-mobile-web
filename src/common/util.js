@@ -85,7 +85,12 @@ function loaded(comp) {
 }
 
 function timeGap(ts) {
-  return moment(ts, "YYYY-MM-DD hh:mm::ss").fromNow()
+  var text = moment(ts, "YYYY-MM-DD hh:mm::ss").fromNow()
+  if (text) {
+    text = text.replace(/[\u5185]/g, '后')
+    text = text.replace(' ', '')
+  }
+  return text
 }
 
 function isDebug() {

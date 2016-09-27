@@ -60,16 +60,31 @@ export default {
           .then((data) => {
             this.$dispatch('loading', false)
             var liveId = window.localStorage.getItem('liveId')
-            //window.location.href = '/#intro/' + liveId
-            this.$router.replace('/intro/' + liveId)
+            if (liveId) {
+              this.$router.replace('/intro/' + liveId)
+            } else {
+              this.$router.replace('/lives')
+            }
           }, errorFn)
-      } else {
+      } else if (params.type == 'oauth') {
         this.$dispatch('loading', true)
         http.get(this, 'wechat/oauth', {code: code})
           .then((data) => {
             this.$dispatch('loading', false)
             this.$router.replace('/register?openId=' + data.openId)
           }, errorFn)
+      } else if (params.type == 'oauthTest') {
+        var url = window.location.href
+        var newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
+        newUrl = url.replace('oauthTest', 'oauth')
+        window.location = newUrl
+      } else if (params.type == 'silentOauthTest') {
+        var url = window.location.href
+        var newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
+        newUrl = url.replace('silentOauthTest', 'silentOauth')
+        window.location = newUrl
+      } else {
+        util.show(this, 'error', '无法识别的跳转类型')
       }
     }
   }

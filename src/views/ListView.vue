@@ -2,7 +2,7 @@
 
   <div class="list-view">
     <ul class="live-list">
-      <li class="live-item" v-for="live in lives">
+      <li class="live-item" @click="goIntro(live.liveId)" v-for="live in lives">
         <user-avatar :user="live.owner"></user-avatar>
 
         <div class="live-info">
@@ -10,7 +10,7 @@
           <p class="owner-name">{{live.owner.username}}</p>
           <div class="live-item-tag">
             <span class="time-label" v-show="live.status == 10">
-              {{timeGap(live)}} {{timeWord(live)}}
+              {{timeGap(live)}}{{timeWord(live)}}
             </span>
 
             <span class="on-label" v-show="live.status == 20">
@@ -20,6 +20,7 @@
             <span class="attend-label" v-show="live.status == 30">
               {{live.attendanceCount}} 人参与
             </span>
+
           </div>
         </div>
 
@@ -54,10 +55,13 @@ export default {
   },
   methods: {
     timeGap (live) {
-      return ''
+      return util.timeGap(live.planTs)
     },
     timeWord(live) {
-      return ''
+      return '开始'
+    },
+    goIntro(liveId) {
+      this.$router.go('/intro/' + liveId)
     }
   }
 }
@@ -83,16 +87,30 @@ export default {
         margin-left 10px
         width 70%
         height 80px
+        .owner-name
+          color #6E6E6E
         p.subject
+          height 30px
+          overflow hidden
+          text-overflow ellipsis
           word-wrap break-word
         .on-label
           color #fff
-          background-color #64b3f1
+          background-color #00abd8
           border-color #64b3f1
           border-radius 3px
-          font-size 12px
+          font-size 14px
           line-height 18px
-          padding 2px 5px
+          padding 3px 5px
+          font-size 14px
+        .time-label
+          color #00bdef
+          border 1px solid #00bdef
+          border-radius 3px
+          padding 2px 3px
+          font-size 14px
+        .attend-label
+          font-size 14px
       .arrow
         float right
         color #cecee0

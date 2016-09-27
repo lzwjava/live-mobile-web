@@ -14,11 +14,23 @@ var weixinOauthUrl = (state, scope, redirectUrl) => {
 }
 
 var weixinOauthUserUrl = (state) => {
-  return weixinOauthUrl(state, 'snsapi_userinfo', 'http://m.quzhiboapp.com/#wechat/oauth')
+  var redirectUrl;
+  if (util.isDebug()) {
+    redirectUrl = 'http://m.quzhiboapp.com/#wechat/oauthTest'
+  } else {
+    redirectUrl = 'http://m.quzhiboapp.com/#wechat/oauth'
+  }
+  return weixinOauthUrl(state, 'snsapi_userinfo', redirectUrl)
 }
 
 var weixinSilentOauthUrl = (state) => {
-  return weixinOauthUrl(state, 'snsapi_base', 'http://m.quzhiboapp.com/#wechat/silentOauth')
+  var redirectUrl;
+  if (util.isDebug()) {
+    redirectUrl = 'http://m.quzhiboapp.com/#wechat/silentOauthTest'
+  } else {
+    redirectUrl = 'http://m.quzhiboapp.com/#wechat/silentOauth'
+  }
+  return weixinOauthUrl(state, 'snsapi_base', redirectUrl)
 }
 
 function logout(comp, fn) {
