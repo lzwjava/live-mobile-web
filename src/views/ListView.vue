@@ -96,6 +96,7 @@ export default {
           overflow hidden
           text-overflow ellipsis
           word-wrap break-word
+          font-weight bold
         .on-label
           color #fff
           background-color #00BDEF
