@@ -7,7 +7,7 @@
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 30">
         <video id="player1" width="100%" height="100%" preload="preload"
-           controls webkit-playsinline :src="live.hlsUrl"></video>
+           controls webkit-playsinline></video>
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
           <div class="video-center">
@@ -147,6 +147,7 @@ export default {
   },
   ready() {
     debug('LiveView ready')
+    this.playHls()
   },
   route: {
     data ({to}) {
@@ -158,6 +159,11 @@ export default {
       }
       util.loading(this)
       wechat.configWeixin(this)
+      this.conv = {}
+      this.client = {}
+      this.msgs = []
+      this.playStatus = 0
+      this.videoHeight = 250
       Promise.all([
         http.fetchLive(this, this.liveId),
         http.fetchCurUser(this)
@@ -167,16 +173,17 @@ export default {
         this.live = values[0]
         this.curUser = values[1]
 
-        // this.live.canJoin = true
-        // this.live.hlsUrl = 'http://cheer.quzhiboapp.com/live/GAXRrVWD_ff.m3u8'
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
           return
         }
 
-        wechat.showMenu()
+        setTimeout(() => {
+          var video = document.querySelector('video')
+          video.setAttribute('src', this.live.hlsUrl)
+        }, 100)
+
         wechat.shareLive(this.live)
-        this.playHls()
         this.openClient()
 
       }, util.promiseErrorFn(this))

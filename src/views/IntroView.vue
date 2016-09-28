@@ -139,6 +139,7 @@ export default {
   ready() {
   },
   destroyed () {
+    debug('destroyed')
   },
   methods: {
     loadCurUser () {
