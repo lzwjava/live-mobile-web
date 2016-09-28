@@ -42,7 +42,6 @@ export default {
     }
   },
   created() {
-    wechat.configWeixin(this)
   },
   events: {
     'show-msg': function (type, message) {

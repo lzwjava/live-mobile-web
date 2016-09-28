@@ -38,11 +38,15 @@ export default {
   methods: {
   },
   created() {
-    document.title = '趣直播-创建直播'
-    var query = this.$route.query
-    if (query.liveId) {
-      this.type = 1
-      this.liveId = query.liveId
+  },
+  route: {
+    data({to}) {
+      document.title = '趣直播-创建直播'
+      var query = this.$route.query
+      if (query.liveId) {
+        this.type = 1
+        this.liveId = query.liveId
+      }
     }
   },
   methods: {

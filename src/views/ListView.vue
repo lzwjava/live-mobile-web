@@ -48,12 +48,16 @@ export default {
     }
   },
   created() {
-    util.loading(this)
-    http.get(this, 'lives/on')
-     .then((data) => {
-       util.loaded(this)
-       this.lives = data
-     }, util.promiseErrorFn(this))
+  },
+  route: {
+    data ({to}) {
+      util.loading(this)
+      http.get(this, 'lives/on')
+       .then((data) => {
+         util.loaded(this)
+         this.lives = data
+       }, util.promiseErrorFn(this))
+    }
   },
   methods: {
     timeGap (live) {

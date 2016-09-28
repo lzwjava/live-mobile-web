@@ -22,33 +22,37 @@ export default {
     }
   },
   created() {
-    var params = this.$route.query;
-    if (params.sessionToken) {
-      this.loginBySessionToken(params.sessionToken)
-      return
-    }
-    if (params.action == 'logout') {
-      this.logout()
-      return
-    }
-    // if (!params.liveId) {
-    //   util.show(this, 'error', '缺少参数')
-    //   return
-    // }
-    if (!util.isWeixinBrowser()) {
-      if (params.liveId) {
-        this.$router.go('/intro/' + params.liveId)
-      } else {
-        this.$router.go('/lives')
+  },
+  route: {
+    data({to}) {
+      var params = this.$route.query;
+      if (params.sessionToken) {
+        this.loginBySessionToken(params.sessionToken)
+        return
       }
-      return
+      if (params.action == 'logout') {
+        this.logout()
+        return
+      }
+      // if (!params.liveId) {
+      //   util.show(this, 'error', '缺少参数')
+      //   return
+      // }
+      if (!util.isWeixinBrowser()) {
+        if (params.liveId) {
+          this.$router.go('/intro/' + params.liveId)
+        } else {
+          this.$router.go('/lives')
+        }
+        return
+      }
+      if (params.liveId) {
+        window.localStorage.setItem('liveId', params.liveId)
+      } else {
+        window.localStorage.removeItem('liveId')
+      }
+      wechat.silentOauth2(this)
     }
-    if (params.liveId) {
-      window.localStorage.setItem('liveId', params.liveId)
-    } else {
-      window.localStorage.removeItem('liveId')
-    }
-    wechat.silentOauth2(this)
   },
   methods: {
     loginBySessionToken: function (sessionToken) {

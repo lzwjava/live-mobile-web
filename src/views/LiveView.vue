@@ -143,32 +143,10 @@ export default {
     // setTimeout(() => {
     //   this.addSystemMsg(navigator.userAgent.toLowerCase())
     // }, 2000)
+    debug('LiveView created')
   },
   ready() {
-    debug('ready')
-    util.loading(this)
-    Promise.all([
-      http.fetchLive(this, this.liveId),
-      http.fetchCurUser(this)
-    ]).then(values => {
-      util.loaded(this)
-
-      this.live = values[0]
-      this.curUser = values[1]
-
-      // this.live.canJoin = true
-      // this.live.hlsUrl = 'http://cheer.quzhiboapp.com/live/GAXRrVWD_ff.m3u8'
-      if (!this.live.canJoin) {
-        util.show(this, 'error', '请先登录或报名直播')
-        return
-      }
-
-      wechat.showMenu()
-      wechat.shareLive(this.live)
-      this.playHls()
-      this.openClient()
-
-    }, util.promiseErrorFn(this))
+    debug('LiveView ready')
   },
   route: {
     data ({to}) {
@@ -178,6 +156,30 @@ export default {
         util.show(this, 'error', '缺少参数')
         return
       }
+      util.loading(this)
+      wechat.configWeixin(this)
+      Promise.all([
+        http.fetchLive(this, this.liveId),
+        http.fetchCurUser(this)
+      ]).then(values => {
+        util.loaded(this)
+
+        this.live = values[0]
+        this.curUser = values[1]
+
+        // this.live.canJoin = true
+        // this.live.hlsUrl = 'http://cheer.quzhiboapp.com/live/GAXRrVWD_ff.m3u8'
+        if (!this.live.canJoin) {
+          util.show(this, 'error', '请先登录或报名直播')
+          return
+        }
+
+        wechat.showMenu()
+        wechat.shareLive(this.live)
+        this.playHls()
+        this.openClient()
+
+      }, util.promiseErrorFn(this))
     }
   },
   methods: {

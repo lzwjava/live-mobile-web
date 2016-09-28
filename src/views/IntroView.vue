@@ -124,6 +124,7 @@ export default {
   route: {
     data ({ to }) {
       this.liveId = to.params.liveId
+      wechat.configWeixin(this)
       this.loadCurUser()
       this.fetchData()
       if (to.query.action == 'pay') {
@@ -134,6 +135,8 @@ export default {
     }
   },
   created () {
+  },
+  ready() {
   },
   destroyed () {
   },

@@ -59,16 +59,20 @@ export default {
   computed: {
   },
   created() {
-    document.title = '趣直播-注册'
-    var query = this.$route.query;
-
-    if (query.openId) {
-      this.openId = query.openId
-    } else {
-      if (query.redirectUrl) {
-        window.localStorage.setItem('redirectUrl', query.redirectUrl)
+  },
+  route: {
+    data({to}) {
+      document.title = '趣直播-注册'
+      var query = this.$route.query;
+      
+      if (query.openId) {
+        this.openId = query.openId
+      } else {
+        if (query.redirectUrl) {
+          window.localStorage.setItem('redirectUrl', query.redirectUrl)
+        }
+        wechat.oauth2(this)
       }
-      wechat.oauth2(this)
     }
   },
   methods: {
