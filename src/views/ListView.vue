@@ -36,6 +36,7 @@
 import util from '../common/util'
 import http from '../common/api'
 import UserAvatar from '../components/user-avatar.vue'
+import wechat from '../common/wechat'
 
 export default {
   name: 'LiveView',
@@ -52,6 +53,11 @@ export default {
   route: {
     data ({to}) {
       util.loading(this)
+      wechat.configWeixin(this)
+      .then(() => {
+        wechat.showOptionMenu()
+        wechat.shareApp()
+      })
       http.get(this, 'lives/on')
        .then((data) => {
          util.loaded(this)

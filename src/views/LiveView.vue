@@ -158,7 +158,7 @@ export default {
         return
       }
       util.loading(this)
-      wechat.configWeixin(this)
+
       this.conv = {}
       this.client = {}
       this.msgs = []
@@ -183,6 +183,8 @@ export default {
           video.setAttribute('src', this.live.hlsUrl)
         }, 100)
 
+        wechat.configWeixin(this)
+        wechat.showOptionMenu()
         wechat.shareLive(this.live)
         this.openClient()
 

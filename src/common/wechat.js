@@ -77,29 +77,24 @@ function silentOauth2(comp) {
 }
 
 function configWeixin(comp) {
-  var href= window.location.href
-  debug('href:' + href)
-  var url = href.split('#')[0]
-  url = href
-  comp.$http.get('wechat/sign', {
-    url: url
-  }).then((resp) => {
-    if (resp.data) {
-      var data = resp.data.result;
-      wx.config({
-          debug: false,
-          appId: data.appId,
-          timestamp: data.timestamp,
-          nonceStr: data.nonceStr,
-          signature: data.signature,
-          jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'hideMenuItems',
-                      'showMenuItems', 'chooseWXPay', 'scanQRCode', 'startRecord','stopRecord',
-                      'onRecordEnd','playVoice','pauseVoice','stopVoice','uploadVoice','downloadVoice']
-      })
-      wx.error((res) => {
-        util.show(comp, 'error', '微信出错' + JSON.stringify(res))
-      })
-    }
+  var url = window.location.href.split('#')[0]
+  return http.get(comp, 'wechat/sign', {
+    url: encodeURIComponent(url)
+  }).then((data) => {
+    wx.config({
+        debug: false,
+        appId: data.appId,
+        timestamp: data.timestamp,
+        nonceStr: data.nonceStr,
+        signature: data.signature,
+        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ',
+                    'showMenuItems', 'hideMenuItems', 'chooseWXPay', 'scanQRCode', 'startRecord','stopRecord',
+                    'onRecordEnd','playVoice','pauseVoice','stopVoice','uploadVoice','downloadVoice']
+    })
+    wx.error((res) => {
+      util.show(comp, 'error', '微信出错' + JSON.stringify(res))
+    })
+    return Promise.resolve()
   })
 }
 
@@ -114,7 +109,7 @@ function share(title, img, text, href) {
           },
           cancel: function() {
           }
-      });
+      })
       wx.onMenuShareAppMessage({
           title: title,
           desc: text + '...',
@@ -125,7 +120,7 @@ function share(title, img, text, href) {
           },
           cancel: function() {
           }
-      });
+      })
       wx.onMenuShareQQ({
           title: title,
           desc: text + '...',
@@ -136,23 +131,18 @@ function share(title, img, text, href) {
           },
           cancel: function() {
           }
-      });
-      wx.onMenuShareWeibo({
-          title: title,
-          desc: text + '...',
-          link: href,
-          imgUrl: img,
-          success: function() {
-              console.log(arguments);
-          },
-          cancel: function() {
-          }
-      });
+      })
   });
 }
 
 var menuList = ['menuItem:share:appMessage', 'menuItem:share:timeline',
-                'menuItem:share:qq', 'menuItem:share:weiboApp']
+                'menuItem:share:qq']
+
+function showOptionMenu() {
+  wx.ready(function () {
+    wx.showOptionMenu();
+  })
+}
 
 function showMenu() {
   wx.ready(function() {
@@ -173,6 +163,11 @@ function hideMenu() {
 function shareLive(live) {
   var title = live.owner.username + '的直播：' + live.subject
   share(title, live.coverUrl, title, 'http://m.quzhiboapp.com/?liveId=' + live.liveId)
+}
+
+function shareApp() {
+  var title = '趣直播-知识直播平台'
+  share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com')
 }
 
 function attendLiveAndPay(comp, liveId) {
@@ -254,6 +249,8 @@ exports.configWeixin = configWeixin
 exports.hideMenu = hideMenu
 exports.showMenu = showMenu
 exports.shareLive = shareLive
+exports.shareApp = shareApp
 exports.attendLiveAndPay = attendLiveAndPay
 exports.scanQRcode = scanQRcode
 exports.scanQRcodeWithLive = scanQRcodeWithLive
+exports.showOptionMenu = showOptionMenu
