@@ -71,7 +71,7 @@ export default {
         http.get(this, 'wechat/oauth', {code: code})
           .then((data) => {
             this.$dispatch('loading', false)
-            this.$router.replace('/register?openId=' + data.openId)
+            this.$router.replace('/register/?openId=' + data.openId)
           }, errorFn)
       } else if (params.type == 'oauthTest') {
         var url = window.location.href

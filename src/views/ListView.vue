@@ -79,15 +79,20 @@ export default {
       border solid #eee
       background-color #fff
       height 80px
-      padding 15px
+      padding 10px 10px
+      position relative
       .avatar
           width 50px
           height 50px
           display inline-block
+          margin-top 15px
       .live-info
         display inline-block
-        margin-left 10px
-        width 70%
+        position absolute
+        top 10px
+        bottom 10px
+        left 70px
+        right 24px
         height 80px
         .owner-name
           color #6E6E6E
