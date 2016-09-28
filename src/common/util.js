@@ -39,7 +39,7 @@ var show = (component, type, text, duration) => {
 
 var promiseErrorFn = (comp, callback) => {
   return (error) => {
-    show(comp, 'error', error)
+    show(comp, 'error', error, 3000)
     comp.$dispatch('loading', false)
     callback && callback()
   }
@@ -97,6 +97,14 @@ function isDebug() {
   return process.env.NODE_ENV != 'production'
 }
 
+var getKeys = function(obj){
+   var keys = [];
+   for(var key in obj){
+      keys.push(key);
+   }
+   return keys;
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
@@ -110,3 +118,4 @@ exports.loaded =loaded
 exports.timeGap = timeGap
 exports.isAndroidBrowser = isAndroidBrowser
 exports.isDebug = isDebug
+exports.getKeys = getKeys

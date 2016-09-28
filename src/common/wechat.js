@@ -77,7 +77,10 @@ function silentOauth2(comp) {
 }
 
 function configWeixin(comp) {
-  var url = window.location.href.split('#')[0]
+  var href= window.location.href
+  debug('href:' + href)
+  var url = href.split('#')[0]
+  url = href
   comp.$http.get('wechat/sign', {
     url: url
   }).then((resp) => {

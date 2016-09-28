@@ -64,7 +64,7 @@ export default {
     data({to}) {
       document.title = '趣直播-注册'
       var query = this.$route.query;
-      
+
       if (query.openId) {
         this.openId = query.openId
       } else {

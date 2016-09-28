@@ -13,7 +13,13 @@ var callback = {
   },
   failure: function(reject) {
     return function(res) {
-      var error = res.statusText
+      var error = '' + res.statusText;
+      var el = document.createElement('html');
+      el.innerHTML = res.data
+      var container = el.querySelector('#container')
+      if (container) {
+        error += '\n' + container.innerHTML
+      }
       if (!error) {
         error = '网络超时错误'
       }

@@ -71,6 +71,7 @@ export default {
   border-bottom 1px solid #efefef
   background-color rgba(255, 255, 255, 0.9)
   color #565656
+  word-wrap break-word
 
 .message-success
   background-color rgba(66, 185, 131, 0.9)

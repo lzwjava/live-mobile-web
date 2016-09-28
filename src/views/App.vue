@@ -54,7 +54,7 @@ export default {
       this.toastText = text
       this.toastShow = true
       if (!timeout) {
-        timeout = 1000
+        timeout = 2000
       }
       debug('callback: %j', callback)
       setTimeout(() => {
