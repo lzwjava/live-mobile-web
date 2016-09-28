@@ -139,7 +139,6 @@ export default {
     }
   },
   created() {
-    wechat.configWeixin(this)
     //this.testSendMsgs()
     // setTimeout(() => {
     //   this.addSystemMsg(navigator.userAgent.toLowerCase())

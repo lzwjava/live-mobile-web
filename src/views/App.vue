@@ -23,6 +23,7 @@
 import Nav from './nav.vue'
 import {Toast} from 'vue-weui'
 import Tip from '../components/tip.vue'
+import wechat from '../common/wechat'
 
 var debug = require('debug')('nav')
 
@@ -39,6 +40,9 @@ export default {
       toastShow: false,
       toastText: ''
     }
+  },
+  created() {
+    wechat.configWeixin(this)
   },
   events: {
     'show-msg': function (type, message) {

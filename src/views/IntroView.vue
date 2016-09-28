@@ -134,7 +134,6 @@ export default {
     }
   },
   created () {
-    wechat.configWeixin(this)
   },
   destroyed () {
   },
