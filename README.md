@@ -1,4 +1,4 @@
-# live-web
+# live-mobile-web
 
 ### Building
 
@@ -9,3 +9,5 @@ npm run dev
 # build:
 npm run build
 ```
+
+
