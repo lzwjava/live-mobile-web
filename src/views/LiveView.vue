@@ -567,7 +567,7 @@ export default {
           height 34px
           line-height 34px
           input
-            width 80%
+            width 75%
             height 30px
             padding-left 10px
             padding-right 10px
@@ -575,7 +575,7 @@ export default {
             vertical-align middle
             border-radius 5px
           button
-            width 18%
+            width 20%
             vertical-align middle
             padding 7px 5px
 
