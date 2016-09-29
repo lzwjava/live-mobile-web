@@ -46,7 +46,7 @@ export default {
         }
         return
       }
-      if (params.liveId) {
+      if (params.liveId && params.liveId > 0) {
         window.localStorage.setItem('liveId', params.liveId)
       } else {
         window.localStorage.removeItem('liveId')
