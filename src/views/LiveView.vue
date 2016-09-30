@@ -7,7 +7,7 @@
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 30">
         <video id="player1" width="100%" height="100%" preload="preload"
-           controls webkit-playsinline></video>
+           controls webkit-playsinline :src="live.hlsUrl"></video>
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
           <div class="video-center">
@@ -147,7 +147,6 @@ export default {
   },
   ready() {
     debug('LiveView ready')
-    this.playHls()
   },
   route: {
     data ({to}) {
@@ -178,15 +177,11 @@ export default {
           return
         }
 
-        setTimeout(() => {
-          var video = document.querySelector('video')
-          video.setAttribute('src', this.live.hlsUrl)
-        }, 100)
-
         wechat.configWeixin(this)
         wechat.showOptionMenu()
         wechat.shareLive(this.live)
         this.openClient()
+        this.playHls()
 
       }, util.promiseErrorFn(this))
     }
