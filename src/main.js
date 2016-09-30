@@ -25,7 +25,7 @@ const debug = require('debug')('main')
 Vue.use(Router)
 
 // register filters globally
-for(let  k in filters){
+for(let  k in filters) {
     Vue.filter(k, filters[k])
 }
 

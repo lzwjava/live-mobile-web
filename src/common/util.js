@@ -105,6 +105,22 @@ var getKeys = function(obj){
    return keys;
 }
 
+function statusText (status) {
+  switch (status) {
+    case 1:
+      return '编辑中';
+    case 5:
+      return '审核中';
+    case 10:
+      return '报名中';
+    case 20:
+      return '直播中';
+    case 30:
+      return '已结束';
+  }
+  return '未知';
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
@@ -119,3 +135,4 @@ exports.timeGap = timeGap
 exports.isAndroidBrowser = isAndroidBrowser
 exports.isDebug = isDebug
 exports.getKeys = getKeys
+exports.statusText = statusText

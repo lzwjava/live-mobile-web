@@ -15,8 +15,12 @@
       </div>
 
       <div class="time-section">
+        <div class="status">
+            {{statusText}}
+        </div>
         <div class="time-label">直播时间</div>
-        <div class="plan-time">{{live.planTs}} ({{timeGap}})</div>
+        <div class="plan-time">{{live.planTs | formatTimeCommon}} ({{timeGap}})</div>
+
       </div>
 
     </div>
@@ -109,16 +113,25 @@ export default {
       }
     },
     btnTitle: function () {
+      var statusWord;
+      if (this.live.status <= 20) {
+        statusWord = '参与直播';
+      } else {
+        statusWord = '收看回播';
+      }
       if (this.live.canJoin) {
         return '已报名，进入直播间'
       } else if (this.curUser.userId) {
-        return '赞助并参与直播(¥' + (this.live.amount /100) + ')'
+        return '赞助并' + statusWord + '(¥' + (this.live.amount /100) + ')'
       } else {
-        return '请登录后参与直播'
+        return '请登录后' + statusWord
       }
     },
     timeGap: function() {
       return util.timeGap(this.live.planTs)
+    },
+    statusText()  {
+      return util.statusText(this.live.status)
     }
   },
   route: {
@@ -257,6 +270,14 @@ export default {
         color #828282
       .plan-time
         font-size 16px
+      .status
+        border 1px solid #828282
+        border-radius 3px
+        float right
+        margin-top 10px
+        padding 0 3px
+        font-size 14px
+        color #828282
     .attend-section
       .attend-info
         margin 5px 0
