@@ -171,10 +171,12 @@ function shareApp() {
 }
 
 function attendLiveAndPay(comp, liveId) {
+  util.loading(comp)
   return http.post(comp, 'attendances/create', {
     liveId: liveId,
     channel: 'wechat_h5'
   }).then((data) => {
+    util.loaded(comp)
     return new Promise(function (resolve, reject){
       wx.ready(() => {
         wx.chooseWXPay({
