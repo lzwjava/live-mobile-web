@@ -383,7 +383,7 @@ export default {
             // util.loading(this)
             this.playStatus = 1
           }
-          if (ev.type == 'playing') {
+          if (ev.type == 'playing' || ev.type == 'play') {
             //util.loaded(this)
             this.playStatus = 2
           }
