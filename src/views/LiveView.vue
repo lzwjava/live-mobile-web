@@ -379,14 +379,12 @@ export default {
               this.videoHeight = videoElm.clientHeight
             }
           }
-          if (ev.type == 'waiting') {
-            // util.loading(this)
-            this.playStatus = 1
-          }
-          if (ev.type == 'playing' || ev.type == 'play') {
-            //util.loaded(this)
-            this.playStatus = 2
-          }
+          // if (ev.type == 'waiting') {
+          //   this.playStatus = 1
+          // }
+          // if (ev.type == 'playing' || ev.type == 'play') {
+          //   this.playStatus = 2
+          // }
         })
       }
     },
@@ -394,6 +392,9 @@ export default {
       this.playStatus = 1
       var video = document.querySelector('video')
       video.play()
+      setTimeout(() => {
+        this.playStatus = 2
+      }, 1000)
     },
     goComputer() {
       this.$router.go('/scan?liveId=' + this.live.liveId)
