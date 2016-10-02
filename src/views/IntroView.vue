@@ -24,7 +24,7 @@
           </div>
 
           <div class="feedback" @click="goContact">
-            遇到问题?
+            订阅直播
           </div>
         </div>
 
