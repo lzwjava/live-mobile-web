@@ -13,7 +13,6 @@
         <div class="subject">{{live.subject}}</div>
         <div class="ownername">{{live.owner.username}}</div>
 
-
       </div>
 
       <div class="time-section">

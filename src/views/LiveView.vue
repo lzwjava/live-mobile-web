@@ -7,7 +7,7 @@
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 30">
         <video id="player1" width="100%" height="100%" preload="preload"
-           controls webkit-playsinline :src="live.hlsUrl"></video>
+           controls webkit-playsinline :src="videoSrc"></video>
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
           <div class="video-center">
@@ -136,6 +136,14 @@ export default {
       } else {
         return '按住说话'
       }
+    },
+    videoSrc() {
+      if (this.live.status == 20) {
+        return this.live.hlsUrl
+      } else if (this.live.status == 30) {
+        return this.live.videoUrl
+      }
+      return this.live.hlsUrl
     }
   },
   created() {
