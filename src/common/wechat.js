@@ -161,8 +161,14 @@ function hideMenu() {
 }
 
 function shareLive(live) {
+  var iconUrl;
+  if (live.liveId == 90) {
+    iconUrl = live.owner.avatarUrl
+  } else {
+    iconUrl = live.coverUrl
+  }
   var title = live.owner.username + '的直播：' + live.subject
-  share(title, live.coverUrl, title, 'http://m.quzhiboapp.com/?liveId=' + live.liveId)
+  share(title, iconUrl, title, 'http://m.quzhiboapp.com/?liveId=' + live.liveId)
 }
 
 function shareApp() {
