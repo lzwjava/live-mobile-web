@@ -148,13 +148,8 @@ export default {
   },
   created() {
     //this.testSendMsgs()
-    // setTimeout(() => {
-    //   this.addSystemMsg(navigator.userAgent.toLowerCase())
-    // }, 2000)
-    debug('LiveView created')
   },
   ready() {
-    debug('LiveView ready')
   },
   route: {
     data ({to}) {

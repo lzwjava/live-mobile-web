@@ -160,6 +160,11 @@ function hideMenu() {
   })
 }
 
+function linkUrl(liveId) {
+  var url = 'http://m.quzhiboapp.com/?liveId=' + liveId + '&t=' + new Date().getTime()
+  return url
+}
+
 function shareLive(live) {
   var iconUrl;
   if (live.liveId == 90) {
@@ -168,12 +173,12 @@ function shareLive(live) {
     iconUrl = live.coverUrl
   }
   var title = live.owner.username + '的直播：' + live.subject
-  share(title, iconUrl, title, 'http://m.quzhiboapp.com/?liveId=' + live.liveId)
+  share(title, iconUrl, title, linkUrl(live.liveId))
 }
 
 function shareApp() {
   var title = '趣直播-知识直播平台'
-  share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com')
+  share(title, 'http://i.quzhiboapp.com/logo.png', title, linkUrl(0))
 }
 
 function attendLiveAndPay(comp, liveId) {
