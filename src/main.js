@@ -14,6 +14,7 @@ import WeChatView from './views/WeChatView.vue'
 import ScanView from './views/ScanView.vue'
 import ListView from './views/ListView.vue'
 import ProfileView from './views/ProfileView.vue'
+import ContactView from './views/ContactView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -75,6 +76,9 @@ router.map({
   },
   'profile': {
     component: ProfileView
+  },
+  'contact': {
+    component: ContactView
   }
 })
 

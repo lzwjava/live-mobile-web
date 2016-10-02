@@ -406,12 +406,7 @@ export default {
 
 <style lang="stylus">
 
-.full-space
-    position absolute
-    top 0
-    left 0
-    bottom 0
-    right 0
+@import "../stylus/base.styl"
 
 .live-view
   @extend .full-space

@@ -12,14 +12,27 @@
       <div class="header-right">
         <div class="subject">{{live.subject}}</div>
         <div class="ownername">{{live.owner.username}}</div>
+
+
       </div>
 
       <div class="time-section">
-        <div class="status">
-            {{statusText}}
+
+        <div class="right-corner">
+          <div class="status">
+              {{statusText}}
+          </div>
+
+          <div class="feedback" @click="goContact">
+            遇到问题?
+          </div>
         </div>
+
+
         <div class="time-label">直播时间</div>
         <div class="plan-time">{{live.planTs | formatTimeCommon}} ({{timeGap}})</div>
+
+
 
       </div>
 
@@ -212,6 +225,9 @@ export default {
     },
     seeLives() {
       this.$router.go('/lives')
+    },
+    goContact() {
+      this.$router.go('/contact')
     }
   },
 
@@ -263,21 +279,28 @@ export default {
         .ownername
           margin-top 5px
           font-size 16px
+          display inline-block
     .time-section
       border-top 1px dashed #e7e7e7
       .time-label
         margin-top 10px
         color #828282
       .plan-time
+        margin-top 5px
         font-size 16px
-      .status
-        border 1px solid #828282
-        border-radius 3px
+      .right-corner
         float right
         margin-top 10px
-        padding 0 3px
-        font-size 14px
         color #828282
+        .status
+          border 1px solid #828282
+          border-radius 3px
+          padding 0 3px
+          font-size 14px
+        .feedback
+          margin-top 8px
+          font-size 14px
+          line-height 25px
     .attend-section
       .attend-info
         margin 5px 0
