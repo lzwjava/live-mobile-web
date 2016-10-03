@@ -3,13 +3,17 @@
   <div class="users-view">
     <ul>
       <li class="title">
-        已有 {{attendUsers.length}} 人参与直播
+        已有 {{live.attendanceCount}} 人参与直播
       </li>
 
       <li v-for="u in attendUsers">
         <user-avatar :user="u"></user-avatar>
         <span class="name">{{u.username}}</span>
       </li>
+
+      <p class="max-tips" v-if="live.attendanceCount > 100">
+        只显示了最近报名的 100 人
+      </p>
     </ul>
   </div>
 
@@ -47,12 +51,14 @@ export default {
   methods: {
     fetchData: function () {
       this.$dispatch('loading', true)
-      http.fetchUsers(this, this.liveId)
-      .then((data) => {
+      Promise.all([
+        http.fetchUsers(this, this.liveId),
+        http.fetchLive(this, this.liveId)
+      ]).then(values => {
         this.$dispatch('loading', false)
-        this.attendUsers = data
-      })
-      .catch(util.promiseErrorFn(this))
+        this.attendUsers = values[0]
+        this.live = values[1]
+      }).catch(util.promiseErrorFn(this))
     }
   }
 }
@@ -60,6 +66,8 @@ export default {
 </script>
 
 <style lang="stylus">
+
+@import "../stylus/variables.styl"
 
 .users-view
   font-size 16px
@@ -76,5 +84,9 @@ export default {
       vertical-align top
       line-height 50px
       margin-left 10px
+  .max-tips
+    text-align center
+    color gray
+    margin 10px 0
 
 </style>
