@@ -1,6 +1,6 @@
 <template>
 
-  <div class="my-list-view">
+  <div class="live-list">
 
   </div>
 
@@ -9,15 +9,14 @@
 <script type="text/javascript">
 
 export default {
-  name: 'MyListView',
-  components:{
-  },
+  name: 'LiveList'
   data() {
     return {
     }
-  }
+  },
+  components: {
+  },
   methods: {
-        
   }
 }
 

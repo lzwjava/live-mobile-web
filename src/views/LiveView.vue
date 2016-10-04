@@ -23,7 +23,8 @@
     </div>
 
     <div class="chat-area" :style="{top: videoHeight + 'px'}">
-      <ul class="msg-list" v-el:msg-list>
+
+      <ul class="msg-list" :style="{top: listTop, bottom: listBottom}" v-el:msg-list @click="inputBlur">
 
         <li class="msg" v-for="msg in msgs">
 
@@ -48,7 +49,7 @@
 
       </ul>
 
-      <div class="send-area">
+      <div class="send-area" :style="{top: sendTop, bottom: sendBottom}">
 
         <a class="computer-btn"  @click="goComputer">
         </a>
@@ -62,11 +63,12 @@
             @touchstart="holdToTalk" @touchend="mouseUp">{{btnTitle}}</button>
 
           <div class="text-input" v-show="inputMode == 0">
-            <input type="text" v-model="inputMsg"> <button type="button" class="btn btn-gray" @click="sendMsg">发送</button>
+            <input type="text" v-model="inputMsg" @focus="inputFocus"> <button type="button" class="btn btn-gray" @click="sendMsg">发送</button>
           </div>
         </div>
 
       </div>
+
     </div>
 
   </div>
@@ -123,7 +125,8 @@ export default {
       playStatus: 0,   // 0: none, 1: loading 2: play,
       isRecording: false,
       videoHeight: 250,
-      inputMode: 0   // 0: text 1: voice
+      inputMode: 0,   // 0: text 1: voice
+      inputing: 0
     }
   },
   computed: {
@@ -144,6 +147,34 @@ export default {
         return this.live.videoUrl
       }
       return this.live.hlsUrl
+    },
+    sendBottom() {
+      if (this.inputing) {
+        return 'initial'
+      } else {
+        return '0px'
+      }
+    },
+    sendTop() {
+      if (this.inputing) {
+        return '2px'
+      } else {
+        return 'initial'
+      }
+    },
+    listBottom(){
+      if (this.inputing) {
+        return '5px'
+      } else {
+        return '45px'
+      }
+    },
+    listTop() {
+      if (this.inputing) {
+        return '45px'
+      } else {
+        return '5px'
+      }
     }
   },
   created() {
@@ -209,7 +240,7 @@ export default {
     },
     addMsg(msg) {
       var msgList = this.$els.msgList
-      var isTouchBottom = msgList.scrollHeight < msgList.scrollTop + msgList.offsetHeight + 5
+      var isTouchBottom = msgList.scrollHeight < msgList.scrollTop + msgList.offsetHeight + 100
       this.msgs.push(msg)
       setTimeout(() => {
         if (isTouchBottom) {
@@ -240,6 +271,7 @@ export default {
       .then((message) => {
         this.addChatMsg(message)
         this.inputMsg = ''
+        this.inputing = 0
       }).catch(this.handleError)
     },
     holdToTalk (e) {
@@ -401,6 +433,13 @@ export default {
     },
     goComputer() {
       this.$router.go('/scan?liveId=' + this.live.liveId)
+    },
+    inputFocus() {
+      this.inputing = 1
+    },
+    inputBlur(e) {
+      debug(e)
+      this.inputing = 0
     }
   }
 }
@@ -462,8 +501,6 @@ export default {
       position absolute
       overflow hidden
       overflow-y scroll
-      bottom 45px
-      top 5px
       left 5px
       right 5px
       .msg
@@ -517,7 +554,6 @@ export default {
                   white-space pre-wrap
     .send-area
       position absolute
-      bottom 0px
       left 5px
       right 5px
       height 40px
