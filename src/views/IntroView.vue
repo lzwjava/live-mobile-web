@@ -216,7 +216,7 @@ export default {
           this.overlayStatus = true
         }
       } else {
-        this.$router.go('/register?redirectUrl=/intro/' + this.liveId)
+        this.$router.go('/register/?liveId=' + this.liveId)
       }
     },
     reloadLive() {

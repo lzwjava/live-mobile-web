@@ -67,8 +67,8 @@ export default {
       if (query.openId) {
         this.openId = query.openId
       } else {
-        if (query.redirectUrl) {
-          window.localStorage.setItem('redirectUrl', query.redirectUrl)
+        if (query.liveId) {
+          window.localStorage.setItem('registerLiveId', query.liveId)
         }
         wechat.oauth2(this)
       }
@@ -105,12 +105,11 @@ export default {
         this.loading = false
         this.$dispatch('toast', '注册成功', 1000, () => {
           //window.location.href = ''
-          var url = window.localStorage.getItem('redirectUrl')
-          if (url) {
-            this.$router.go(url)
-          } else {
-            var liveId = window.localStorage.getItem('liveId')
+          var liveId = window.localStorage.getItem('registerLiveId')
+          if (liveId) {
             this.$router.go('/intro/' + liveId)
+          } else {
+            this.$router.go('/lives')
           }
         })
       }, util.promiseErrorFn(this, () => {
