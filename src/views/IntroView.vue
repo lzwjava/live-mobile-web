@@ -258,6 +258,7 @@ export default {
       }).then((result) => {
         util.loaded(this)
         util.show(this, 'success', '分享成功，可优惠参与直播，感谢您')
+        this.overlayStatus = false
         this.reloadLive()
       }).catch(util.promiseErrorFn(this))
     },
