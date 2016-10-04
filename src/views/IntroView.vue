@@ -73,6 +73,11 @@
 
 
 
+    <overlay :overlay.sync="overlayStatus">
+        <component :is="currentView"></component>
+    </overlay>
+
+
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
 
   </div>
@@ -87,6 +92,8 @@ import UserAvatar from '../components/user-avatar.vue'
 import Markdown from '../components/markdown.vue'
 import http from '../common/api'
 import Overlay from '../components/overlay.vue'
+import PayForm from '../components/PayForm.vue'
+import ShareLead from '../components/ShareLead.vue'
 import {Button, Toast} from 'vue-weui'
 
 var debug = require('debug')('IntroView');
@@ -98,7 +105,9 @@ export default {
     'markdown': Markdown,
     'overlay': Overlay,
     'weui-button': Button,
-    'toast': Toast
+    'toast': Toast,
+    'pay-form': PayForm,
+    'share-lead': ShareLead
   },
 
   data () {
@@ -110,7 +119,8 @@ export default {
       },
       attendedUsers: [],
       liveId: 0,
-      overlayStatus: false
+      overlayStatus: false,
+      currentView: 'pay-form'
     }
   },
   computed: {
@@ -199,7 +209,12 @@ export default {
       if (this.live.canJoin) {
         this.$router.go('/live/' + this.liveId)
       } else if (this.curUser.userId){
-        this.pay()
+        if (this.live.shareId) {
+          this.pay()
+        } else {
+          this.currentView = 'pay-form'
+          this.overlayStatus = true
+        }
       } else {
         this.$router.go('/register?redirectUrl=/intro/' + this.liveId)
       }
@@ -245,6 +260,18 @@ export default {
         util.show(this, 'success', '分享成功，可优惠参与直播，感谢您')
         this.reloadLive()
       }).catch(util.promiseErrorFn(this))
+    },
+    'hidePayForm': function(type) {
+      if (type == 1) {
+        this.pay()
+      } else if (type == 2) {
+        debug('hidePayForm type == 2')
+
+        setTimeout(() => {
+          this.currentView = 'share-lead'
+          this.overlayStatus = true
+        }, 0)        
+      }
     }
   }
 }
