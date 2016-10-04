@@ -238,10 +238,11 @@ export default {
       util.loading(this)
       http.post(this, 'shares', {
         liveId: liveId,
-        shareTs: Math.round(new Date().getTime()/1000)
+        shareTs: Math.round(new Date().getTime()/1000),
+        channel: 'wechat_timeline'
       }).then((result) => {
         util.loaded(this)
-        util.show('分享朋友圈成功，可优惠参与直播')
+        util.show(this, 'success', '分享成功，可优惠参与直播，感谢您')
         this.reloadLive()
       }).catch(util.promiseErrorFn(this))
     }
