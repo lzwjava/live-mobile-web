@@ -2,8 +2,19 @@
 
   <div class="intro-view">
 
-    <div class="cover-section card-group">
-      <img class="cover-img" :src="live.coverUrl" alt="cover" />
+    <div class="cover-section">
+
+      <img class="cover-img" :src="live.coverUrl" alt="cover" v-show="!live.previewUrl"/>
+
+      <div class="preview" v-show="live.previewUrl">
+
+        <video webkit-playsinline width="100%" height="100%"
+         class="preview-video" controls preload="metadata" :src="live.previewUrl"
+         :style="{ backgroundImage: 'url(' + live.coverUrl + ')' }">
+        </video>
+
+      </div>
+
     </div>
 
     <div class="header-section card-group">
@@ -55,6 +66,7 @@
     </div>
 
     <div class="detail-section card-group">
+
       <div class="detail-label">
         直播详情
       </div>
@@ -120,7 +132,8 @@ export default {
       attendedUsers: [],
       liveId: 0,
       overlayStatus: false,
-      currentView: 'pay-form'
+      currentView: 'pay-form',
+      videoHeight: 250
     }
   },
   computed: {
@@ -197,13 +210,38 @@ export default {
             wechat.showOptionMenu()
             wechat.shareLive(this, this.live)
         }).catch(util.promiseErrorFn(this))
-
+        setTimeout(() => {
+          //this.playVideo()
+        }, 0)
         // if (to.query.action == 'pay') {
         //   setTimeout(()=> {
         //     this.pay()
         //   }, 500)
         // }
       }).catch(util.promiseErrorFn(this))
+    },
+    playVideo() {
+      if (!this.live.previewUrl) {
+        return
+      }
+      var video = document.querySelector("video")
+      var events = ['canplay', 'playing', 'loadeddata']
+      for (var i = 0; i < events.length; i++) {
+        var name = events[i]
+        video.addEventListener(name, (ev) => {
+          debug('event ' + ev.type + ' fired')
+          debug(ev)
+          if (ev.type == 'playing' || ev.type == 'canplay' || ev.type=='loadeddata') {
+            var videoElm = ev.srcElement
+            debug('client height' + videoElm.clientHeight)
+            debug('video height' + videoElm.videoHeight)
+            // TODO: android videoHeight 为 0 的问题
+            if (videoElm.videoHeight != 0) {
+              this.videoHeight = videoElm.clientHeight
+            }
+          }
+        })
+      }
     },
     attendLive () {
       if (this.live.canJoin) {
@@ -287,10 +325,15 @@ export default {
     .section
       background-color #fff
     .cover-section
-      padding 0px !important
+      padding 0px
+      margin-bottom 5px
       .cover-img
         width 100%
-        max-height 250px
+      video
+        background-color transparent
+        background-position center
+        background-repeat no-repeat
+        background-size cover
     .header-section
       .avatar
         width 80px
@@ -362,6 +405,10 @@ export default {
           .share-tips
             font-size 13px
             color #FFFFFF
+    .video-section
+      .video-label
+        margin 10px 0
+        color #828282
     .detail-section
       .detail-label
         font-size 16px

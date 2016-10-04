@@ -364,7 +364,7 @@ export default {
         }
       })
       var events = ['abort', 'canplay', 'canplaythrough', 'durationchange', 'emptied', 'loadeddata',
-        'loadeddata', 'loadstart', 'pause', 'play', 'playing','ratechange', 'seeked', 'seeking', 'stalled',
+         'loadstart', 'pause', 'play', 'playing','ratechange', 'seeked', 'seeking', 'stalled',
           'suspend', 'waiting','timeupdate', 'volumechange']
       //var events = ['playing', 'waiting']
       for (var i = 0; i < events.length; i++) {
