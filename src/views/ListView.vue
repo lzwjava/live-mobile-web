@@ -56,7 +56,7 @@ export default {
       util.loading(this)
       Promise.all([
         http.get(this, 'lives/on'),
-        http.fetchCurUser(this)
+        http.fetchCurUserNoError(this)
       ]).then(values => {
         util.loaded(this)
 
@@ -68,7 +68,7 @@ export default {
           wechat.showOptionMenu()
           wechat.shareApp(this)
         })
-      })
+      }).catch(util.promiseErrorFn(this))
     }
   },
   methods: {

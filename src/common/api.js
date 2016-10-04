@@ -60,6 +60,24 @@ var fetchCurUser = function (comp) {
   return get(comp, 'self')
 }
 
+var fetchCurUserNoError = function (comp) {
+  return new Promise(
+    function (resolve, reject) {
+      get(comp, 'self')
+       .then((data) => {
+         resolve(data)
+       }).catch((error) => {
+         if (error == '当前没有用户登录') {
+           debug('not_in_session')
+           resolve({})
+         } else {
+           reject(error)
+         }
+       })
+    }
+  )
+}
+
 var fetchOneUser = function (comp, userId) {
   return get(comp, 'users/' + userId)
 }
@@ -67,6 +85,7 @@ var fetchOneUser = function (comp, userId) {
 exports.fetchLive = fetchLive
 exports.fetchUsers = fetchUsers
 exports.fetchCurUser = fetchCurUser
+exports.fetchCurUserNoError = fetchCurUserNoError
 exports.fetchOneUser = fetchOneUser
 exports.post = post
 exports.get = get

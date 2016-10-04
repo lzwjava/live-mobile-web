@@ -182,7 +182,7 @@ export default {
     loadAllData() {
       util.loading(this)
       Promise.all([
-        http.fetchCurUser(this),
+        http.fetchCurUserNoError(this),
         http.fetchLive(this, this.liveId),
         http.fetchUsers(this, this.liveId)
       ]).then(values => {
@@ -270,7 +270,7 @@ export default {
         setTimeout(() => {
           this.currentView = 'share-lead'
           this.overlayStatus = true
-        }, 0)        
+        }, 0)
       }
     }
   }
