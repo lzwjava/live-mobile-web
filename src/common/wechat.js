@@ -98,16 +98,17 @@ function configWeixin(comp) {
   })
 }
 
-function share(title, img, text, href) {
+function share(title, img, text, href, comp, liveId) {
   wx.ready(function() {
       wx.onMenuShareTimeline({
           title: title,
           link: href,
           imgUrl: img,
           success: function() {
-              console.log(arguments);
+            comp.$emit('shareTimeline', liveId)
           },
           cancel: function() {
+
           }
       })
       wx.onMenuShareAppMessage({
@@ -116,9 +117,9 @@ function share(title, img, text, href) {
           link: href,
           imgUrl: img,
           success: function() {
-              console.log(arguments);
           },
           cancel: function() {
+
           }
       })
       wx.onMenuShareQQ({
@@ -127,12 +128,12 @@ function share(title, img, text, href) {
           link: href,
           imgUrl: img,
           success: function() {
-              console.log(arguments);
+
           },
           cancel: function() {
           }
       })
-  });
+  })
 }
 
 var menuList = ['menuItem:share:appMessage', 'menuItem:share:timeline',
@@ -165,7 +166,7 @@ function linkUrl(liveId) {
   return url
 }
 
-function shareLive(live) {
+function shareLive(comp, live) {
   var iconUrl;
   if (live.liveId == 90) {
     iconUrl = live.owner.avatarUrl
@@ -173,12 +174,12 @@ function shareLive(live) {
     iconUrl = live.coverUrl
   }
   var title = live.owner.username + '的直播：' + live.subject
-  share(title, iconUrl, title, linkUrl(live.liveId))
+  share(title, iconUrl, title, linkUrl(live.liveId), comp, live.liveId)
 }
 
-function shareApp() {
+function shareApp(comp) {
   var title = '趣直播-知识直播平台'
-  share(title, 'http://i.quzhiboapp.com/logo.png', title, linkUrl(0))
+  share(title, 'http://i.quzhiboapp.com/logo.png', title, linkUrl(0), 0)
 }
 
 function attendLiveAndPay(comp, liveId) {

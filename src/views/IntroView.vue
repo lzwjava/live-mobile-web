@@ -31,8 +31,6 @@
         <div class="time-label">直播时间</div>
         <div class="plan-time">{{live.planTs | formatTimeCommon}} ({{timeGap}})</div>
 
-
-
       </div>
 
     </div>
@@ -51,7 +49,7 @@
       </div>
 
       <div class="attend-action section">
-        <button class="btn btn-blue attend-btn" @click="attendLive">{{btnTitle}}</button>
+        <button class="btn btn-blue attend-btn" @click="attendLive" v-html="btnTitle"></button>
       </div>
 
     </div>
@@ -132,9 +130,17 @@ export default {
         statusWord = '收看回播';
       }
       if (this.live.canJoin) {
-        return '已报名，进入直播间'
+        return '已报名，进入直播间' + statusWord
       } else if (this.curUser.userId) {
-        return '赞助并' + statusWord + '(¥' + (this.live.amount /100) + ')'
+        var amountWord;
+        if (this.live.shareId != null) {
+          amountWord = '¥' + this.moneyToYuan(this.live.realAmount)  +
+          '  <span class="origin">' +'¥' + this.moneyToYuan(this.live.amount)+ '</span>'
+        } else {
+          amountWord = '¥' + this.moneyToYuan(this.live.amount)  +
+          '<span class="share-tips">' + '（分享朋友圈感恩1元）' + '<span>'
+        }
+        return '赞助并' + statusWord + amountWord
       } else {
         return '请登录后' + statusWord
       }
@@ -149,13 +155,7 @@ export default {
   route: {
     data ({ to }) {
       this.liveId = to.params.liveId
-      this.loadCurUser()
-      this.fetchData()
-      if (to.query.action == 'pay') {
-        setTimeout(()=> {
-          this.pay()
-        }, 500)
-      }
+      this.loadAllData()
     }
   },
   created () {
@@ -166,39 +166,34 @@ export default {
     debug('destroyed')
   },
   methods: {
-    loadCurUser () {
-      http.fetchCurUser(this)
-      .then((user) => {
-        this.curUser = user
-      }).catch((error) => {
-      })
+    moneyToYuan(amount) {
+      return amount /100.0
     },
-    fetchData () {
-      this.fetchLive()
-      this.fetchUsers()
-    },
-    fetchLive () {
+    loadAllData() {
       util.loading(this)
-      http.fetchLive(this, this.liveId)
-      .then((data) => {
+      Promise.all([
+        http.fetchCurUser(this),
+        http.fetchLive(this, this.liveId),
+        http.fetchUsers(this, this.liveId)
+      ]).then(values => {
         util.loaded(this)
-        this.live = data
+
+        this.curUser = values[0]
+        this.live = values[1]
+        this.attendedUsers = values[2]
+
         wechat.configWeixin(this)
           .then(() => {
             wechat.showOptionMenu()
-            wechat.shareLive(this.live)
+            wechat.shareLive(this, this.live)
         }).catch(util.promiseErrorFn(this))
-      })
-      .catch(util.promiseErrorFn(this))
-    },
-    fetchUsers () {
-      util.loading(this)
-      http.fetchUsers(this, this.liveId)
-      .then((data) => {
-        util.loaded(this)
-        this.attendedUsers = data
-      })
-      .catch(util.promiseErrorFn(this))
+
+        // if (to.query.action == 'pay') {
+        //   setTimeout(()=> {
+        //     this.pay()
+        //   }, 500)
+        // }
+      }).catch(util.promiseErrorFn(this))
     },
     attendLive () {
       if (this.live.canJoin) {
@@ -209,6 +204,14 @@ export default {
         this.$router.go('/register?redirectUrl=/intro/' + this.liveId)
       }
     },
+    reloadLive() {
+      util.loading(this)
+      http.fetchLive(this, this.liveId)
+        .then((data) => {
+          util.loaded(this)
+          this.live = data
+        }).catch(util.promiseErrorFn(this))
+    },
     createLive() {
       this.$router.go('/scan')
     },
@@ -216,7 +219,7 @@ export default {
       wechat.attendLiveAndPay(this, this.liveId)
         .then(() => {
           util.show(this, 'success', '支付成功')
-          this.fetchData()
+          this.reloadLive()
         }, util.promiseErrorFn(this))
     },
     goUsers() {
@@ -229,14 +232,18 @@ export default {
       this.$router.go('/contact')
     }
   },
-
-  filters: {
-    moneyAsYuan: function (money) {
-      if (!money) {
-        return 0
-      } else {
-        return money / 100
-      }
+  events:  {
+    'shareTimeline': function(liveId) {
+      debug('event shareTimeline fired liveId' + liveId)
+      util.loading(this)
+      http.post(this, 'shares', {
+        liveId: liveId,
+        shareTs: Math.round(new Date().getTime()/1000)
+      }).then((result) => {
+        util.loaded(this)
+        util.show('分享朋友圈成功，可优惠参与直播')
+        this.reloadLive()
+      }).catch(util.promiseErrorFn(this))
     }
   }
 }
@@ -245,6 +252,7 @@ export default {
 <style lang="stylus">
 
 @import "../stylus/base.styl"
+@import "../stylus/variables.styl"
 
 .intro-view
     .section
@@ -319,6 +327,12 @@ export default {
         .attend-btn
           font-size 16px
           width 90%
+          .origin
+            font-size 13px
+            text-decoration line-through
+          .share-tips
+            font-size 13px
+            color #FFFFFF
     .detail-section
       .detail-label
         font-size 16px

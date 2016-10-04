@@ -30,7 +30,7 @@ function moneyAsYuan (money) {
   if (!money) {
     return 0
   } else {
-    return money / 100
+    return money / 100.0
   }
 }
 

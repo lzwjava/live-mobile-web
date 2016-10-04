@@ -182,7 +182,7 @@ export default {
 
         wechat.configWeixin(this)
         wechat.showOptionMenu()
-        wechat.shareLive(this.live)
+        wechat.shareLive(this, this.live)
         this.openClient()
         this.playHls()
 

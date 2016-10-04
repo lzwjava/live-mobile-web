@@ -45,7 +45,8 @@ export default {
   },
   data() {
     return {
-      lives: []
+      lives: [],
+      curUser: {}
     }
   },
   created() {
@@ -53,16 +54,21 @@ export default {
   route: {
     data ({to}) {
       util.loading(this)
-      wechat.configWeixin(this)
-      .then(() => {
-        wechat.showOptionMenu()
-        wechat.shareApp()
+      Promise.all([
+        http.get(this, 'lives/on'),
+        http.fetchCurUser(this)
+      ]).then(values => {
+        util.loaded(this)
+
+        this.lives = values[0]
+        this.curUser = values[1]
+
+        wechat.configWeixin(this)
+        .then(() => {
+          wechat.showOptionMenu()
+          wechat.shareApp(this)
+        })
       })
-      http.get(this, 'lives/on')
-       .then((data) => {
-         util.loaded(this)
-         this.lives = data
-       }, util.promiseErrorFn(this))
     }
   },
   methods: {
