@@ -75,7 +75,32 @@
 
     </div>
 
+    <div class="contact-section card-group">
+
+      <div class="title-label">
+        订阅最新直播
+      </div>
+
+      <div class="contact-detail">
+        <p>
+          趣直播负责人、21岁的CEO，可加他微信来加入趣直播用户群、获取最新直播信息：
+        </p>
+        <br>
+        <div class="img-area">
+          <img src="http://i.quzhiboapp.com/wechat_xin.png" alt="" />
+        </div>
+      </div>
+
+    </div>
+
     <div class="create-section">
+
+      <a class="create-link" @click.prevent="goQulive">趣直播是什么?</a>
+
+      <br>
+
+      <br>
+
       <a class="create-link" @click.prevent="createLive">创建您的直播?</a>
     </div>
 
@@ -83,12 +108,9 @@
       <a @click.prevent="seeLives">查看全部的直播</a>
     </div>
 
-
-
     <overlay :overlay.sync="overlayStatus">
         <component :is="currentView"></component>
     </overlay>
-
 
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
 
@@ -283,6 +305,9 @@ export default {
     },
     goContact() {
       this.$router.go('/contact')
+    },
+    goQulive() {
+      this.$router.go('/intro/7')
     }
   },
   events:  {
@@ -324,6 +349,10 @@ export default {
 .intro-view
     .section
       background-color #fff
+    .title-label
+      font-size 16px
+      margin 10px 0
+      color #828282
     .cover-section
       padding 0px
       margin-bottom 5px
@@ -415,7 +444,7 @@ export default {
         margin 10px 0
         color #828282
       .markdown-body
-        padding 25px
+        padding 10px 20px
         font-size 16px
         color rgb(112, 112, 112)
         line-height 28px !important
@@ -429,6 +458,12 @@ export default {
       font-size 15px
       a
         color #8A8A8A
+    .contact-section
+      .contact-detail
+        padding 10px 20px
+        color rgb(112, 112, 112)
+      .img-area
+        text-align center
     .list-section
       text-align center
       margin-bottom 0px !important
