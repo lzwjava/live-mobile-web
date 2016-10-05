@@ -13,6 +13,8 @@
          :style="{ backgroundImage: 'url(' + live.coverUrl + ')' }">
         </video>
 
+        <div class="canplay" v-show="playStatus == 0" @click="canPlayClick"></div>
+
       </div>
 
     </div>
@@ -155,7 +157,8 @@ export default {
       liveId: 0,
       overlayStatus: false,
       currentView: 'pay-form',
-      videoHeight: 250
+      videoHeight: 250,
+      playStatus: 0
     }
   },
   computed: {
@@ -240,7 +243,33 @@ export default {
         //     this.pay()
         //   }, 500)
         // }
+
+        setTimeout(() => {
+          this.configPreviewImages()
+        },0)
       }).catch(util.promiseErrorFn(this))
+    },
+    configPreviewImages() {
+      var detailSection = document.querySelector('.detail-section')
+      var images = detailSection.getElementsByTagName('img')
+      var urls = []
+      for (var i = 0; i< images.length;i++) {
+        var image = images[i]
+        urls.push(image.currentSrc)
+      }
+      urls.push('http://i.quzhiboapp.com/wechat_xin.png')
+
+      for (var i = 0; i< images.length;i++) {
+        var image = images[i]
+        image.addEventListener('click', (event) => {
+          var img =  event.srcElement
+          debug('preview' + img.currentSrc)
+          wx.previewImage({
+              current: img.currentSrc,
+              urls: urls
+          })
+        })
+      }
     },
     playVideo() {
       if (!this.live.previewUrl) {
@@ -264,6 +293,11 @@ export default {
           }
         })
       }
+    },
+    canPlayClick() {
+      this.playStatus = 1
+      var video = document.querySelector("video")
+      video.play()
     },
     attendLive () {
       if (this.live.canJoin) {
@@ -358,11 +392,25 @@ export default {
       margin-bottom 5px
       .cover-img
         width 100%
-      video
-        background-color transparent
-        background-position center
-        background-repeat no-repeat
-        background-size cover
+      .preview
+        position relative
+        video
+          background-color transparent
+          background-position center
+          background-repeat no-repeat
+          background-size cover
+        video::-webkit-media-controls-start-playback-button
+          display none
+        .canplay
+          position absolute
+          width 70px
+          height 70px
+          left 50%
+          top 50%
+          margin-left -35px
+          margin-top -35px
+          background url("../img/video-play.png") center no-repeat
+          background-size 100% 100%
     .header-section
       .avatar
         width 80px

@@ -113,7 +113,7 @@ function share(title, img, text, href, comp, liveId) {
       })
       wx.onMenuShareAppMessage({
           title: title,
-          desc: text + '...',
+          desc: '来自趣直播-知识直播平台',
           link: href,
           imgUrl: img,
           success: function() {
@@ -124,7 +124,7 @@ function share(title, img, text, href, comp, liveId) {
       })
       wx.onMenuShareQQ({
           title: title,
-          desc: text + '...',
+          desc: '来自趣直播-知识直播平台',
           link: href,
           imgUrl: img,
           success: function() {
