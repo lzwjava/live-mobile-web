@@ -15,6 +15,7 @@ import ScanView from './views/ScanView.vue'
 import ListView from './views/ListView.vue'
 import ProfileView from './views/ProfileView.vue'
 import ContactView from './views/ContactView.vue'
+import MyListView from './views/MyListView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -43,7 +44,7 @@ if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading,IntroView,' +
-    'UsersView,main,http,RegisterView,WeChatView,api';
+    'UsersView,main,http,RegisterView,WeChatView,api,LiveList,ListNav';
 }
 
 // routing
@@ -79,6 +80,9 @@ router.map({
   },
   'contact': {
     component: ContactView
+  },
+  'mylist': {
+    component: MyListView
   }
 })
 

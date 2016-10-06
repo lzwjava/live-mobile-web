@@ -2,26 +2,129 @@
 
   <div class="live-list">
 
+    <ul class="live-list-ul">
+      <li class="live-item" @click="goIntro(live.liveId)" v-for="live in lives">
+        <user-avatar :user="live.owner"></user-avatar>
+
+        <div class="live-info">
+          <p class="subject">{{live.subject}}</p>
+          <p class="owner-name">{{live.owner.username}}</p>
+          <div class="live-item-tag">
+            <span class="time-label" v-show="live.status == 10">
+              {{timeGap(live)}}{{timeWord(live)}}
+            </span>
+
+            <span class="on-label" v-show="live.status == 20">
+              正在直播
+            </span>
+
+            <span class="attend-label" v-show="live.status == 30">
+              {{live.attendanceCount}} 人参与
+            </span>
+
+          </div>
+        </div>
+
+        <svg fill="currentColor" class="arrow" width="48" height="48" viewBox="0 0 48 48"><title>arrow</title><path d="M19.608308 11.291022c-.39064-.387697-1.037868-.388717-1.42788-.019096l-1.879672 1.7814c-.397956.37715-.40446 1.001224-.020242 1.388148l9.488537 9.55542-9.488535 9.55542c-.386777.389504-.36977 1.01853.020242 1.38815l1.879672 1.7814c.397955.37715 1.041186.364683 1.42788-.019096l12.09502-12.003886c.39064-.387697.386693-1.020195 0-1.403974L19.60831 11.291022z" fill-rule="evenodd"></path></svg>
+      </li>
+    </ul>
+
   </div>
 
 </template>
 
 <script type="text/javascript">
 
+var debug = require('debug')('LiveList')
+
+import util from '../common/util'
+import UserAvatar from '../components/user-avatar.vue'
+
 export default {
-  name: 'LiveList'
+  name: 'LiveList',
+  props: ['lives'],
   data() {
     return {
     }
   },
+  created() {
+    debug('lives:%j', this.lives.count)
+  },
+  ready() {
+    debug('lives:%j', this.lives.count)
+  },
   components: {
+    'user-avatar': UserAvatar
   },
   methods: {
+    timeGap (live) {
+      return util.timeGap(live.planTs)
+    },
+    timeWord(live) {
+      return '开始'
+    },
+    goIntro(liveId) {
+      this.$router.go('/intro/' + liveId)
+    }
   }
 }
 
 </script>
 
 <style media="screen" lang="stylus">
+
+.live-list-ul
+  .live-item
+    border-width 1px 0
+    border solid #eee
+    background-color #fff
+    height 80px
+    padding 10px 10px
+    position relative
+    .avatar
+        width 50px
+        height 50px
+        display inline-block
+        margin-top 15px
+    .live-info
+      display inline-block
+      position absolute
+      top 10px
+      bottom 10px
+      left 70px
+      right 24px
+      height 80px
+      .owner-name
+        color #6E6E6E
+      p.subject
+        height 30px
+        overflow hidden
+        text-overflow ellipsis
+        word-wrap break-word
+        font-weight bold
+      .on-label
+        color #fff
+        background-color #00BDEF
+        border-color #64b3f1
+        border-radius 3px
+        font-size 14px
+        line-height 18px
+        padding 3px 5px
+        font-size 14px
+      .time-label
+        color #00bdef
+        border 1px solid #00bdef
+        border-radius 3px
+        padding 2px 3px
+        font-size 14px
+      .attend-label
+        font-size 14px
+    .arrow
+      float right
+      color #cecee0
+      width 24px
+      height 24px
+      margin-top 25px
+
 
 </style>
