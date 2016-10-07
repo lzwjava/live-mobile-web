@@ -154,7 +154,9 @@ export default {
       code: '',
       curUser: {},
       live: {
-        owner: {}
+        owner: {
+          username: ''
+        }
       },
       attendedUsers: [],
       liveId: 0,
@@ -203,7 +205,7 @@ export default {
       return util.statusText(this.live.status)
     },
     introTitle() {
-      return this.live.owner.username + '的直播'
+      return this.live.owner.username + ' 的直播'
     }
   },
   route: {
