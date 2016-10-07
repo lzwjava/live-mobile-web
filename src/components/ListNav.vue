@@ -66,14 +66,13 @@ export default {
     }
   },
   created() {
-    debug('mode: %j', this.mode)
-    api.fetchCurUserNoError(this)
-     .then((data) => {
-       this.curUser = data
-     })
+    this.$emit('updateCurUser')
+  },
+  ready() {
   },
   route: {
     data ({to}) {
+      debug('route nav')
     }
   },
   methods: {
@@ -107,6 +106,13 @@ export default {
     }
   },
   events: {
+    'updateCurUser': function() {
+      debug('mode: %j', this.mode)
+      api.fetchCurUserNoError(this)
+       .then((data) => {
+         this.curUser = data
+       })
+    }
   }
 }
 

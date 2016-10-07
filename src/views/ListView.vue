@@ -33,8 +33,7 @@ export default {
   },
   data() {
     return {
-      lives: [],
-      curUser: {}
+      lives: []
     }
   },
   created() {
@@ -42,14 +41,13 @@ export default {
   route: {
     data ({to}) {
       util.loading(this)
+      this.$broadcast('updateCurUser')
       Promise.all([
-        http.get(this, 'lives/on'),
-        http.fetchCurUserNoError(this)
+        http.get(this, 'lives/on')
       ]).then(values => {
         util.loaded(this)
 
         this.lives = values[0]
-        this.curUser = values[1]
 
         wechat.configWeixin(this)
         .then(() => {
