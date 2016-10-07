@@ -1,27 +1,33 @@
 <template>
   <div class="contact-view">
+    <p>您好，我们会将每次的直播预告发送到公众号里，欢迎关注：<p>
 
-    <p>
-      您好，我是趣直播的创始人李智维，如果产品有任何 Bug、对产品有建议，欢迎加我微信好友反馈，感谢感谢。我朋友圈也会发一些直播通知和趣直播的进展，对此感兴趣的也可加好友。
+    <img src="../img/qrcode_subscribe.jpg"/>
 
-      <br>
-      <br>
+    <p>如果您有任何产品意见或使用上遇到 Bug，或想更多了解我们这个产品，也欢迎加趣直播创始人&21岁的小伙子的微信：</p>
 
-      我是一个21岁的小伙子，之前大二休学了在 LeanCloud 工作了一年半，大三创业做了 Reviewcode.cn，营收 15万；接着和前聚美副总裁一起创业做直播电商，现在自己创业做趣直播项目。我们刚融了百万级天使轮。也举行了一个 <a href="#intro/49">融资发布会直播</a>，我讲述了我们融资的过程、创业体会和我积累人脉的一些经验，您可以报名收看回播了解我们哈。所以如果想和我交朋友，也可加我好友哈。
+    <img src="http://i.quzhiboapp.com/wechat_xin.png" alt="" />
 
-    </p>
-
-    <br>
-
-    <div class="img-area">
-      <img src="http://i.quzhiboapp.com/wechat_xin.png" alt="" />
-    </div>
+    <p>最后可收看<a @click.prevent="goRelease">发布会</a>回播了解趣直播。</p>
 
   </div>
 
 </template>
 
 <script type="text/javascript">
+
+export default {
+  name: 'ContactView',
+  data() {
+    return {
+    }
+  },
+  methods: {
+    goRelease()  {
+      this.$router.go('/intro/7')
+    }
+  }
+}
 
 </script>
 
@@ -33,8 +39,8 @@
   background #fff
   padding 20px
   color rgb(112, 112, 112)
-  .img-area
-    text-align center
+  img
+    width 80%
   a
     color #2A9DBB
 

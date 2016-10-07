@@ -2,7 +2,7 @@
 
   <div class="my-list-view">
 
-    <list-nav :mode="1"></list-nav>
+    <list-nav :mode="2"></list-nav>
 
     <div v-show="login == 1">
       <p class="lives-title">

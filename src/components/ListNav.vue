@@ -2,24 +2,36 @@
 
   <div class="list-nav">
 
-    <div class="segment-control">
+    <div class="intro-title" v-show="title">
+      <a href="#" class="all-btn" @click.prevent="goAll">全部直播</a>
 
-      <a href="#" @click.prevent="goList" class="segment-item" :class="{'segment-active': mode==0}">全部直播</a><a href="#" @click.prevent="goMylist" class="segment-item right-item" :class="{'segment-active': mode==1}">我的直播</a>
+      <span href="#" class="title">{{title}}</span>
+    </div>
+
+    <div class="segment-control" v-show="!title">
+
+      <a href="#" @click.prevent="goList" class="segment-item" :class="{'segment-active': mode==1}">全部直播</a><a href="#" @click.prevent="goMylist" class="segment-item right-item" :class="{'segment-active': mode==2}">我的直播</a>
 
     </div>
 
     <div class="right-drop">
-      <div class="login-area" v-show="!curUser.username">
-        <a href="#" class="login-btn" @click.prevent="login">登录</a>
-        <a href="#" class="register-btn" @click.prevent="register">注册</a>
-      </div>
+
+      <dropdown v-show="!curUser.username">
+        <div class="dropdown-anchor" slot="showText">
+          <img class="default-avatar" src="../img/defaultAvatar.png"/>
+        </div>
+        <div slot="options">
+          <a href="#" class="dropdown-item" @click.prevent="login">登录</a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item" @click.prevent="register">注册</a>
+        </div>
+      </dropdown>
 
       <dropdown v-show="curUser.username">
         <div class="dropdown-anchor" slot="showText">
           <user-avatar :user="curUser" @click="viewUserDropdown"></user-avatar>
         </div>
         <div slot="options">
-          <div class="dropdown-divider"></div>
           <a class="dropdown-item" @click="logout" href="/">注销</a>
         </div>
 
@@ -46,7 +58,7 @@ export default {
     'user-avatar': UserAvatar,
     'dropdown': Dropdown
   },
-  props: ['mode'],
+  props: ['mode', 'title'],
   data() {
     return {
       curUser: {},
@@ -89,6 +101,9 @@ export default {
         //this.$router.go('/lives')
         window.location.reload()
       }, util.httpErrorFn(this));
+    },
+    goAll() {
+      this.$router.go('/lives')
     }
   },
   events: {
@@ -111,22 +126,25 @@ export default {
     height 100%
     position absolute
     right 0
-    .login-area
-      position absolute
-      right 15px
-      top 50%
-      transform translateY(-50%)
-      a
-        color #828282
-      .login-btn
-        margin-right 8px
-    .avatar
+    .avatar,.default-avatar
       position absolute
       width 35px
       height 35px
       right 15px
       top 50%
       transform translateY(-50%)
+  .intro-title
+    .all-btn
+      color #828282
+      position absolute
+      left 10px
+      font-size 14px
+      top 50%
+      transform translateY(-50%)
+    span
+      color #828282
+      font-size 18px
+      font-weight bold
   .segment-control
     border 1px solid #00BDEF
     border-radius 4px

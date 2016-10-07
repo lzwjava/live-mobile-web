@@ -2,9 +2,16 @@
 
   <div class="list-view">
 
-    <list-nav :mode="0"></list-nav>
+    <list-nav :mode="1"></list-nav>
 
-    <live-list :lives="lives"></live-list>
+    <div>
+
+      <div class="subscribe" @click="goSubscribe">
+        <span class="subscribe-btn" >订阅最新直播</span>
+      </div>
+
+      <live-list :lives="lives"></live-list>
+    </div>
 
   </div>
 
@@ -53,11 +60,26 @@ export default {
     }
   },
   methods: {
+    goSubscribe() {
+      this.$router.go('/contact')
+    }
   }
 }
 
 </script>
 
 <style lang="stylus">
+
+.list-view
+  .subscribe
+    border-width 1px 0
+    border solid #eee
+    background-color #fff
+    padding 10px 10px
+    position relative
+    text-align center
+    margin-top 3px
+    .subscribe-btn
+      color #00ABD8
 
 </style>

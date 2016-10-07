@@ -75,13 +75,8 @@
       padding 2px 5px 2px 13px
       margin-bottom 3px
       z-index: 20;
-      &:last-child
-        opacity 0.6
       &:hover
         color #1cb2ef
-        &:last-child
-          opacity 0.6
-          color #EF0031
     .dropdown-divider
       border-top: 1px solid #ddd
       opacity 0.75

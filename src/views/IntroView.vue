@@ -2,6 +2,8 @@
 
   <div class="intro-view">
 
+    <list-nav :mode="0" :title="introTitle"></list-nav>
+
     <div class="cover-section">
 
       <img class="cover-img" :src="live.coverUrl" alt="cover" v-show="!live.previewUrl"/>
@@ -35,9 +37,9 @@
               {{statusText}}
           </div>
 
-          <div class="feedback" @click="goContact">
+          <!-- <div class="feedback" @click="goContact">
             订阅直播
-          </div>
+          </div> -->
         </div>
 
 
@@ -85,7 +87,7 @@
 
       <div class="contact-detail">
         <p>
-          趣直播负责人、21岁的CEO，可加他微信来加入趣直播用户群、获取最新直播信息：
+          趣直播负责人、21岁的小伙子，可加他微信来加入趣直播用户群、获取最新直播信息：
         </p>
         <br>
         <div class="img-area">
@@ -106,9 +108,9 @@
       <a class="create-link" @click.prevent="createLive">创建您的直播?</a>
     </div>
 
-    <div class="list-section card-group">
+    <!-- <div class="list-section card-group">
       <a @click.prevent="seeLives">查看全部的直播</a>
-    </div>
+    </div> -->
 
     <overlay :overlay.sync="overlayStatus">
         <component :is="currentView"></component>
@@ -130,6 +132,7 @@ import http from '../common/api'
 import Overlay from '../components/overlay.vue'
 import PayForm from '../components/PayForm.vue'
 import ShareLead from '../components/ShareLead.vue'
+import ListNav from '../components/ListNav.vue'
 import {Button, Toast} from 'vue-weui'
 
 var debug = require('debug')('IntroView');
@@ -143,9 +146,9 @@ export default {
     'weui-button': Button,
     'toast': Toast,
     'pay-form': PayForm,
-    'share-lead': ShareLead
+    'share-lead': ShareLead,
+    'list-nav': ListNav
   },
-
   data () {
     return {
       code: '',
@@ -198,6 +201,9 @@ export default {
     },
     statusText()  {
       return util.statusText(this.live.status)
+    },
+    introTitle() {
+      return this.live.owner.username + '的直播'
     }
   },
   route: {
@@ -389,7 +395,7 @@ export default {
       color #828282
     .cover-section
       padding 0px
-      margin-bottom 5px
+      margin-top 10px
       .cover-img
         width 100%
       .preview
@@ -497,7 +503,7 @@ export default {
         color rgb(112, 112, 112)
         line-height 28px !important
     .card-group
-      margin-bottom 10px
+      margin-top 10px
       background-color #fff
       padding 10px
     .create-section
