@@ -76,6 +76,8 @@ export default {
   position relative
   width 100%
   min-height 100%
+  max-width 600px
+  margin 0 auto
 
 .view
   position absolute

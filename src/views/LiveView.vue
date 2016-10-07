@@ -435,7 +435,7 @@ export default {
       this.$router.go('/scan?liveId=' + this.live.liveId)
     },
     inputFocus() {
-      this.inputing = 1
+      // this.inputing = 1
     },
     inputBlur(e) {
       debug(e)
