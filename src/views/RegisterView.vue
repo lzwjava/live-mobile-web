@@ -4,22 +4,24 @@
       <div v-show="step == 0" class="step-one">
         <div class="tips input-mobile-tips">嘿，微信登录成功<br> 请接着绑定手机号 <br>以便短信通知您直播开始</div>
 
-        <input class="mobile-input" type="number" v-model="mobile">
+        <input class="mobile-input" type="number" v-model="mobile" autofocus>
 
         <button class="btn btn-blue" @click="requestSms">继续</button>
+
+        <p class="small-tips">国外手机号码或遇到问题请<a href="#" @click.prevent="goContact">联系我们</a></p>
 
       </div>
 
       <div v-show="step == 1" class="step-two">
         <div class="tips sms-code-tips">
-          验证码已发送给您 <br>请输入验证码
+          验证码已发送给 <br>您的手机{{mobile}} <br>请稍等片刻输入验证码
         </div>
 
-        <input class="sms-code-input" type="number" v-model="code">
+        <input class="sms-code-input" type="number" v-model="code" autofocus>
 
         <button class="btn btn-blue" @click="registerBySns">完成</button>
 
-        <p class="small-tips">这可能要花一些时间 <br>请稍等片刻</p>
+        <p class="small-tips">这可能要花一些时间，遇到问题请<a href="#" @click.prevent="goContact">联系我们</a></p>
 
       </div>
 
@@ -115,6 +117,9 @@ export default {
       }, util.promiseErrorFn(this, () => {
         this.loading = false
       }))
+    },
+    goContact() {
+      this.$router.go('/contact')
     }
   }
 }
@@ -158,9 +163,11 @@ export default {
       margin-top 60px
       text-align center
     .small-tips
-      margin-top 20px
-      font-size 14px
+      margin-top 40px
+      font-size 16px
       color #8C9CA3
+      a
+        color #00ABD8
     button
       width 150px
       height 44px

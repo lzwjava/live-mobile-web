@@ -69,15 +69,17 @@ export default {
 
 <style lang="stylus">
 
-@import "../stylus/variables.styl"
-@import "../stylus/base.styl"
+@import '../stylus/variables.styl'
+@import '../stylus/base.styl'
+@import '../../node_modules/rupture/rupture/index.styl'
 
 #wrapper
   position relative
   width 100%
   min-height 100%
-  max-width 600px
-  margin 0 auto
+  +above(800px)
+    margin 0 auto
+    max-width 600px
 
 .view
   position absolute
