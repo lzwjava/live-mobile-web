@@ -19,9 +19,8 @@
 
     <div class="not-login" v-show="login == 2">
 
-      <p>您尚未注册</p>
+      <p>您尚未登录或注册</p>
 
-      <button @click="goRegister" class="btn btn-blue">注册趣直播</button>
     </div>
 
   </div>
@@ -71,9 +70,6 @@ export default {
     }
   },
   methods: {
-    goRegister () {
-      this.$router.go('/register/?liveId=0')
-    }
   }
 }
 
