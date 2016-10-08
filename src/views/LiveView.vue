@@ -392,7 +392,7 @@ export default {
         debug('event')
         debug(ev)
         if (video.networkState == HTMLMediaElement.NETWORK_NO_SOURCE) {
-          util.show(this, 'error', '加载直播失败')
+          //util.show(this, 'error', '加载直播失败')
         }
       })
       var events = ['abort', 'canplay', 'canplaythrough', 'durationchange', 'emptied', 'loadeddata',
