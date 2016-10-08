@@ -97,11 +97,12 @@
 
       <div class="contact-detail">
         <p>
-          可关注趣直播公众号，来获取最新直播推送：
+          <!-- 可关注趣直播公众号，来获取最新直播推送： -->
+          可加趣直播负责人、21岁小伙子的微信，来加入趣直播用户群获取最新直播通知：
         </p>
         <br>
         <div class="img-area">
-          <img src="../img/qrcode_subscribe.jpg" alt="" />
+          <img src="../img/qrcode_me.jpg" alt="" />
         </div>
       </div>
 
