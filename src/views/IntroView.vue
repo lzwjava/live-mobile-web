@@ -87,11 +87,11 @@
 
       <div class="contact-detail">
         <p>
-          趣直播负责人、21岁的小伙子，可加他微信来加入趣直播用户群、获取最新直播信息：
+          可关注趣直播公众号，来获取最新直播推送：
         </p>
         <br>
         <div class="img-area">
-          <img src="http://i.quzhiboapp.com/wechat_xin.png" alt="" />
+          <img src="../img/qrcode_subscribe.jpg" alt="" />
         </div>
       </div>
 
@@ -520,6 +520,8 @@ export default {
         color rgb(112, 112, 112)
       .img-area
         text-align center
+        img
+          width 100%
     .list-section
       text-align center
       margin-bottom 0px !important
