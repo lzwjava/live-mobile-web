@@ -265,7 +265,7 @@ export default {
         var image = images[i]
         urls.push(image.currentSrc)
       }
-      urls.push('http://i.quzhiboapp.com/wechat_xin.png')
+      // urls.push('http://i.quzhiboapp.com/wechat_xin.png')
 
       for (var i = 0; i< images.length;i++) {
         var image = images[i]
