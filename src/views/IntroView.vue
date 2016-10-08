@@ -69,9 +69,19 @@
 
     </div>
 
+    <div class="speaker-section card-group" v-show="live.speakerIntro">
+
+      <div class="title-label">
+        主播简介
+      </div>
+
+      <markdown :content="live.speakerIntro" :show=true></markdown>
+
+    </div>
+
     <div class="detail-section card-group">
 
-      <div class="detail-label">
+      <div class="title-label">
         直播详情
       </div>
 
@@ -494,6 +504,12 @@ export default {
       .video-label
         margin 10px 0
         color #828282
+    .speaker-section
+      .markdown-body
+        padding 10px 20px
+        font-size 16px
+        color rgb(112, 112, 112)
+        line-height 28px !important
     .detail-section
       .detail-label
         font-size 16px
