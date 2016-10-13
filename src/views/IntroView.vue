@@ -241,7 +241,8 @@ export default {
       Promise.all([
         http.fetchCurUserNoError(this),
         http.fetchLive(this, this.liveId),
-        http.fetchUsers(this, this.liveId)
+        http.fetchUsers(this, this.liveId),
+        wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
 
@@ -249,11 +250,9 @@ export default {
         this.live = values[1]
         this.attendedUsers = values[2]
 
-        wechat.configWeixin(this)
-          .then(() => {
-            wechat.showOptionMenu()
-            wechat.shareLive(this, this.live)
-        }).catch(util.promiseErrorFn(this))
+        wechat.showOptionMenu()
+        wechat.shareLive(this, this.live)
+
         setTimeout(() => {
           //this.playVideo()
         }, 0)

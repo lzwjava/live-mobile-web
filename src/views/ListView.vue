@@ -43,17 +43,16 @@ export default {
       util.loading(this)
       this.$broadcast('updateCurUser')
       Promise.all([
-        http.get(this, 'lives/on')
+        http.get(this, 'lives/on'),
+        wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
 
         this.lives = values[0]
 
-        wechat.configWeixin(this)
-        .then(() => {
-          wechat.showOptionMenu()
-          wechat.shareApp(this)
-        })
+        wechat.showOptionMenu()
+        wechat.shareApp(this)
+
       }).catch(util.promiseErrorFn(this))
     }
   },

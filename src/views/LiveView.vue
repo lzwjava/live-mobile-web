@@ -199,7 +199,8 @@ export default {
       this.videoHeight = 250
       Promise.all([
         http.fetchLive(this, this.liveId),
-        http.fetchCurUser(this)
+        http.fetchCurUser(this),
+        wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
 
@@ -211,7 +212,6 @@ export default {
           return
         }
 
-        wechat.configWeixin(this)
         wechat.showOptionMenu()
         wechat.shareLive(this, this.live)
         this.openClient()
