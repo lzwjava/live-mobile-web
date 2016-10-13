@@ -7,7 +7,11 @@
     <div>
 
       <div class="subscribe" @click="goSubscribe">
-        <span class="subscribe-btn" >订阅最新直播</span>
+        <span class="subscribe-btn" >订阅直播</span>
+      </div>
+
+      <div class="subscribe" @click="goCreate">
+        <span class="subscribe-btn" >创建直播</span>
       </div>
 
       <live-list :lives="lives"></live-list>
@@ -59,6 +63,9 @@ export default {
   methods: {
     goSubscribe() {
       this.$router.go('/contact')
+    },
+    goCreate() {
+      this.$router.go('/scan')
     }
   }
 }
