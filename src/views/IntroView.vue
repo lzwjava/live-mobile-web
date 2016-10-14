@@ -43,7 +43,7 @@
         </div>
 
 
-        <div class="time-label">直播时间</div>
+        <div class="time-label">直播时间(如无法参与，可观看回播)</div>
         <div class="plan-time">{{live.planTs | formatTimeCommon}} ({{timeGap}})</div>
 
       </div>
