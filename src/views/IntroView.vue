@@ -43,7 +43,7 @@
         </div>
 
 
-        <div class="time-label">直播时间(如无法参与，可观看回播)</div>
+        <div class="time-label">直播时间(如无法参与可看回播)</div>
         <div class="plan-time">{{live.planTs | formatTimeCommon}} ({{timeGap}})</div>
 
       </div>
@@ -347,6 +347,7 @@ export default {
         .then(() => {
           util.show(this, 'success', '支付成功')
           this.reloadLive()
+          this.$router.go('/live/' + this.liveId)
         }, util.promiseErrorFn(this))
     },
     goUsers() {
