@@ -356,14 +356,12 @@ export default {
                   var afterHeight = msgList.scrollHeight
                   msgList.scrollTop = afterHeight-originHeight
                 }, 0)
-                //this.msgs.unshift(result.value)
               }
             }, (error) => {
               util.loaded(this)
               util.show(this, 'error', error)
             })
           }
-          // msgList.scrollHeight < msgList.scrollTop + msgList.offsetHeight + 100
         })
       }, 0)
     },
