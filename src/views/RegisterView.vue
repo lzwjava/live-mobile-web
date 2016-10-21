@@ -108,7 +108,7 @@ export default {
         this.$dispatch('toast', '注册成功', 1000, () => {
           //window.location.href = ''
           var liveId = window.localStorage.getItem('registerLiveId')
-          if (liveId) {
+          if (liveId && liveId !=0) {
             this.$router.go('/intro/' + liveId)
           } else {
             this.$router.go('/lives')
