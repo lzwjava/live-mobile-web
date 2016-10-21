@@ -335,6 +335,38 @@ export default {
     toggleMode() {
       this.inputMode = !this.inputMode
     },
+    initScroll() {
+      setTimeout(() => {
+        var msgList = this.$els.msgList
+        var messageIterator = this.conv.createMessagesIterator({ limit: 30 })
+        msgList.addEventListener('scroll', (e) => {
+          var list = e.srcElement
+          debug('scroolListener')
+          if (list.scrollTop == 0) {
+            debug('top')
+            util.loading(this)
+            messageIterator.next().then((result) => {
+              util.loaded(this)
+              if (result.done) {
+                util.show(this, 'warn', '没有更多消息了')
+              } else {
+                var originHeight = msgList.scrollHeight
+                this.msgs = result.value.concat(this.msgs)
+                setTimeout(() => {
+                  var afterHeight = msgList.scrollHeight
+                  msgList.scrollTop = afterHeight-originHeight
+                }, 0)
+                //this.msgs.unshift(result.value)
+              }
+            }, (error) => {
+              util.loaded(this)
+              util.show(this, 'error', error)
+            })
+          }
+          // msgList.scrollHeight < msgList.scrollTop + msgList.offsetHeight + 100
+        })
+      }, 0)
+    },
     registerEvent() {
       this.client.on('message', (message, conversation) => {
         if (message.type == TextMessage.TYPE) {
@@ -352,6 +384,7 @@ export default {
       })
     },
     openClient() {
+      this.addSystemMsg('正在连接服务器...')
       realtime.createIMClient(this.curUser.userId + '')
       .then((client) => {
         this.client = client
@@ -381,6 +414,8 @@ export default {
       }).then((conv) => {
         this.inputMsg = '进入了房间'
         this.sendMsg()
+
+        this.initScroll()
       }).catch(this.handleError)
     },
     playHls () {
