@@ -261,7 +261,6 @@ export default {
         //     this.pay()
         //   }, 500)
         // }
-
         setTimeout(() => {
           this.configPreviewImages()
         },0)
