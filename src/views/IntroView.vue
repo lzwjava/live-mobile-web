@@ -263,7 +263,7 @@ export default {
         // }
         setTimeout(() => {
           this.configPreviewImages()
-        },0)
+        },100)
       }).catch(util.promiseErrorFn(this))
     },
     configPreviewImages() {
