@@ -5,11 +5,12 @@
     <img src="../img/computer.png" alt="computer" />
 
     <h4>请在电脑上打开 quzhiboapp.com <br>
-      <span v-show="type == 0">点击按钮登录</span>
-      <span v-show="type == 1">点击按钮在电脑上收看直播</span>
+      然后用微信扫描登录<br>
+      <!-- <span v-show="type == 0">点击按钮登录</span>
+      <span v-show="type == 1">点击按钮在电脑上收看直播</span> -->
     </h4>
 
-    <button class="btn btn-blue" @click="loginWeChat">对准电脑屏幕扫描</button>
+    <!-- <button class="btn btn-blue" @click="loginWeChat">对准电脑屏幕扫描</button> -->
 
     <p class="gray">暂不支持 IE 10 以下的浏览器</p>
 
