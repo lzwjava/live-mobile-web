@@ -5,7 +5,8 @@
     <img src="../img/computer.png" alt="computer" />
 
     <h4>请在电脑上打开 quzhiboapp.com <br>
-      然后用微信扫描登录<br>
+      然后用微信扫一扫登录<br>
+      跟以往的方式有所不同 <br>
       <!-- <span v-show="type == 0">点击按钮登录</span>
       <span v-show="type == 1">点击按钮在电脑上收看直播</span> -->
     </h4>
