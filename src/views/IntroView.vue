@@ -124,7 +124,7 @@
     </div> -->
 
     <overlay :overlay.sync="overlayStatus">
-        <component :is="currentView"></component>
+        <component :is="currentView" :options="payOptions"></component>
     </overlay>
 
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
@@ -141,7 +141,7 @@ import UserAvatar from '../components/user-avatar.vue'
 import Markdown from '../components/markdown.vue'
 import http from '../common/api'
 import Overlay from '../components/overlay.vue'
-import PayForm from '../components/PayForm.vue'
+import OptionsForm from '../components/OptionsForm.vue'
 import ShareLead from '../components/ShareLead.vue'
 import ListNav from '../components/ListNav.vue'
 import {Button, Toast} from 'vue-weui'
@@ -156,7 +156,7 @@ export default {
     'overlay': Overlay,
     'weui-button': Button,
     'toast': Toast,
-    'pay-form': PayForm,
+    'options-form': OptionsForm,
     'share-lead': ShareLead,
     'list-nav': ListNav
   },
@@ -172,9 +172,10 @@ export default {
       attendedUsers: [],
       liveId: 0,
       overlayStatus: false,
-      currentView: 'pay-form',
+      currentView: 'options-form',
       videoHeight: 250,
-      playStatus: 0
+      playStatus: 0,
+      payOptions: ['直接报名', '分享朋友圈后报名(感恩1元)']
     }
   },
   computed: {
@@ -268,6 +269,9 @@ export default {
     },
     configPreviewImages() {
       var detailSection = document.querySelector('.detail-section')
+      if(!detailSection) {
+        return
+      }
       var images = detailSection.getElementsByTagName('img')
       var urls = []
       for (var i = 0; i< images.length;i++) {
@@ -323,11 +327,15 @@ export default {
         if (this.live.shareId) {
           this.pay()
         } else {
-          this.currentView = 'pay-form'
+          this.currentView = 'options-form'
           this.overlayStatus = true
         }
       } else {
-        this.$router.go('/register/?liveId=' + this.liveId)
+        if (util.isWeixinBrowser()) {
+          this.$router.go('/register/?liveId=' + this.liveId)
+        } else {
+
+        }
       }
     },
     reloadLive() {
@@ -377,11 +385,11 @@ export default {
         this.reloadLive()
       }).catch(util.promiseErrorFn(this))
     },
-    'hidePayForm': function(type) {
-      if (type == 1) {
+    'hideOptionsForm': function(type) {
+      if (type == 0) {
         this.pay()
-      } else if (type == 2) {
-        debug('hidePayForm type == 2')
+      } else if (type == 1) {
+        debug('hideOptionsForm type == 1')
 
         setTimeout(() => {
           this.currentView = 'share-lead'

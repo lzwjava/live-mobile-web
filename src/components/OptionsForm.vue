@@ -1,10 +1,8 @@
 <template>
 
-  <div class="pay-form" @click="stop($event)">
+  <div class="options-form" @click="stop($event)">
 
-    <button class="btn btn-blue" @click="chooseType(1)">直接报名</button>
-
-    <button class="btn btn-blue" @click="chooseType(2)">分享朋友圈后报名(感恩1元)</button>
+    <button class="btn btn-blue" v-for="i in options.length" @click="chooseType(i)">{{options[i]}}</button>
 
   </div>
 
@@ -13,7 +11,8 @@
 <script type="text/javascript">
 
 export default {
-  name: 'PayForm',
+  name: 'OptionsForm',
+  props: ['options'],
   components: {
   },
   data() {
@@ -26,7 +25,7 @@ export default {
     },
     chooseType(type) {
       this.$parent.overlay = false;
-      this.$dispatch('hidePayForm', type)
+      this.$dispatch('hideOptionsForm', type)
     }
   }
 }
@@ -38,7 +37,7 @@ export default {
 
 @import '../stylus/base.styl'
 
-.pay-form
+.options-form
   @extend .absolute-center
   width 280px
   height 120px
