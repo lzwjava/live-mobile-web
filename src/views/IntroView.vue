@@ -435,9 +435,18 @@ export default {
       }
     },
     'payFinish': function () {
-      this.reloadLive()
-      window.location = 'http://quzhiboapp.com/?sessionToken='
-         + this.curUser.sessionToken + '&liveId=' + this.liveId
+      util.loading(this)
+      setTimeout(() => {
+        http.fetchLive(this, this.liveId)
+          .then((data) => {
+            util.loaded(this)
+            this.live = data
+            if (this.live.canJoin) {
+              window.location = 'http://quzhiboapp.com/?sessionToken='
+                 + this.curUser.sessionToken + '&liveId=' + this.liveId
+            }
+          }).catch(util.promiseErrorFn(this))
+      }, 1000)
     }
   }
 }
