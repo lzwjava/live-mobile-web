@@ -333,9 +333,17 @@ export default {
       var video = document.querySelector("video")
       video.play()
     },
+    intoLive() {
+      if (util.isWeixinBrowser()) {
+        this.$router.go('/live/' + this.liveId)
+      } else {
+        window.location = 'http://quzhiboapp.com/?sessionToken='
+           + this.curUser.sessionToken + '&liveId=' + this.liveId
+      }
+    },
     attendLive () {
       if (this.live.canJoin) {
-        this.$router.go('/live/' + this.liveId)
+        this.intoLive()
       } else if (this.curUser.userId){
         if (util.isWeixinBrowser()) {
           if (this.live.shareId) {
@@ -442,8 +450,7 @@ export default {
             util.loaded(this)
             this.live = data
             if (this.live.canJoin) {
-              window.location = 'http://quzhiboapp.com/?sessionToken='
-                 + this.curUser.sessionToken + '&liveId=' + this.liveId
+              this.intoLive()
             }
           }).catch(util.promiseErrorFn(this))
       }, 1000)
