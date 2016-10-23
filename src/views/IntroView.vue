@@ -411,17 +411,6 @@ export default {
     'hideOptionsForm': function(type) {
       if (this.currentView  == 'login-options-form') {
         if (type == 0) {
-          debug('show login form')
-
-          // var redirectUrl;
-          // if (util.isDebug()) {
-          //   redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauthTest'
-          // } else {
-          //   redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauth'
-          // }
-          // var href = 'https://open.weixin.qq.com/connect/qrconnect?appid=wxe80a6d2b5d54985c&redirect_uri='
-          // + encodeURIComponent(redirectUrl) + '&response_type=code&scope=snsapi_login&state=' + util.randomString(6)
-          // window.location = href
           setTimeout(() => {
             this.currentView = 'login-form'
             this.overlayStatus = true
