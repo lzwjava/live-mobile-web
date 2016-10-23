@@ -124,7 +124,7 @@
     </div> -->
 
     <overlay :overlay.sync="overlayStatus">
-        <component :is="currentView" :options="payOptions"></component>
+        <component :is="currentView" :options="options" :live-id="liveId"></component>
     </overlay>
 
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
@@ -142,7 +142,10 @@ import Markdown from '../components/markdown.vue'
 import http from '../common/api'
 import Overlay from '../components/overlay.vue'
 import OptionsForm from '../components/OptionsForm.vue'
+import LoginForm from '../components/LoginForm.vue'
+import RegisterForm from '../components/RegisterForm.vue'
 import ShareLead from '../components/ShareLead.vue'
+import QrcodePayForm from '../components/QrcodePayForm.vue'
 import ListNav from '../components/ListNav.vue'
 import {Button, Toast} from 'vue-weui'
 
@@ -157,8 +160,12 @@ export default {
     'weui-button': Button,
     'toast': Toast,
     'options-form': OptionsForm,
+    'login-options-form': OptionsForm,
     'share-lead': ShareLead,
-    'list-nav': ListNav
+    'list-nav': ListNav,
+    'login-form': LoginForm,
+    'register-form': RegisterForm,
+    'qrcode-pay-form': QrcodePayForm
   },
   data () {
     return {
@@ -174,11 +181,17 @@ export default {
       overlayStatus: false,
       currentView: 'options-form',
       videoHeight: 250,
-      playStatus: 0,
-      payOptions: ['直接报名', '分享朋友圈后报名(感恩1元)']
+      playStatus: 0
     }
   },
   computed: {
+    options () {
+      if (this.currentView == 'login-options-form') {
+        return ['微信登录', '扫码注册']
+      } else {
+        return ['直接报名', '分享朋友圈后报名(感恩1元)']
+      }
+    },
     firstBatchUsers: function () {
       var num = 7
       if (this.attendedUsers.length > 7)  {
@@ -324,17 +337,22 @@ export default {
       if (this.live.canJoin) {
         this.$router.go('/live/' + this.liveId)
       } else if (this.curUser.userId){
-        if (this.live.shareId) {
-          this.pay()
+        if (util.isWeixinBrowser()) {
+          if (this.live.shareId) {
+            this.pay()
+          } else {
+            this.currentView = 'options-form'
+            this.overlayStatus = true
+          }
         } else {
-          this.currentView = 'options-form'
-          this.overlayStatus = true
+          this.pay()
         }
       } else {
         if (util.isWeixinBrowser()) {
           this.$router.go('/register/?liveId=' + this.liveId)
         } else {
-
+          this.currentView = 'login-options-form'
+          this.overlayStatus = true
         }
       }
     },
@@ -350,12 +368,17 @@ export default {
       this.$router.go('/scan')
     },
     pay() {
-      wechat.attendLiveAndPay(this, this.liveId)
-        .then(() => {
-          util.show(this, 'success', '支付成功')
-          this.reloadLive()
-          this.$router.go('/live/' + this.liveId)
-        }, util.promiseErrorFn(this))
+      if (util.isWeixinBrowser()) {
+        wechat.attendLiveAndPay(this, this.liveId)
+          .then(() => {
+            util.show(this, 'success', '支付成功')
+            this.reloadLive()
+            this.$router.go('/live/' + this.liveId)
+          }, util.promiseErrorFn(this))
+      } else {
+        this.currentView = 'qrcode-pay-form'
+        this.overlayStatus = true
+      }
     },
     goUsers() {
       this.$router.go('/live/' + this.liveId + '/users')
@@ -386,16 +409,46 @@ export default {
       }).catch(util.promiseErrorFn(this))
     },
     'hideOptionsForm': function(type) {
-      if (type == 0) {
-        this.pay()
-      } else if (type == 1) {
-        debug('hideOptionsForm type == 1')
+      if (this.currentView  == 'login-options-form') {
+        if (type == 0) {
+          debug('show login form')
 
-        setTimeout(() => {
-          this.currentView = 'share-lead'
-          this.overlayStatus = true
-        }, 0)
+          // var redirectUrl;
+          // if (util.isDebug()) {
+          //   redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauthTest'
+          // } else {
+          //   redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauth'
+          // }
+          // var href = 'https://open.weixin.qq.com/connect/qrconnect?appid=wxe80a6d2b5d54985c&redirect_uri='
+          // + encodeURIComponent(redirectUrl) + '&response_type=code&scope=snsapi_login&state=' + util.randomString(6)
+          // window.location = href
+          setTimeout(() => {
+            this.currentView = 'login-form'
+            this.overlayStatus = true
+          }, 600)
+        } else {
+          setTimeout(() => {
+            this.currentView = 'register-form'
+            this.overlayStatus = true
+          }, 600)
+        }
+      } else if (this.currentView == 'options-form'){
+        if (type == 0) {
+          this.pay()
+        } else if (type == 1) {
+          debug('hideOptionsForm type == 1')
+
+          setTimeout(() => {
+            this.currentView = 'share-lead'
+            this.overlayStatus = true
+          }, 0)
+        }
       }
+    },
+    'payFinish': function () {
+      this.reloadLive()
+      window.location = 'http://quzhiboapp.com/?sessionToken='
+         + this.curUser.sessionToken + '&liveId=' + this.liveId
     }
   }
 }

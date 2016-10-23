@@ -5,10 +5,16 @@
 </template>
 
 <script>
+
+import debugFn from 'debug'
+var debug = debugFn('overlay')
+
   module.exports = {
     props: ['overlay'],
     methods:{
-      hide (){
+      hide (e){
+        debug('hide')
+        debug(e)
         this.overlay = false
       }
     }
