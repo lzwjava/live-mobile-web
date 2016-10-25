@@ -435,7 +435,9 @@ export default {
         }
         return this.conv.join()
       }).then((conv) => {
-        this.sendSystemMsg(this.curUser.username + '进入了房间')
+        if (!util.isDebug()) {
+          this.sendSystemMsg(this.curUser.username + '进入了房间')
+        }
 
         this.scrollToBottom()
 

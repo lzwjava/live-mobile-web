@@ -1,6 +1,6 @@
 var debug = require('debug')('util');
 
-import moment from 'moment'
+import moment from 'moment-timezone'
 moment.locale('zh-cn')
 
 var filterError = (component, res) => {
@@ -84,8 +84,15 @@ function loaded(comp) {
   comp.$dispatch('loading', false)
 }
 
+function getLang() {
+ if (navigator.languages != undefined)
+  return navigator.languages[0]
+ else
+  return navigator.language
+}
+
 function timeGap(ts) {
-  var text = moment(ts, "YYYY-MM-DD hh:mm::ss").fromNow()
+  var text = moment.tz(ts, "YYYY-MM-DD hh:mm::ss", 'Asia/Shanghai').fromNow()
   if (text) {
     text = text.replace(/[\u5185]/g, '后')
     text = text.replace(' ', '')
