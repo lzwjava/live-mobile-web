@@ -28,18 +28,25 @@
 
         <li class="msg" v-for="msg in msgs">
 
-          <span class="name">{{msg.attributes.username}}</span>
+          <div class="system-msg" v-if="msg.type == 2">
+            <div class="content">{{msg.text}}</div>
+          </div>
 
-          <div class="content">
-            <div class="bubble">
-              <div class="text-content bubble-cont" v-if="msg.type == -1">
-                <div class="plain">
-                  <pre class="text">{{msg.text}}</pre>
+          <div class="bubble-msg" v-if="msg.type !=2 ">
+
+            <span class="name">{{msg.attributes.username}}</span>
+
+            <div class="content">
+              <div class="bubble">
+                <div class="text-content bubble-cont" v-if="msg.type == -1">
+                  <div class="plain">
+                    <pre class="text">{{msg.text}}</pre>
+                  </div>
                 </div>
-              </div>
-              <div class="audio-content bubble-cont" v-if="msg.type == 1">
-                <div class="voice" @click="playVoice(msg.attributes.serverId)">
-                  <i class="voice-gray"> </i>
+                <div class="audio-content bubble-cont" v-if="msg.type == 1">
+                  <div class="voice" @click="playVoice(msg.attributes.serverId)">
+                    <i class="voice-gray"> </i>
+                  </div>
                 </div>
               </div>
             </div>
@@ -96,6 +103,10 @@ export const WxAudioMessage = inherit(TypedMessage)
 var WxAudioType = 1
 messageType(WxAudioType)(WxAudioMessage)
 
+export const SystemMessage = inherit(TypedMessage)
+var SystemMessageType = 2
+messageType(SystemMessageType)(SystemMessage)
+
 var prodAppId = 's83aTX5nigX1KYu9fjaBTxIa-gzGzoHsz'
 var testAppId = 'YY3S7uNlnXUgX48BHTJlJx4i-gzGzoHsz'
 
@@ -106,6 +117,7 @@ var realtime = new Realtime({
 })
 
 realtime.register(WxAudioMessage)
+realtime.register(SystemMessage)
 
 export default {
   name: 'LiveView',
@@ -274,6 +286,15 @@ export default {
         this.inputing = 0
       }).catch(this.handleError)
     },
+    sendSystemMsg(text) {
+      var systemMsg = new SystemMessage()
+      systemMsg.setText(text)
+      systemMsg.setAttributes({username:this.curUser.username})
+      this.conv.send(systemMsg)
+       .then((message) => {
+         this.addChatMsg(message)
+       }).catch(this.handleError)
+    },
     holdToTalk (e) {
       e.preventDefault()
       wx.startRecord({
@@ -410,8 +431,8 @@ export default {
         }
         return this.conv.join()
       }).then((conv) => {
-        this.inputMsg = '进入了房间'
-        this.sendMsg()
+
+        this.sendSystemMsg(this.curUser.username + '进入了房间')
 
         this.initScroll()
       }).catch(this.handleError)
@@ -537,54 +558,65 @@ export default {
       left 5px
       right 5px
       .msg
-        margin-bottom 5px
-        .name
-          color #868686
-          float left
-        .content
-          overflow hidden
-          .bubble
-            max-width 85%
-            min-height 14px
-            margin 0 10px
+        .system-msg
+          margin-bottom 0px
+          text-align center
+          .content
             border-radius 3px
-            vertical-align top
-            background-color #fff
+            background-color #dcdcdc
+            font-size 12px
+            padding 1px 8px
+            color #fff
             display inline-block
-            position relative
-            &:before
-            &:after
-              border 5px solid transparent
-              content " "
-              position absolute
-              top 8px
-              right 100%
-            &:after
-              border-right-color #fff
-              border-right-width 5px
-            .bubble-cont
-              word-wrap break-word
-              word-break break-all
-              min-height 25px
-            .audio-content
-              .voice
-                width 40px
-                padding 0px 0px
-                .voice-gray
-                  background url("../img/sprite.png") 0 -2427px
-                  width 23px
-                  height 23px
-                  display inline-block
-                  vertical-align middle
-                  background-size 150px 2489px
-            .text-content
-              .plain
-                padding 3px 5px
-                font-size 14px
-                pre
-                  word-wrap break-word
-                  word-break normal
-                  white-space pre-wrap
+        .bubble-msg
+          margin-bottom 5px
+          .name
+            color #868686
+            float left
+          .content
+            overflow hidden
+            .bubble
+              max-width 85%
+              min-height 14px
+              margin 0 10px
+              border-radius 3px
+              vertical-align top
+              background-color #fff
+              display inline-block
+              position relative
+              &:before
+              &:after
+                border 5px solid transparent
+                content " "
+                position absolute
+                top 8px
+                right 100%
+              &:after
+                border-right-color #fff
+                border-right-width 5px
+              .bubble-cont
+                word-wrap break-word
+                word-break break-all
+                min-height 25px
+              .audio-content
+                .voice
+                  width 40px
+                  padding 0px 0px
+                  .voice-gray
+                    background url("../img/sprite.png") 0 -2427px
+                    width 23px
+                    height 23px
+                    display inline-block
+                    vertical-align middle
+                    background-size 150px 2489px
+              .text-content
+                .plain
+                  padding 3px 5px
+                  font-size 14px
+                  pre
+                    word-wrap break-word
+                    word-break normal
+                    white-space pre-wrap
     .send-area
       position absolute
       left 5px
