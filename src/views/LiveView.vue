@@ -373,14 +373,13 @@ export default {
               util.loaded(this)
               if (result.done) {
                 util.show(this, 'warn', '没有更多消息了')
-              } else {
-                var originHeight = msgList.scrollHeight
-                this.msgs = result.value.concat(this.msgs)
-                setTimeout(() => {
-                  var afterHeight = msgList.scrollHeight
-                  msgList.scrollTop = afterHeight-originHeight
-                }, 0)
               }
+              var originHeight = msgList.scrollHeight
+              this.msgs = result.value.concat(this.msgs)
+              setTimeout(() => {
+                var afterHeight = msgList.scrollHeight
+                msgList.scrollTop = afterHeight-originHeight
+              }, 0)
             }, (error) => {
               util.loaded(this)
               util.show(this, 'error', error)
@@ -430,9 +429,8 @@ export default {
         return messageIterator.next()
       }).then((result)=> {
         if (result.done) {
-        } else {
-          this.msgs = this.msgs.concat(result.value)
         }
+        this.msgs = this.msgs.concat(result.value)
         return this.conv.join()
       }).then((conv) => {
         if (!util.isDebug()) {
