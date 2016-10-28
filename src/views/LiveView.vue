@@ -442,6 +442,9 @@ export default {
                 needSendIntoRoom = false
             }
           }
+          if (this.live.status == 30) {
+            needSendIntoRoom = false
+          }
           if (needSendIntoRoom) {
             this.sendSystemMsg(this.curUser.username + '进入了房间')
           }
