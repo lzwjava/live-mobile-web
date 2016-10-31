@@ -21,9 +21,11 @@
           <img class="default-avatar" src="../img/defaultAvatar.png"/>
         </div>
         <div slot="options">
-          <a href="#" class="dropdown-item" @click.prevent="login">登录</a>
+          <p class="dropdown-item">请点击中间位置的按钮登录</p>
+
+          <!-- <a href="#" class="dropdown-item" @click.prevent="login">登录</a>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item" @click.prevent="register">注册</a>
+          <a href="#" class="dropdown-item" @click.prevent="register">注册</a> -->
         </div>
       </dropdown>
 

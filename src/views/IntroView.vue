@@ -190,7 +190,7 @@ export default {
   computed: {
     options () {
       if (this.currentView == 'login-options-form') {
-        return ['微信登录', '微博手机登录', '扫码注册']
+        return ['电脑微信登录', '电脑扫码注册', '手机登录']
       } else {
         return ['直接报名', '分享朋友圈后报名(感恩1元)']
       }
@@ -426,12 +426,12 @@ export default {
             this.currentView = 'login-form'
             this.overlayStatus = true
           }, 600)
-        } else  if (type == 1) {
+        } else  if (type == 2) {
           setTimeout(() => {
             this.currentView = 'weibo-form'
             this.overlayStatus = true
           }, 600)
-        } else if (type == 2){
+        } else if (type == 1){
           setTimeout(() => {
             this.currentView = 'register-form'
             this.overlayStatus = true
