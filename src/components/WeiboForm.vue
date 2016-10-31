@@ -1,6 +1,6 @@
 <template>
 
-  <div class="weibo-form">
+  <div class="weibo-form" @click="stop">
 
     <p class="op-word">
       请将以下链接复制到微信里 <br>然后在微信打开
@@ -26,6 +26,9 @@ export default {
   components: {
   },
   methods: {
+    stop (e){
+      e.stopPropagation()
+    }
   },
   computed: {
     shareLink() {

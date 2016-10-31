@@ -1,6 +1,6 @@
 <template >
 
-  <div class="register-form">
+  <div class="register-form" @click="stop($event)">
 
     <p>请用微信扫描以下二维码，在微信上注册</p>
 
@@ -12,12 +12,19 @@
 
 <script type="text/javascript">
 
+import util from '../common/util'
+import debugFn from 'debug'
+const debug = debugFn('RegisterForm')
+
 export default {
   name: 'RegisterForm',
   props: ['liveId'],
-  methods: {
-  },
   components: {
+  },
+  methods: {
+    stop (e) {
+      e.stopPropagation()
+    }
   },
   created() {
   },
@@ -27,8 +34,6 @@ export default {
     shareLink() {
       return 'http://m.quzhiboapp.com/?liveId=' + this.liveId
     }
-  },
-  methods: {
   }
 }
 
