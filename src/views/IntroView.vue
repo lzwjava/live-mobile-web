@@ -142,10 +142,12 @@ import Markdown from '../components/markdown.vue'
 import http from '../common/api'
 import Overlay from '../components/overlay.vue'
 import OptionsForm from '../components/OptionsForm.vue'
+import LoginOptionsForm from '../components/LoginOptionsForm.vue'
 import LoginForm from '../components/LoginForm.vue'
 import RegisterForm from '../components/RegisterForm.vue'
 import ShareLead from '../components/ShareLead.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
+import WeiboForm from '../components/WeiboForm.vue'
 import ListNav from '../components/ListNav.vue'
 import {Button, Toast} from 'vue-weui'
 
@@ -160,12 +162,13 @@ export default {
     'weui-button': Button,
     'toast': Toast,
     'options-form': OptionsForm,
-    'login-options-form': OptionsForm,
+    'login-options-form': LoginOptionsForm,
     'share-lead': ShareLead,
     'list-nav': ListNav,
     'login-form': LoginForm,
     'register-form': RegisterForm,
-    'qrcode-pay-form': QrcodePayForm
+    'qrcode-pay-form': QrcodePayForm,
+    'weibo-form': WeiboForm
   },
   data () {
     return {
@@ -184,10 +187,10 @@ export default {
       playStatus: 0
     }
   },
-  computed: {    
+  computed: {
     options () {
       if (this.currentView == 'login-options-form') {
-        return ['微信登录', '扫码注册']
+        return ['微信登录', '微博手机登录', '扫码注册']
       } else {
         return ['直接报名', '分享朋友圈后报名(感恩1元)']
       }
@@ -423,7 +426,12 @@ export default {
             this.currentView = 'login-form'
             this.overlayStatus = true
           }, 600)
-        } else {
+        } else  if (type == 1) {
+          setTimeout(() => {
+            this.currentView = 'weibo-form'
+            this.overlayStatus = true
+          }, 600)
+        } else if (type == 2){
           setTimeout(() => {
             this.currentView = 'register-form'
             this.overlayStatus = true
