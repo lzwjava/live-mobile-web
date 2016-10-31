@@ -190,7 +190,7 @@ export default {
   computed: {
     options () {
       if (this.currentView == 'login-options-form') {
-        return ['电脑微信登录', '电脑扫码注册', '手机登录']
+        return ['电脑登录', '电脑注册', '手机登录']
       } else {
         return ['直接报名', '分享朋友圈后报名(感恩1元)']
       }
