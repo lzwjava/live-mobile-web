@@ -184,7 +184,7 @@ export default {
       playStatus: 0
     }
   },
-  computed: {
+  computed: {    
     options () {
       if (this.currentView == 'login-options-form') {
         return ['微信登录', '扫码注册']
