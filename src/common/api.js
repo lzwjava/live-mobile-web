@@ -56,6 +56,12 @@ var fetchUsers = function(comp, liveId) {
   return get(comp, 'lives/' + liveId +'/users')
 }
 
+var fetchPartUsers = function (comp, liveId) {
+  return get(comp, 'lives/' + liveId +'/users', {
+    limit: 7
+  })
+}
+
 var fetchCurUser = function (comp) {
   return get(comp, 'self')
 }
@@ -84,6 +90,7 @@ var fetchOneUser = function (comp, userId) {
 
 exports.fetchLive = fetchLive
 exports.fetchUsers = fetchUsers
+exports.fetchPartUsers = fetchPartUsers
 exports.fetchCurUser = fetchCurUser
 exports.fetchCurUserNoError = fetchCurUserNoError
 exports.fetchOneUser = fetchOneUser

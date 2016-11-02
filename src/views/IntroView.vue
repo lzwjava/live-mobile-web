@@ -53,7 +53,7 @@
     <div class="attend-section card-group">
       <div class="attend-info">
         <ul class="attended-users">
-          <li class="avatar-cell" v-for="u in firstBatchUsers">
+          <li class="avatar-cell" v-for="u in attendedUsers">
             <user-avatar :user="u"></user-avatar>
           </li>
         </ul>
@@ -195,14 +195,6 @@ export default {
         return ['直接报名', '分享朋友圈后报名(感恩1元)']
       }
     },
-    firstBatchUsers: function () {
-      var num = 7
-      if (this.attendedUsers.length > 7)  {
-        return this.attendedUsers.splice(0,7)
-      } else {
-        return this.attendedUsers
-      }
-    },
     btnTitle: function () {
       var statusWord;
       if (this.live.status <= 20) {
@@ -258,7 +250,7 @@ export default {
       Promise.all([
         http.fetchCurUserNoError(this),
         http.fetchLive(this, this.liveId),
-        http.fetchUsers(this, this.liveId),
+        http.fetchPartUsers(this, this.liveId),
         wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
