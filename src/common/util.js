@@ -100,6 +100,14 @@ function timeGap(ts) {
   return text
 }
 
+function timeDuration(ts) {
+  var text = moment.tz(ts, "YYYY-MM-DD hh:mm::ss", 'Asia/Shanghai').fromNow(true)
+  if (text) {
+    text = text.replace(' ', '')
+  }
+  return text
+}
+
 function isDebug() {
   return process.env.NODE_ENV != 'production'
 }
@@ -143,3 +151,4 @@ exports.isAndroidBrowser = isAndroidBrowser
 exports.isDebug = isDebug
 exports.getKeys = getKeys
 exports.statusText = statusText
+exports.timeDuration = timeDuration
