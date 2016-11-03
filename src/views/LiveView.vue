@@ -29,7 +29,7 @@
 
         <li class="msg" v-for="msg in msgs">
 
-          <div class="system-msg" v-if="msg.type == 2 && live.status != 30">
+          <div class="system-msg" v-if="msg.type == 2">
             <div class="content">{{msg.text}}</div>
           </div>
 
