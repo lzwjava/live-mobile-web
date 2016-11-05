@@ -425,7 +425,7 @@ export default {
         }
         this.conv = conv
         this.addSystemMsg('正在加载聊天记录...')
-        var messageIterator = this.conv.createMessagesIterator({ limit: 40 })
+        var messageIterator = this.conv.createMessagesIterator({ limit: 200 })
         this.messageIterator = messageIterator
         return messageIterator.next()
       }).then((result)=> {
