@@ -206,7 +206,7 @@ export default {
         return '已报名，进入直播间' + statusWord
       } else if (this.curUser.userId) {
         var amountWord;
-        if (this.live.shareId != null) {
+        if (this.live.realAmount != this.live.amount) {
           amountWord = '¥' + this.moneyToYuan(this.live.realAmount)  +
           '  <span class="origin">' +'¥' + this.moneyToYuan(this.live.amount)+ '</span>'
         } else {
