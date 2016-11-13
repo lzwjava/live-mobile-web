@@ -23,7 +23,13 @@
       </div> -->
     </div>
 
-    <div class="chat-area" :style="{top: videoHeight + 'px'}">
+    <div class="playlist-area" :style="{top:videoHeight + 'px'}" v-if="videos.length > 1">
+      <cells type="split">
+        <select-cell :options="videoOptions" :selected.sync="videoSelected"></select-cell>
+      </cells>
+    </div>
+
+    <div class="chat-area" :style="{top: (videoHeight + optionHeight) + 'px'}">
 
       <ul class="msg-list" :style="{top: listTop, bottom: listBottom}" v-el:msg-list @click="inputBlur">
 
@@ -89,7 +95,7 @@ import http from '../common/api'
 import wechat from '../common/wechat'
 import Loading from '../components/loading.vue'
 import makeVideoPlayableInline from 'iphone-inline-video'
-import {Toast} from 'vue-weui'
+import {Toast, SelectCell, Cells} from 'vue-weui'
 
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
@@ -124,7 +130,9 @@ export default {
   name: 'LiveView',
   components: {
     'loading': Loading,
-    'toast': Toast
+    'toast': Toast,
+    SelectCell,
+    Cells
   },
   data() {
     return {
@@ -140,12 +148,29 @@ export default {
       videoHeight: 250,
       inputMode: 0,   // 0: text 1: voice
       inputing: 0,
+      videos: [],
       messageIterator: null,
+      videoSelected: 0,
     }
   },
   computed: {
     timeDuration () {
       return util.timeDuration(this.live.planTs)
+    },
+    videoOptions() {
+      var options = [];
+      for(var i = 0; i < this.videos.length; i++) {
+        var video = this.videos[i]
+        options.push({text: video.title, value: i})
+      }
+      return options
+    },
+    optionHeight() {
+      if (this.videos.length > 1) {
+        return 50
+      } else {
+        return 0
+      }
     },
     btnTitle() {
       if (this.isRecording) {
@@ -158,7 +183,7 @@ export default {
       if (this.live.status == 20) {
         return this.live.hlsUrl
       } else if (this.live.status == 30) {
-        return this.live.videoUrl
+        return this.videos[this.videoSelected].url
       }
       return this.live.hlsUrl
     },
@@ -196,6 +221,11 @@ export default {
   },
   ready() {
   },
+  watch: {
+    videoSelected: function(val, oldVal) {
+      this.canPlayClick()
+    }
+  },
   route: {
     data ({to}) {
       var liveId = to.params.liveId
@@ -213,13 +243,15 @@ export default {
       this.videoHeight = 250
       Promise.all([
         http.fetchLive(this, this.liveId),
+        http.fetchVideos(this, this.liveId),
         http.fetchCurUser(this),
         wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
 
         this.live = values[0]
-        this.curUser = values[1]
+        this.videos = values[1]
+        this.curUser = values[2]
 
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
@@ -230,6 +262,12 @@ export default {
         wechat.shareLive(this, this.live)
         this.openClient()
         this.playHls()
+
+        if (this.live.status == 30) {
+          setTimeout(() => {
+            this.canPlayClick()
+          }, 100)
+        }
 
       }, util.promiseErrorFn(this))
     }
@@ -468,9 +506,7 @@ export default {
           //util.show(this, 'error', '加载直播失败')
         }
       })
-      var events = ['abort', 'canplay', 'canplaythrough', 'durationchange', 'emptied', 'loadeddata',
-         'loadstart', 'pause', 'play', 'playing','ratechange', 'seeked', 'seeking', 'stalled',
-          'suspend', 'waiting','timeupdate', 'volumechange']
+      var events = ['canplay', 'play', 'playing']
       //var events = ['playing', 'waiting']
       for (var i = 0; i < events.length; i++) {
         var name = events[i]
@@ -562,6 +598,11 @@ export default {
             height 100%
             background url("../img/video-play.png") center no-repeat
             background-size 100% 100%
+  .playlist-area
+    height 50px
+    .weui_cells
+      margin-top 0px !important
+      background-color #f1f1f1
   .chat-area
     padding 5px
     box-sizing border-box

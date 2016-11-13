@@ -52,6 +52,10 @@ var fetchLive = function(comp, liveId) {
   return get(comp, 'lives/' + liveId)
 }
 
+var fetchVideos = function(comp, liveId) {
+  return get(comp, 'lives/' + liveId + '/videos')
+}
+
 var fetchUsers = function(comp, liveId) {
   return get(comp, 'lives/' + liveId +'/users')
 }
@@ -89,6 +93,7 @@ var fetchOneUser = function (comp, userId) {
 }
 
 exports.fetchLive = fetchLive
+exports.fetchVideos = fetchVideos
 exports.fetchUsers = fetchUsers
 exports.fetchPartUsers = fetchPartUsers
 exports.fetchCurUser = fetchCurUser
