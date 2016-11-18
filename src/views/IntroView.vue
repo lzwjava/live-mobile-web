@@ -435,12 +435,14 @@ export default {
         util.loaded(this)
         util.show(this, 'success', '分享成功，感谢您')
         this.overlayStatus = false
-        this.reloadLive()
-         .then(() => {
-           if (this.positiveShare) {
-             this.attendLive()
-           }
-         })
+        if (this.positiveShare) {
+          this.reloadLive()
+           .then(() => {
+               this.attendLive()
+           })
+        } else {
+          this.reloadLive()
+        }
       }).catch(util.promiseErrorFn(this))
     },
     'hideOptionsForm': function(type) {
