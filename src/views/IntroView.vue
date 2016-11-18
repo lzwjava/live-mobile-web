@@ -205,15 +205,19 @@ export default {
       if (this.live.canJoin) {
         return '已报名，进入直播间' + statusWord
       } else if (this.curUser.userId) {
-        var amountWord;
-        if (this.live.realAmount != this.live.amount) {
-          amountWord = '¥' + this.moneyToYuan(this.live.realAmount)  +
-          '  <span class="origin">' +'¥' + this.moneyToYuan(this.live.amount)+ '</span>'
+        if (this.live.needPay) {
+          var amountWord;
+          if (this.live.realAmount != this.live.amount) {
+            amountWord = '¥' + this.moneyToYuan(this.live.realAmount)  +
+            '  <span class="origin">' +'¥' + this.moneyToYuan(this.live.amount)+ '</span>'
+          } else {
+            amountWord = '¥' + this.moneyToYuan(this.live.amount)  +
+            '<span class="share-tips">' + '（分享朋友圈感恩1元）' + '<span>'
+          }
+          return '赞助并' + statusWord + amountWord
         } else {
-          amountWord = '¥' + this.moneyToYuan(this.live.amount)  +
-          '<span class="share-tips">' + '（分享朋友圈感恩1元）' + '<span>'
+          return '报名' + statusWord
         }
-        return '赞助并' + statusWord + amountWord
       } else {
         return '请登录后' + statusWord
       }
@@ -340,15 +344,19 @@ export default {
       if (this.live.canJoin) {
         this.intoLive()
       } else if (this.curUser.userId){
-        if (util.isWeixinBrowser()) {
-          if (this.live.shareId) {
-            this.pay()
+        if (this.live.needPay) {
+          if (util.isWeixinBrowser()) {
+            if (this.live.shareId) {
+              this.pay()
+            } else {
+              this.currentView = 'options-form'
+              this.overlayStatus = true
+            }
           } else {
-            this.currentView = 'options-form'
-            this.overlayStatus = true
+            this.pay()
           }
         } else {
-          this.pay()
+          this.createAttend()
         }
       } else {
         if (util.isWeixinBrowser()) {
@@ -358,6 +366,17 @@ export default {
           this.overlayStatus = true
         }
       }
+    },
+    createAttend() {
+      util.loading(this)
+      http.post(this, 'attendances/create', {
+        liveId: this.liveId
+      }).then((data) => {
+        util.loaded(this)
+        util.show(this, 'success', '报名成功')
+        this.reloadLive()
+        this.$router.go('/live/' + this.liveId)
+      }).catch(util.promiseErrorFn(this))
     },
     reloadLive() {
       util.loading(this)

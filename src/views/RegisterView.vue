@@ -17,7 +17,7 @@
           验证码已发送给 <br>您的手机{{mobile}} <br>请稍等片刻输入验证码
         </div>
 
-        <input class="sms-code-input" type="number" v-model="code" autofocus>
+        <input class="sms-code-input" type="string" v-model="code" autofocus>
 
         <button class="btn btn-blue" @click="registerBySns">完成</button>
 

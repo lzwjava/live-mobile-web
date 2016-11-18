@@ -39,7 +39,7 @@ export default {
       //   return
       // }
       if (!util.isWeixinBrowser()) {
-        if (params.liveId) {
+        if (params.liveId && params.liveId != 0) {
           this.$router.go('/intro/' + params.liveId)
         } else {
           this.$router.go('/lives')
