@@ -3,7 +3,7 @@
     <div class="player-area" :style="{height: videoHeight + 'px'}">
       <div class="video-wait" v-show="live.status == 10">
         <p class="big-title">离直播开始还有{{timeDuration}} <br></p>
-        <p class="middle-title">欢迎转发让同事也来听~Live</p>
+        <p class="middle-title">欢迎转发让同事也来听~</p>
         <p class="small-title">开播时您将收到一条短信通知~</p>
         <p class="small-title">另外可打开 quzhiboapp.com 在电脑上观看</p>
       </div>

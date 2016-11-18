@@ -27,7 +27,6 @@
       <div class="header-right">
         <div class="subject">{{live.subject}}</div>
         <div class="ownername">{{live.owner.username}}</div>
-
       </div>
 
       <div class="time-section">
@@ -41,7 +40,6 @@
             订阅直播
           </div> -->
         </div>
-
 
         <div class="time-label">直播时间(如无法参与可看回播)</div>
         <div class="plan-time">{{live.planTs | formatTimeCommon}} ({{timeGap}})</div>
