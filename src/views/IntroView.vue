@@ -184,7 +184,8 @@ export default {
       overlayStatus: false,
       currentView: 'options-form',
       videoHeight: 250,
-      playStatus: 0
+      playStatus: 0,
+      positiveShare: false
     }
   },
   computed: {
@@ -192,7 +193,11 @@ export default {
       if (this.currentView == 'login-options-form') {
         return ['电脑登录', '电脑注册', '手机登录']
       } else {
-        return ['直接报名', '分享朋友圈后报名(感恩1元)']
+        if (this.live.needPay) {
+          return ['直接报名', '分享朋友圈后报名(感恩1元)']
+        } else {
+          return ['直接报名', '分享朋友圈后报名(感谢您)']
+        }
       }
     },
     btnTitle: function () {
@@ -340,23 +345,27 @@ export default {
            + this.curUser.sessionToken + '&liveId=' + this.liveId
       }
     },
+    payOrCreateAttend() {
+      if (this.live.needPay) {
+        this.pay()
+      } else {
+        this.createAttend()
+      }
+    },
     attendLive () {
       if (this.live.canJoin) {
         this.intoLive()
       } else if (this.curUser.userId){
-        if (this.live.needPay) {
-          if (util.isWeixinBrowser()) {
-            if (this.live.shareId) {
-              this.pay()
-            } else {
-              this.currentView = 'options-form'
-              this.overlayStatus = true
-            }
+        if (util.isWeixinBrowser()) {
+          if (this.live.shareId) {
+            this.payOrCreateAttend()
           } else {
-            this.pay()
+            this.positiveShare = true
+            this.currentView = 'options-form'
+            this.overlayStatus = true
           }
         } else {
-          this.createAttend()
+          this.payOrCreateAttend()
         }
       } else {
         if (util.isWeixinBrowser()) {
@@ -380,10 +389,11 @@ export default {
     },
     reloadLive() {
       util.loading(this)
-      http.fetchLive(this, this.liveId)
+      return http.fetchLive(this, this.liveId)
         .then((data) => {
           util.loaded(this)
           this.live = data
+          return Promise.resolve()
         }).catch(util.promiseErrorFn(this))
     },
     createLive() {
@@ -425,9 +435,14 @@ export default {
         channel: 'wechat_timeline'
       }).then((result) => {
         util.loaded(this)
-        util.show(this, 'success', '分享成功，可优惠参与直播，感谢您')
+        util.show(this, 'success', '分享成功，感谢您')
         this.overlayStatus = false
         this.reloadLive()
+         .then(() => {
+           if (this.positiveShare) {
+             this.attendLive()
+           }
+         })
       }).catch(util.promiseErrorFn(this))
     },
     'hideOptionsForm': function(type) {
@@ -450,7 +465,7 @@ export default {
         }
       } else if (this.currentView == 'options-form'){
         if (type == 0) {
-          this.pay()
+          this.payOrCreateAttend()
         } else if (type == 1) {
           debug('hideOptionsForm type == 1')
 
