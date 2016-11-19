@@ -182,6 +182,29 @@ function shareApp(comp) {
   share(title, 'http://i.quzhiboapp.com/logo.png', title, linkUrl(0), 0)
 }
 
+function wxPay(data) {
+  return new Promise(function (resolve, reject){
+    wx.ready(() => {
+      wx.chooseWXPay({
+        timestamp: data.timeStamp,
+        nonceStr: data.nonceStr,
+        package: data.package,
+        paySign: data.paySign,
+        signType: data.signType,
+        success: (res) => {
+          resolve()
+        },
+        cancel: (res) => {
+          reject('已取消微信支付:' + res.errMsg)
+        },
+        fail: (res) => {
+          reject('支付失败:' + res.errMsg)
+        }
+      })
+    })
+  })
+}
+
 function attendLiveAndPay(comp, liveId) {
   util.loading(comp)
   return http.post(comp, 'attendances/create', {
@@ -189,26 +212,7 @@ function attendLiveAndPay(comp, liveId) {
     channel: 'wechat_h5'
   }).then((data) => {
     util.loaded(comp)
-    return new Promise(function (resolve, reject){
-      wx.ready(() => {
-        wx.chooseWXPay({
-          timestamp: data.timeStamp,
-          nonceStr: data.nonceStr,
-          package: data.package,
-          paySign: data.paySign,
-          signType: data.signType,
-          success: (res) => {
-            resolve()
-          },
-          cancel: (res) => {
-            reject('已取消微信支付:' + res.errMsg)
-          },
-          fail: (res) => {
-            reject('支付失败:' + res.errMsg)
-          }
-        })
-      })
-    })
+    return wxPay(data)
   })
 }
 
@@ -268,3 +272,4 @@ exports.attendLiveAndPay = attendLiveAndPay
 exports.scanQRcode = scanQRcode
 exports.scanQRcodeWithLive = scanQRcodeWithLive
 exports.showOptionMenu = showOptionMenu
+exports.wxPay = wxPay

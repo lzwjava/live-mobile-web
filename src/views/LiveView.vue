@@ -66,8 +66,10 @@
 
       <div class="send-area" :style="{top: sendTop, bottom: sendBottom}">
 
-        <a class="computer-btn"  @click="goComputer">
-        </a>
+        <!-- <a class="computer-btn"  @click="goComputer">
+        </a> -->
+
+        <i class="gift-button fa fa-gift" @click="showRewardForm"></i>
 
         <a class="toggle-btn" v-bind:class="{'voice-btn': inputMode == 0, 'text-btn': inputMode == 1}"
            href="javascript:;" @click="toggleMode"></a>
@@ -86,6 +88,10 @@
 
     </div>
 
+    <overlay :overlay.sync="overlayStatus">
+      <reward-form :live="live"></reward-form>
+    </overlay>
+
   </div>
 </template>
 
@@ -97,6 +103,8 @@ import wechat from '../common/wechat'
 import Loading from '../components/loading.vue'
 import makeVideoPlayableInline from 'iphone-inline-video'
 import {Toast, SelectCell, Cells} from 'vue-weui'
+import RewardForm from '../components/RewardForm.vue'
+import Overlay from '../components/overlay.vue'
 
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
@@ -133,7 +141,9 @@ export default {
     'loading': Loading,
     'toast': Toast,
     SelectCell,
-    Cells
+    Cells,
+    RewardForm,
+    Overlay
   },
   data() {
     return {
@@ -152,6 +162,7 @@ export default {
       videos: [],
       messageIterator: null,
       videoSelected: 0,
+      overlayStatus: false
     }
   },
   computed: {
@@ -550,6 +561,9 @@ export default {
     inputBlur(e) {
       debug(e)
       this.inputing = 0
+    },
+    showRewardForm() {
+      this.overlayStatus = true
     }
   }
 }
@@ -706,6 +720,10 @@ export default {
           display inline-block
           background url("../img/computer-btn.png")
           background-size contain
+      .gift-btn
+          width 30px
+          height 30px
+          display inline-block
       .input-ways
         position absolute
         left 80px
