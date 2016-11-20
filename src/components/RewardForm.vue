@@ -1,11 +1,18 @@
 <template>
 
   <div class="reward-form" @click="stop($event)">
-    <user-avatar :user="live.owner"></user-avatar>
+    <div class="oval">
 
-    <ul>
-      <li v-for="amount in amounts" @click="reward(amount)">
-        {{amount|moneyAsYuan}}元
+    </div>
+    <user-avatar :user="live.owner"></user-avatar>
+    <p class="ownername">
+      赞赏{{live.owner.username}}
+    </p>
+
+    <ul class="amount-list">
+      <li class="amount-cell" v-for="amount in amounts" @click="reward(amount)">
+        <span class="amount-num">{{amount|moneyAsYuan}}</span>
+        <span class="amount-unit">元</span>
       </li>
     </ul>
 
@@ -19,16 +26,19 @@ import debugFn from 'debug'
 import util from '../common/util'
 import api from '../common/api'
 import wechat from '../common/wechat'
+import UserAvatar from '../components/user-avatar.vue'
 
 var debug = debugFn('RewardForm')
 
 export default {
   name: 'RewardForm',
-  components: [],
+  components: {
+    UserAvatar
+  },
   props: ['live'],
   data() {
     return {
-      amounts: [2 * 100, 5 * 100, 10 * 100, 20 * 100, 50 * 100, 100 * 100]
+      amounts: [2 * 100, 5 * 100, 8 * 100, 10 * 100, 20 * 100, 50 * 100]
     }
   },
   route: {
@@ -37,17 +47,21 @@ export default {
   },
   methods: {
     reward(amount) {
+      // this.$dispatch('rewardSucceed', amount)
+      // this.$parent.overlay = false
+      // return
       util.loading(this)
-      api.post('rewards', {
+      api.post(this, 'rewards', {
         amount: amount,
         channel: 'wechat_h5',
-        liveId
+        liveId:this.live.liveId
       }).then((data) => {
         util.loaded(this)
         return wechat.wxPay(data)
       }).then(() => {
-        util.show('success', '打赏成功')
+        util.show(this, 'success', '打赏成功')
         this.$parent.overlay = false;
+        this.$dispatch('rewardSucceed', amount)
       }).catch(util.promiseErrorFn(this))
     },
     stop (e) {
@@ -65,14 +79,45 @@ export default {
 
 @import '../stylus/base.styl'
 
-.register-form
+.reward-form
   @extend .absolute-center
-  max-width 350px
+  max-width 300px
   height 400px
-  background #fff
-  border-radius 20px
   text-align center
-  padding 20px 10px
-
+  background #fff
+  overflow hidden
+  border-radius 15px
+  .oval
+    height 100px
+    width 100%
+    background #d65239
+    border-radius 50%
+    margin-top -40px
+  .ownername
+    color #d65239
+    font-size 18px
+    margin-top 20px
+  .avatar
+    margin-top -30px
+    width 60px
+    height 60px
+  .amount-list
+    display flex
+    flex-wrap wrap
+    margin-top 30px
+    padding 0 10px
+    .amount-cell
+      flex-grow 1
+      width 20%
+      margin 30px 5px 0 5px
+      height 40px
+      border-color #d65239
+      border-style solid
+      border-width 3px
+      border-radius 8px
+      color #d65239
+      padding 5px
+      .amount-num
+        font-size 24px
 
 </style>

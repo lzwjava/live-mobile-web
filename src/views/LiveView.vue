@@ -51,6 +51,11 @@
                     <pre class="text">{{msg.text}}</pre>
                   </div>
                 </div>
+                <div class="text-content bubble-cont" v-if="msg.type == 3">
+                  <div class="plain">
+                    <pre class="text reward-text">{{msg.text}}</pre>
+                  </div>
+                </div>
                 <div class="audio-content bubble-cont" v-if="msg.type == 1">
                   <div class="voice" @click="playVoice(msg.attributes.serverId)">
                     <i class="voice-gray"> </i>
@@ -69,7 +74,7 @@
         <!-- <a class="computer-btn"  @click="goComputer">
         </a> -->
 
-        <i class="gift-button fa fa-gift" @click="showRewardForm"></i>
+        <a class="packet-btn" @click="showRewardForm"></a>
 
         <a class="toggle-btn" v-bind:class="{'voice-btn': inputMode == 0, 'text-btn': inputMode == 1}"
            href="javascript:;" @click="toggleMode"></a>
@@ -123,6 +128,10 @@ export const SystemMessage = inherit(TypedMessage)
 var SystemMessageType = 2
 messageType(SystemMessageType)(SystemMessage)
 
+export const RewardMessage = inherit(TypedMessage)
+var RewardMessageType = 3
+messageType(RewardMessageType)(RewardMessage)
+
 var prodAppId = 's83aTX5nigX1KYu9fjaBTxIa-gzGzoHsz'
 var testAppId = 'YY3S7uNlnXUgX48BHTJlJx4i-gzGzoHsz'
 
@@ -134,6 +143,7 @@ var realtime = new Realtime({
 
 realtime.register(WxAudioMessage)
 realtime.register(SystemMessage)
+realtime.register(RewardMessage)
 
 export default {
   name: 'LiveView',
@@ -350,6 +360,18 @@ export default {
          this.addChatMsg(message)
        }).catch(this.handleError)
     },
+    sendRewardMsg(amount) {
+      var rewardMsg = new RewardMessage()
+      rewardMsg.setText('我打赏了主播' + (amount / 100) + '元')
+      rewardMsg.setAttributes({
+        username:this.curUser.username,
+        amount: amount
+      })
+      this.conv.send(rewardMsg)
+       .then((msg) => {
+         this.addChatMsg(msg)
+      }).catch(this.handleError)
+    },
     holdToTalk (e) {
       e.preventDefault()
       wx.startRecord({
@@ -445,7 +467,11 @@ export default {
         } else if (message.type == WxAudioType) {
           this.addAudioMsg(message)
         } else if (message.type == SystemMessageType){
-         this.addChatMsg(message)
+          this.addChatMsg(message)
+        } else if (message.type == RewardMessageType) {
+          this.addChatMsg(message)
+        } else {
+          this.addSystemMsg('此消息暂不支持显示')
         }
       })
       this.client.on('reuse', () => {
@@ -564,6 +590,11 @@ export default {
     },
     showRewardForm() {
       this.overlayStatus = true
+    }
+  },
+  events: {
+    'rewardSucceed': function (amount) {
+      this.sendRewardMsg(amount)
     }
   }
 }
@@ -696,6 +727,8 @@ export default {
                     word-wrap break-word
                     word-break normal
                     white-space pre-wrap
+                  .reward-text
+                    color #d65239
     .send-area
       position absolute
       left 5px
@@ -720,10 +753,12 @@ export default {
           display inline-block
           background url("../img/computer-btn.png")
           background-size contain
-      .gift-btn
+      .packet-btn
           width 30px
           height 30px
           display inline-block
+          background url("../img/packet-btn.png")
+          background-size contain
       .input-ways
         position absolute
         left 80px
