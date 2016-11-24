@@ -192,7 +192,7 @@ export default {
         return ['电脑登录', '电脑注册', '手机登录']
       } else {
         if (this.live.needPay) {
-          return ['直接报名', '分享朋友圈后报名(感恩1元)']
+          return ['直接报名', '分享朋友圈后报名(' + this.thankWord() + ')']
         } else {
           return ['直接报名', '分享朋友圈后报名(感谢您)']
         }
@@ -215,7 +215,7 @@ export default {
             '  <span class="origin">' +'¥' + this.moneyToYuan(this.live.amount)+ '</span>'
           } else {
             amountWord = '¥' + this.moneyToYuan(this.live.amount)  +
-            '<span class="share-tips">' + '（分享朋友圈感恩1元）' + '<span>'
+            '<span class="share-tips">' + '（分享朋友圈' + this.thankWord() + ' ）' + '<span>'
           }
           return '赞助并' + statusWord + amountWord
         } else {
@@ -249,6 +249,13 @@ export default {
     debug('destroyed')
   },
   methods: {
+    thankWord() {
+      if (this.live.amount == 100) {
+        return '免费';
+      } else {
+        return '感恩1元';
+      }
+    },
     moneyToYuan(amount) {
       return amount /100.0
     },
