@@ -1,9 +1,13 @@
 <template>
 
   <div class="reward-form" @click="stop($event)">
+
+    <div class="close-btn" @click="close">x</div>
+
     <div class="oval">
 
     </div>
+
     <user-avatar :user="live.owner"></user-avatar>
     <p class="ownername">
       赞赏{{live.owner.username}}
@@ -66,6 +70,9 @@ export default {
     },
     stop (e) {
       e.stopPropagation()
+    },
+    close() {
+      this.$parent.overlay = false;
     }
   },
   events: {
@@ -87,6 +94,12 @@ export default {
   background #fff
   overflow hidden
   border-radius 15px
+  .close-btn
+    float right
+    color #fff
+    margin-right 10px
+    margin-top 10px
+    line-height 10px
   .oval
     height 100px
     width 100%
