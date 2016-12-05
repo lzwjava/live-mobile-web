@@ -172,7 +172,9 @@ export default {
       videos: [],
       messageIterator: null,
       videoSelected: 0,
-      overlayStatus: false
+      overlayStatus: false,
+      liveViewId: 0,
+      endIntervalId: 0
     }
   },
   computed: {
@@ -239,7 +241,19 @@ export default {
     }
   },
   created() {
-    //this.testSendMsgs()
+    debug('created')
+  },
+  destroyed() {
+  },
+  updated() {
+    debug('updated')
+  },
+  attached() {
+    debug('attached')
+  },
+  detached() {
+    debug('detached')
+    this.endLiveView()
   },
   ready() {
   },
@@ -284,6 +298,19 @@ export default {
         wechat.shareLive(this, this.live)
         this.openClient()
         this.playHls()
+
+        this.startLiveView(this.live)
+        if (this.endIntervalId != 0) {
+          clearInterval(this.endIntervalId)
+        }
+
+        debug('begin interval: %j', new Date())
+        
+        this.endIntervalId = setInterval(() => {
+          this.endLiveView()
+        }, 1000 * 30)
+
+        debug('intervalId: %j', this.endIntervalId)
 
         if (this.live.status == 30) {
           setTimeout(() => {
@@ -590,6 +617,28 @@ export default {
     },
     showRewardForm() {
       this.overlayStatus = true
+    },
+    startLiveView(live) {
+      http.post(this, 'liveViews', {
+        liveId: live.liveId,
+        platform: 'wechat',
+        liveStatus: live.status
+      }).then((data) => {
+        this.liveViewId = data.liveViewId
+      }, util.promiseErrorFn(this))
+    },
+    endLiveView() {
+      debug('endLiveView!!! %j', new Date())
+      if (this.liveViewId != 0) {
+        http.get(this, 'liveViews/' + this.liveViewId + '/end')
+        .then((resp) => {
+          debug('end ok')
+        }, (error) => {
+          debug('end error:%j', error);
+        })
+      } else {
+        debug('liveViewId == 0, do not end')
+      }
     }
   },
   events: {

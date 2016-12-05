@@ -29,6 +29,7 @@ var callback = {
 }
 
 var get = function(comp, url, params) {
+  debug('http GET %j', url)
   return new Promise(
     function(resolve, reject) {
       comp.$http.get(url, params)
@@ -39,6 +40,7 @@ var get = function(comp, url, params) {
 }
 
 var post = function (comp, url, params) {
+  debug('http POST %j', url)
   return new Promise(
     function(resolve, reject) {
       comp.$http.post(url, params)
