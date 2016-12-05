@@ -254,6 +254,7 @@ export default {
   detached() {
     debug('detached')
     this.endLiveView()
+    this.endInterval()
   },
   ready() {
   },
@@ -300,17 +301,11 @@ export default {
         this.playHls()
 
         this.startLiveView(this.live)
-        if (this.endIntervalId != 0) {
-          clearInterval(this.endIntervalId)
-        }
+        this.endInterval()
 
-        debug('begin interval: %j', new Date())
-        
         this.endIntervalId = setInterval(() => {
           this.endLiveView()
         }, 1000 * 30)
-
-        debug('intervalId: %j', this.endIntervalId)
 
         if (this.live.status == 30) {
           setTimeout(() => {
@@ -628,7 +623,6 @@ export default {
       }, util.promiseErrorFn(this))
     },
     endLiveView() {
-      debug('endLiveView!!! %j', new Date())
       if (this.liveViewId != 0) {
         http.get(this, 'liveViews/' + this.liveViewId + '/end')
         .then((resp) => {
@@ -638,6 +632,12 @@ export default {
         })
       } else {
         debug('liveViewId == 0, do not end')
+      }
+    },
+    endInterval() {
+      if (this.endIntervalId != 0) {
+        clearInterval(this.endIntervalId)
+        this.endIntervalId =0
       }
     }
   },
