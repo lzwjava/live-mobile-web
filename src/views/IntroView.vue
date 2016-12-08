@@ -95,12 +95,12 @@
 
       <div class="contact-detail">
         <p>
-          可关注趣直播公众号，来获取最新直播推送：
-          <!-- 可加趣直播负责人的微信，来加入趣直播用户群获取最新直播通知，不错过任何直播： -->
+          <!-- 可关注趣直播公众号，来获取最新直播推送： -->
+          可加入用户群来获取直播通知，群里有主播们、优质用户，可加趣直播创始人微信加入：
         </p>
         <br>
         <div class="img-area">
-          <img src="../img/qrcode_subscribe.jpg" alt="" />
+          <img src="../img/qrcode_me.jpg" alt="" />
         </div>
       </div>
 
