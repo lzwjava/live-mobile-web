@@ -89,6 +89,14 @@
 
     </div>
 
+    <div class="lives-section card-group">
+
+      <div class="title-label">
+        更多直播
+      </div>
+
+    </div>
+
     <div class="contact-section card-group">
 
       <div class="title-label">
