@@ -73,7 +73,7 @@
         主播简介
       </div>
 
-      <markdown :content="live.speakerIntro" :show=true></markdown>
+      <markdown :content="live.speakerIntro"></markdown>
 
     </div>
 
@@ -81,9 +81,11 @@
 
       <div class="title-label">
         直播详情
+        <!-- <span class="more-dropdown" v-bind:class="{'active': showMoreDetail}"
+        @click="toggleMoreDetail"></span> -->
       </div>
 
-      <markdown :content="live.detail" :show=true></markdown>
+      <markdown :content="live.detail" :show-all="false"></markdown>
 
     </div>
 
@@ -175,7 +177,8 @@ export default {
       currentView: 'options-form',
       videoHeight: 250,
       playStatus: 0,
-      positiveShare: false
+      positiveShare: false,
+      showMoreDetail: true
     }
   },
   computed: {
@@ -411,6 +414,9 @@ export default {
     },
     goQulive() {
       this.$router.go('/intro/7')
+    },
+    toggleMoreDetail() {
+      this.showMoreDetail = !this.showMoreDetail
     }
   },
   events:  {
@@ -582,6 +588,16 @@ export default {
         color rgb(112, 112, 112)
         line-height 28px !important
     .detail-section
+      .more-dropdown
+        background url("../img/dropdown.png") no-repeat
+        float right
+        width 25px
+        height 12px
+        background-size 100% 100%
+        margin-right 10px
+        margin-top 5px
+        &.active
+          transform rotate(180deg)
       .detail-label
         font-size 16px
         margin 10px 0

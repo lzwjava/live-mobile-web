@@ -1,5 +1,9 @@
 <template>
+  <div class="markdown-comp">
     <div class="markdown-body" v-html="html"></div>
+    <span v-show="!showAll" class="more-content-btn" @click="showAllBtn">查看全部</span>
+  </div>
+
 </template>
 
 <script type="text/javascript">
@@ -26,26 +30,54 @@ marked.setOptions({
 });
 
 export default {
-    props: ['content', 'show'],  // show 参数，为了避免当 content 改变就调用 marked
+    props: {
+      'content': {
+        type: String,
+        required: true,
+        default: ""
+      },
+      'showAll': {
+        type: Boolean,
+        required: false,
+        default: true
+      }
+    },
+    data() {
+      return {
+      }
+    },
     computed: {
         html () {
-            if (!this.show) {
-                return '';
-            }
             if (!this.content) {
               return '';
             }
-            var html = marked(this.content);
-            return html
+            debug('showMore:%j', this.showAll)
+            if (!this.showAll) {
+              var partContent = this.content.substr(0, 100) + '....'
+              var html = marked(partContent)
+              return html
+            } else {
+              var html = marked(this.content);
+              return html
+            }
         }
     },
     created() {
-
+    },
+    methods: {
+      showAllBtn() {
+        this.showAll = true
+      }
     }
 }
 
 </script>
 
 <style lang="stylus">
+
+.markdown-comp
+  .more-content-btn
+    color #00abd8
+    padding 10px 20px
 
 </style>
