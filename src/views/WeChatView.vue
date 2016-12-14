@@ -24,6 +24,16 @@ export default {
   },
   created() {
   },
+  methods: {
+    goLiveOrList() {
+      var liveId = window.localStorage.getItem('liveId')
+      if (liveId) {
+        this.$router.replace('/intro/' + liveId)
+      } else {
+        this.$router.replace('/lives')
+      }
+    }
+  },
   route: {
     data({to}) {
       var params = this.$route.params
@@ -55,12 +65,7 @@ export default {
         http.get(this, 'wechat/silentOauth', {code: code})
           .then((data) => {
             this.$dispatch('loading', false)
-            var liveId = window.localStorage.getItem('liveId')
-            if (liveId) {
-              this.$router.replace('/intro/' + liveId)
-            } else {
-              this.$router.replace('/lives')
-            }
+            this.goLiveOrList()
           }, errorFn)
       } else if (params.type == 'oauth') {
         this.$dispatch('loading', true)
@@ -68,7 +73,13 @@ export default {
           .then((data) => {
             this.$dispatch('loading', false)
             this.$router.replace('/register/?openId=' + data.openId)
-          }, errorFn)
+          }, (error) => {
+            if (error && error.indexOf('早已注册') != -1) {
+               this.goLiveOrList()
+            } else {
+               errorFn(error)
+            }
+          })
       } else if (params.type == 'oauthTest') {
         var url = window.location.href
         var newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
