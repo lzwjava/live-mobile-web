@@ -95,6 +95,8 @@
         更多直播
       </div>
 
+      <recommend-live-list :skip-live-id="liveId"></recommend-live-list>
+
     </div>
 
     <div class="contact-section card-group">
@@ -153,6 +155,7 @@ import OptionsForm from '../components/OptionsForm.vue'
 import ShareLead from '../components/ShareLead.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
 import ListNav from '../components/ListNav.vue'
+import RecommendLiveList from '../components/RecommendLiveList.vue'
 import {Button, Toast} from 'vue-weui'
 
 var debug = require('debug')('IntroView');
@@ -169,6 +172,7 @@ export default {
     'share-lead': ShareLead,
     'list-nav': ListNav,
     'qrcode-pay-form': QrcodePayForm,
+    'recommend-live-list': RecommendLiveList
   },
   data () {
     return {

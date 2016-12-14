@@ -60,12 +60,11 @@ export default {
 <style lang="stylus">
 
 .live-item
-  border-width 1px 0
-  border solid #eee
   background-color #fff
   height 80px
   padding 10px 10px
   position relative
+  border-bottom 1px solid #eee
   .avatar
       width 50px
       height 50px
