@@ -8,9 +8,11 @@
       </li>
       <div class="load-bar">
         <pulse-loader class="pulse-loader" :loading="loading" :color="color"></pulse-loader>
-        <div v-show="!loading">
-          <span v-show="haveMore" @click="loadMore">点击加载更多</span>
-          <span v-show="!haveMore">没有更多了</span>
+        <div class="load-inner" v-show="!loading && haveMore" @click="loadMore">
+          点击加载更多
+        </div>
+        <div class="load-inner" v-show="!loading && !haveMore">
+          没有更多了
         </div>
       </div>
     </ul>
@@ -88,7 +90,7 @@ export default {
     color #999
     .pulse-loader
       margin-top 15px
-    span
+    .load-inner
       line-height 40px
 
 </style>
