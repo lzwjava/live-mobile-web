@@ -32,7 +32,7 @@
 
     <div class="chat-area" :style="{top: (videoHeight + optionHeight) + 'px'}">
 
-      <ul class="msg-list" :style="{top: listTop, bottom: listBottom}" v-el:msg-list @click="inputBlur">
+      <ul class="msg-list" v-el:msg-list>
 
         <li class="msg" v-for="msg in msgs">
 
@@ -69,23 +69,14 @@
 
       </ul>
 
-      <div class="send-area" :style="{top: sendTop, bottom: sendBottom}">
-
-        <!-- <a class="computer-btn"  @click="goComputer">
-        </a> -->
+      <div class="send-area">
 
         <a class="packet-btn" @click="showRewardForm"></a>
 
-        <a class="toggle-btn" v-bind:class="{'voice-btn': inputMode == 0, 'text-btn': inputMode == 1}"
-           href="javascript:;" @click="toggleMode"></a>
-
         <div class="input-ways">
 
-          <button v-show="inputMode == 1" v-el:press-btn class="btn btn-gray voice-input" type="button" onselectstart="return false;"
-            @touchstart="holdToTalk" @touchend="mouseUp">{{btnTitle}}</button>
-
-          <div class="text-input" v-show="inputMode == 0">
-            <input type="text" v-model="inputMsg" @focus="inputFocus"> <button type="button" class="btn btn-gray" @click="sendMsg">发送</button>
+          <div class="text-input">
+            <input type="text" v-model="inputMsg"> <button type="button" class="btn btn-gray" @click="sendMsg">发送</button>
           </div>
         </div>
 
@@ -167,7 +158,6 @@ export default {
       playStatus: 0,   // 0: none, 1: loading 2: play,
       isRecording: false,
       videoHeight: 250,
-      inputMode: 0,   // 0: text 1: voice
       inputing: 0,
       videos: [],
       messageIterator: null,
@@ -196,13 +186,6 @@ export default {
         return 0
       }
     },
-    btnTitle() {
-      if (this.isRecording) {
-        return '松开发送语音'
-      } else {
-        return '按住说话'
-      }
-    },
     videoSrc() {
       if (this.live.status == 20) {
         return this.live.hlsUrl
@@ -210,34 +193,6 @@ export default {
         return this.videos[this.videoSelected].url
       }
       return this.live.hlsUrl
-    },
-    sendBottom() {
-      if (this.inputing) {
-        return 'initial'
-      } else {
-        return '0px'
-      }
-    },
-    sendTop() {
-      if (this.inputing) {
-        return '2px'
-      } else {
-        return 'initial'
-      }
-    },
-    listBottom(){
-      if (this.inputing) {
-        return '5px'
-      } else {
-        return '45px'
-      }
-    },
-    listTop() {
-      if (this.inputing) {
-        return '45px'
-      } else {
-        return '5px'
-      }
     }
   },
   created() {
@@ -370,7 +325,6 @@ export default {
       .then((message) => {
         this.addChatMsg(message)
         this.inputMsg = ''
-        this.inputing = 0
       }).catch(this.handleError)
     },
     sendSystemMsg(text) {
@@ -394,53 +348,6 @@ export default {
          this.addChatMsg(msg)
       }).catch(this.handleError)
     },
-    holdToTalk (e) {
-      e.preventDefault()
-      wx.startRecord({
-        success: () => {
-          this.isRecording = true
-        }
-      });
-      wx.onVoiceRecordEnd({
-          complete: (res) => {
-              this.isRecording = false
-              var localId = res.localId;
-              util.show(this, 'success', '录音超过一分钟而停止')
-              this.uploadVoice(localId)
-          }
-      });
-    },
-    sendAudioMsg(serverId) {
-      var audioMsg = new WxAudioMessage()
-      audioMsg.setAttributes({username: this.curUser.username, serverId: serverId})
-      this.conv.send(audioMsg)
-      .then((msg) => {
-        this.addAudioMsg(msg)
-      }).catch(this.handleError)
-    },
-    uploadVoice(localId) {
-      wx.uploadVoice({
-        localId: localId,
-        success: (res) => {
-          this.sendAudioMsg(res.serverId)
-        },
-        fail: this.handleError
-      });
-    },
-    mouseUp(e) {
-      e.preventDefault()
-      wx.stopRecord({
-        success: (res) => {
-           this.isRecording = false
-           var localId = res.localId;
-           this.uploadVoice(localId)
-        },
-        fail: (error) => {
-          this.isRecording = false
-          util.show(this, 'error', error.errMsg)
-        }
-      })
-    },
     playVoice(serverId) {
       wx.downloadVoice({
         serverId: serverId,
@@ -451,9 +358,6 @@ export default {
         },
         fail: this.handleError
       });
-    },
-    toggleMode() {
-      this.inputMode = !this.inputMode
     },
     initScroll() {
       setTimeout(() => {
@@ -580,7 +484,7 @@ export default {
             debug('video height' + videoElm.videoHeight)
             // TODO: android videoHeight 为 0 的问题
             if (videoElm.videoHeight != 0) {
-              this.videoHeight = videoElm.clientHeight
+              // this.videoHeight = videoElm.clientHeight
             }
           }
           // if (ev.type == 'waiting') {
@@ -602,13 +506,6 @@ export default {
     },
     goComputer() {
       this.$router.go('/scan?liveId=' + this.live.liveId)
-    },
-    inputFocus() {
-      // this.inputing = 1
-    },
-    inputBlur(e) {
-      debug(e)
-      this.inputing = 0
     },
     showRewardForm() {
       this.overlayStatus = true
@@ -716,6 +613,8 @@ export default {
       overflow-y scroll
       left 5px
       right 5px
+      top 5px
+      bottom 45px
       .msg
         .system-msg
           margin-bottom 0px
@@ -783,6 +682,7 @@ export default {
       left 5px
       right 5px
       height 40px
+      bottom 0px
       box-sizing border-box
       padding-top 3px
       padding-bottom 3px
@@ -790,17 +690,8 @@ export default {
         width 34px
         height 34px
         display inline-block
-        &.voice-btn
-          background url("../img/voice.png")
-          background-size contain
         &.text-btn
           background url("../img/keyboard.png")
-          background-size contain
-      .computer-btn
-          width 30px
-          height 30px
-          display inline-block
-          background url("../img/computer-btn.png")
           background-size contain
       .packet-btn
           width 30px
@@ -810,7 +701,7 @@ export default {
           background-size contain
       .input-ways
         position absolute
-        left 80px
+        left 40px
         top 0
         right 0
         bottom 0
@@ -820,10 +711,6 @@ export default {
           background-color rgb(242,242,245)
           &:active
             background-color rgb(186, 187, 190)
-        .voice-input
-          width 100%
-          height 32px
-          margin-top 3px
         .text-input
           width 100%
           height 34px
