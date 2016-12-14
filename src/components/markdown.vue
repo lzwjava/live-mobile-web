@@ -52,8 +52,17 @@ export default {
               return '';
             }
             debug('showMore:%j', this.showAll)
-            if (!this.showAll) {
-              var partContent = this.content.substr(0, 100) + '....'
+            if (!this.showAll && this.content.length > 100) {
+              var partContent = '';
+              for (var i = 0; i < 100; i++) {
+                var ch = this.content.charAt(i)
+                if (ch != '[' && ch != '(' && ch !='!') {
+                  partContent += ch;
+                } else {
+                  break;
+                }
+              }
+              partContent += '....'
               var html = marked(partContent)
               return html
             } else {
