@@ -140,12 +140,8 @@ import Markdown from '../components/markdown.vue'
 import http from '../common/api'
 import Overlay from '../components/overlay.vue'
 import OptionsForm from '../components/OptionsForm.vue'
-import LoginOptionsForm from '../components/LoginOptionsForm.vue'
-import LoginForm from '../components/LoginForm.vue'
-import RegisterForm from '../components/RegisterForm.vue'
 import ShareLead from '../components/ShareLead.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
-import WeiboForm from '../components/WeiboForm.vue'
 import ListNav from '../components/ListNav.vue'
 import {Button, Toast} from 'vue-weui'
 
@@ -160,13 +156,9 @@ export default {
     'weui-button': Button,
     'toast': Toast,
     'options-form': OptionsForm,
-    'login-options-form': LoginOptionsForm,
     'share-lead': ShareLead,
     'list-nav': ListNav,
-    'login-form': LoginForm,
-    'register-form': RegisterForm,
     'qrcode-pay-form': QrcodePayForm,
-    'weibo-form': WeiboForm
   },
   data () {
     return {
@@ -188,14 +180,10 @@ export default {
   },
   computed: {
     options () {
-      if (this.currentView == 'login-options-form') {
-        return ['电脑登录', '电脑注册', '手机登录']
+      if (this.live.needPay) {
+        return ['直接报名', '分享朋友圈后报名(' + this.thankWord() + ')']
       } else {
-        if (this.live.needPay) {
-          return ['直接报名', '分享朋友圈后报名(' + this.thankWord() + ')']
-        } else {
-          return ['直接报名', '分享朋友圈后报名(感谢您)']
-        }
+        return ['直接报名', '分享朋友圈后报名(感谢您)']
       }
     },
     btnTitle: function () {
@@ -373,12 +361,7 @@ export default {
           this.payOrCreateAttend()
         }
       } else {
-        if (util.isWeixinBrowser()) {
-          this.$router.go('/register/?liveId=' + this.liveId)
-        } else {
-          this.currentView = 'login-options-form'
-          this.overlayStatus = true
-        }
+        this.$broadcast('loginOrRegister', this.liveId)
       }
     },
     createAttend() {
@@ -453,29 +436,10 @@ export default {
       }).catch(util.promiseErrorFn(this))
     },
     'hideOptionsForm': function(type) {
-      if (this.currentView  == 'login-options-form') {
-        if (type == 0) {
-          setTimeout(() => {
-            this.currentView = 'login-form'
-            this.overlayStatus = true
-          }, 600)
-        } else  if (type == 2) {
-          setTimeout(() => {
-            this.currentView = 'weibo-form'
-            this.overlayStatus = true
-          }, 600)
-        } else if (type == 1){
-          setTimeout(() => {
-            this.currentView = 'register-form'
-            this.overlayStatus = true
-          }, 600)
-        }
-      } else if (this.currentView == 'options-form'){
+      if (this.currentView == 'options-form'){
         if (type == 0) {
           this.payOrCreateAttend()
         } else if (type == 1) {
-          debug('hideOptionsForm type == 1')
-
           setTimeout(() => {
             this.currentView = 'share-lead'
             this.overlayStatus = true

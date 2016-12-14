@@ -21,11 +21,11 @@
           <img class="default-avatar" src="../img/defaultAvatar.png"/>
         </div>
         <div slot="options">
-          <p class="dropdown-item">请点击中间位置的按钮登录</p>
-
-          <!-- <a href="#" class="dropdown-item" @click.prevent="login">登录</a>
-          <div class="dropdown-divider"></div>
+          <!-- <p class="dropdown-item">登录</p> -->
+          <a href="#" class="dropdown-item" @click.prevent="login">登录</a>
+          <!-- <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item" @click.prevent="register">注册</a> -->
+
         </div>
       </dropdown>
 
@@ -40,6 +40,10 @@
       </dropdown>
     </div>
 
+    <overlay :overlay.sync="overlayStatus">
+        <component :is="currentView" :options="options" :live-id="liveId"></component>
+    </overlay>
+
   </div>
 
 </template>
@@ -51,6 +55,11 @@ import util from '../common/util'
 import api from '../common/api'
 import UserAvatar from '../components/user-avatar.vue'
 import Dropdown from '../components/dropdown.vue'
+import LoginOptionsForm from '../components/LoginOptionsForm.vue'
+import LoginForm from '../components/LoginForm.vue'
+import RegisterForm from '../components/RegisterForm.vue'
+import WeiboForm from '../components/WeiboForm.vue'
+import Overlay from '../components/Overlay.vue'
 
 var debug = debugFn('ListNav')
 
@@ -58,13 +67,26 @@ export default {
   name: 'ListNav',
   components: {
     'user-avatar': UserAvatar,
-    'dropdown': Dropdown
+    'dropdown': Dropdown,
+    'login-options-form': LoginOptionsForm,
+    'overlay': Overlay,
+    'login-form': LoginForm,
+    'register-form': RegisterForm,
+    'weibo-form': WeiboForm
   },
   props: ['mode', 'title'],
   data() {
     return {
       curUser: {},
-      showUserDropdown: false
+      showUserDropdown: false,
+      overlayStatus: false,
+      currentView: 'login-options-form',
+      liveId: 0
+    }
+  },
+  computed: {
+    options() {
+      return ['电脑登录', '电脑注册', '手机登录']
     }
   },
   created() {
@@ -79,7 +101,8 @@ export default {
   },
   methods: {
     login() {
-      this.$router.go('/?liveId=0')
+      // this.$router.go('/?liveId=0')
+      this.loginOrRegister(0)
     },
     register() {
       this.$router.go('/register/?liveId=0')
@@ -105,6 +128,14 @@ export default {
     },
     goAll() {
       this.$router.go('/lives')
+    },
+    loginOrRegister(liveId) {
+      if (util.isWeixinBrowser()) {
+        this.$router.go('/register/?liveId=' + liveId)
+      } else {
+        this.currentView = 'login-options-form'
+        this.overlayStatus = true
+      }
     }
   },
   events: {
@@ -114,6 +145,30 @@ export default {
        .then((data) => {
          this.curUser = data
        })
+    },
+    'loginOrRegister': function (liveId) {
+      this.loginOrRegister(liveId)
+    },
+    'hideLoginOptionsForm': function(type) {
+      debug('hideLoginOptionsForm in ListNav')
+      if (this.currentView  == 'login-options-form') {
+        if (type == 0) {
+          setTimeout(() => {
+            this.currentView = 'login-form'
+            this.overlayStatus = true
+          }, 600)
+        } else  if (type == 2) {
+          setTimeout(() => {
+            this.currentView = 'weibo-form'
+            this.overlayStatus = true
+          }, 600)
+        } else if (type == 1){
+          setTimeout(() => {
+            this.currentView = 'register-form'
+            this.overlayStatus = true
+          }, 600)
+        }
+      }
     }
   }
 }

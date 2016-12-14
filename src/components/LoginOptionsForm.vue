@@ -25,7 +25,7 @@ export default {
     },
     chooseType(type) {
       this.$parent.overlay = false;
-      this.$dispatch('hideOptionsForm', type)
+      this.$dispatch('hideLoginOptionsForm', type)
     }
   }
 }
