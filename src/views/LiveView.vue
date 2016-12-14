@@ -1,6 +1,6 @@
 <template>
   <div class="live-view">
-    <div class="player-area" :style="{height: videoHeight + 'px'}">
+    <div class="player-area" v-el:player-area :style="{height: videoHeight + 'px'}">
       <div class="video-wait" v-show="live.status == 10">
         <p class="big-title">离直播开始还有{{timeDuration}} <br></p>
         <p class="middle-title">欢迎转发让同事也来听~</p>
@@ -157,7 +157,7 @@ export default {
       inputMsg: '',
       playStatus: 0,   // 0: none, 1: loading 2: play,
       isRecording: false,
-      videoHeight: 250,
+      videoHeight: 230,
       inputing: 0,
       videos: [],
       messageIterator: null,
@@ -212,6 +212,8 @@ export default {
     this.endInterval()
   },
   ready() {
+    var playerArea = this.$els.playerArea
+    this.videoHeight =  Math.round(playerArea.offsetWidth * 0.625);
   },
   watch: {
     videoSelected: function(val, oldVal) {
@@ -232,7 +234,7 @@ export default {
       this.client = {}
       this.msgs = []
       this.playStatus = 0
-      this.videoHeight = 250
+
       Promise.all([
         http.fetchLive(this, this.liveId),
         http.fetchVideos(this, this.liveId),
