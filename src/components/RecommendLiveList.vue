@@ -44,6 +44,7 @@ export default {
   created() {
   },
   ready() {
+    this.loadData(3, 0)
   },
   components: {
     'live-item': LiveItem,
@@ -70,9 +71,9 @@ export default {
   },
   watch: {
     'skipLiveId': function (val, oldVal) {
-      this.lives = []
-      this.haveMore = true
-      this.loadData(3, 0)
+      // this.lives = []
+      // this.haveMore = true
+      // this.loadData(3, 0)
     }
   }
 }

@@ -636,7 +636,7 @@ export default {
       .img-area
         text-align center
         img
-          width 100%
+          width 70%
     .list-section
       text-align center
       margin-bottom 0px !important
