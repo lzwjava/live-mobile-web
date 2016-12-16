@@ -11,7 +11,7 @@ var config = {
   },
   output: {
     path: path.resolve(__dirname, 'static/'),
-    publicPath: '',
+    publicPath: 'http://mres.quzhiboapp.com/',
     filename: '[name].js'
   },
   resolve: {

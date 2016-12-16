@@ -32,8 +32,12 @@ def _clean_local_dir():
 def host_type():
     run('uname -s')
 
+def upload_qiniu():
+    local('qshell qupload uploadqn.json')
+
 def deploy(install='true'):
   _prepare_local_website(install)
   prepare_remote_dirs()
   rsync_project(local_dir=tmp_dir + '/',remote_dir=server_dir,delete=True)
+  upload_qiniu()
   _clean_local_dir()
