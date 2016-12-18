@@ -6,15 +6,9 @@
       <li class="live-item-li" v-for="live in lives">
         <live-item :live="live"></live-item>
       </li>
-      <div class="load-bar">
-        <pulse-loader class="pulse-loader" :loading="loading" :color="color"></pulse-loader>
-        <div class="load-inner" v-show="!loading && haveMore" @click="loadMore">
-          点击加载更多
-        </div>
-        <div class="load-inner" v-show="!loading && !haveMore">
-          没有更多了
-        </div>
-      </div>
+
+      <load-more-bar :have-more="haveMore" :loading="loading"><load-more-bar>
+
     </ul>
 
   </div>
@@ -28,7 +22,7 @@ var debug = require('debug')('RecommendLiveList')
 import util from '../common/util'
 import LiveItem from '../components/LiveItem.vue'
 import http from '../common/api'
-import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+import LoadMoreBar from '../components/LoadMoreBar.vue'
 
 export default {
   name: 'RecommendLiveList',
@@ -37,8 +31,7 @@ export default {
     return {
       lives: [],
       haveMore: true,
-      loading: false,
-      color: '#00bdef'
+      loading: false
     }
   },
   created() {
@@ -48,7 +41,7 @@ export default {
   },
   components: {
     'live-item': LiveItem,
-    'pulse-loader':PulseLoader
+    'load-more-bar': LoadMoreBar
   },
   methods: {
     loadData(limit, skip) {
@@ -64,8 +57,10 @@ export default {
           this.haveMore = false
         }
       }).catch(util.promiseErrorFn(this))
-    },
-    loadMore() {
+    }
+  },
+  events: {
+    'loadMore': function () {
       this.loadData(10, this.lives.length)
     }
   },
@@ -85,13 +80,5 @@ export default {
 .live-list-ul
   &:first-child
     border-top 1px solid #eee
-  .load-bar
-    height 40px
-    text-align center
-    color #999
-    .pulse-loader
-      margin-top 15px
-    .load-inner
-      line-height 40px
 
 </style>

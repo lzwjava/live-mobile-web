@@ -58,8 +58,8 @@ var fetchVideos = function(comp, liveId) {
   return get(comp, 'lives/' + liveId + '/videos')
 }
 
-var fetchUsers = function(comp, liveId) {
-  return get(comp, 'lives/' + liveId +'/users')
+var fetchUsers = function(comp, liveId, params) {
+  return get(comp, 'lives/' + liveId +'/users', params)
 }
 
 var fetchPartUsers = function (comp, liveId) {

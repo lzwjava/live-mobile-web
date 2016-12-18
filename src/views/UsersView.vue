@@ -11,9 +11,8 @@
         <span class="name">{{u.username}}</span>
       </li>
 
-      <p class="max-tips" v-if="live.attendanceCount > 100">
-        只显示了最近报名的 100 人
-      </p>
+      <load-more-bar :have-more="haveMore" :loading="loading"></load-more-bar>
+
     </ul>
   </div>
 
@@ -24,19 +23,23 @@
 import http from '../common/api'
 import util from '../common/util'
 import UserAvatar from '../components/user-avatar.vue'
+import LoadMoreBar from '../components/LoadMoreBar.vue'
 
 var debug = require('debug')('UsersView')
 
 export default {
   name: 'UsersView',
   components: {
-    'user-avatar': UserAvatar
+    'user-avatar': UserAvatar,
+    'load-more-bar': LoadMoreBar
   },
   data() {
     return {
       liveId: 0,
       live: {},
-      attendUsers: []
+      attendUsers: [],
+      haveMore: true,
+      loading: false
     }
   },
   created() {
@@ -45,20 +48,36 @@ export default {
     data ({to}) {
       debug('params: %j', to.params)
       this.liveId = to.params.liveId
-      this.fetchData()
+      this.fetchLive()
+      this.loadUsers()
     }
   },
   methods: {
-    fetchData: function () {
+    fetchLive () {
       this.$dispatch('loading', true)
-      Promise.all([
-        http.fetchUsers(this, this.liveId),
-        http.fetchLive(this, this.liveId)
-      ]).then(values => {
-        this.$dispatch('loading', false)
-        this.attendUsers = values[0]
-        this.live = values[1]
-      }).catch(util.promiseErrorFn(this))
+      http.fetchLive(this, this.liveId)
+       .then((data) => {
+         this.$dispatch('loading', false)
+         this.live = data
+       }).catch(util.promiseErrorFn(this))
+    },
+    loadUsers() {
+      this.loading = true
+      http.fetchUsers(this, this.liveId, {
+        skip: this.attendUsers.length,
+        limit: 100
+      }).then((data) => {
+        this.loading = false
+        this.attendUsers = this.attendUsers.concat(data)
+        if (data.length < 100) {
+          this.haveMore = false
+        }
+      })
+    }
+  },
+  events: {
+    'loadMore': function () {
+      this.loadUsers()
     }
   }
 }
