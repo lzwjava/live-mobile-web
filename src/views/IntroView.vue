@@ -240,7 +240,11 @@ export default {
   },
   route: {
     data ({ to }) {
-      this.liveId = to.params.liveId
+      var liveId = to.params.liveId;
+      if (liveId == this.liveId) {
+        return
+      }
+      this.liveId = liveId
       this.loadAllData()
     }
   },

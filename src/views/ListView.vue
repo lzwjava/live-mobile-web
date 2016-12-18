@@ -41,23 +41,23 @@ export default {
     }
   },
   created() {
+    util.loading(this)
+    Promise.all([
+      http.get(this, 'lives/on'),
+      wechat.configWeixin(this)
+    ]).then(values => {
+      util.loaded(this)
+
+      this.lives = values[0]
+
+      wechat.showOptionMenu()
+      wechat.shareApp(this)
+
+    }).catch(util.promiseErrorFn(this))
   },
   route: {
     data ({to}) {
-      util.loading(this)
       this.$broadcast('updateCurUser')
-      Promise.all([
-        http.get(this, 'lives/on'),
-        wechat.configWeixin(this)
-      ]).then(values => {
-        util.loaded(this)
-
-        this.lives = values[0]
-
-        wechat.showOptionMenu()
-        wechat.shareApp(this)
-
-      }).catch(util.promiseErrorFn(this))
     }
   },
   methods: {

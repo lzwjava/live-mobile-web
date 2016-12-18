@@ -47,7 +47,11 @@ export default {
   route: {
     data ({to}) {
       debug('params: %j', to.params)
-      this.liveId = to.params.liveId
+      var liveId = to.params.liveId
+      if (liveId == this.liveId) {
+        return
+      }
+      this.liveId = liveId
       this.fetchLive()
 
       this.haveMore = true

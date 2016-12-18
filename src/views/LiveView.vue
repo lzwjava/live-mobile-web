@@ -224,6 +224,11 @@ export default {
   route: {
     data ({to}) {
       var liveId = to.params.liveId
+      
+      if (liveId == this.liveId) {
+        return
+      }
+
       this.liveId = liveId
       if (!this.liveId) {
         util.show(this, 'error', '缺少参数')
