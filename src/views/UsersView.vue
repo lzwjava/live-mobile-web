@@ -49,6 +49,10 @@ export default {
       debug('params: %j', to.params)
       this.liveId = to.params.liveId
       this.fetchLive()
+
+      this.haveMore = true
+      this.loading = false
+      this.attendUsers = []
       this.loadUsers()
     }
   },
