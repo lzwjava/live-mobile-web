@@ -224,7 +224,7 @@ export default {
   route: {
     data ({to}) {
       var liveId = to.params.liveId
-      
+
       if (liveId == this.liveId) {
         return
       }
@@ -269,12 +269,6 @@ export default {
         this.endIntervalId = setInterval(() => {
           this.endLiveView()
         }, 1000 * 30)
-
-        if (this.live.status == 30) {
-          setTimeout(() => {
-            this.canPlayClick()
-          }, 100)
-        }
 
       }, util.promiseErrorFn(this))
     }
@@ -474,9 +468,12 @@ export default {
       video.addEventListener('error', (ev) => {
         debug('event')
         debug(ev)
-        if (video.networkState == HTMLMediaElement.NETWORK_NO_SOURCE) {
-          //util.show(this, 'error', '加载直播失败')
+        if (ev.type == 'error') {
+          util.show(this, 'error', '加载出错')
         }
+        // if (video.networkState == HTMLMediaElement.NETWORK_NO_SOURCE) {
+        //   util.show(this, 'error', '加载直播失败')
+        // }
       })
       var events = ['canplay', 'play', 'playing']
       //var events = ['playing', 'waiting']
@@ -502,6 +499,12 @@ export default {
           //   this.playStatus = 2
           // }
         })
+      }
+
+      if (this.live.status == 30) {
+        setTimeout(() => {
+          this.canPlayClick()
+        }, 100)
       }
     },
     canPlayClick() {

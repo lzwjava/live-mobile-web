@@ -480,7 +480,7 @@ export default {
               this.intoLive()
             }
           }).catch(util.promiseErrorFn(this))
-      }, 1000)
+      }, 2000)
     }
   }
 }
