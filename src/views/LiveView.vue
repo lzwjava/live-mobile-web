@@ -9,7 +9,7 @@
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 30">
         <video id="player1" width="100%" height="100%" preload="preload"
-           controls webkit-playsinline :src="videoSrc"></video>
+           controls webkit-playsinline playsinline :src="videoSrc"></video>
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
           <div class="video-center">
@@ -214,7 +214,7 @@ export default {
   },
   ready() {
     var playerArea = this.$els.playerArea
-    this.videoHeight =  Math.round(playerArea.offsetWidth * 0.625);
+    this.videoHeight =  Math.ceil(playerArea.offsetWidth * 0.625)
   },
   watch: {
     videoSelected: function(val, oldVal) {
@@ -501,15 +501,11 @@ export default {
         })
       }
 
-      if (this.live.status == 30) {
-        setTimeout(() => {
-          this.canPlayClick()
-        }, 100)
-      }
     },
     canPlayClick() {
       this.playStatus = 1
       var video = document.querySelector('video')
+      video.load()
       video.play()
       setTimeout(() => {
         this.playStatus = 2
