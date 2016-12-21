@@ -167,12 +167,7 @@ function linkUrl(liveId) {
 }
 
 function shareLive(comp, live) {
-  var iconUrl;
-  if (live.liveId == 90) {
-    iconUrl = live.owner.avatarUrl
-  } else {
-    iconUrl = live.coverUrl
-  }
+  var iconUrl = live.owner.avatarUrl
   var title = live.owner.username + '的直播：' + live.subject
   share(title, iconUrl, title, linkUrl(live.liveId), comp, live.liveId)
 }

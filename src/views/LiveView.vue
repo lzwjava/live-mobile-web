@@ -3,7 +3,6 @@
     <div class="player-area" v-el:player-area :style="{height: videoHeight + 'px'}">
       <div class="video-wait" v-show="live.status == 10">
         <p class="big-title">离直播开始还有{{timeDuration}} <br></p>
-        <p class="middle-title">欢迎转发让同事也来听~</p>
         <p class="small-title">开播时您将收到一条短信通知~</p>
         <p class="small-title">另外可打开 quzhiboapp.com 在电脑上观看</p>
       </div>
@@ -578,7 +577,7 @@ export default {
       font-size 14px
     .video-wait
     .video-end
-      padding-top 100px
+      padding-top 80px
     .video-on
       .video-poster-cover
         @extend .full-space

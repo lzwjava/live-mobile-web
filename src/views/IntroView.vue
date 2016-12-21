@@ -102,13 +102,14 @@
     <div class="contact-section card-group">
 
       <div class="title-label">
-        订阅最新直播
+        加入用户群和主播们交流
       </div>
 
       <div class="contact-detail">
         <p>
           <!-- 可关注趣直播公众号，来获取最新直播推送： -->
-          可加入用户群来获取直播通知，群里有主播们、优质用户，可加趣直播创始人微信加入：
+          可加入用户群来获取直播通知，群里有iOS技术圈的唐巧、孙源、iOS 程序猿等大咖，也有华尔街、谷歌、Uber工程师，
+          还有国内一线公司的工程师、设计师，也有很多创业公司的CEO、CTO，可加微信加入：
         </p>
         <br>
         <div class="img-area">
