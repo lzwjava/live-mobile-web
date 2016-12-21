@@ -4,7 +4,9 @@
       <div class="video-wait" v-show="live.status == 10">
         <p class="big-title">离直播开始还有{{timeDuration}} <br></p>
         <p class="small-title">开播时您将收到一条短信通知~</p>
-        <p class="small-title">另外可打开 quzhiboapp.com 在电脑上观看</p>
+        <p class="small-title">可打开 quzhiboapp.com 在电脑上观看</p>
+        <p class="small-title">另可长按加微信进入用户群和主播聊聊</p>
+        <img class="qrcode" src="../img/qrcode_me_2.jpg" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 30">
         <video id="player1" width="100%" height="100%" preload="preload"
@@ -17,10 +19,6 @@
           </div>
         </div>
       </div>
-      <!-- <div class="video-end" v-show="live.status == 30">
-        <p class="big-title">直播已结束</p>
-        <p class="small-title">谢谢您的参与，下次再会~</p>
-      </div> -->
     </div>
 
     <div class="playlist-area" :style="{top:videoHeight + 'px'}" v-if="videos.length > 1">
@@ -570,14 +568,17 @@ export default {
     p.middle-title
       text-align center
       color #fff
-      font-size 16px
+      font-size 14px
     p.small-title
       text-align center
       color #bebebe
       font-size 14px
     .video-wait
-    .video-end
-      padding-top 80px
+      text-align center
+      padding-top 30px
+      .qrcode
+        margin-top 10px
+        width 100px
     .video-on
       .video-poster-cover
         @extend .full-space
