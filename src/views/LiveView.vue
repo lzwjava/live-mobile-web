@@ -191,6 +191,14 @@ export default {
         return this.videos[this.videoSelected].url
       }
       return this.live.hlsUrl
+    },
+    liveHost() {
+      if (!this.live.hlsUrl) {
+        return ''
+      }
+      var regex = /http:\/\/(.*).quzhiboapp.com.*/g
+      var match = regex.exec(this.live.hlsUrl)
+      return match[1]
     }
   },
   created() {
@@ -407,11 +415,11 @@ export default {
       })
     },
     openClient() {
-      this.addSystemMsg('正在连接服务器...')
+      this.addSystemMsg('正在连接聊天服务器...')
       realtime.createIMClient(this.curUser.userId + '')
       .then((client) => {
         this.client = client
-        this.addSystemMsg('服务器连接成功')
+        this.addSystemMsg('聊天服务器连接成功')
         this.registerEvent()
         this.fetchConv()
       }).catch(this.handleError)
@@ -458,9 +466,16 @@ export default {
       }).catch(this.handleError)
     },
     playHls () {
+      if (this.live.status < 20) {
+        return
+      }
+
       var video = document.querySelector('video')
-      debug('video')
-      debug(video)
+
+      if (this.live.status == 20) {
+        this.addSystemMsg('连接了直播服务器' + this.liveHost)
+      }
+
       // makeVideoPlayableInline(video)
       video.addEventListener('error', (ev) => {
         debug('event')
