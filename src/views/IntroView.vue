@@ -190,7 +190,7 @@ export default {
       currentView: 'options-form',
       videoHeight: 250,
       playStatus: 0,
-      positiveShare: false,
+      positiveShare: false, // 主动分享
       showMoreDetail: true
     }
   },
@@ -414,7 +414,14 @@ export default {
             util.show(this, 'success', '支付成功')
             this.reloadLive()
             this.$router.go('/live/' + this.liveId)
-          }, util.promiseErrorFn(this))
+          }, (error) => {
+            if (error && error.indexOf('失败') != -1) {
+              this.currentView = 'qrcode-pay-form'
+              this.overlayStatus = true
+            } else {
+              util.show(this, 'error', error)
+            }
+          })
       } else {
         this.currentView = 'qrcode-pay-form'
         this.overlayStatus = true
