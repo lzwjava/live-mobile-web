@@ -74,14 +74,13 @@ export default {
     'register-form': RegisterForm,
     'weibo-form': WeiboForm
   },
-  props: ['mode', 'title'],
+  props: ['mode', 'title', 'liveId'],
   data() {
     return {
       curUser: {},
       showUserDropdown: false,
       overlayStatus: false,
-      currentView: 'login-options-form',
-      liveId: 0
+      currentView: 'login-options-form'
     }
   },
   computed: {
@@ -102,10 +101,10 @@ export default {
   methods: {
     login() {
       // this.$router.go('/?liveId=0')
-      this.loginOrRegister(0)
+      this.loginOrRegister(this.liveId)
     },
     register() {
-      this.$router.go('/register/?liveId=0')
+      this.$router.go('/register/?liveId=' + this.liveId)
     },
     goList() {
       this.$router.go('/lives')

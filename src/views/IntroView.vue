@@ -2,7 +2,7 @@
 
   <div class="intro-view">
 
-    <list-nav :mode="0" :title="introTitle"></list-nav>
+    <list-nav :mode="0" :title="introTitle" :live-id="liveId"></list-nav>
 
     <div class="cover-section">
 

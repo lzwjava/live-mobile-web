@@ -2,7 +2,7 @@
 
   <div class="list-view">
 
-    <list-nav :mode="1"></list-nav>
+    <list-nav :mode="1" :live-id="0"></list-nav>
 
     <div>
 

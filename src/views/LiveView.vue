@@ -575,7 +575,7 @@ export default {
       font-size 14px
     .video-wait
       text-align center
-      padding-top 30px
+      padding-top 15px
       .qrcode
         margin-top 10px
         width 100px
