@@ -77,8 +77,6 @@
 
       <div class="title-label">
         直播详情
-        <!-- <span class="more-dropdown" v-bind:class="{'active': showMoreDetail}"
-        @click="toggleMoreDetail"></span> -->
       </div>
 
       <markdown :content="live.detail" :show-all="false"></markdown>
@@ -95,24 +93,6 @@
 
     </div>
 
-    <!-- <div class="contact-section card-group">
-
-      <div class="title-label">
-        加入用户群和主播们交流
-      </div>
-
-      <div class="contact-detail">
-        <p>
-          可加入用户群来获取直播通知，群里有iOS技术圈的唐巧、孙源、iOS 程序猿等大咖，也有华尔街、谷歌、Uber工程师，
-          还有国内一线公司的工程师、设计师，也有很多创业公司的CEO、CTO，可加微信加入：
-        </p>
-        <br>
-        <div class="img-area">
-          <img src="../img/qrcode_me.jpg" alt="" />
-        </div>
-      </div>
-
-    </div> -->
 
     <!-- <div class="create-section">
 
@@ -128,10 +108,6 @@
     <div class="attend-section">
       <button class="btn btn-blue attend-btn" @click="attendLive" v-html="btnTitle"></button>
     </div>
-
-    <!-- <div class="list-section card-group">
-      <a @click.prevent="seeLives">查看全部的直播</a>
-    </div> -->
 
     <overlay :overlay.sync="overlayStatus">
         <component :is="currentView" :options="options" :live-id="liveId"></component>
@@ -629,11 +605,6 @@ export default {
         text-align center
         img
           width 70%
-    .list-section
-      text-align center
-      margin-bottom 0px !important
-      a
-        color #00ABD8
     .lives-section
       margin-bottom 50px
     .attend-section
