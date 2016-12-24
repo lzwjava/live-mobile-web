@@ -221,10 +221,10 @@ export default {
       return match[1]
     },
     noticeContent() {
-      if (this.live.notice) {
-        return this.live.notice
-      }
-      return '暂无公告'
+      return this.live.notice + this.defaultNotice
+    },
+    defaultNotice() {
+      return '\n可长按二维码加微信进用户群和主播聊聊：\n\n ![wechat_lzw_short.png](http://i.quzhiboapp.com/qLppTY)'
     }
   },
   created() {
