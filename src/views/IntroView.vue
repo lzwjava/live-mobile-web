@@ -32,7 +32,7 @@
       <div class="time-section">
 
         <div class="right-corner">
-          <div class="status">
+          <div class="status" v-bind:class="{'live-on': live.status == 20}">
               {{statusText}}
           </div>
 
@@ -549,6 +549,10 @@ export default {
           border-radius 3px
           padding 0 3px
           font-size 14px
+          &.live-on
+            color #fff
+            background-color #00BDEF
+            border-color #64b3f1
         .feedback
           margin-top 8px
           font-size 14px
