@@ -34,6 +34,9 @@
       <div class="notice-tab tab-item" @click="showNoticeTab" v-bind:class="{active: currentTab == 1}">
         公告
       </div>
+      <div class="live-tab tab-item" @click="changeLiveUrl" v-show="live.status == 20">
+        切换直播线路
+      </div>
     </div>
 
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
@@ -584,6 +587,9 @@ export default {
     },
     showNoticeTab() {
       this.currentTab = 1
+    },
+    changeLiveUrl() {
+      window.location.reload()
     }
   },
   events: {
