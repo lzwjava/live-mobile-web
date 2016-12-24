@@ -497,6 +497,7 @@ export default {
 
 @import "../stylus/base.styl"
 @import "../stylus/variables.styl"
+@import '../../node_modules/rupture/rupture/index.styl'
 
 .intro-view
     width 100%
@@ -595,12 +596,6 @@ export default {
       .video-label
         margin 10px 0
         color #828282
-    .speaker-section
-      .markdown-body
-        padding 10px 20px
-        font-size 16px
-        color rgb(112, 112, 112)
-        line-height 28px !important
     .detail-section
       .more-dropdown
         background url("../img/dropdown.png") no-repeat
@@ -616,11 +611,6 @@ export default {
         font-size 16px
         margin 10px 0
         color #828282
-      .markdown-body
-        padding 10px 20px
-        font-size 16px
-        color rgb(112, 112, 112)
-        line-height 28px !important
     .card-group
       margin-top 10px
       background-color #fff
@@ -651,6 +641,9 @@ export default {
       bottom 0
       width 100%
       height 50px
+      +above(800px)
+        margin 0 auto
+        max-width 600px
       .attend-btn
         font-size 16px
         width 100%

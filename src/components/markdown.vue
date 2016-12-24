@@ -85,6 +85,11 @@ export default {
 <style lang="stylus">
 
 .markdown-comp
+  .markdown-body
+    padding 10px 20px
+    font-size 16px
+    color rgb(112, 112, 112)
+    line-height 28px !important
   .more-content-btn
     color #00abd8
     padding 10px 20px

@@ -3,7 +3,7 @@
   <div class="weibo-form" @click="stop">
 
     <p class="op-word">
-      请将以下链接复制到微信里 <br>然后在微信打开
+      请复制以下链接 <br>到微信中发送给文件助手<br>接着点击链接打开
     </p>
 
     <p class="link">
@@ -58,10 +58,10 @@ export default {
   text-align center
   padding 20px 10px
   .op-word
-    font-size 20px
+    font-size 18px
   .link
     line-height 90px
-    font-size 18px
+    font-size 16px
   .small-tips
     font-size 14px
     color #828282
