@@ -27,7 +27,17 @@
       </cells>
     </div>
 
-    <div class="chat-area" :style="{top: (videoHeight + optionHeight) + 'px'}">
+    <div class="tab-area">
+      <div class="chat-tab tab-item" @click="showChatTab" v-bind:class="{active: currentTab == 0}">
+        聊天
+      </div>
+      <div class="notice-tab tab-item" @click="showNoticeTab" v-bind:class="{active: currentTab == 1}">
+        公告
+      </div>
+    </div>
+
+    <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
+         v-show="currentTab == 0">
 
       <ul class="msg-list" v-el:msg-list>
 
@@ -66,7 +76,7 @@
 
       </ul>
 
-      <div class="send-area">
+      <div class="send-area tab-sub-area">
 
         <a class="packet-btn" @click="showRewardForm"></a>
 
@@ -80,6 +90,10 @@
 
       </div>
 
+    </div>
+
+    <div class="notice-area" v-show="currentTab == 1">
+      <markdown :content="noticeContent"></markdown>
     </div>
 
     <overlay :overlay.sync="overlayStatus">
@@ -99,6 +113,7 @@ import makeVideoPlayableInline from 'iphone-inline-video'
 import {Toast, SelectCell, Cells} from 'vue-weui'
 import RewardForm from '../components/RewardForm.vue'
 import Overlay from '../components/overlay.vue'
+import Markdown from '../components/markdown.vue'
 
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
@@ -142,7 +157,8 @@ export default {
     SelectCell,
     Cells,
     RewardForm,
-    Overlay
+    Overlay,
+    'markdown': Markdown
   },
   data() {
     return {
@@ -162,7 +178,8 @@ export default {
       videoSelected: 0,
       overlayStatus: false,
       liveViewId: 0,
-      endIntervalId: 0
+      endIntervalId: 0,
+      currentTab: 0   // 0: Chat, 1: Notice
     }
   },
   computed: {
@@ -199,6 +216,12 @@ export default {
       var regex = /http:\/\/(.*).quzhiboapp.com.*/g
       var match = regex.exec(this.live.hlsUrl)
       return match[1]
+    },
+    noticeContent() {
+      if (this.live.notice) {
+        return this.live.notice
+      }
+      return '暂无公告'
     }
   },
   created() {
@@ -434,7 +457,7 @@ export default {
         }
         this.conv = conv
         this.addSystemMsg('正在加载聊天记录...')
-        var messageIterator = this.conv.createMessagesIterator({ limit: 200 })
+        var messageIterator = this.conv.createMessagesIterator({ limit: 100 })
         this.messageIterator = messageIterator
         return messageIterator.next()
       }).then((result)=> {
@@ -555,6 +578,12 @@ export default {
         clearInterval(this.endIntervalId)
         this.endIntervalId =0
       }
+    },
+    showChatTab() {
+      this.currentTab = 0
+    },
+    showNoticeTab() {
+      this.currentTab = 1
     }
   },
   events: {
@@ -569,6 +598,7 @@ export default {
 <style lang="stylus">
 
 @import "../stylus/base.styl"
+@import "../stylus/variables.styl"
 
 .live-view
   @extend .full-space
@@ -621,7 +651,20 @@ export default {
     .weui_cells
       margin-top 0px !important
       background-color #f1f1f1
-  .chat-area
+  .tab-area
+    display flex
+    height 35px
+    .tab-item
+      flex-grow 1
+      background-color #F5F5F5
+      text-align center
+      line-height 35px
+      transition all .5s ease
+      color $font-gray
+      &.active
+        color $blue
+        border-bottom 1px solid $blue
+  .tab-sub-area
     padding 5px
     box-sizing border-box
     width 100%
@@ -629,6 +672,8 @@ export default {
     bottom 0
     left 0
     right 0
+    transition all .5s ease
+  .chat-area
     .msg-list
       position absolute
       overflow hidden
@@ -749,6 +794,8 @@ export default {
             width 20%
             vertical-align middle
             padding 7px 5px
+  .notice-area
+    padding 10px
 
 @keyframes circle
   0%

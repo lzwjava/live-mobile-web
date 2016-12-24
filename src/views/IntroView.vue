@@ -48,7 +48,7 @@
 
     </div>
 
-    <div class="attend-section card-group">
+    <div class="attend-summary-section card-group">
       <div class="attend-info">
         <ul class="attended-users">
           <li class="avatar-cell" v-for="u in attendedUsers">
@@ -59,10 +59,6 @@
         <div class="attend-summary" @click="goUsers">
           {{live.attendanceCount}}人已参与 >
         </div>
-      </div>
-
-      <div class="attend-action section">
-        <button class="btn btn-blue attend-btn" @click="attendLive" v-html="btnTitle"></button>
       </div>
 
     </div>
@@ -99,7 +95,7 @@
 
     </div>
 
-    <div class="contact-section card-group">
+    <!-- <div class="contact-section card-group">
 
       <div class="title-label">
         加入用户群和主播们交流
@@ -107,7 +103,6 @@
 
       <div class="contact-detail">
         <p>
-          <!-- 可关注趣直播公众号，来获取最新直播推送： -->
           可加入用户群来获取直播通知，群里有iOS技术圈的唐巧、孙源、iOS 程序猿等大咖，也有华尔街、谷歌、Uber工程师，
           还有国内一线公司的工程师、设计师，也有很多创业公司的CEO、CTO，可加微信加入：
         </p>
@@ -117,9 +112,9 @@
         </div>
       </div>
 
-    </div>
+    </div> -->
 
-    <div class="create-section">
+    <!-- <div class="create-section">
 
       <a class="create-link" @click.prevent="goQulive">趣直播是什么?</a>
 
@@ -128,6 +123,10 @@
       <br>
 
       <a class="create-link" @click.prevent="createLive">创建您的直播?</a>
+    </div> -->
+
+    <div class="attend-section">
+      <button class="btn btn-blue attend-btn" @click="attendLive" v-html="btnTitle"></button>
     </div>
 
     <!-- <div class="list-section card-group">
@@ -500,6 +499,7 @@ export default {
 @import "../stylus/variables.styl"
 
 .intro-view
+    width 100%
     .section
       background-color #fff
     .title-label
@@ -576,11 +576,12 @@ export default {
           margin-top 8px
           font-size 14px
           line-height 25px
-    .attend-section
+    .attend-summary-section
       .attend-info
         margin 5px 0
       ul
         display inline-block
+        margin 0
         li
           display inline-block
           margin 0 2px
@@ -589,18 +590,7 @@ export default {
             height 25px
       .attend-summary
         float right
-        line-height 25px
-      .attend-action
-        text-align center
-        .attend-btn
-          font-size 16px
-          width 90%
-          .origin
-            font-size 13px
-            text-decoration line-through
-          .share-tips
-            font-size 13px
-            color #FFFFFF
+        line-height 32px
     .video-section
       .video-label
         margin 10px 0
@@ -654,5 +644,23 @@ export default {
       margin-bottom 0px !important
       a
         color #00ABD8
+    .lives-section
+      margin-bottom 50px
+    .attend-section
+      position fixed
+      bottom 0
+      width 100%
+      height 50px
+      .attend-btn
+        font-size 16px
+        width 100%
+        border-radius 0px !important
+        height 100%
+        .origin
+          font-size 13px
+          text-decoration line-through
+        .share-tips
+          font-size 13px
+          color #FFFFFF
 
 </style>
