@@ -439,8 +439,18 @@ export default {
     showSubscribeForm() {
       if (this.overlayStatus == false) {
         if (this.live.canJoin && this.curUser.wechatSubscribe == 0) {
-          this.currentView = 'subscribe-form'
-          this.overlayStatus = true
+          var count = window.localStorage.getItem('showSubscribeCount')
+          if (!count) {
+            count = 0
+          }
+          if (count < 2) {
+            this.currentView = 'subscribe-form'
+            this.overlayStatus = true
+            count++
+            window.localStorage.setItem('showSubscribeCount', count)
+          } else {
+            debug('pass subscribe notify')
+          }
         }
       }
     }
