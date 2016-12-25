@@ -8,7 +8,7 @@
         <p class="small-title">另可长按加微信进入用户群和主播聊聊</p>
         <img class="qrcode" src="../img/qrcode_me_2.jpg" alt="">
       </div>
-      <div class="video-on" v-show="live.status == 20 || live.status == 30">
+      <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
         <video id="player1" width="100%" height="100%" preload="preload"
            controls webkit-playsinline playsinline :src="videoSrc"></video>
         <div class="video-poster-cover" v-show="playStatus != 2">
@@ -34,8 +34,8 @@
       <div class="notice-tab tab-item" @click="showNoticeTab" v-bind:class="{active: currentTab == 1}">
         公告
       </div>
-      <div class="live-tab tab-item" @click="changeLiveUrl" v-show="live.status == 20">
-        切换直播线路
+      <div class="live-tab tab-item" @click="changeLiveUrl" v-show="live.status == 20 || live.status == 30">
+        {{changeTitle}}
       </div>
     </div>
 
@@ -217,7 +217,7 @@ export default {
         return ''
       }
       var regex = /http:\/\/(.*).quzhiboapp.com.*/g
-      var match = regex.exec(this.live.hlsUrl)
+      var match = regex.exec(this.videoSrc)
       return match[1]
     },
     noticeContent() {
@@ -225,6 +225,13 @@ export default {
     },
     defaultNotice() {
       return '\n可长按二维码加微信进用户群和主播聊聊：\n\n ![wechat_lzw_short.png](http://i.quzhiboapp.com/qLppTY)'
+    },
+    changeTitle() {
+      if (this.live.status == 20) {
+        return '切换直播线路'
+      } else if (this.live.status == 30){
+        return '切换视频线路'
+      }
     }
   },
   created() {
@@ -498,8 +505,14 @@ export default {
 
       var video = document.querySelector('video')
 
-      if (this.live.status == 20) {
-        this.addSystemMsg('连接了直播服务器' + this.liveHost)
+      if (this.live.status >= 20) {
+        var word = '';
+        if (this.live.status == 30) {
+          word = '连接了视频服务器'
+        } else {
+          word = '连接了直播服务器'
+        }
+        this.addSystemMsg(word + this.liveHost)
       }
 
       // makeVideoPlayableInline(video)
