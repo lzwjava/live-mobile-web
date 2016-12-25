@@ -93,6 +93,19 @@
 
     </div>
 
+    <div class="contact-section card-group">
+      <div class="title-label">
+        订阅最新直播
+      </div>
+
+      <div class="contact-detail">
+        <p>可关注趣直播服务号来订阅最新直播：</p>
+        <br>
+        <div class="img-area">
+          <img src="../img/qrcode_tech.jpg" alt="" />
+        </div>
+      </div>
+    </div>
 
     <!-- <div class="create-section">
 
@@ -130,6 +143,7 @@ import Overlay from '../components/overlay.vue'
 import OptionsForm from '../components/OptionsForm.vue'
 import ShareLead from '../components/ShareLead.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
+import SubscribeForm from '../components/SubscribeForm.vue'
 import ListNav from '../components/ListNav.vue'
 import RecommendLiveList from '../components/RecommendLiveList.vue'
 import {Button, Toast} from 'vue-weui'
@@ -148,7 +162,8 @@ export default {
     'share-lead': ShareLead,
     'list-nav': ListNav,
     'qrcode-pay-form': QrcodePayForm,
-    'recommend-live-list': RecommendLiveList
+    'recommend-live-list': RecommendLiveList,
+    'subscribe-form': SubscribeForm
   },
   data () {
     return {
@@ -270,6 +285,10 @@ export default {
         setTimeout(() => {
           this.configPreviewImages()
         },100)
+
+        setTimeout(() => {
+          this.showSubscribeForm()
+        }, 100)
       }).catch(util.promiseErrorFn(this))
     },
     configPreviewImages() {
@@ -416,6 +435,14 @@ export default {
     },
     toggleMoreDetail() {
       this.showMoreDetail = !this.showMoreDetail
+    },
+    showSubscribeForm() {
+      if (this.overlayStatus == false) {
+        if (this.live.canJoin && this.curUser.wechatSubscribe == 0) {
+          this.currentView = 'subscribe-form'
+          this.overlayStatus = true
+        }
+      }
     }
   },
   events:  {
@@ -602,6 +629,7 @@ export default {
       a
         color #8A8A8A
     .contact-section
+      margin-bottom 50px
       .contact-detail
         padding 10px 20px
         color rgb(112, 112, 112)
@@ -609,8 +637,6 @@ export default {
         text-align center
         img
           width 70%
-    .lives-section
-      margin-bottom 50px
     .attend-section
       position fixed
       bottom 0

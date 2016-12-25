@@ -72,7 +72,7 @@ export default {
       e.stopPropagation()
     },
     close() {
-      this.$parent.overlay = false;
+      this.$parent.overlay = false
     }
   },
   events: {
