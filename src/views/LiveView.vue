@@ -362,18 +362,15 @@ export default {
         return
       }
       this.isSending = true
-      return new Promise((resolve, reject) => {
-        this.conv.send(msg)
-          .then((message) => {
+      return this.conv.send(msg)
+       .then((message) => {
           this.isSending = false
           this.addChatMsg(message)
-          resolve(message)
+          return Promise.resolve(message)
         }, (error) => {
           this.isSending = false
           this.handleError(error)
-          reject(error)
         })
-      })
     },
     sendSystemMsg(text) {
       var systemMsg = new SystemMessage()
