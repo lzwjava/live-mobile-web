@@ -36,6 +36,7 @@
 import debugFn from 'debug'
 import api from '../common/api'
 import util from '../common/util'
+import wechat from '../common/wechat'
 
 const debug = debugFn('StaffView')
 
@@ -48,6 +49,16 @@ export default {
     }
   },
   created() {
+    util.loading(this)
+    Promise.all([
+      wechat.configWeixin(this)
+    ]).then(() => {
+      util.loaded(this)
+
+      wechat.showOptionMenu()
+      wechat.shareJoin(this)
+
+    }).catch(util.promiseErrorFn(this))
   },
   ready() {
   },

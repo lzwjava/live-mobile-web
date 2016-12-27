@@ -177,6 +177,11 @@ function shareApp(comp) {
   share(title, 'http://i.quzhiboapp.com/logo.png', title, linkUrl(0), 0)
 }
 
+function shareJoin(comp) {
+  var title = '欢迎您加入趣直播'
+  share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#staff', 0)
+}
+
 function wxPay(data) {
   return new Promise(function (resolve, reject){
     wx.ready(() => {
@@ -263,6 +268,7 @@ exports.hideMenu = hideMenu
 exports.showMenu = showMenu
 exports.shareLive = shareLive
 exports.shareApp = shareApp
+exports.shareJoin = shareJoin
 exports.attendLiveAndPay = attendLiveAndPay
 exports.scanQRcode = scanQRcode
 exports.scanQRcodeWithLive = scanQRcodeWithLive
