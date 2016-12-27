@@ -16,6 +16,7 @@ import ListView from './views/ListView.vue'
 import ProfileView from './views/ProfileView.vue'
 import ContactView from './views/ContactView.vue'
 import MyListView from './views/MyListView.vue'
+import StaffView from './views/StaffView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -45,7 +46,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading,IntroView,' +
     'UsersView,main,http,RegisterView,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
-    'LiveItem,RecommendLiveList,LoadMoreBar';
+    'LiveItem,RecommendLiveList,LoadMoreBar,StaffView';
 }
 
 // routing
@@ -84,6 +85,9 @@ router.map({
   },
   'mylist': {
     component: MyListView
+  },
+  'staff': {
+    component: StaffView
   }
 })
 
