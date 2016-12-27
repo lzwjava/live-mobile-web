@@ -5,7 +5,7 @@
 
       <div class="welcome-word">
         <h1>欢迎您加入趣直播</h1>
-        <p class="free-word">趣直播的每一位小伙伴可免费参与直播</p>
+        <p class="free-word">团队每一位小伙伴可免费参与直播</p>
       </div>
 
       <div class="bind-area">
@@ -70,8 +70,9 @@ export default {
 
 .staff-view
   background-image url('../img/welcome.jpg')
-  background-size 100% 100%
-  background-position center
+  background-size     cover
+  background-repeat   no-repeat
+  background-position   center center
   position absolute
   left 0
   bottom 0
@@ -79,7 +80,7 @@ export default {
   top 0
   color #fff
   .content-area
-    margin-top 10px
+    margin-top 20px
     padding 20px
     .free-word
       margin-top 10px
