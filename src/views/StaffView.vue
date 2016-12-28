@@ -5,7 +5,8 @@
 
       <div class="welcome-word">
         <h1>欢迎您加入趣直播</h1>
-        <p class="free-word">团队每一位小伙伴可免费参与直播</p>
+        <h3 class="stats">我们在服务 {{stats.users}} 名用户</h3>
+        <h4 class="free-word">团队每一位小伙伴可免费参与直播</h4>
       </div>
 
       <div class="bind-area">
@@ -22,9 +23,13 @@
 
       </div>
 
+
+
     </div>
 
-    <h2 class="slogan">山河湖海都是<br>我们造梦的地方</h2>
+
+
+    <h3 class="slogan">山河湖海都是<br>我们造梦的地方</h3>
 
 
   </div>
@@ -45,15 +50,19 @@ export default {
   data() {
     return {
       key: '',
-      mode: 0
+      mode: 0,
+      stats: {}
     }
   },
   created() {
     util.loading(this)
     Promise.all([
+      api.get(this, 'stats'),
       wechat.configWeixin(this)
-    ]).then(() => {
+    ]).then((values) => {
       util.loaded(this)
+
+      this.stats = values[0]
 
       wechat.showOptionMenu()
       wechat.shareJoin(this)
