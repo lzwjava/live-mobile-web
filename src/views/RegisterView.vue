@@ -70,8 +70,13 @@ export default {
         this.openId = query.openId
       } else {
         if (query.liveId) {
+          window.localStorage.setItem('type', 'live')
           window.localStorage.setItem('registerLiveId', query.liveId)
+        } else {
+          window.localStorage.setItem('type', query.type)
+          window.localStorage.setItem('packetId', query.packetId)
         }
+        // this.goSucceed()
         wechat.oauth2(this)
       }
     }
@@ -107,12 +112,7 @@ export default {
         this.loading = false
         this.$dispatch('toast', '注册成功', 1000, () => {
           //window.location.href = ''
-          var liveId = window.localStorage.getItem('registerLiveId')
-          if (liveId && liveId !=0) {
-            this.$router.go('/intro/' + liveId)
-          } else {
-            this.$router.go('/lives')
-          }
+          this.goSucceed()
         })
       }, util.promiseErrorFn(this, () => {
         this.loading = false
@@ -120,6 +120,20 @@ export default {
     },
     goContact() {
       this.$router.go('/contact')
+    },
+    goSucceed() {
+      var type = window.localStorage.getItem('type')
+      if (type == 'live') {
+        var liveId = window.localStorage.getItem('registerLiveId')
+        if (liveId && liveId !=0) {
+          this.$router.go('/intro/' + liveId)
+        } else {
+          this.$router.go('/lives')
+        }
+      } else if (type == 'packet') {
+        var packetId = window.localStorage.getItem('packetId')
+        this.$router.go('/packets/' + packetId)
+      }
     }
   }
 }

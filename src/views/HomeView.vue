@@ -47,9 +47,11 @@ export default {
         return
       }
       if (params.liveId && params.liveId > 0) {
+        window.localStorage.setItem('type', 'live')
         window.localStorage.setItem('liveId', params.liveId)
-      } else {
-        window.localStorage.removeItem('liveId')
+      } else if (params.packetId) {
+        window.localStorage.setItem('type', 'packet')
+        window.localStorage.setItem('packetId', params.packetId)
       }
       wechat.silentOauth2(this)
     }

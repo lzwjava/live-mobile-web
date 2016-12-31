@@ -185,7 +185,7 @@ function shareJoin(comp) {
 function sharePacket(comp, packet) {
   var title = packet.user.username + '的红包：' + packet.wishing
   share(title, 'http://i.quzhiboapp.com/packet.jpg', title,
-     'http://m.quzhiboapp.com/#packets/' + packet.packetId + '?t=' + new Date().getTime(), 0)
+     'http://m.quzhiboapp.com/?packetId=' + packet.packetId + '&t=' + new Date().getTime(), 0)
 }
 
 function wxPay(data) {

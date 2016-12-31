@@ -26,11 +26,17 @@ export default {
   },
   methods: {
     goLiveOrList() {
-      var liveId = window.localStorage.getItem('liveId')
-      if (liveId) {
-        this.$router.replace('/intro/' + liveId)
-      } else {
-        this.$router.replace('/lives')
+      var type = window.localStorage.getItem('type')
+      if (type == 'live') {
+        var liveId = window.localStorage.getItem('liveId')
+        if (liveId) {
+          this.$router.replace('/intro/' + liveId)
+        } else {
+          this.$router.replace('/lives')
+        }
+      } else if (type == 'packet') {
+        var packetId = window.localStorage.getItem('packetId')
+        this.$router.replace('/packets/' + packetId)
       }
     }
   },

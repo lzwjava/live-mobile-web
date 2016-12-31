@@ -7,12 +7,12 @@
     <p>祝福语</p>
     <input type="text" name="" v-model="wishing">
     <p>
-      <button class="send-btn" type="button" name="button" @click="createPacket">发红包</button>
+      <button v-if="!showButton" class="send-btn" type="button" name="button" @click="createPacket">发红包</button>
     </p>
 
     <p v-if="showButton">
 
-      <button @click="goPacket">发红包成功，点击进入您的红包分给别人</button>
+      <button class="send-btn" @click="goPacket">发红包成功，点击进入您的红包分享给别人</button>
     </p>
 
 
@@ -33,8 +33,8 @@ export default {
   name: 'PacketCreateView',
   data() {
     return {
-      totalCount : 1,
-      totalAmount: 100,
+      totalCount : 10,
+      totalAmount: 1000,
       wishing: '新年快乐！',
       showButton: 0,
       packet: {}
@@ -92,7 +92,7 @@ export default {
     font-size 20px
     height 40px
   .send-btn
-    width 100px
+    width 200px
     height 30px
     background-color #fff
     color #d65239

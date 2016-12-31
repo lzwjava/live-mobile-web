@@ -18,7 +18,7 @@
 
     </div>
 
-    <button v-if="showSucceed" class="send-btn" @click="sendPacket">发红包</button>
+    <button class="send-btn" @click="sendPacket">发红包</button>
 
   </div>
 
@@ -47,6 +47,7 @@ export default {
     data({to}) {
       var params = this.$route.params;
       this.packetId = params.packetId
+      util.loading(this)
       Promise.all([
         api.get(this, 'packets/' + this.packetId),
         api.fetchCurUser(this),
@@ -65,25 +66,25 @@ export default {
     }
   },
   methods: {
-    fetchData() {
-      api.get(this, 'packets/' + this.packetId)
-       .then((packet) => {
-         this.packet = packet
-       }, util.promiseErrorFn(this))
-    },
     grabPacket() {
       if (this.curUser.userId) {
+        util.loading(this)
         api.get(this, 'packets/' + this.packetId + '/grab')
          .then((res) => {
+           util.loaded(this)
            util.show(this, 'success', '恭喜您')
            this.showSucceed = 1
          }, util.promiseErrorFn(this))
       } else {
-        this.$router.go('/register/?liveId=' + liveId)
+        this.$router.go('/register/?type=packet&packetId=' + this.packetId )
       }
     },
     sendPacket() {
-      this.$route.go('/packet')
+      if (this.curUser.userId) {
+        this.$router.go('/packet')
+      } else {
+        this.$router.go('/register/?type=packet&packetId=' + this.packetId )
+      }
     }
   }
 }
