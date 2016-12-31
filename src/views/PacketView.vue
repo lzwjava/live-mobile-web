@@ -81,7 +81,10 @@ export default {
   },
   route: {
     data({to}) {
-      var params = this.$route.params;
+      var params = this.$route.params
+      if (params.packetId == this.packetId) {
+        return
+      }
       this.packetId = params.packetId
       util.loading(this)
       Promise.all([

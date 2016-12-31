@@ -111,9 +111,12 @@ export default {
   .send-btn
     width 200px
     height 30px
+    font-size 20px
+    lien-height 30px
     background-color #fff
     color #d65239
     margin-top 30px
+    border-radius 5px
   .packets-list
     text-align left
     margin-top 50px
