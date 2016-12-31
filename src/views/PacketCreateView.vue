@@ -51,10 +51,12 @@ export default {
   },
   route: {
     data ({ to }) {
+      util.loading(this)
       Promise.all([
         api.get(this, 'packets/meAll'),
         wechat.configWeixin(this)
       ]).then((values) => {
+        util.loaded(this)
         this.packets = values[0]
       }, util.promiseErrorFn(this))
     }
@@ -120,7 +122,7 @@ export default {
       margin-bottom 5px
       color #fff
       .remain
-        float right 
+        float right
     .max-tips
       text-align center
       color gray

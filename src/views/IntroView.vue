@@ -123,7 +123,7 @@
     </div>
 
     <overlay :overlay.sync="overlayStatus">
-        <component :is="currentView" :options="options" :live-id="liveId"></component>
+        <component :is="currentView" :options="options" :live-id="liveId" type="live"></component>
     </overlay>
 
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>

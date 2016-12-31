@@ -5,11 +5,11 @@
 
     <h3 v-bind:class="{'packet-margin': this.type == 'packet'}">{{explainWord}}</h3>
 
-    <img v-if="this.type != 'packet'" class="notify" src="../img/wechat_notify.jpg" alt="">
+    <img v-if="this.type != 'packet'" class="notify" alt="" src="../img/wechat_notify.jpg">
 
     <h3>请关注公众号</h3>
 
-    <img src="../img/qrcode_tech.jpg" alt="">
+    <img  :src="'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + this.ticket" alt="">
 
   </div>
 
@@ -17,11 +17,18 @@
 
 <script type="text/javascript">
 
+import api from '../common/api'
+import util from '../common/util'
+import debugFn from 'debug'
+
+const debug = debugFn('SubscribeForm')
+
 export default {
   name: 'SubscribeForm',
-  props: ['type'],
+  props: ['type', 'liveId', 'packetId'],
   data() {
     return {
+      ticket: ''
     }
   },
   computed: {
@@ -36,6 +43,15 @@ export default {
   created() {
   },
   ready() {
+    util.loading(this)
+    api.get(this, 'wechat/qrcode', {
+      'type': this.type,
+      'liveId': this.liveId,
+      'packetId': this.packetId
+    }).then((data) => {
+      util.loaded(this)
+      this.ticket = encodeURIComponent(data.ticket)
+    }, util.promiseErrorFn(this))
   },
   methods: {
     stop (e) {

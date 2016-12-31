@@ -35,7 +35,7 @@
     </ul>
 
     <overlay :overlay.sync="overlayStatus">
-        <component :is="currentView" type="packet"></component>
+        <component :is="currentView" type="packet" :packet-id="packetId"></component>
     </overlay>
 
   </div>
