@@ -1,13 +1,13 @@
 <template>
-  <div class="subscribe-form">
+  <div class="subscribe-form" @click="stop($event)">
 
     <div class="close-btn" @click="close">x</div>
 
-    <h3>为了方便微信通知您</h3>
+    <h3 v-bind:class="{'packet-margin': this.type == 'packet'}">{{explainWord}}</h3>
 
-    <img class="notify" src="../img/wechat_notify.jpg" alt="">
+    <img v-if="this.type != 'packet'" class="notify" src="../img/wechat_notify.jpg" alt="">
 
-    <h3>请关注服务号</h3>
+    <h3>请关注公众号</h3>
 
     <img src="../img/qrcode_tech.jpg" alt="">
 
@@ -19,8 +19,18 @@
 
 export default {
   name: 'SubscribeForm',
+  props: ['type'],
   data() {
     return {
+    }
+  },
+  computed: {
+    explainWord () {
+      if (this.type == 'packet') {
+        return '为了让公众号给您发送红包'
+      } else {
+        return '为了方便微信通知您'
+      }
     }
   },
   created() {
@@ -28,8 +38,11 @@ export default {
   ready() {
   },
   methods: {
+    stop (e) {
+      e.stopPropagation()
+    },
     close() {
-      this.$parent.overlay = false;
+      this.$parent.overlay = false
     }
   }
 }
@@ -47,6 +60,8 @@ export default {
     width 180px
   .notify
     padding 10px
+  .packet-margin
+    margin-top 50px
   .close-btn
     float right
     color #000

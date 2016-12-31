@@ -11,10 +11,18 @@
     </p>
 
     <p v-if="showButton">
-
       <button class="send-btn" @click="goPacket">发红包成功，点击进入您的红包分享给别人</button>
     </p>
 
+    <ul class="packets-list">
+
+      <li v-for="packet in packets" @click="goOnePacket(packet)">
+        <span class="packet-num">红包{{packet.id}}</span>
+
+        <span class="remain">还有 {{packet.balance/100.0}} 元 {{packet.remainCount}} 个</span>
+      </li>
+
+    </ul>
 
   </div>
 
@@ -34,15 +42,21 @@ export default {
   data() {
     return {
       totalCount : 10,
-      totalAmount: 1000,
+      totalAmount: 100,
       wishing: '新年快乐！',
       showButton: 0,
-      packet: {}
+      packet: {},
+      packets: {}
     }
   },
   route: {
     data ({ to }) {
-      wechat.configWeixin(this)
+      Promise.all([
+        api.get(this, 'packets/meAll'),
+        wechat.configWeixin(this)
+      ]).then((values) => {
+        this.packets = values[0]
+      }, util.promiseErrorFn(this))
     }
   },
   methods: {
@@ -69,6 +83,9 @@ export default {
          this.packet = packet
          this.$router.go('packets/' + this.packet.packetId)
        }, util.promiseErrorFn(this))
+    },
+    goOnePacket(packet) {
+      this.$router.go('packets/' + packet.packetId)
     }
   }
 }
@@ -79,11 +96,8 @@ export default {
 
 .packet-create-view
   background #d65239
-  position absolute
-  left 0
-  top 0
-  right 0
-  bottom 0
+  width 100%
+  min-height 100%
   text-align center
   color #fff
   font-size 20px
@@ -91,11 +105,25 @@ export default {
     width 200px
     font-size 20px
     height 40px
+    border-radius 5px
   .send-btn
     width 200px
     height 30px
     background-color #fff
     color #d65239
     margin-top 30px
+  .packets-list
+    text-align left
+    margin-top 50px
+    li
+      padding 5px 30px
+      margin-bottom 5px
+      color #fff
+      .remain
+        float right 
+    .max-tips
+      text-align center
+      color gray
+      margin 10px 0
 
 </style>
