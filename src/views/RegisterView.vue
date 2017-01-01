@@ -25,7 +25,6 @@
 
       </div>
 
-      <toast type="loading" v-show="loading">加载中</toast>
     </div>
 
   </div>
@@ -33,7 +32,7 @@
 
 <script type="text/javascript">
 
-import {Button, Toast} from 'vue-weui'
+import {Button} from 'vue-weui'
 import util from '../common/util'
 import http from '../common/api'
 import wechat from '../common/wechat'
@@ -44,8 +43,7 @@ export default {
   name: 'RegisterView',
   props: [],
   components: {
-    'weui-button': Button,
-    'toast': Toast
+    'weui-button': Button
   },
   data() {
     return {
@@ -68,6 +66,7 @@ export default {
 
       if (query.openId) {
         this.openId = query.openId
+        this.registerBySns()
       } else {
         if (query.liveId) {
           window.localStorage.setItem('type', 'live')
@@ -87,36 +86,28 @@ export default {
         util.show(this, 'error', '请输入手机号码');
         return
       }
-      this.loading = true
+      util.loading(this)
       this.$http.post('requestSmsCode',{
         mobilePhoneNumber: this.mobile
       }).then((resp) => {
-        this.loading = false
+        util.loaded(this)
         if (util.filterError(this, resp)) {
           this.step = 1
         }
       }, util.httpErrorFn(this))
     },
     registerBySns: function () {
-      if (!this.code) {
-        util.show(this, 'error', '请输入验证码');
-        return
-      }
-      this.loading = true
+      util.loading(this)
       http.post(this, 'users/registerBySns', {
         openId: this.openId,
-        platform: 'wechat',
-        mobilePhoneNumber: this.mobile,
-        smsCode: this.code
+        platform: 'wechat'
       }).then((data) => {
-        this.loading = false
+        util.loaded(this)
         this.$dispatch('toast', '注册成功', 1000, () => {
           //window.location.href = ''
           this.goSucceed()
         })
-      }, util.promiseErrorFn(this, () => {
-        this.loading = false
-      }))
+      }, util.promiseErrorFn(this))
     },
     goContact() {
       this.$router.go('/contact')
@@ -191,7 +182,5 @@ export default {
       .wepay
         width 80px
         margin-left 110px
-    .weui_toast
-      margin-top 70px
 
 </style>

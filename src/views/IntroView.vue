@@ -143,7 +143,6 @@ import Overlay from '../components/overlay.vue'
 import OptionsForm from '../components/OptionsForm.vue'
 import ShareLead from '../components/ShareLead.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
-import SubscribeForm from '../components/SubscribeForm.vue'
 import ListNav from '../components/ListNav.vue'
 import RecommendLiveList from '../components/RecommendLiveList.vue'
 import {Button, Toast} from 'vue-weui'
@@ -162,8 +161,7 @@ export default {
     'share-lead': ShareLead,
     'list-nav': ListNav,
     'qrcode-pay-form': QrcodePayForm,
-    'recommend-live-list': RecommendLiveList,
-    'subscribe-form': SubscribeForm
+    'recommend-live-list': RecommendLiveList
   },
   data () {
     return {
@@ -286,9 +284,6 @@ export default {
           this.configPreviewImages()
         },100)
 
-        setTimeout(() => {
-          this.showSubscribeForm()
-        }, 100)
       }).catch(util.promiseErrorFn(this))
     },
     configPreviewImages() {
@@ -435,24 +430,6 @@ export default {
     },
     toggleMoreDetail() {
       this.showMoreDetail = !this.showMoreDetail
-    },
-    showSubscribeForm() {
-      if (this.overlayStatus == false) {
-        if (this.live.canJoin && this.curUser.wechatSubscribe == 0) {
-          var count = window.localStorage.getItem('showSubscribeCount')
-          if (!count) {
-            count = 0
-          }
-          if (count < 2) {
-            this.currentView = 'subscribe-form'
-            this.overlayStatus = true
-            count++
-            window.localStorage.setItem('showSubscribeCount', count)
-          } else {
-            debug('pass subscribe notify')
-          }
-        }
-      }
     }
   },
   events:  {

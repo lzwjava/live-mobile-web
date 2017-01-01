@@ -46,7 +46,7 @@ export default {
         }
         return
       }
-      if (params.liveId && params.liveId > 0) {
+      if (params.liveId) {
         window.localStorage.setItem('type', 'live')
         window.localStorage.setItem('liveId', params.liveId)
       } else if (params.packetId) {

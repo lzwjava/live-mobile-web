@@ -100,7 +100,7 @@
     </div>
 
     <overlay :overlay.sync="overlayStatus">
-      <reward-form :live="live"></reward-form>
+      <component :is="currentView" :live="live" :live-id="liveId" type="live"></component>
     </overlay>
 
   </div>
@@ -117,6 +117,7 @@ import {Toast, SelectCell, Cells} from 'vue-weui'
 import RewardForm from '../components/RewardForm.vue'
 import Overlay from '../components/overlay.vue'
 import Markdown from '../components/markdown.vue'
+import SubscribeForm from '../components/SubscribeForm.vue'
 
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
@@ -161,7 +162,8 @@ export default {
     Cells,
     RewardForm,
     Overlay,
-    'markdown': Markdown
+    'markdown': Markdown,
+    'subscribe-form': SubscribeForm
   },
   data() {
     return {
@@ -183,7 +185,8 @@ export default {
       liveViewId: 0,
       endIntervalId: 0,
       currentTab: 0,   // 0: Chat, 1: Notice
-      isSending: false
+      isSending: false,
+      currentView: ''
     }
   },
   computed: {
@@ -308,6 +311,8 @@ export default {
         this.endIntervalId = setInterval(() => {
           this.endLiveView()
         }, 1000 * 30)
+
+        this.showSubscribeForm()
 
       }, util.promiseErrorFn(this))
     }
@@ -564,6 +569,7 @@ export default {
       this.$router.go('/scan?liveId=' + this.live.liveId)
     },
     showRewardForm() {
+      this.currentView = 'reward-form'
       this.overlayStatus = true
     },
     startLiveView(live) {
@@ -601,6 +607,14 @@ export default {
     },
     changeLiveUrl() {
       window.location.reload()
+    },
+    showSubscribeForm() {
+      setTimeout(() => {
+        if (this.curUser.wechatSubscribe == 0) {
+          this.currentView = 'subscribe-form'
+          this.overlayStatus = true
+        }
+      }, 100)
     }
   },
   events: {

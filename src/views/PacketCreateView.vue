@@ -11,7 +11,7 @@
     </p>
 
     <p v-if="showButton">
-      <button class="send-btn" @click="goPacket">发红包成功，点击进入您的红包分享给别人</button>
+      <button class="send-btn" @click="goPacket">点击进入您的红包分享给别人</button>
     </p>
 
     <ul class="packets-list">
@@ -62,6 +62,9 @@ export default {
     }
   },
   methods: {
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
     createPacket() {
       util.loading(this)
       api.post(this, 'packets', {
@@ -70,21 +73,28 @@ export default {
         channel: 'wechat_h5',
         wishing: this.wishing
       }).then((data) => {
-        util.loaded(this)
         return wechat.wxPay(data)
       }).then(() => {
-        util.show(this, 'success', '发红包成功，请点击按钮分享给别人')
-        this.showButton = 1
+        return new Promise(resolve => setTimeout(resolve, 1000))
+      }).then(() => {
+        return api.get(this, 'packets/me')
+      }).then((packet) => {
+        util.loaded(this)
+        this.packet = packet
+        if (!this.packet.packetId) {
+          util.show(this, 'success', '红包已生成，请稍后刷新页面')
+          setTimeout(() => {
+            location.reload()
+          }, 1000)
+        } else {
+          wechat.sharePacket(this, this.packet)
+          util.show(this, 'success', '发红包成功，请点击按钮分享给别人')
+          this.showButton = 1
+        }
       }, util.promiseErrorFn(this))
     },
     goPacket() {
-      util.loading(this)
-      api.get(this, 'packets/me')
-       .then((packet) => {
-         util.loaded(this)
-         this.packet = packet
-         this.$router.go('packets/' + this.packet.packetId)
-       }, util.promiseErrorFn(this))
+      this.goOnePacket(this.packet)
     },
     goOnePacket(packet) {
       this.$router.go('packets/' + packet.packetId)
@@ -104,14 +114,14 @@ export default {
   color #fff
   font-size 20px
   input
-    width 200px
+    width 250px
     font-size 20px
     height 40px
     border-radius 5px
   .send-btn
-    width 200px
+    width 250px
     height 30px
-    font-size 20px
+    font-size 16px
     lien-height 30px
     background-color #fff
     color #d65239

@@ -85,11 +85,12 @@ export default {
       if (params.packetId == this.packetId) {
         return
       }
+      document.title = '2017最新朋友圈红包'
       this.packetId = params.packetId
       util.loading(this)
       Promise.all([
         api.get(this, 'packets/' + this.packetId),
-        api.fetchCurUser(this),
+        api.fetchCurUserNoError(this),
         api.get(this, 'packets/' + this.packetId + '/userPackets'),
         wechat.configWeixin(this)
       ]).then(values => {

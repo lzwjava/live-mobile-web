@@ -35,7 +35,11 @@ export default {
       if (!this.unique(msg, this.messages)) return;
 
       if (!timeout) {
-        timeout = 3000
+        if (type == 'error') {
+          timeout = 8000
+        } else {
+          timeout = 3000
+        }
       }
       this.messages.push(msg);
       var index = this.messages.length - 1;
