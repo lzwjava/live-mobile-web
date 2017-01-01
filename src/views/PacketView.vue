@@ -11,7 +11,7 @@
       {{packet.wishing}}
     </h2>
 
-    <h4 class="small-title">还有 {{balance}} 元 {{packet.remainCount}} 个</h4>
+    <h4 class="small-title">还有 {{balance}} 元 {{packet.remainCount}} 个 <br>2017最新朋友圈红包</h4>
 
     <div class="">
 
@@ -118,7 +118,7 @@ export default {
            .then((res) => {
              util.loaded(this)
              if (res.status) {
-               util.show(this, 'success', '恭喜您')
+               util.show(this, 'success', '恭喜您，请返回到微信查看红包')
                this.showSucceed = 1
              } else {
                util.show(this, 'warn', '抱歉，红包已被抢完')
@@ -187,7 +187,7 @@ export default {
       margin-bottom 5px
       color #fff
       .avatar
-        margin-left 30px
+        margin-left 10px
         width 50px
         height 50px
       .name
@@ -198,6 +198,7 @@ export default {
         vertical-align top
         line-height 50px
         float right
+        margin-right 10px
     .max-tips
       text-align center
       color gray

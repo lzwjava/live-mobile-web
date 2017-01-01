@@ -24,6 +24,10 @@
 
     </ul>
 
+    <overlay :overlay.sync="overlayStatus">
+        <component :is="currentView"></component>
+    </overlay>
+
   </div>
 
 </template>
@@ -34,11 +38,17 @@ import api from '../common/api'
 import util from '../common/util'
 import wechat from '../common/wechat'
 import debugFn from 'debug'
+import ShareLead from '../components/ShareLead.vue'
+import Overlay from '../components/overlay.vue'
 
 const debug = debugFn('PacketCreateView')
 
 export default {
   name: 'PacketCreateView',
+  components: {
+    'share-lead': ShareLead,
+    'overlay': Overlay
+  },
   data() {
     return {
       totalCount : 10,
@@ -46,7 +56,9 @@ export default {
       wishing: '新年快乐！',
       showButton: 0,
       packet: {},
-      packets: {}
+      packets: {},
+      overlayStatus: false,
+      currentView: ''
     }
   },
   route: {
@@ -75,7 +87,7 @@ export default {
       }).then((data) => {
         return wechat.wxPay(data)
       }).then(() => {
-        return new Promise(resolve => setTimeout(resolve, 1000))
+        return new Promise(resolve => setTimeout(resolve, 2000))
       }).then(() => {
         return api.get(this, 'packets/me')
       }).then((packet) => {
@@ -85,10 +97,12 @@ export default {
           util.show(this, 'success', '红包已生成，请稍后刷新页面')
           setTimeout(() => {
             location.reload()
-          }, 1000)
+          }, 2000)
         } else {
           wechat.sharePacket(this, this.packet)
-          util.show(this, 'success', '发红包成功，请点击按钮分享给别人')
+          util.show(this, 'success', '发红包成功，可分享给朋友')
+          this.currentView = 'share-lead'
+          this.overlayStatus = true
           this.showButton = 1
         }
       }, util.promiseErrorFn(this))
