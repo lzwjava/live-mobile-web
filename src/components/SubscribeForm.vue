@@ -7,7 +7,7 @@
 
     <img v-if="this.type != 'packet'" class="notify" alt="" src="../img/wechat_notify.jpg">
 
-    <h3>请关注公众号</h3>
+    <h3>请长按关注公众号</h3>
 
     <img  :src="'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + this.ticket" alt="">
 

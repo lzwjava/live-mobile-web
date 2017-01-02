@@ -124,7 +124,7 @@
 
     <overlay :overlay.sync="overlayStatus">
         <component :is="currentView" :options="options" :live-id="liveId" type="live"></component>
-    </overlay>    
+    </overlay>
 
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
 
@@ -146,6 +146,7 @@ import QrcodePayForm from '../components/QrcodePayForm.vue'
 import ListNav from '../components/ListNav.vue'
 import RecommendLiveList from '../components/RecommendLiveList.vue'
 import {Button, Toast} from 'vue-weui'
+import SubscribeForm from '../components/SubscribeForm.vue'
 
 var debug = require('debug')('IntroView');
 
@@ -161,7 +162,8 @@ export default {
     'share-lead': ShareLead,
     'list-nav': ListNav,
     'qrcode-pay-form': QrcodePayForm,
-    'recommend-live-list': RecommendLiveList
+    'recommend-live-list': RecommendLiveList,
+    'subscribe-form': SubscribeForm
   },
   data () {
     return {
@@ -354,23 +356,33 @@ export default {
         this.createAttend()
       }
     },
+    showSubscribeForm() {
+      this.currentView = 'subscribe-form'
+      this.overlayStatus = true
+    },
     attendLive () {
-      if (this.live.canJoin) {
-        this.intoLive()
-      } else if (this.curUser.userId){
-        if (util.isWeixinBrowser()) {
-          if (this.live.shareId) {
-            this.payOrCreateAttend()
-          } else {
-            this.positiveShare = true
-            this.currentView = 'options-form'
-            this.overlayStatus = true
-          }
-        } else {
-          this.payOrCreateAttend()
-        }
-      } else {
+      if (!this.curUser.userId) {
         this.$broadcast('loginOrRegister', this.liveId)
+      } else {
+        if (this.curUser.wechatSubscribe == 0) {
+          this.showSubscribeForm()
+        } else {
+          if (this.live.canJoin) {
+            this.intoLive()
+          } else {
+            if (util.isWeixinBrowser()) {
+              if (this.live.shareId) {
+                this.payOrCreateAttend()
+              } else {
+                this.positiveShare = true
+                this.currentView = 'options-form'
+                this.overlayStatus = true
+              }
+            } else {
+              this.payOrCreateAttend()
+            }
+          }
+        }
       }
     },
     createAttend() {
