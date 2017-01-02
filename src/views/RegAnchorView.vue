@@ -1,5 +1,4 @@
 <!-- 注册主播 -->
-<!-- 也应该根据当前登录的用户判断是否为主播 -->
 <template>
 <div class="reg-anchor-view">
     <div class="weui_cells_title title_1">申请成为主播</div>
@@ -45,7 +44,6 @@
     </div>
 
     <div class="weui_btn_area">
-        <!-- <a class="weui_btn weui_btn_primary" @click="submit" href="javascript:" id="showTooltips">确定</a> -->
         <button class="btn btn-blue" @click="submit">确定</button>
     </div>
 
@@ -54,7 +52,7 @@
         <div class="weui-dialog">
             <div class="weui-dialog__bd">{{toast.message}}</div>
             <div class="weui-dialog__ft">
-                <a href="javascript:;" @click="fn_1" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+                <a href="javascript:;" @click="confirm" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
             </div>
         </div>
     </div>
@@ -62,7 +60,7 @@
 </template>
 
 <script type="text/javascript">
-import util from '../common/util';
+import util from '../common/util'
 import api from '../common/api'
 
 export default {
@@ -103,7 +101,9 @@ export default {
                     introduction: this.anchor.introduction
                 })
                 .then(res=>{
-                  this.toast.message = "申请成功！"
+                  this.toast.message = `
+                    申请成功！我们正在审核，之后将在公众号通知您。
+                  `,
                   this.toast.show = 1
                   for(let k in this.anchor){
                     this.anchor[k] = ''
@@ -115,7 +115,7 @@ export default {
                 })
         },
         // 提示框
-        fn_1(){
+        confirm(){
           this.toast.show = 0;
         }
     }
@@ -127,10 +127,10 @@ export default {
   padding 0 1rem
   height 100% !important
   background-color #fff
-.title_1
-  text-align center
-  font-size 1.5rem !important
-  color #00bdef !important
+  .title_1
+    text-align center
+    font-size 1.5rem !important
+    color #00bdef !important
 .weui_btn_area
   button
     width 100%
