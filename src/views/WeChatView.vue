@@ -29,7 +29,7 @@ export default {
       var type = window.localStorage.getItem('type')
       if (type == 'live') {
         var liveId = window.localStorage.getItem('liveId')
-        if (liveId) {
+        if (liveId && liveId > 0) {
           this.$router.replace('/intro/' + liveId)
         } else {
           this.$router.replace('/lives')

@@ -3,10 +3,10 @@
     <div class="player-area" v-el:player-area :style="{height: videoHeight + 'px'}">
       <div class="video-wait" v-show="live.status == 10">
         <p class="big-title">离直播开始还有{{timeDuration}} <br></p>
-        <p class="small-title">开播时您将收到一条短信通知~</p>
+        <p class="small-title">开播时您将收到一条微信通知~</p>
         <p class="small-title">可打开 quzhiboapp.com 在电脑上观看</p>
         <p class="small-title">另可长按加微信进入用户群和主播聊聊</p>
-        <img class="qrcode" src="../img/qrcode_me_2.jpg" alt="">
+        <img class="qrcode" src="../img/qrcode_me_3.jpg" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
         <video id="player1" width="100%" height="100%" preload="preload"
@@ -228,7 +228,8 @@ export default {
       return this.live.notice + this.defaultNotice
     },
     defaultNotice() {
-      return '\n可长按二维码加微信进用户群和主播聊聊：\n\n ![wechat_lzw_short.png](http://i.quzhiboapp.com/qLppTY)'
+      return '\n可长按二维码加微信进用户群和主播聊聊：\n\n' +
+      ' ![wechat_lzw_short.png](http://i.quzhiboapp.com/qrcode_me_small.jpg)'
     },
     changeTitle() {
       if (this.live.status == 20) {
@@ -651,10 +652,10 @@ export default {
       font-size 14px
     .video-wait
       text-align center
-      padding-top 15px
+      padding-top 25px
       .qrcode
         margin-top 10px
-        width 100px
+        width 80px
     .video-on
       .video-poster-cover
         @extend .full-space
