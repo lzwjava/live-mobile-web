@@ -3,11 +3,11 @@
 
     <div class="close-btn" @click="close">x</div>
 
-    <h3 v-bind:class="{'packet-margin': this.type == 'packet'}">{{explainWord}}</h3>
+    <h3 class="title" v-bind:class="{'packet-margin': this.type == 'packet'}">{{explainWord}}</h3>
 
     <img v-if="this.type != 'packet'" class="notify" alt="" src="../img/wechat_notify.jpg">
 
-    <h3>请长按关注公众号</h3>
+    <h3>请先长按关注公众号</h3>
 
     <img  :src="'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + this.ticket" alt="">
 
@@ -71,9 +71,13 @@ export default {
 
 .subscribe-form
   @extend .base-form
+  max-width 300px
+  height 400px
   img
     margin-top 5px
     width 180px
+  .title
+    margin-top 15px
   .notify
     padding 10px
   .packet-margin
@@ -82,7 +86,6 @@ export default {
     float right
     color #000
     margin-right 5px
-    margin-top 5px
     line-height 10px
 
 </style>
