@@ -19,6 +19,7 @@ import MyListView from './views/MyListView.vue'
 import StaffView from './views/StaffView.vue'
 import PacketView from './views/PacketView.vue'
 import PacketCreateView from './views/PacketCreateView.vue'
+import RegAnchorView from './views/RegAnchorView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -46,9 +47,10 @@ debug('env ' + process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
+  // 可以用 ``
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,register-form,loading,IntroView,' +
     'UsersView,main,http,RegisterView,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
-    'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm';
+    'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView';
 }
 
 // routing
@@ -97,6 +99,10 @@ router.map({
   'packet': {
     component: PacketCreateView
   },
+  'reganchor':{
+    // 申请成为主播
+    component:RegAnchorView
+  }
 })
 
 router.beforeEach(function () {
