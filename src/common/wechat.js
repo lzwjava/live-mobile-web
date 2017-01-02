@@ -168,6 +168,9 @@ function linkUrl(liveId) {
 
 function shareLive(comp, live) {
   var iconUrl = live.owner.avatarUrl
+  if (live.shareIcon == 1) {
+    iconUrl = live.coverUrl
+  }
   var title = live.owner.username + '的直播：' + live.subject
   share(title, iconUrl, title, linkUrl(live.liveId), comp, live.liveId)
 }
