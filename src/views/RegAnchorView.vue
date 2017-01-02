@@ -1,7 +1,7 @@
 <!-- 注册主播 -->
 <template>
 <div class="reg-anchor-view">
-    <div class="weui_cells_title title_1">申请成为主播</div>
+    <div class="weui_cells_title title_top">申请成为主播</div>
     <div class="weui_cells weui_cells_form">
 
         <div class="weui-cells__title">姓名</div>
@@ -127,7 +127,7 @@ export default {
   padding 0 1rem
   height 100% !important
   background-color #fff
-  .title_1
+  .title_top
     text-align center
     font-size 1.5rem !important
     color #00bdef !important
