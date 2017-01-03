@@ -2,7 +2,6 @@
 <template>
 <div class="reg-anchor-view">
     <div class="weui_cells_title title_top">申请成为主播</div>
-    <div class="weui_cells_title title_top_2">请阅读下方协议</div>
     <div class="weui_cells weui_cells_form">
 
         <div class="weui-cells__title">真实姓名</div>
@@ -140,10 +139,6 @@ export default {
     text-align center
     font-size 1.5rem !important
     color #00bdef !important
-  .title_top_2
-    text-align center
-    font-size 9px !important
-    marigin-top 0 !important
 .weui_btn_area
   button
     width 100%
