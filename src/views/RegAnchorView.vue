@@ -22,20 +22,20 @@
             </div>
         </div>
 
-        <div class="weui-cells__title">个人社交媒体账号</div>
+        <div class="weui-cells__title">社交媒体账号(如公众号、微博、GitHub 等和粉丝数量)</div>
         <div class="weui-cells weui-cells_form" >
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <textarea class="weui-textarea social-textarea" v-model="anchor.socialAccount" placeholder="如微信公众号（粉丝量级）、简书、微博、知乎、GitHub等" rows="1"></textarea>
+                    <textarea class="weui-textarea social-textarea" v-model="anchor.socialAccount" placeholder="任何有您的公开资料、作品的社交媒体都可以哟" rows="2"></textarea>
                 </div>
             </div>
         </div>
 
-        <div class="weui-cells__title">个人简介</div>
+        <div class="weui-cells__title">个人简介(教育背景、职业背景、个人成就等)</div>
         <div class="weui-cells weui-cells_form">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <textarea class="weui-textarea" v-model="anchor.introduction" rows="6" placeholder="教育背景、职业背景、个人成就等详细信息，会帮助大家更全面的了解主播！同时也会加快审核速度(๑•̀ㅂ•́)و✧"></textarea>
+                    <textarea class="weui-textarea" v-model="anchor.introduction" rows="6" placeholder="会帮助大家更全面的了解主播！同时也会加快审核速度(๑•̀ㅂ•́)و✧"></textarea>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
         <button class="btn btn-blue" @click="submit">确定</button>
     </div>
 
-    <div class="weui-footer weui-footer_fixed-bottom">
+    <div class="weui-footer">
         <p class="weui-footer__text">申请即代表同意
             <a href="#" @click.prevent="agreement">主播合作协议</a>
         </p>
@@ -142,7 +142,12 @@ export default {
   .social-textarea
     word-wrap break-word
     overflow-y visible
-.weui_btn_area
-  button
-    width 100%
+  .weui_cells
+    .weui-cells__title
+      color #000
+  .weui_btn_area
+    button
+      width 100%
+  .weui-footer
+    margin-top 40px
 </style>
