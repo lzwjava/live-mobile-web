@@ -1,7 +1,7 @@
 <!-- 注册主播 -->
 <template>
 <div class="reg-anchor-view">
-    <div class="weui_cells_title title_top">申请成为主播</div>
+    <div class="weui_cells_title title-top">申请成为主播</div>
     <div class="weui_cells weui_cells_form">
 
         <div class="weui-cells__title">真实姓名</div>
@@ -26,7 +26,7 @@
         <div class="weui-cells weui-cells_form" >
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <textarea class="weui-textarea" v-model="anchor.socialAccount" placeholder="如微信公众号（粉丝量级）、简书、微博、知乎、GitHub等" rows="1" style="word-wrap: break-word;overflow-y:visible"></textarea>
+                    <textarea class="weui-textarea social-textarea" v-model="anchor.socialAccount" placeholder="如微信公众号（粉丝量级）、简书、微博、知乎、GitHub等" rows="1"></textarea>
                 </div>
             </div>
         </div>
@@ -135,10 +135,13 @@ export default {
   padding 0 1rem
   height 100% !important
   background-color #fff
-  .title_top
+  .title-top
     text-align center
     font-size 1.5rem !important
     color #00bdef !important
+  .social-textarea
+    word-wrap: break-word
+    overflow-y: visible
 .weui_btn_area
   button
     width 100%
