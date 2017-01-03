@@ -2,6 +2,7 @@
 <template>
 <div class="reg-anchor-view">
     <div class="weui_cells_title title_top">申请成为主播</div>
+    <div class="weui_cells_title title_top_2">请阅读下方协议</div>
     <div class="weui_cells weui_cells_form">
 
         <div class="weui-cells__title">真实姓名</div>
@@ -48,11 +49,8 @@
     </div>
 
     <div class="weui-footer weui-footer_fixed-bottom">
-        <p class="weui-footer__links">
-            <a href="http://m.quzhiboapp.com" class="weui-footer__link">趣直播</a>
-        </p>
         <p class="weui-footer__text">申请即代表同意
-            <a href="#">主播人合作协议</a>
+            <a href="#" @click.prevent="agreement">主播人合作协议</a>
         </p>
     </div>
 
@@ -120,12 +118,14 @@ export default {
                 },error=>{
                   this.toast.message = error
                   this.toast.show = 1
-                  // util.promiseErrorFn(this)
                 })
         },
         // 提示框
         confirm(){
-          this.toast.show = 0;
+          this.toast.show = 0
+        },
+        agreement () {
+          this.$router.go('/agreement')
         }
     }
 }
@@ -140,6 +140,10 @@ export default {
     text-align center
     font-size 1.5rem !important
     color #00bdef !important
+  .title_top_2
+    text-align center
+    font-size 9px !important
+    marigin-top 0 !important
 .weui_btn_area
   button
     width 100%
