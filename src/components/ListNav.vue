@@ -33,7 +33,7 @@
                 <user-avatar :user="curUser" @click="viewUserDropdown"></user-avatar>
             </div>
             <div slot="options">
-                <a class="dropdown-item" v-if="!isAnchor" @click.prevent="goRegAnchor" href="#">成为主播</a>
+                <!-- <a class="dropdown-item" v-if="!isAnchor" @click.prevent="goRegAnchor" href="#">成为主播</a> -->
                 <a class="dropdown-item" @click="logout" href="/">注销</a>
             </div>
 
