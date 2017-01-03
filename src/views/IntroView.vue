@@ -106,7 +106,6 @@
         </div>
       </div>
     </div>
-
     <!-- <div class="create-section">
 
       <a class="create-link" @click.prevent="goQulive">趣直播是什么?</a>
@@ -119,7 +118,13 @@
     </div> -->
 
     <div class="attend-section">
-      <button class="btn btn-blue attend-btn" @click="attendLive" v-html="btnTitle"></button>
+
+      <div class="create-btn" @click="createLive">
+        <img src="../img/apply-icon.png" alt="">
+        <p>发起直播</p>
+      </div>
+
+       <div class="attend-btn" @click="attendLive" v-html="btnTitle"></div>
     </div>
 
     <overlay :overlay.sync="overlayStatus">
@@ -406,7 +411,11 @@ export default {
         }).catch(util.promiseErrorFn(this))
     },
     createLive() {
-      this.$router.go('/scan')
+      if (!this.curUser.userId) {
+        this.$broadcast('loginOrRegister', this.liveId)
+      } else {
+        this.$router.go('/reganchor')
+      }
     },
     pay() {
       if (util.isWeixinBrowser()) {
@@ -640,20 +649,42 @@ export default {
       position fixed
       bottom 0
       width 100%
-      height 50px
+      height 55px
+      display flex
       +above(800px)
         margin 0 auto
         max-width 600px
       .attend-btn
         font-size 16px
-        width 100%
+        width 80%
         border-radius 0px !important
-        height 100%
+        flex 3
+        background #00BDEF
+        color #fff
+        display flex
+        align-items center
+        justify-content center
+        text-align center
         .origin
           font-size 13px
           text-decoration line-through
         .share-tips
           font-size 13px
           color #FFFFFF
+      .create-btn
+        flex 1
+        background-color rgba(112, 112, 112, 0.9)
+        text-align center
+        display flex
+        flex-direction column
+        justify-content center
+        align-items center
+        img
+          vertical-align middle
+          width 25px
+        p
+          font-size 12px
+          color #fff
+
 
 </style>
