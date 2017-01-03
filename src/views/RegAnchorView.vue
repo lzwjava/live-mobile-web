@@ -49,7 +49,7 @@
 
     <div class="weui-footer weui-footer_fixed-bottom">
         <p class="weui-footer__text">申请即代表同意
-            <a href="#" @click.prevent="agreement">主播人合作协议</a>
+            <a href="#" @click.prevent="agreement">主播合作协议</a>
         </p>
     </div>
 
