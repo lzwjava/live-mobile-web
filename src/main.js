@@ -20,6 +20,7 @@ import StaffView from './views/StaffView.vue'
 import PacketView from './views/PacketView.vue'
 import PacketCreateView from './views/PacketCreateView.vue'
 import RegAnchorView from './views/RegAnchorView.vue'
+import AgreementView from './views/AgreementView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -99,9 +100,12 @@ router.map({
   'packet': {
     component: PacketCreateView
   },
-  'reganchor':{
+  'reganchor': {
     // 申请成为主播
-    component:RegAnchorView
+    component: RegAnchorView
+  },
+  'agreement': {
+    component: AgreementView
   }
 })
 

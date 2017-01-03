@@ -1,10 +1,10 @@
 <!-- 注册主播 -->
 <template>
 <div class="reg-anchor-view">
-    <div class="weui_cells_title title_top">申请成为主播</div>
+    <div class="weui_cells_title title-top">申请成为主播</div>
     <div class="weui_cells weui_cells_form">
 
-        <div class="weui-cells__title">姓名</div>
+        <div class="weui-cells__title">真实姓名</div>
         <div class="weui-cells">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
@@ -22,11 +22,11 @@
             </div>
         </div>
 
-        <div class="weui-cells__title">社交账号</div>
-        <div class="weui-cells">
+        <div class="weui-cells__title">个人社交媒体账号</div>
+        <div class="weui-cells weui-cells_form" >
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="text" v-model="anchor.socialAccount" placeholder="GitHub@demo">
+                    <textarea class="weui-textarea social-textarea" v-model="anchor.socialAccount" placeholder="如微信公众号（粉丝量级）、简书、微博、知乎、GitHub等" rows="1"></textarea>
                 </div>
             </div>
         </div>
@@ -35,7 +35,7 @@
         <div class="weui-cells weui-cells_form">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <textarea class="weui-textarea" v-model="anchor.introduction" rows="3"></textarea>
+                    <textarea class="weui-textarea" v-model="anchor.introduction" rows="6" placeholder="教育背景、职业背景、个人成就等详细信息，会帮助大家更全面的了解主播！同时也会加快审核速度(๑•̀ㅂ•́)و✧"></textarea>
                 </div>
             </div>
         </div>
@@ -45,6 +45,12 @@
 
     <div class="weui_btn_area">
         <button class="btn btn-blue" @click="submit">确定</button>
+    </div>
+
+    <div class="weui-footer weui-footer_fixed-bottom">
+        <p class="weui-footer__text">申请即代表同意
+            <a href="#" @click.prevent="agreement">主播合作协议</a>
+        </p>
     </div>
 
     <div v-show="toast.show">
@@ -111,12 +117,14 @@ export default {
                 },error=>{
                   this.toast.message = error
                   this.toast.show = 1
-                  // util.promiseErrorFn(this)
                 })
         },
         // 提示框
         confirm(){
-          this.toast.show = 0;
+          this.toast.show = 0
+        },
+        agreement () {
+          this.$router.go('/agreement')
         }
     }
 }
@@ -127,10 +135,13 @@ export default {
   padding 0 1rem
   height 100% !important
   background-color #fff
-  .title_top
+  .title-top
     text-align center
     font-size 1.5rem !important
     color #00bdef !important
+  .social-textarea
+    word-wrap break-word
+    overflow-y visible
 .weui_btn_area
   button
     width 100%
