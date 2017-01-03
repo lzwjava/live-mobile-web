@@ -140,8 +140,8 @@ export default {
     font-size 1.5rem !important
     color #00bdef !important
   .social-textarea
-    word-wrap: break-word
-    overflow-y: visible
+    word-wrap break-word
+    overflow-y visible
 .weui_btn_area
   button
     width 100%
