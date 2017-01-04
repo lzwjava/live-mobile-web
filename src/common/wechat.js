@@ -185,6 +185,10 @@ function shareJoin(comp) {
   share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#staff', 0)
 }
 
+function sharePage(comp, title, path) {
+  share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#' + path, 0)
+}
+
 function sharePacket(comp, packet) {
   var title = packet.user.username + '的红包：' + packet.wishing
   share(title, 'http://i.quzhiboapp.com/packet1.jpg', title,
@@ -284,3 +288,4 @@ exports.scanQRcodeWithLive = scanQRcodeWithLive
 exports.showOptionMenu = showOptionMenu
 exports.wxPay = wxPay
 exports.sharePacket = sharePacket
+exports.sharePage = sharePage

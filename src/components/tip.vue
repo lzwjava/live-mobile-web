@@ -36,7 +36,7 @@ export default {
 
       if (!timeout) {
         if (type == 'error') {
-          timeout = 8000
+          timeout = 5000
         } else {
           timeout = 3000
         }

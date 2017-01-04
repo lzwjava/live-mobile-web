@@ -73,6 +73,7 @@
 
 import util from '../common/util'
 import api from '../common/api'
+import wechat from '../common/wechat'
 
 export default {
     name: 'RegAnchorView',
@@ -99,11 +100,14 @@ export default {
     route: {
       data({ to }) {
         util.loading(this)
-        api.fetchCurUser(this)
-         .then((data) => {
-           util.loaded(this)
-           this.curUser = data
-         }, util.promiseErrorFn(this))
+        Promise.all([
+          api.fetchCurUser(this),
+          wechat.configWeixin(this)
+        ]).then((values) => {
+          util.loaded(this)
+          this.curUser = values[0]
+          wechat.sharePage(this, '申请成为主播', 'reganchor')
+        }, util.promiseErrorFn(this))
       }
     },
     methods: {
@@ -156,7 +160,7 @@ export default {
 <style media="screen" lang="stylus">
 .reg-anchor-view
   padding 0 1rem
-  height 100% !important
+  min-height 100%
   background-color #fff
   .weui_cells_form
     .bind-phone-tip
