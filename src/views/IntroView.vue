@@ -238,6 +238,9 @@ export default {
     data ({ to }) {
       var liveId = to.params.liveId;
       if (liveId == this.liveId) {
+        if (this.live.liveId) {
+          wechat.shareLive(this, this.live)
+        }
         return
       }
       this.liveId = liveId
