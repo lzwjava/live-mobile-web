@@ -37,6 +37,8 @@ export default {
       } else if (type == 'packet') {
         var packetId = window.localStorage.getItem('packetId')
         this.$router.replace('/packets/' + packetId)
+      } else {
+        this.$router.replace('/lives')
       }
     }
   },
@@ -67,17 +69,17 @@ export default {
         }
       }
       if (params.type == 'silentOauth') {
-        this.$dispatch('loading', true)
+        util.loading(this)
         http.get(this, 'wechat/silentOauth', {code: code})
           .then((data) => {
-            this.$dispatch('loading', false)
+            util.loaded(this)
             this.goLiveOrList()
           }, errorFn)
       } else if (params.type == 'oauth') {
-        this.$dispatch('loading', true)
+        util.loading(this)
         http.get(this, 'wechat/oauth', {code: code})
           .then((data) => {
-            this.$dispatch('loading', false)
+            util.loaded(this)
             this.$router.replace('/register/?openId=' + data.openId)
           }, (error) => {
             if (error && error.indexOf('早已注册') != -1) {
@@ -101,8 +103,7 @@ export default {
         http.get(this, 'wechat/webOauth', {code: code})
          .then((data) => {
            util.loaded(this)
-           // this.$dispatch('updateUser', data)
-           this.$router.go('/lives')
+           this.goLiveOrList()
          }, util.promiseErrorFn(this))
        } else if (params.type == 'webOauthTest') {
          var url = window.location.href

@@ -4,6 +4,10 @@
     <div class="weui_cells_title title-top">申请成为主播</div>
     <div class="weui_cells weui_cells_form">
 
+        <div class="bind-phone-tip" v-if="!curUser.mobilePhoneNumber">
+          <i class="weui-icon-info"></i>您还没有绑定手机，请先<a href="#" class="a-blue" @click.prevent="goBindPhone">绑定</a>
+        </div>
+
         <div class="weui-cells__title">真实姓名</div>
         <div class="weui-cells">
             <div class="weui-cell">
@@ -66,6 +70,7 @@
 </template>
 
 <script type="text/javascript">
+
 import util from '../common/util'
 import api from '../common/api'
 
@@ -83,8 +88,23 @@ export default {
             toast: {
                 show: 0,
                 message: '注册成功'
+            },
+            curUser: {
             }
         }
+    },
+    created() {
+
+    },
+    route: {
+      data({ to }) {
+        util.loading(this)
+        api.fetchCurUser(this)
+         .then((data) => {
+           util.loaded(this)
+           this.curUser = data
+         }, util.promiseErrorFn(this))
+      }
     },
     methods: {
         // 应当验证表单信息
@@ -125,6 +145,9 @@ export default {
         },
         agreement () {
           this.$router.go('/agreement')
+        },
+        goBindPhone() {
+          this.$router.go('/bindPhone?from=/reganchor')
         }
     }
 }
@@ -135,6 +158,13 @@ export default {
   padding 0 1rem
   height 100% !important
   background-color #fff
+  .weui_cells_form
+    .bind-phone-tip
+      margin 20px 0
+      font-size 16px
+      i
+        vertical-align text-top
+        font-size 20px
   .title-top
     text-align center
     font-size 1.5rem !important

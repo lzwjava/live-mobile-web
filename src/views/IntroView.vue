@@ -93,7 +93,7 @@
 
     </div>
 
-    <div class="contact-section card-group">
+    <!-- <div class="contact-section card-group">
       <div class="title-label">
         订阅最新直播
       </div>
@@ -105,7 +105,7 @@
           <img src="../img/qrcode_tech.jpg" alt="" />
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- <div class="create-section">
 
       <a class="create-link" @click.prevent="goQulive">趣直播是什么?</a>
@@ -645,6 +645,8 @@ export default {
         text-align center
         img
           width 70%
+    .lives-section
+      margin-bottom 50px
     .attend-section
       position fixed
       bottom 0

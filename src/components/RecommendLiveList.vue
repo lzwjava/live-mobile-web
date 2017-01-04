@@ -61,7 +61,7 @@ export default {
   },
   events: {
     'loadMore': function () {
-      this.loadData(10, this.lives.length)
+      this.loadData(20, this.lives.length)
     }
   },
   watch: {
