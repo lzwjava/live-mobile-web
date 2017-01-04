@@ -159,7 +159,7 @@ export default {
 
 <style media="screen" lang="stylus">
 .reg-anchor-view
-  padding 0 1rem
+  padding 10px 20px
   min-height 100%
   background-color #fff
   .weui_cells_form
