@@ -6,13 +6,13 @@
 
     <div>
 
-      <div class="subscribe" @click="goSubscribe">
+      <!-- <div class="subscribe" @click="goSubscribe">
         <span class="subscribe-btn" >订阅直播</span>
-      </div>
+      </div> -->
 
-      <div class="subscribe" @click="goCreate">
-        <span class="subscribe-btn" >创建直播</span>
-      </div>
+      <!-- <div class="subscribe" @click="goCreate">
+        <span class="subscribe-btn" >发起直播</span>
+      </div> -->
 
       <live-list :lives="lives"></live-list>
     </div>
