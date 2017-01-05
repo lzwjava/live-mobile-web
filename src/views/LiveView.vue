@@ -299,8 +299,6 @@ export default {
         this.videos = values[1]
         this.curUser = values[2]
 
-        this.live.status = 35
-
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
           return
