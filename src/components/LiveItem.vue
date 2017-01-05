@@ -7,14 +7,14 @@
       <p class="owner-name">{{live.owner.username}}</p>
       <div class="live-item-tag">
         <span class="time-label" v-show="live.status == 10">
-          {{timeGap(live)}}{{timeWord(live)}}
+          {{timeGap(live)}}开始
         </span>
 
-        <span class="on-label" v-show="live.status == 20">
+        <span class="on-label" v-show="live.status == 20 || live.status == 25">
           正在直播
         </span>
 
-        <span class="attend-label" v-show="live.status == 30">
+        <span class="attend-label" v-show="live.status == 30 || live.status == 35">
           {{live.attendanceCount}} 人参与
         </span>
 
@@ -40,14 +40,10 @@ export default {
     'user-avatar': UserAvatar
   },
   created() {
-
   },
   methods: {
     timeGap (live) {
       return util.timeGap(live.planTs)
-    },
-    timeWord(live) {
-      return '开始'
     },
     goIntro(liveId) {
       this.$router.go('/intro/' + liveId)

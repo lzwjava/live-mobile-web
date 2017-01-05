@@ -130,7 +130,11 @@ function statusText (status) {
       return '报名中';
     case 20:
       return '直播中';
+    case 25:
+      return '转码中';
     case 30:
+      return '已结束';
+    case 35:
       return '已结束';
   }
   return '未知';

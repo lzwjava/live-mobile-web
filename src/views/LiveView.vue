@@ -1,7 +1,7 @@
 <template>
   <div class="live-view">
     <div class="player-area" v-el:player-area :style="{height: videoHeight + 'px'}">
-      <div class="video-wait" v-show="live.status == 10">
+      <div class="video-wait video-common" v-show="live.status == 10">
         <p class="big-title">离直播开始还有{{timeDuration}} <br></p>
         <p class="small-title">开播时您将收到一条微信通知~</p>
         <p class="small-title">可打开 quzhiboapp.com 在电脑上观看</p>
@@ -18,6 +18,9 @@
             <div class="canplay" v-show="playStatus == 0" @click="canPlayClick"></div>
           </div>
         </div>
+      </div>
+      <div class="video-error video-common" v-show="live.status == 35">
+        <p class="big-title">直播发生了些小故障<br>请到公告栏查看</p>
       </div>
     </div>
 
@@ -295,6 +298,8 @@ export default {
         this.live = values[0]
         this.videos = values[1]
         this.curUser = values[2]
+
+        this.live.status = 35
 
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
@@ -650,12 +655,17 @@ export default {
       text-align center
       color #bebebe
       font-size 14px
-    .video-wait
+    .video-common
       text-align center
-      padding-top 25px
+      display flex
+      justify-content center
+      align-items center
+      height 100%
+      flex-direction column
+    .video-wait
       .qrcode
-        margin-top 10px
         width 80px
+        margin-top 5px
     .video-on
       .video-poster-cover
         @extend .full-space
