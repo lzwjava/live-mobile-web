@@ -25,7 +25,7 @@ var rewriteUrl = function(replacePath) {
 var prod = true;
 var target;
 if (prod) {
-  target = "http://api.quzhiboapp.com";
+  target = "https://api.quzhiboapp.com";
 } else {
   target = "http://localhost:3005";
 }
@@ -33,11 +33,13 @@ if (prod) {
 var proxy = [{
 	path: new RegExp("/api/(.*)"),
 	target: target,
-	rewrite: rewriteUrl("/$1")
+	rewrite: rewriteUrl("/$1"),
+  changeOrigin: true
 }];
 
 var app = new WebpackDevServer(webpack(config), {
   // allow access over local network
+  https: true,
   host: '0.0.0.0',
   publicPath: config.output.publicPath,
   historyApiFallback: true,
@@ -46,10 +48,10 @@ var app = new WebpackDevServer(webpack(config), {
   debug: true,
   // suppress useless text
   noInfo: false
-});
+})
 
 app.listen(9060, '0.0.0.0', function (err, result) {
-  console.log('http://localhost:9060');
+  console.log('https://localhost:9060');
   if (err) {
     console.log(err);
   }

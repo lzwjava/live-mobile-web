@@ -22,6 +22,8 @@ import PacketCreateView from './views/PacketCreateView.vue'
 import RegAnchorView from './views/RegAnchorView.vue'
 import AgreementView from './views/AgreementView.vue'
 import BindPhoneView from './views/BindPhoneView.vue'
+import AppUploadView from './views/AppUploadView.vue'
+import AppMyListView from './views/AppMyListView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -52,7 +54,7 @@ if (process.env.NODE_ENV === 'production') {
   // 可以用 ``
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,RegisterView,loading,IntroView,' +
     'UsersView,main,http,RegisterView,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
-    'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView';
+    'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AppUploadView';
 }
 
 // routing
@@ -110,6 +112,12 @@ router.map({
   },
   'bindPhone': {
     component: BindPhoneView
+  },
+  'appUpload/:appId': {
+    component: AppUploadView
+  },
+  'appMyList': {
+    component: AppMyListView
   }
 })
 
