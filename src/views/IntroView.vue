@@ -192,9 +192,9 @@ export default {
   computed: {
     options () {
       if (this.live.needPay) {
-        return ['直接报名', '分享朋友圈后报名(' + this.thankWord() + ')']
+        return ['直接报名', '分享朋友圈报名(' + this.thankWord() + ')']
       } else {
-        return ['直接报名', '分享朋友圈后报名(感谢您)']
+        return ['直接报名', '分享朋友圈报名(感谢您)']
       }
     },
     btnTitle: function () {
@@ -205,7 +205,7 @@ export default {
         statusWord = '收看回播';
       }
       if (this.live.canJoin) {
-        return '已报名，进入直播间' + statusWord
+        return '已报名，进入' + statusWord
       } else if (this.curUser.userId) {
         if (this.live.needPay) {
           var amountWord;
@@ -660,7 +660,7 @@ export default {
         margin 0 auto
         max-width 600px
       .attend-btn
-        font-size 16px
+        font-size 14px
         width 80%
         border-radius 0px !important
         flex 3
