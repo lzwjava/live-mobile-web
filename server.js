@@ -39,7 +39,7 @@ var proxy = [{
 
 var app = new WebpackDevServer(webpack(config), {
   // allow access over local network
-  https: true,
+  https: false,
   host: '0.0.0.0',
   publicPath: config.output.publicPath,
   historyApiFallback: true,
@@ -51,7 +51,7 @@ var app = new WebpackDevServer(webpack(config), {
 })
 
 app.listen(9060, '0.0.0.0', function (err, result) {
-  console.log('https://localhost:9060');
+  console.log('http://localhost:9060');
   if (err) {
     console.log(err);
   }

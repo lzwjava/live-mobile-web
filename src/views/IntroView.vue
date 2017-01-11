@@ -93,30 +93,6 @@
 
     </div>
 
-    <!-- <div class="contact-section card-group">
-      <div class="title-label">
-        订阅最新直播
-      </div>
-
-      <div class="contact-detail">
-        <p>可关注趣直播服务号来订阅最新直播：</p>
-        <br>
-        <div class="img-area">
-          <img src="../img/qrcode_tech.jpg" alt="" />
-        </div>
-      </div>
-    </div> -->
-    <!-- <div class="create-section">
-
-      <a class="create-link" @click.prevent="goQulive">趣直播是什么?</a>
-
-      <br>
-
-      <br>
-
-      <a class="create-link" @click.prevent="createLive">创建您的直播?</a>
-    </div> -->
-
     <div class="attend-section">
 
       <div class="create-btn" @click="createLive">
@@ -256,7 +232,7 @@ export default {
   },
   methods: {
     thankWord() {
-      if (this.live.amount == 100) {
+      if (this.live.amount <= 100) {
         return '免费';
       } else {
         return '感恩1元';
@@ -610,6 +586,7 @@ export default {
       .attend-summary
         float right
         line-height 32px
+        font-size 14px
     .video-section
       .video-label
         margin 10px 0
