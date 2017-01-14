@@ -589,12 +589,8 @@ export default {
       if (this.liveViewId != 0) {
         http.get(this, 'liveViews/' + this.liveViewId + '/end')
         .then((resp) => {
-          debug('end ok')
         }, (error) => {
-          debug('end error:%j', error);
         })
-      } else {
-        debug('liveViewId == 0, do not end')
       }
     },
     endInterval() {
