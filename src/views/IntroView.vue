@@ -377,7 +377,7 @@ export default {
         util.loaded(this)
         util.show(this, 'success', '报名成功')
         this.reloadLive()
-        this.$router.go('/live/' + this.liveId)
+        this.intoLive()
       }).catch(util.promiseErrorFn(this))
     },
     reloadLive() {
@@ -402,7 +402,7 @@ export default {
           .then(() => {
             util.show(this, 'success', '支付成功')
             this.reloadLive()
-            this.$router.go('/live/' + this.liveId)
+            this.intoLive()
           }, (error) => {
             if (error && error.indexOf('失败') != -1) {
               this.currentView = 'qrcode-pay-form'

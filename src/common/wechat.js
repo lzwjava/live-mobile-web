@@ -171,7 +171,7 @@ function shareLive(comp, live) {
   if (live.shareIcon == 1) {
     iconUrl = live.coverUrl
   }
-  var title = '趣直播' + live.owner.username + '：' + live.subject
+  var title = live.owner.username + '在趣直播：' + live.subject
   share(title, iconUrl, title, linkUrl(live.liveId), comp, live.liveId)
 }
 

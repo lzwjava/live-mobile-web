@@ -782,8 +782,6 @@ export default {
                     color #d65239
     .send-area
       position absolute
-      left 5px
-      right 5px
       height 40px
       bottom 0px
       box-sizing border-box
