@@ -9,7 +9,7 @@
         <img class="qrcode" src="../img/qrcode_me_3.jpg" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
-        <video id="player1" width="100%" height="100%" preload="preload"
+        <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
            controls webkit-playsinline playsinline :src="videoSrc"></video>
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
@@ -215,7 +215,12 @@ export default {
       if (this.live.status == 20) {
         return this.live.hlsUrl
       } else if (this.live.status == 30) {
-        return this.videos[this.videoSelected].url
+        var video = this.videos[this.videoSelected]
+        if (video.type == 'mp4') {
+          return video.url
+        } else if (video.type == 'm3u8') {
+          return video.m3u8Url
+        }
       }
       return this.live.hlsUrl
     },
@@ -225,7 +230,11 @@ export default {
       }
       var regex = /http:\/\/(.*).quzhiboapp.com.*/g
       var match = regex.exec(this.videoSrc)
-      return match[1]
+      if (match) {
+        return match[1]
+      } else {
+        return ''
+      }
     },
     noticeContent() {
       return this.live.notice + this.defaultNotice
@@ -519,7 +528,9 @@ export default {
         } else {
           word = '连接了直播服务器'
         }
-        this.addSystemMsg(word + this.liveHost)
+        if (this.liveHost) {
+          this.addSystemMsg(word + this.liveHost)
+        }        
       }
 
       // makeVideoPlayableInline(video)
