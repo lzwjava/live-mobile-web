@@ -93,7 +93,8 @@ if (process.env.NODE_ENV === 'production') {
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: '"production"'
+        NODE_ENV: '"production"',
+        BUILD_TIME: ('"' + new Date().toLocaleString() + '"')
       }
     }),
     new ExtractTextPlugin('[name].[contenthash].css'),
@@ -105,6 +106,13 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.optimize.OccurenceOrderPlugin()
   ])
 } else {
+  config.plugins = (config.plugins || []).concat([
+    new webpack.DefinePlugin({
+      'process.env': {
+        BUILD_TIME: ('"' + new Date().toLocaleString() + '"')
+      }
+    })
+  ])
   config.devtool = '#source-map'
 }
 

@@ -51,7 +51,7 @@ debug('env ' + process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
-  // 可以用 ``
+  // 可以用
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,RegisterView,loading,IntroView,' +
     'UsersView,main,http,RegisterView,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
     'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AppUploadView';

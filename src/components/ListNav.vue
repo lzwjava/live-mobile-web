@@ -22,9 +22,9 @@
             <div slot="options">
                 <!-- <p class="dropdown-item">登录</p> -->
                 <a href="#" class="dropdown-item" @click.prevent="login">登录</a>
-                <!-- <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item" @click.prevent="register">注册</a> -->
-
+                <div class="dropdown-divider"></div>
+          <!-- <a href="#" class="dropdown-item" @click.prevent="register">注册</a> -->
+                <a class="dropdown-item" @click.prevent="about" href="/">关于</a>
             </div>
         </dropdown>
 
@@ -35,6 +35,8 @@
             <div slot="options">
                 <!-- <a class="dropdown-item" v-if="!isAnchor" @click.prevent="goRegAnchor" href="#">成为主播</a> -->
                 <a class="dropdown-item" @click="logout" href="/">注销</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" @click.prevent="about" href="/">关于</a>
             </div>
 
         </dropdown>
@@ -120,13 +122,15 @@ export default {
             this.showUserDropdown = true
         },
         logout(e) {
-            e && e.preventDefault();
             this.$http.get('logout').then((resp) => {
                 this.user = {};
                 window.localStorage.removeItem('user');
                 //this.$router.go('/lives')
                 window.location.reload()
             }, util.httpErrorFn(this));
+        },
+        about() {
+          util.show(this, 'success', '趣直播-知识直播平台，版本发布于：' + process.env.BUILD_TIME)
         },
         goAll() {
             this.$router.go('/lives')
