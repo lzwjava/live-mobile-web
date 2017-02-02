@@ -5,11 +5,12 @@
         <p class="big-title">离直播开始还有{{timeDuration}} <br></p>
         <p class="small-title">开播时您将收到一条微信通知~</p>
         <p class="small-title">可打开 quzhiboapp.com 在电脑上观看</p>
-        <p class="small-title">另可点击公告加主播微信群</p>
+        <p class="middle-title">另可点击公告加主播微信群</p>
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
         <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
-           controls webkit-playsinline playsinline :src="videoSrc"></video>
+           controls webkit-playsinline playsinline :src="videoSrc" x5-video-player-type="h5"
+             x5-video-orientation="landscape" x5-video-player-fullscreen="true"></video>
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
           <div class="video-center">
@@ -543,6 +544,12 @@ export default {
         //   util.show(this, 'error', '加载直播失败')
         // }
       })
+
+      window.onresize = function() {
+        video.style.width = window.innerWidth + "px";
+        video.style.height = window.innerHeight + "px";
+      }
+
       var events = ['canplay', 'play', 'playing']
       //var events = ['playing', 'waiting']
       for (var i = 0; i < events.length; i++) {
