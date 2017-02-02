@@ -5,7 +5,8 @@
         <p class="big-title">离直播开始还有{{timeDuration}} <br></p>
         <p class="small-title">开播时您将收到一条微信通知~</p>
         <p class="small-title">可打开 quzhiboapp.com 在电脑上观看</p>
-        <p class="middle-title">另可点击公告加主播微信群</p>
+        <p class="small-title">另可长按加微信进入用户群和主播聊聊</p>
+        <img class="qrcode" src="../img/qrcode_me_3.jpg" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
         <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
