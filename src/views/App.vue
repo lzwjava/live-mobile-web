@@ -14,11 +14,11 @@
 
     <toast v-show="toastShow">{{toastText}}</toast>
 
-    <tip><tip>
-
     <overlay :overlay.sync="overlayStatus">
       <component :is="currentView" :options="options" :live-id="liveId"></component>
     </overlay>
+
+    <tip><tip>
 
   </div>
 </template>
@@ -56,12 +56,13 @@ export default {
       toastShow: false,
       toastText: '',
       overlayStatus: false,
-      currentView: 'login-options-form'
+      currentView: 'login-options-form',
+      liveId: 0
     }
   },
   computed: {
     options() {
-        return ['电脑登录', '电脑注册', '手机登录']
+      return ['电脑登录', '电脑注册', '手机登录']
     }
   },
   created() {
@@ -69,10 +70,11 @@ export default {
   methods: {
     loginOrRegister(liveId) {
         if (util.isWeixinBrowser()) {
-            this.$router.go('/register/?liveId=' + liveId)
+          this.$router.go('/register/?liveId=' + liveId)
         } else {
-            this.currentView = 'login-options-form'
-            this.overlayStatus = true
+          debug('showView')
+          this.currentView = 'login-options-form'
+          this.overlayStatus = true
         }
     }
   },
@@ -99,7 +101,6 @@ export default {
         this.loginOrRegister(liveId)
     },
     'hideLoginOptionsForm': function(type) {
-        debug('hideLoginOptionsForm in ListNav')
         if (this.currentView == 'login-options-form') {
             if (type == 0) {
                 setTimeout(() => {
