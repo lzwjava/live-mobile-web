@@ -3,9 +3,9 @@
 
     <div class="close-btn" @click="close">x</div>
 
-    <h3 class="title" v-bind:class="{'packet-margin': this.type == 'packet'}">{{explainWord}}</h3>
+    <h3 class="title" v-bind:class="{'packet-margin': !showPic}">{{explainWord}}</h3>
 
-    <img v-if="this.type != 'packet'" class="notify" alt="" src="../img/wechat_notify.jpg">
+    <img v-if="showPic" class="notify" alt="" src="../img/wechat_notify.jpg">
 
     <h3>请先长按关注公众号</h3>
 
@@ -32,11 +32,22 @@ export default {
     }
   },
   computed: {
+    showPic() {
+      if (this.type == 'packet') {
+        return false
+      } else if (this.type == 'live'){
+        return true
+      } else if(this.type == 'share') {
+        return false
+      }
+    },
     explainWord () {
       if (this.type == 'packet') {
         return '为了让公众号给您发送红包'
-      } else {
+      } else if (this.type == 'live'){
         return '为了方便微信通知您'
+      } else if(this.type == 'share') {
+        return '为了给您推送邀请的收益通知'
       }
     }
   },

@@ -38,7 +38,7 @@
     </div>
 
     <overlay :overlay.sync="overlayStatus">
-        <component :is="currentView"></component>
+        <component :is="currentView" type="share" :live-id="liveId"></component>
     </overlay>
   </div>
 
@@ -53,12 +53,14 @@ import LoadMoreBar from '../components/LoadMoreBar.vue'
 import ShareLead from '../components/ShareLead.vue'
 import Overlay from '../components/overlay.vue'
 import wechat from '../common/wechat'
+import SubscribeForm from '../components/SubscribeForm.vue'
 
 var debug = require('debug')('InviteView')
 
 export default {
   name: 'InviteView',
   components: {
+    'subscribe-form': SubscribeForm,
     'user-avatar': UserAvatar,
     'load-more-bar': LoadMoreBar,
     'share-lead': ShareLead,
@@ -136,8 +138,13 @@ export default {
       if (!this.curUser.userId) {
         this.$broadcast('loginOrRegister', this.liveId)
       } else {
-        this.currentView = 'share-lead'
-        this.overlayStatus = true
+        if (this.curUser.wechatSubscribe == 0) {
+          this.currentView = 'subscribe-form'
+          this.overlayStatus = true
+        } else {
+          this.currentView = 'share-lead'
+          this.overlayStatus = true
+        }
       }
     },
     goAccount() {
