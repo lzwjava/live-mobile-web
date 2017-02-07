@@ -70,7 +70,7 @@ export default {
         util.loaded(this)
         this.curUser = values[0]
         this.account = values[1]
-      })
+      }, util.promiseErrorFn(this))
     }
   },
   methods: {
@@ -102,7 +102,7 @@ export default {
   text-align center
   min-height 100%
   .balance
-    margin-top 50px
+    margin-top 20px
     color #00BDEF
     font-size 36px
   .balance-title
@@ -114,7 +114,7 @@ export default {
       vertical-align text-top
       font-size 20px
   .withdraw-area
-    margin 50px 30px
+    margin 30px 30px
     text-align left
     background #F8F8F8
     border-radius 5px
