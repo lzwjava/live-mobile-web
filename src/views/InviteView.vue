@@ -6,7 +6,7 @@
       <user-avatar :user="curUser.userId ? curUser : defaultUser"></user-avatar>
       <div class="right-panel">
         <div class="name">我</div>
-        <div class="invite-word">{{curUser.userId ? '多带朋友来听课哟': '请先登录'}}</div>
+        <div class="invite-word">{{curUser.userId ? '门票3成归邀请者，快邀请吧': '请先登录'}}</div>
       </div>
 
       <button class="btn-invite btn btn-blue" @click="showShareLead">邀请朋友</button>
@@ -72,7 +72,7 @@ export default {
   },
   route: {
     data ({to}) {
-      document.title = '人气榜'
+      document.title = '邀请榜'
 
       var liveId = to.params.liveId
       if (liveId == this.liveId) {
@@ -151,7 +151,7 @@ export default {
     text-align center
   .me
     background-color #fff
-    padding 5px 30px
+    padding 5px 20px
     margin-bottom 5px
     .avatar
       width 50px
@@ -172,7 +172,7 @@ export default {
     margin-top 10px
     li
       background-color #fff
-      padding 10px 30px
+      padding 10px 20px
       margin-bottom 5px
       .avatar
         width 50px

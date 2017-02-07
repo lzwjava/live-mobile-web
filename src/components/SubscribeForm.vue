@@ -9,7 +9,7 @@
 
     <h3>请先长按关注公众号</h3>
 
-    <img  :src="'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + this.ticket" alt="">
+    <img :src="'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + this.ticket" alt="">
 
   </div>
 

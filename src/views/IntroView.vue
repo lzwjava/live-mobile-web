@@ -60,7 +60,7 @@
         </ul>
 
         <div class="attend-summary" @click="goInvite">
-          人气榜>
+          邀请榜>
         </div>
 
       </div>
