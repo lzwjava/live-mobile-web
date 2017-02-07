@@ -215,7 +215,7 @@ export default {
       var liveId = to.params.liveId;
       if (liveId == this.liveId) {
         if (this.live.liveId) {
-          wechat.shareLive(this, this.live)
+          wechat.shareLive(this, this.live, this.curUser)
         }
         return
       }
@@ -256,7 +256,7 @@ export default {
         this.attendedUsers = values[2]
 
         wechat.showOptionMenu()
-        wechat.shareLive(this, this.live)
+        wechat.shareLive(this, this.live, this.curUser)
 
         setTimeout(() => {
           //this.playVideo()
@@ -398,8 +398,22 @@ export default {
     },
     pay() {
       if (util.isWeixinBrowser()) {
-        wechat.attendLiveAndPay(this, this.liveId)
-          .then(() => {
+        util.loading(this)
+        var fromUserId = window.localStorage.getItem('fromUserId')
+        var params = {
+          liveId: this.liveId,
+          channel: 'wechat_h5'
+        }
+        if (fromUserId) {
+          params.fromUserId = fromUserId
+        }
+        return http.post(this, 'attendances/create', params).then((data) => {
+          util.loaded(this)
+          return wechat.wxPay(data)
+        }).then(() => {
+            if (fromUserId) {
+              window.localStorage.removeItem('fromUserId')
+            }
             util.show(this, 'success', '支付成功')
             this.reloadLive()
             this.intoLive()
@@ -410,7 +424,7 @@ export default {
             } else {
               util.show(this, 'error', error)
             }
-          })
+        })
       } else {
         this.currentView = 'qrcode-pay-form'
         this.overlayStatus = true

@@ -314,7 +314,7 @@ export default {
         }
 
         wechat.showOptionMenu()
-        wechat.shareLive(this, this.live)
+        wechat.shareLive(this, this.live, this.curUser)
         this.openClient()
         this.playHls()
 

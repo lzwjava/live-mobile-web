@@ -161,18 +161,23 @@ function hideMenu() {
   })
 }
 
-function linkUrl(liveId) {
+function linkUrl(liveId, curUser) {
+  var extraParams = ''
+  if (curUser) {
+    extraParams = '&fromUserId=' + curUser.userId
+  }
   var url = 'http://m.quzhiboapp.com/?liveId=' + liveId + '&t=' + new Date().getTime()
+     + extraParams
   return url
 }
 
-function shareLive(comp, live) {
+function shareLive(comp, live, curUser) {
   var iconUrl = live.owner.avatarUrl
   if (live.shareIcon == 1) {
     iconUrl = live.coverUrl
   }
   var title = live.owner.username + '在趣直播：' + live.subject
-  share(title, iconUrl, title, linkUrl(live.liveId), comp, live.liveId)
+  share(title, iconUrl, title, linkUrl(live.liveId, curUser), comp, live.liveId)
 }
 
 function shareApp(comp) {
@@ -219,14 +224,7 @@ function wxPay(data) {
 }
 
 function attendLiveAndPay(comp, liveId) {
-  util.loading(comp)
-  return http.post(comp, 'attendances/create', {
-    liveId: liveId,
-    channel: 'wechat_h5'
-  }).then((data) => {
-    util.loaded(comp)
-    return wxPay(data)
-  })
+
 }
 
 function wechatScan() {
