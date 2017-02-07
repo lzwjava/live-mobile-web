@@ -41,10 +41,16 @@ export default {
   },
   ready() {
     util.loading(this)
-    api.post(this, 'attendances/create', {
+    var fromUserId = window.localStorage.getItem('fromUserId')
+    var params = {
       liveId: this.liveId,
       channel: 'wechat_qrcode'
-    }).then((data) => {
+    }
+    if (fromUserId) {
+      params.fromUserId = fromUserId
+    }
+    api.post(this, 'attendances/create', params)
+     .then((data) => {
       util.loaded(this)
       this.qrcodeUrl = data.code_url
     }, util.promiseErrorFn(this))

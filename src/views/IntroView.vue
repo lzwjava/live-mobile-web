@@ -6,18 +6,7 @@
 
     <div class="cover-section">
 
-      <img class="cover-img" :src="live.coverUrl" alt="cover" v-show="!live.previewUrl"/>
-
-      <div class="preview" v-show="live.previewUrl">
-
-        <video webkit-playsinline width="100%" height="100%"
-         class="preview-video" controls preload="metadata" :src="live.previewUrl"
-         :style="{ backgroundImage: 'url(' + live.coverUrl + ')' }">
-        </video>
-
-        <div class="canplay" v-show="playStatus == 0" @click="canPlayClick"></div>
-
-      </div>
+      <img class="cover-img" :src="live.coverUrl" alt="cover"/>
 
     </div>
 
@@ -60,7 +49,21 @@
           {{live.attendanceCount}}人已参与 >
         </div>
       </div>
+    </div>
 
+    <div class="invite-summary-section card-group">
+      <div class="attend-info">
+        <ul class="attended-users">
+          <li class="avatar-cell" v-for="u in invites">
+            <user-avatar :user="u"></user-avatar>
+          </li>
+        </ul>
+
+        <div class="attend-summary" @click="goInvite">
+          人气榜>
+        </div>
+
+      </div>
     </div>
 
     <div class="speaker-section card-group" v-show="live.speakerIntro">
@@ -116,7 +119,6 @@
 <script>
 
 import util from '../common/util'
-import wechat from '../common/wechat'
 import UserAvatar from '../components/user-avatar.vue'
 import Markdown from '../components/markdown.vue'
 import http from '../common/api'
@@ -128,6 +130,7 @@ import ListNav from '../components/ListNav.vue'
 import RecommendLiveList from '../components/RecommendLiveList.vue'
 import {Button, Toast} from 'vue-weui'
 import SubscribeForm from '../components/SubscribeForm.vue'
+import wechat from '../common/wechat'
 
 var debug = require('debug')('IntroView');
 
@@ -156,6 +159,7 @@ export default {
         }
       },
       attendedUsers: [],
+      invites: [],
       liveId: 0,
       overlayStatus: false,
       currentView: 'options-form',
@@ -212,6 +216,7 @@ export default {
   },
   route: {
     data ({ to }) {
+      util.initTitle()
       var liveId = to.params.liveId;
       if (liveId == this.liveId) {
         if (this.live.liveId) {
@@ -247,13 +252,24 @@ export default {
         http.fetchCurUserNoError(this),
         http.fetchLive(this, this.liveId),
         http.fetchPartUsers(this, this.liveId),
+        http.get(this, 'attendances/invites', {
+          liveId: this.liveId,
+          limit: 6
+        }),
         wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
 
         this.curUser = values[0]
         this.live = values[1]
+
         this.attendedUsers = values[2]
+
+        if (values[3].length > 0) {
+          this.invites = values[3]
+        } else {
+          this.invites = [util.defaultUser()]
+        }
 
         wechat.showOptionMenu()
         wechat.shareLive(this, this.live, this.curUser)
@@ -346,7 +362,7 @@ export default {
     },
     attendLive () {
       if (!this.curUser.userId) {
-        this.$broadcast('loginOrRegister', this.liveId)
+        this.$dispatch('loginOrRegister', this.liveId)
       } else {
         if (this.curUser.wechatSubscribe == 0) {
           this.showSubscribeForm()
@@ -411,9 +427,6 @@ export default {
           util.loaded(this)
           return wechat.wxPay(data)
         }).then(() => {
-            if (fromUserId) {
-              window.localStorage.removeItem('fromUserId')
-            }
             util.show(this, 'success', '支付成功')
             this.reloadLive()
             this.intoLive()
@@ -444,6 +457,9 @@ export default {
     },
     toggleMoreDetail() {
       this.showMoreDetail = !this.showMoreDetail
+    },
+    goInvite() {
+      this.$router.go('/live/' + this.liveId + '/invites')
     }
   },
   events:  {
@@ -586,6 +602,7 @@ export default {
           font-size 14px
           line-height 25px
     .attend-summary-section
+    .invite-summary-section
       .attend-info
         margin 5px 0
       ul
@@ -599,6 +616,7 @@ export default {
             height 25px
       .attend-summary
         float right
+        color #828282
         line-height 32px
         font-size 14px
     .video-section

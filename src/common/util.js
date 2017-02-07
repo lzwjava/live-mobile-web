@@ -140,6 +140,18 @@ function statusText (status) {
   return '未知';
 }
 
+function initTitle() {
+  document.title = '趣直播 - 知识直播平台'
+}
+
+function defaultUser() {
+  return {
+    userId: 0,
+    username: '系统',
+    avatarUrl: 'http://i.quzhiboapp.com/defaultAvatar1.png'
+  }
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
@@ -156,3 +168,5 @@ exports.isDebug = isDebug
 exports.getKeys = getKeys
 exports.statusText = statusText
 exports.timeDuration = timeDuration
+exports.initTitle = initTitle
+exports.defaultUser = defaultUser
