@@ -28,6 +28,15 @@
 
     </ul>
 
+    <div class="tips-area">
+      <p>提示</p>
+      <p>1.直播门票，5成归主播，3成归邀请者，2成归平台</p>
+      <p>2.可点击进入<a @click="goAccount">账户</a>进行提现</p>
+      <p>3.没有限制，邀请越多奖励越多</p>
+      <p>4.为了让您收到收益通知，请先关注「平方根科技」服务号</p>
+      <p>5.如需帮助请联系客服(微信号：lzwjava2048)</p>
+    </div>
+
     <overlay :overlay.sync="overlayStatus">
         <component :is="currentView"></component>
     </overlay>
@@ -130,6 +139,9 @@ export default {
         this.currentView = 'share-lead'
         this.overlayStatus = true
       }
+    },
+    goAccount() {
+      this.$router.go('/account')
     }
   },
   events: {
@@ -190,10 +202,17 @@ export default {
           .count-num
           .income-num
             color #f00
-
   .max-tips
     text-align center
     color gray
     margin 10px 0
+  .tips-area
+    margin 20px 30px
+    text-align left
+    p
+      color #828282
+      font-size 14px
+      a
+        color #00ABD8
 
 </style>

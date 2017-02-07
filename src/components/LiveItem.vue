@@ -18,6 +18,8 @@
           {{live.attendanceCount}} 人参与
         </span>
 
+        <span class="amount-label" v-bind:class="{free: live.needPay == 0}">{{live.needPay ? '¥' + (live.amount / 100.0) : '¥0' }}</span>
+
       </div>
     </div>
 
@@ -99,6 +101,14 @@ export default {
       font-size 14px
     .attend-label
       font-size 14px
+    .amount-label
+      font-size 14px
+      color #828282
+      margin-left 10px
+      float right
+      margin-right 30px
+      &.free
+        text-decoration line-through
   .arrow
     float right
     color #cecee0
