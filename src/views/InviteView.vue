@@ -6,7 +6,7 @@
       <user-avatar :user="curUser.userId ? curUser : defaultUser"></user-avatar>
       <div class="right-panel">
         <div class="name">我</div>
-        <div class="invite-word">{{curUser.userId ? '门票3成归邀请者，快邀请吧': '请先登录'}}</div>
+        <div class="invite-word">{{curUser.userId ? '有价值的直播，值得分享': '请先登录'}}</div>
       </div>
 
       <button class="btn-invite btn btn-blue" @click="showShareLead">邀请朋友</button>

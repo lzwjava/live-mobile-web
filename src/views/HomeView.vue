@@ -51,14 +51,10 @@ export default {
         window.localStorage.setItem('liveId', params.liveId)
         if (params.fromUserId) {
           window.localStorage.setItem('fromUserId', params.fromUserId)
-        } else {
-          window.localStorage.removeItem('fromUserId')
         }
       } else if (params.packetId) {
         window.localStorage.setItem('type', 'packet')
         window.localStorage.setItem('packetId', params.packetId)
-      } else {
-        window.localStorage.removeItem('fromUserId')
       }
       wechat.silentOauth2(this)
     }

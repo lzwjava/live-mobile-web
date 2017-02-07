@@ -427,6 +427,7 @@ export default {
           util.loaded(this)
           return wechat.wxPay(data)
         }).then(() => {
+            window.localStorage.removeItem('fromUserId')
             util.show(this, 'success', '支付成功')
             this.reloadLive()
             this.intoLive()

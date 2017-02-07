@@ -38,6 +38,6 @@ def upload_qiniu():
 def deploy(install='true'):
   _prepare_local_website(install)
   prepare_remote_dirs()
-  rsync_project(local_dir=tmp_dir + '/',remote_dir=server_dir,delete=True)
   upload_qiniu()
+  rsync_project(local_dir=tmp_dir + '/',remote_dir=server_dir,delete=True)
   _clean_local_dir()
