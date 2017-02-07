@@ -10,8 +10,7 @@
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
         <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
-           controls webkit-playsinline playsinline :src="videoSrc" x5-video-player-type="h5"
-             x5-video-orientation="landscape" x5-video-player-fullscreen="true"></video>
+           controls webkit-playsinline playsinline :src="videoSrc"></video>
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
           <div class="video-center">
@@ -541,9 +540,6 @@ export default {
         if (ev.type == 'error') {
           util.show(this, 'error', '加载出错')
         }
-        // if (video.networkState == HTMLMediaElement.NETWORK_NO_SOURCE) {
-        //   util.show(this, 'error', '加载直播失败')
-        // }
       })
 
       window.onresize = function() {
@@ -650,7 +646,11 @@ export default {
 @import "../stylus/variables.styl"
 
 .live-view
-  @extend .full-space
+  position absolute
+  left 0
+  top 0
+  right 0
+  bottom 0
   .player-area
     width 100%
     position relative

@@ -22,9 +22,9 @@
             <div slot="options">
                 <!-- <p class="dropdown-item">登录</p> -->
                 <a href="#" class="dropdown-item" @click.prevent="login">登录</a>
-                <div class="dropdown-divider"></div>
+                <!-- <div class="dropdown-divider"></div> -->
           <!-- <a href="#" class="dropdown-item" @click.prevent="register">注册</a> -->
-                <a class="dropdown-item" @click.prevent="about" href="/">关于</a>
+                <!-- <a class="dropdown-item" @click.prevent="about" href="/">关于</a> -->
             </div>
         </dropdown>
 
@@ -34,9 +34,11 @@
             </div>
             <div slot="options">
                 <!-- <a class="dropdown-item" v-if="!isAnchor" @click.prevent="goRegAnchor" href="#">成为主播</a> -->
-                <a class="dropdown-item" @click="logout" href="/">注销</a>
+                <a class="dropdown-item" @click.prevent="goAccount" href="/">账户</a>
+                <!-- <div class="dropdown-divider"></div>
+                <a class="dropdown-item" @click.prevent="about" href="/">关于</a> -->
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" @click.prevent="about" href="/">关于</a>
+                <a class="dropdown-item" @click.prevent="logout" href="/">注销</a>
             </div>
 
         </dropdown>
@@ -134,6 +136,9 @@ export default {
         },
         goAll() {
             this.$router.go('/lives')
+        },
+        goAccount() {
+          this.$router.go('/account')
         },
         loginOrRegister(liveId) {
             if (util.isWeixinBrowser()) {
