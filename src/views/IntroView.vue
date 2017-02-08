@@ -407,7 +407,7 @@ export default {
     },
     createLive() {
       if (!this.curUser.userId) {
-        this.$broadcast('loginOrRegister', this.liveId)
+        this.$dispatch('loginOrRegister', this.liveId)
       } else {
         this.$router.go('/reganchor')
       }

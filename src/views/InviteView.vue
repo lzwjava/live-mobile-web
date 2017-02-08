@@ -136,7 +136,7 @@ export default {
     },
     showShareLead() {
       if (!this.curUser.userId) {
-        this.$broadcast('loginOrRegister', this.liveId)
+        this.$dispatch('loginOrRegister', this.liveId)
       } else {
         if (this.curUser.wechatSubscribe == 0) {
           this.currentView = 'subscribe-form'
