@@ -166,7 +166,7 @@ function hideMenu() {
 
 function linkUrl(liveId, curUser) {
   var extraParams = ''
-  if (curUser) {
+  if (curUser.userId) {
     extraParams = '&fromUserId=' + curUser.userId
   }
   var url = 'http://m.quzhiboapp.com/?liveId=' + liveId + '&t=' + new Date().getTime()
@@ -182,7 +182,7 @@ function shareLive(comp, live, curUser) {
   var title = live.owner.username + '在趣直播：' + live.subject
   var desc = '来自趣直播-知识直播平台。'
   var timelineTitle
-  if (curUser) {
+  if (curUser.userId) {
     timelineTitle = title + ' | 邀请自' + curUser.username
     desc += curUser.username + '邀请您参加。'
   }
