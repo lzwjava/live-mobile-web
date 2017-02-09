@@ -166,7 +166,7 @@ function hideMenu() {
 
 function linkUrl(liveId, curUser) {
   var extraParams = ''
-  if (curUser.userId) {
+  if (curUser && curUser.userId) {
     extraParams = '&fromUserId=' + curUser.userId
   }
   var url = 'http://m.quzhiboapp.com/?liveId=' + liveId + '&t=' + new Date().getTime()
@@ -182,7 +182,7 @@ function shareLive(comp, live, curUser) {
   var title = live.owner.username + '在趣直播：' + live.subject
   var desc = '来自趣直播-知识直播平台。'
   var timelineTitle
-  if (curUser.userId) {
+  if (curUser && curUser.userId) {
     timelineTitle = title + ' | 邀请自' + curUser.username
     desc += curUser.username + '邀请您参加。'
   }
@@ -231,10 +231,6 @@ function wxPay(data) {
       })
     })
   })
-}
-
-function attendLiveAndPay(comp, liveId) {
-
 }
 
 function wechatScan() {
@@ -290,7 +286,6 @@ exports.showMenu = showMenu
 exports.shareLive = shareLive
 exports.shareApp = shareApp
 exports.shareJoin = shareJoin
-exports.attendLiveAndPay = attendLiveAndPay
 exports.scanQRcode = scanQRcode
 exports.scanQRcodeWithLive = scanQRcodeWithLive
 exports.showOptionMenu = showOptionMenu
