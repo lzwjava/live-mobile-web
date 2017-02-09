@@ -92,5 +92,6 @@ export default {
   h1
     margin-top 100px
     text-align center
+    color #00BDEF
 
 </style>
