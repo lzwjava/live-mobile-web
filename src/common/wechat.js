@@ -98,10 +98,13 @@ function configWeixin(comp) {
   })
 }
 
-function share(title, img, text, href, comp, liveId) {
+function share(title, img, desc, href, comp, liveId, timelineTitle) {
   wx.ready(function() {
+      if (!timelineTitle) {
+        timelineTitle = title
+      }
       wx.onMenuShareTimeline({
-          title: title,
+          title: timelineTitle,
           link: href,
           imgUrl: img,
           success: function() {
@@ -113,7 +116,7 @@ function share(title, img, text, href, comp, liveId) {
       })
       wx.onMenuShareAppMessage({
           title: title,
-          desc: '来自趣直播-知识直播平台',
+          desc: desc,
           link: href,
           imgUrl: img,
           success: function() {
@@ -124,7 +127,7 @@ function share(title, img, text, href, comp, liveId) {
       })
       wx.onMenuShareQQ({
           title: title,
-          desc: '来自趣直播-知识直播平台',
+          desc: desc,
           link: href,
           imgUrl: img,
           success: function() {
@@ -177,7 +180,14 @@ function shareLive(comp, live, curUser) {
     iconUrl = live.coverUrl
   }
   var title = live.owner.username + '在趣直播：' + live.subject
-  share(title, iconUrl, title, linkUrl(live.liveId, curUser), comp, live.liveId)
+  var desc = '来自趣直播-知识直播平台。'
+  var timelineTitle
+  if (curUser) {
+    timelineTitle = title + ' | 邀请自' + curUser.username
+    desc += curUser.username + '邀请您参加。'
+  }
+  share(title, iconUrl, desc, linkUrl(live.liveId, curUser),
+      comp, live.liveId, timelineTitle)
 }
 
 function shareApp(comp) {
