@@ -20,6 +20,8 @@
 
 <script type="text/javascript">
 
+import util from '../common/util'
+
 export default {
   name: 'WeiboForm',
   props: ['liveId'],
@@ -32,7 +34,7 @@ export default {
   },
   computed: {
     shareLink() {
-      return 'http://m.quzhiboapp.com/?liveId=' + this.liveId
+      return util.shareLink(this.liveId)
     }
   },
   data() {
@@ -60,9 +62,10 @@ export default {
   .op-word
     font-size 18px
   .link
-    line-height 90px
     font-size 16px
+    margin-top 20px
   .small-tips
+    margin-top 20px
     font-size 14px
     color #828282
 

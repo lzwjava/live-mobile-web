@@ -152,6 +152,16 @@ function defaultUser() {
   }
 }
 
+function shareLink(liveId) {
+  var extraParam = ''
+  var fromUserId = window.localStorage.getItem('fromUserId')
+  if (fromUserId) {
+    extraParam += '&fromUserId=' + fromUserId
+  }
+  var link = 'http://m.quzhiboapp.com/?liveId=' + liveId + extraParam
+  return link
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
@@ -170,3 +180,4 @@ exports.statusText = statusText
 exports.timeDuration = timeDuration
 exports.initTitle = initTitle
 exports.defaultUser = defaultUser
+exports.shareLink = shareLink

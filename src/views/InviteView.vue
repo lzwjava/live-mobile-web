@@ -5,11 +5,12 @@
     <div class="me">
       <user-avatar :user="curUser.userId ? curUser : defaultUser"></user-avatar>
       <div class="right-panel">
-        <div class="name">我</div>
-        <div class="invite-word">{{curUser.userId ? '有价值的直播，值得分享': '请先登录'}}</div>
+        <div class="name">{{curUser.username}}</div>
       </div>
 
       <button class="btn-invite btn btn-blue" @click="showShareLead">邀请朋友</button>
+
+      <button class="btn-withdraw btn btn-gray" @click="goAccount">提现</button>
 
     </div>
 
@@ -179,14 +180,17 @@ export default {
       display inline-block
       margin-left 10px
       vertical-align top
+      margin-top 15px
       .name
         font-size 16px
-      .invite-word
-        color #828282
-        font-size 14px
+    .btn-withdraw
     .btn-invite
-      float right
+      width 80px
+      display inline-block
       margin-top 10px
+      vertical-align top
+      margin-left 10px
+      font-size 14px
   .invite-list
     margin-top 10px
     li

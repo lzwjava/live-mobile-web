@@ -59,7 +59,7 @@
           </li>
         </ul>
 
-        <div class="attend-summary" @click="goInvite">
+        <div class="attend-summary invite" @click="goInvite">
           邀请榜>
         </div>
 
@@ -620,6 +620,8 @@ export default {
         color #828282
         line-height 32px
         font-size 14px
+        &.invite
+          color #00BDEF
     .video-section
       .video-label
         margin 10px 0

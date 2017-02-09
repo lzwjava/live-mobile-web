@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     shareLink() {
-      return 'http://m.quzhiboapp.com/?liveId=' + this.liveId
+      return util.shareLink(this.liveId)
     }
   }
 }

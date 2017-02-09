@@ -38,25 +38,27 @@ export default {
       //   util.show(this, 'error', '缺少参数')
       //   return
       // }
+
+      if (params.fromUserId) {
+        window.localStorage.setItem('fromUserId', params.fromUserId)
+      }
+
       if (!util.isWeixinBrowser()) {
         if (params.liveId && params.liveId != 0) {
           this.$router.go('/intro/' + params.liveId)
         } else {
           this.$router.go('/lives')
         }
-        return
-      }
-      if (params.liveId) {
-        window.localStorage.setItem('type', 'live')
-        window.localStorage.setItem('liveId', params.liveId)
-        if (params.fromUserId) {
-          window.localStorage.setItem('fromUserId', params.fromUserId)
+      } else {
+        if (params.liveId) {
+          window.localStorage.setItem('type', 'live')
+          window.localStorage.setItem('liveId', params.liveId)
+        } else if (params.packetId) {
+          window.localStorage.setItem('type', 'packet')
+          window.localStorage.setItem('packetId', params.packetId)
         }
-      } else if (params.packetId) {
-        window.localStorage.setItem('type', 'packet')
-        window.localStorage.setItem('packetId', params.packetId)
+        wechat.silentOauth2(this)
       }
-      wechat.silentOauth2(this)
     }
   },
   methods: {
