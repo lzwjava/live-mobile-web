@@ -10,8 +10,8 @@
       账户余额
     </div>
 
-    <div class="bind-phone-tip" v-if="!curUser.mobilePhoneNumber">
-      <i class="weui-icon-info"></i>您还没有绑定手机，请先<a href="#" class="a-blue" @click.prevent="goBindPhone">绑定</a>
+    <div class="bind-phone-tip" v-if="!curUser.userId">
+      <i class="weui-icon-info"></i>您还没有登录，请先<a href="#" class="a-blue" @click.prevent="goLogin">登录</a>
     </div>
 
     <div class="withdraw-area">
@@ -34,10 +34,9 @@
       <p>1.直播门票，5成归主播，3成归邀请者，2成归平台</p>
       <p>2.打赏，7成归主播，3成归平台</p>
       <p>3.如果主播还有未完成直播时，不允许申请提现</p>
-      <p>4.为了资金安全，必须先绑定手机</p>
-      <p>5.为了能转账给您，必须先关注「平方根科技」服务号</p>
-      <p>6.将在3个工作日内处理申请</p>
-      <p>7.如需帮助请联系客服(微信号：lzwjava2048)</p>
+      <p>4.为了能转账给您，必须先关注「平方根科技」服务号</p>
+      <p>5.将在3个工作日内处理申请</p>
+      <p>6.如需帮助请联系客服(微信号：lzwjava2048)</p>
     </div>
 
   </div>
@@ -66,7 +65,7 @@ export default {
     data ({to}) {
       util.loading(this)
       Promise.all([
-        api.fetchCurUser(this),
+        api.fetchCurUserNoError(this),
         api.get(this, 'accounts/me')
       ]).then((values) => {
         util.loaded(this)
@@ -81,6 +80,9 @@ export default {
     },
     clickTip() {
       this.amount = this.account.balance / 100.0
+    },
+    goLogin() {
+      this.$dispatch('loginOrRegister', 0)
     },
     applyWithdraw() {
       util.loading(this)
