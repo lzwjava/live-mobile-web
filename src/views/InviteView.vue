@@ -20,7 +20,7 @@
         <user-avatar :user="i"></user-avatar>
         <div class="right-panel">
           <div class="name">{{n+1}}.{{i.username}}</div>
-          <div class="invite-count">带了<span class="count-num">{{i.inviteCount}}</span>个朋友来参加，收益<span class="income-num">¥{{i.inviteIncome/100.0}}</span>元</div>
+          <div class="invite-count">带了<span class="count-num">{{i.inviteCount}}</span>个朋友来，收益<span class="income-num">¥{{i.inviteIncome/100.0}}</span>元</div>
         </div>
 
       </li>
