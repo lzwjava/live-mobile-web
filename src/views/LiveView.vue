@@ -244,7 +244,7 @@ export default {
       return this.live.notice + this.defaultNotice
     },
     defaultNotice() {
-      return '\n可长按二维码加微信进用户群和主播聊聊：\n\n' +
+      return '\n可打开 quzhiboapp.com 在电脑上观看\n\n可长按二维码加微信进用户群和主播聊聊：\n\n' +
       ' ![wechat_lzw_short.png](http://i.quzhiboapp.com/qrcode_me_small.jpg)'
     },
     changeTitle() {
