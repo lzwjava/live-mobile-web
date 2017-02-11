@@ -282,6 +282,9 @@ export default {
       var liveId = to.params.liveId
 
       if (liveId == this.liveId) {
+        setTimeout(() => {
+          this.scrollToBottom()
+        }, 500)
         return
       }
 
