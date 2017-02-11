@@ -162,6 +162,10 @@ function shareLink(liveId) {
   return link
 }
 
+function randInt(n) {
+  return Math.floor(Math.random() * n)
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
@@ -181,3 +185,4 @@ exports.timeDuration = timeDuration
 exports.initTitle = initTitle
 exports.defaultUser = defaultUser
 exports.shareLink = shareLink
+exports.randInt = randInt

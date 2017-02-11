@@ -189,7 +189,8 @@ export default {
       endIntervalId: 0,
       currentTab: 0,   // 0: Chat, 1: Notice
       isSending: false,
-      currentView: ''
+      currentView: '',
+      hlsSelected: 0
     }
   },
   computed: {
@@ -212,8 +213,11 @@ export default {
       }
     },
     videoSrc() {
+      if (!this.live.liveId) {
+        return ''
+      }
       if (this.live.status == 20) {
-        return this.live.hlsUrl
+        return this.live.hlsUrls[this.hlsSelected]
       } else if (this.live.status == 30) {
         var video = this.videos[this.videoSelected]
         if (video.type == 'mp4') {
@@ -222,10 +226,10 @@ export default {
           return video.m3u8Url
         }
       }
-      return this.live.hlsUrl
+      return this.live.hlsUrls[this.hlsSelected]
     },
     liveHost() {
-      if (!this.live.hlsUrl) {
+      if (!this.videoSrc) {
         return ''
       }
       var regex = /http:\/\/(.*).quzhiboapp.com.*/g
@@ -320,6 +324,7 @@ export default {
         wechat.showOptionMenu()
         wechat.shareLive(this, this.live, this.curUser)
         this.openClient()
+        this.hlsSelected = util.randInt(this.live.hlsUrls.length)
         this.playHls()
 
         this.startLiveView(this.live)
@@ -518,13 +523,7 @@ export default {
         this.initScroll()
       }).catch(this.handleError)
     },
-    playHls () {
-      if (this.live.status < 20) {
-        return
-      }
-
-      var video = document.querySelector('video')
-
+    logServer() {
       if (this.live.status >= 20) {
         var word = '';
         if (this.live.status == 30) {
@@ -536,6 +535,15 @@ export default {
           this.addSystemMsg(word + this.liveHost)
         }
       }
+    },
+    playHls () {
+      if (this.live.status < 20) {
+        return
+      }
+
+      var video = document.querySelector('video')
+
+      this.logServer()
 
       // makeVideoPlayableInline(video)
       video.addEventListener('error', (ev) => {
@@ -624,7 +632,17 @@ export default {
       this.currentTab = 1
     },
     changeLiveUrl() {
-      window.location.reload()
+      if (this.live.status == 20) {
+        this.hlsSelected = (this.hlsSelected + 1) % this.live.hlsUrls.length
+        var video = document.querySelector('video')
+        video.pause()
+        setTimeout(() => {
+          this.canPlayClick()
+          this.logServer()
+        }, 0)
+      } else {
+        window.location.reload()
+      }
     },
     showSubscribeForm() {
       setTimeout(() => {
