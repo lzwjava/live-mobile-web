@@ -193,8 +193,7 @@ export default {
             amountWord = '¥' + this.moneyToYuan(this.live.realAmount)  +
             '  <span class="origin">' +'¥' + this.moneyToYuan(this.live.amount)+ '</span>'
           } else {
-            amountWord = '¥' + this.moneyToYuan(this.live.amount)  +
-            '<span class="share-tips">' + '（分享朋友圈' + this.thankWord() + ' ）' + '<span>'
+            amountWord = '¥' + this.moneyToYuan(this.live.amount)
           }
           return '赞助并' + statusWord + amountWord
         } else {
