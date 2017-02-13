@@ -111,7 +111,8 @@ export default {
          newUrl = newUrl.replace('webOauthTest', 'webOauth')
          window.location = newUrl
        }  else {
-         util.show(this, 'error', '无法识别的跳转类型')
+         this.goLiveOrList()
+        //  util.show(this, 'error', '无法识别的跳转类型')
        }
     }
   }
