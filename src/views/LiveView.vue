@@ -514,6 +514,9 @@ export default {
           if (this.live.status == 30) {
             needSendIntoRoom = false
           }
+          if (this.live.attendanceCount > 200) {
+            needSendIntoRoom = false
+          }
           if (needSendIntoRoom) {
             this.sendSystemMsg(this.curUser.username + '进入了房间')
           }
