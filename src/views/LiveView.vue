@@ -376,12 +376,17 @@ export default {
         this.handleError('请输入点什么~')
         return
       }
-      var textMsg = new TextMessage(this.inputMsg)
+      this.sendTextMsg(this.inputMsg).then((msg) => {
+        if (this.inputMsg.indexOf('卡') != -1) {
+          this.sendTextMsg('我的直播线路是:' + this.liveHost)
+        }
+        this.inputMsg = ''
+      })
+    },
+    sendTextMsg(text) {
+      var textMsg = new TextMessage(text)
       textMsg.setAttributes({username:this.curUser.username})
-      this.commonSendMsg(textMsg)
-       .then((msg) => {
-         this.inputMsg = ''
-       })
+      return this.commonSendMsg(textMsg)
     },
     commonSendMsg(msg) {
       if (this.isSending) {
