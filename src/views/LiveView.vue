@@ -43,6 +43,9 @@
       <div class="notice-tab tab-item" @click="showNoticeTab" v-bind:class="{active: currentTab == 1}">
         公告
       </div>
+      <div class="subscribe-tab tab-item" @click="toggleSubscribe">
+        {{subscribeTitle}}
+      </div>
       <div class="live-tab tab-item" @click="changeLiveUrl" v-show="live.status == 20 || live.status == 30">
         {{changeTitle}}
       </div>
@@ -259,6 +262,13 @@ export default {
       } else if (this.live.status == 30){
         return '切换视频线路'
       }
+    },
+    subscribeTitle() {
+      if (this.curUser.liveSubscribe) {
+        return '已关注'
+      } else {
+        return '+关注'
+      }
     }
   },
   created() {
@@ -339,8 +349,6 @@ export default {
         this.endIntervalId = setInterval(() => {
           this.endLiveView()
         }, 1000 * 30)
-
-        this.showSubscribeForm()
 
       }, util.promiseErrorFn(this))
     }
@@ -659,12 +667,41 @@ export default {
       }
     },
     showSubscribeForm() {
-      setTimeout(() => {
-        if (this.curUser.wechatSubscribe == 0) {
-          this.currentView = 'subscribe-form'
-          this.overlayStatus = true
-        }
-      }, 100)
+      this.currentView = 'subscribe-form'
+      this.overlayStatus = true
+    },
+    reloadUser() {
+      util.loading(this)
+      return http.fetchCurUser(this, this.liveId)
+        .then((data) => {
+          util.loaded(this)
+          this.curUser = data
+          return Promise.resolve()
+        }).catch(util.promiseErrorFn(this))
+    },
+    subscribeLive(subscribe) {
+      return http.post(this, 'self', {
+        liveSubscribe: subscribe
+      })
+    },
+    toggleSubscribe() {
+      var newSubscribe
+      if (this.curUser.liveSubscribe) {
+        newSubscribe = 0
+      } else {
+        newSubscribe = 1
+      }
+      util.loading(this)
+      this.subscribeLive(newSubscribe)
+       .then((data) => {
+         util.loaded(this)
+         this.curUser = data
+         if (newSubscribe) {
+           util.show(this, 'success', '关注成功，有新直播发布时将告知您')
+         } else {
+           util.show(this, 'success', '取消关注成功')
+         }
+       })
     }
   },
   events: {

@@ -90,8 +90,6 @@
 
       <div class="title-label">
         更多直播
-
-        <button class="btn-subscribe" @click="toggleSubscribe">{{subscribeTitle}}</button>
       </div>
 
       <recommend-live-list :skip-live-id="liveId"></recommend-live-list>
@@ -213,13 +211,6 @@ export default {
     },
     introTitle() {
       return this.live.owner.username + '的直播'
-    },
-    subscribeTitle() {
-      if (this.curUser.liveSubscribe) {
-        return '已订阅新直播'
-      } else {
-        return '订阅新直播'
-      }
     }
   },
   route: {
@@ -413,15 +404,6 @@ export default {
           return Promise.resolve()
         }).catch(util.promiseErrorFn(this))
     },
-    reloadUser() {
-      util.loading(this)
-      return http.fetchCurUser(this, this.liveId)
-        .then((data) => {
-          util.loaded(this)
-          this.curUser = data
-          return Promise.resolve()
-        }).catch(util.promiseErrorFn(this))
-    },
     createLive() {
       if (!this.curUser.userId) {
         this.$dispatch('loginOrRegister', this.liveId)
@@ -478,38 +460,6 @@ export default {
     },
     goInvite() {
       this.$router.go('/live/' + this.liveId + '/invites')
-    },
-    toggleSubscribe() {
-      if (!this.curUser.userId) {
-        this.$dispatch('loginOrRegister', this.liveId)
-      } else {
-        if (this.curUser.wechatSubscribe == 0) {
-          this.showSubscribeForm()
-        } else {
-          var newSubscribe
-          if (this.curUser.liveSubscribe) {
-            newSubscribe = 0
-          } else {
-            newSubscribe = 1
-          }
-          util.loading(this)
-          this.subscribeLive(newSubscribe)
-           .then((data) => {
-             util.loaded(this)
-             this.reloadUser()
-             if (newSubscribe) {
-               util.show(this, 'success', '订阅成功，有新直播发布时将告知您')
-             } else {
-               util.show(this, 'success', '取消订阅成功')
-             }
-           })
-        }
-      }
-    },
-    subscribeLive(subscribe) {
-      return http.post(this, 'self', {
-        liveSubscribe: subscribe
-      })
     }
   },
   events:  {
@@ -711,13 +661,6 @@ export default {
           width 70%
     .lives-section
       margin-bottom 50px
-      .btn-subscribe
-        float right
-        color #00bdef
-        border 1px solid #00bdef
-        border-radius 3px
-        background-color #0000
-        padding 2px 3px
     .attend-section
       position fixed
       bottom 0
