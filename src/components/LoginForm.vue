@@ -1,8 +1,12 @@
 <template>
   <div class="login-form" @click="stop($event)">
+
     <div id="login_container">
 
     </div>
+
+    <!-- <button class="btn btn-blue" @click="goSite">请前往我们的电脑网站打开</button> -->
+
   </div>
 
 </template>
@@ -43,6 +47,9 @@ export default {
         state: util.randomString(6),
         style: 'black'
       })
+    },
+    goSite() {
+      window.location = 'http://quzhiboapp.com'
     }
   }
 }
@@ -61,5 +68,8 @@ export default {
   border-radius 20px
   text-align center
   padding 20px 10px
+  display flex
+  align-items center
+  justify-content center
 
 </style>
