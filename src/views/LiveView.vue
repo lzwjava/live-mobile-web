@@ -16,7 +16,8 @@
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
         <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
-           controls webkit-playsinline playsinline :src="videoSrc"></video>
+           controls webkit-playsinline
+           playsinline :src="videoSrc" class="video-js vjs-default-skin"></video>
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
           <div class="video-center">
@@ -165,6 +166,11 @@ realtime.register(WxAudioMessage)
 realtime.register(SystemMessage)
 realtime.register(RewardMessage)
 
+var videojs = require('video.js/dist/video.min.js')
+require('video.js/dist/video-js.min.css')
+window.videojs = videojs
+require('videojs-contrib-hls/dist/videojs-contrib-hls.js')
+
 export default {
   name: 'LiveView',
   components: {
@@ -180,7 +186,9 @@ export default {
   data() {
     return {
       liveId: 0,
-      live: {},
+      live: {
+        owner: {}
+      },
       client: {},
       conv: {},
       curUser: {},
@@ -226,7 +234,11 @@ export default {
         return ''
       }
       if (this.live.status == 20) {
-        return this.live.hlsUrls[this.hlsSelected]
+        if (util.isMobileBrowser() || util.isSafari()) {
+          return this.live.hlsUrls[this.hlsSelected]
+        } else {
+          return this.live.flvUrl
+        }
       } else if (this.live.status == 30) {
         var video = this.videos[this.videoSelected]
         if (video.type == 'mp4') {
@@ -332,6 +344,8 @@ export default {
         this.videos = values[1]
         this.curUser = values[2]
 
+        this.live.status = 20
+
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
           return
@@ -341,7 +355,7 @@ export default {
         wechat.shareLive(this, this.live, this.curUser)
         this.openClient()
         this.hlsSelected = util.randInt(this.live.hlsUrls.length)
-        this.playHls()
+        this.playLiveOrVideo()
 
         this.startLiveView(this.live)
         this.endInterval()
@@ -536,6 +550,7 @@ export default {
           if (this.live.attendanceCount > 200) {
             needSendIntoRoom = false
           }
+          needSendIntoRoom = false
           if (needSendIntoRoom) {
             this.sendSystemMsg(this.curUser.username + '进入了房间')
           }
@@ -558,55 +573,59 @@ export default {
         }
       }
     },
-    playHls () {
+    playLiveOrVideo () {
       if (this.live.status < 20) {
         return
       }
 
-      var video = document.querySelector('video')
-
-      this.logServer()
-
-      // makeVideoPlayableInline(video)
-      video.addEventListener('error', (ev) => {
-        debug('event')
-        debug(ev)
-        if (ev.type == 'error') {
-          util.show(this, 'error', '加载出错')
-        }
-      })
-
-      window.onresize = function() {
-        video.style.width = window.innerWidth + "px";
-        video.style.height = window.innerHeight + "px";
-      }
-
-      var events = ['canplay', 'play', 'playing']
-      //var events = ['playing', 'waiting']
-      for (var i = 0; i < events.length; i++) {
-        var name = events[i]
-        video.addEventListener(name, (ev) => {
-          debug('event ' + ev.type + ' fired')
+      if (util.isMobileBrowser() || util.isSafari()) {
+        var video = document.querySelector('video')
+        this.logServer()
+        video.addEventListener('error', (ev) => {
+          debug('event')
           debug(ev)
-          if (ev.type == 'playing' || ev.type == 'canplay') {
-            var videoElm = ev.srcElement
-
-            debug('client height' + videoElm.clientHeight)
-            debug('video height' + videoElm.videoHeight)
-            // TODO: android videoHeight 为 0 的问题
-            if (videoElm.videoHeight != 0) {
-              // this.videoHeight = videoElm.clientHeight
-            }
+          if (ev.type == 'error') {
+            util.show(this, 'error', '加载出错，请刷新重试')
           }
-          // if (ev.type == 'waiting') {
-          //   this.playStatus = 1
-          // }
-          // if (ev.type == 'playing' || ev.type == 'play') {
-          //   this.playStatus = 2
-          // }
         })
-      }
+      } else {
+        // Chrome or another
+        var player
+        if (this.live.status == 20) {
+          player = videojs('player1', {
+           		techOrder: ['html5', 'flash'],
+           		autoplay: true,
+           		sources: [
+                 {
+                   type: "video/x-flv",
+                   src: this.live.flvUrl
+                 }
+               ]
+           	})
+            player.play()
+            this.playStatus = 1
+            setTimeout(() => {
+              this.playStatus = 2
+            }, 1000)
+        } else if (this.live.status == 30) {
+          var video = this.videos[this.videoSelected]
+          if (video.type == 'mp4') {
 
+          } else if (video.type == 'm3u8') {
+            player = videojs('player1')
+            player.src({
+              src: video.m3u8Url,
+              type: 'application/x-mpegURL',
+              withCredentials: false
+            })
+            player.play()
+            this.playStatus = 1
+            setTimeout(() => {
+              this.playStatus = 2
+            }, 1000)
+          }
+        }
+      }
     },
     canPlayClick() {
       this.playStatus = 1
@@ -752,6 +771,8 @@ export default {
         width 80px
         margin-top 5px
     .video-on
+      .video-js
+          width 100% !important
       .video-poster-cover
         @extend .full-space
         text-align center

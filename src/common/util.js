@@ -69,6 +69,14 @@ function isAndroidBrowser() {
   return /android/.test(navigator.userAgent.toLowerCase())
 }
 
+function isMobileBrowser() {
+  return typeof window.orientation !== 'undefined'
+}
+
+function isSafari () {
+  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+}
+
 function randomString(length) {
     var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     var result = '';
@@ -186,3 +194,5 @@ exports.initTitle = initTitle
 exports.defaultUser = defaultUser
 exports.shareLink = shareLink
 exports.randInt = randInt
+exports.isMobileBrowser = isMobileBrowser
+exports.isSafari = isSafari
