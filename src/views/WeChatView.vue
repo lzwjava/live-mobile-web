@@ -30,7 +30,16 @@ export default {
       if (type == 'live') {
         var liveId = window.localStorage.getItem('liveId')
         if (liveId && liveId > 0) {
-          this.$router.replace('/intro/' + liveId)
+          util.loading(this)
+          http.fetchLive(this, liveId)
+           .then((live) => {
+             util.loaded(this)
+             if (live.canJoin) {
+               this.$router.replace('/live/' + liveId)
+             } else {
+               this.$router.replace('/intro/' + liveId)
+             }
+           }, util.promiseErrorFn(this))
         } else {
           this.$router.replace('/lives')
         }

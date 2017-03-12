@@ -27,18 +27,14 @@ export default {
     data({to}) {
       var params = this.$route.query;
       if (params.sessionToken) {
-        this.loginBySessionToken(params.sessionToken)
+        this.loginBySessionToken(params.sessionToken, params.liveId)
         return
       }
       if (params.action == 'logout') {
         this.logout()
         return
       }
-      // if (!params.liveId) {
-      //   util.show(this, 'error', '缺少参数')
-      //   return
-      // }
-
+      
       if (params.fromUserId) {
         window.localStorage.setItem('fromUserId', params.fromUserId)
       }
@@ -62,14 +58,18 @@ export default {
     }
   },
   methods: {
-    loginBySessionToken: function (sessionToken) {
+    loginBySessionToken: function (sessionToken, liveId) {
       this.$http.get('self', {
         sessionToken: sessionToken
       }).then((resp) => {
         if (util.filterError(this, resp)) {
           var token = resp.data.result.sessionToken;
           document.cookie = "SessionToken=" + token;
-          window.location.href = '.';
+          if (liveId) {
+            this.$router.go('/live/' + liveId)
+          } else {
+            this.$router.go('/lives')
+          }
         }
       }, util.httpErrorFn(this));
     },

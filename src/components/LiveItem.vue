@@ -1,5 +1,5 @@
 <template>
-  <div class="live-item" @click="goIntro(live.liveId)">
+  <div class="live-item" @click="goIntro">
     <user-avatar :user="live.owner"></user-avatar>
 
     <div class="live-info">
@@ -47,8 +47,12 @@ export default {
     timeGap (live) {
       return util.timeGap(live.planTs)
     },
-    goIntro(liveId) {
-      this.$router.go('/intro/' + liveId)
+    goIntro() {
+      if (this.live.canJoin) {
+        this.$router.go('/live/' + this.live.liveId)
+      } else {
+        this.$router.go('/intro/' + this.live.liveId)
+      }
     }
   }
 }

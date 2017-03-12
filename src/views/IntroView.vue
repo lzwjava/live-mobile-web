@@ -687,9 +687,9 @@ export default {
       width 100%
       height 55px
       display flex
-      +above(650px)
+      +above(700px)
         margin 0 auto
-        max-width 650px
+        max-width 700px
       .attend-btn
         font-size 14px
         width 80%

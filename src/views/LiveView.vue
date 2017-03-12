@@ -38,6 +38,9 @@
     </div>
 
     <div class="tab-area">
+      <div class="intro-tab tab-item" @click="showIntroTab">
+        简介
+      </div>
       <div class="chat-tab tab-item" @click="showChatTab" v-bind:class="{active: currentTab == 0}">
         聊天
       </div>
@@ -275,9 +278,9 @@ export default {
     },
     changeTitle() {
       if (this.live.status == 20) {
-        return '切换直播线路'
+        return '切换线路'
       } else if (this.live.status == 30){
-        return '切换视频线路'
+        return '切换线路'
       }
     },
     subscribeTitle() {
@@ -749,6 +752,9 @@ export default {
     rewardSucceed(amount) {
       util.show(this, 'success', '打赏成功')
       this.sendRewardMsg(amount)
+    },
+    showIntroTab() {
+      this.$router.go('/intro/' + this.live.liveId)
     }
   },
   events: {
@@ -842,12 +848,12 @@ export default {
         background rgba(0, 0, 0, 0.5)
         .video-center
           position absolute
-          width 70px
-          height 70px
+          width 50px
+          height 50px
           left 50%
           top 50%
-          margin-left -35px
-          margin-top -35px
+          margin-left -25px
+          margin-top -25px
           .loading-img
             width 100%
             height 100%
