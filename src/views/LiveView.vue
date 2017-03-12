@@ -537,7 +537,7 @@ export default {
         this.scrollToBottom()
 
         this.initScroll()
-        var word = '1.恭喜入座！主播%s和你不见不散！\n2.听不到声音的，请确认没有静音；调到最大音量；插上耳机试试；如果还不行，那可能是主播没说话\n'+
+        var word = '1.恭喜入座！主播%s和你不见不散！\n2.听不到声音的，请确认没有静音；调到最大音量；插上耳机试试\n' +
         '3.请优先使用 Wifi，若遇到卡顿可点击切换线路或刷新\n4.电脑可用 Chrome 打开 quzhiboapp.com 观看'
         this.addSystemMsg(sprintf(word, this.live.owner.username))
       }).catch(this.handleError)
