@@ -2,17 +2,10 @@
   <div class="live-view">
     <div class="player-area" v-el:player-area :style="{height: videoHeight + 'px'}">
       <div class="video-wait video-common" v-show="live.status == 10">
-        <p class="big-title">离直播开始还有{{timeDuration}} <br></p>
-        <p class="small-title">开播时您将收到一条微信通知~</p>
-        <p class="small-title">可打开 quzhiboapp.com 在电脑上观看</p>
-        <p v-if="live.owner.userId != 4308" class="small-title">另可长按加微信进入用户群和主播聊聊</p>
-
-        <p v-if="live.owner.userId == 4308" class="small-title">关注公众号不错过精彩直播</p>
-
-        <img v-if="live.owner.userId != 4308" class="qrcode" src="../img/qrcode_me_3.jpg" alt="">
-
-        <img v-if="live.owner.userId == 4308" class="qrcode" src="../img/zhiku.jpg" alt="">
-
+        <p class="big-title">离直播开始还有{{timeDuration}}</p>
+        <p class="small-title">开播时您将收到一条微信通知</p>
+        <p class="small-title">另可长按加微信进入用户群和主播聊聊</p>
+        <img class="qrcode" src="../img/qrcode_me_3.jpg" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
         <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
@@ -50,7 +43,7 @@
       <div class="subscribe-tab tab-item" @click="toggleSubscribe">
         {{subscribeTitle}}
       </div>
-      <div class="live-tab tab-item" @click="changeLiveUrl" v-show="live.status == 20 || live.status == 30">
+      <div class="live-tab tab-item" @click="changeLiveUrl">
         {{changeTitle}}
       </div>
     </div>
@@ -135,6 +128,7 @@ import Overlay from '../components/overlay.vue'
 import Markdown from '../components/markdown.vue'
 import SubscribeForm from '../components/SubscribeForm.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
+import {sprintf} from 'sprintf-js'
 
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
@@ -277,11 +271,7 @@ export default {
       ' ![wechat_lzw_short.png](http://i.quzhiboapp.com/qrcode_me_small.jpg)'
     },
     changeTitle() {
-      if (this.live.status == 20) {
-        return '切换线路'
-      } else if (this.live.status == 30){
-        return '切换线路'
-      }
+      return '切换线路'
     },
     subscribeTitle() {
       if (this.curUser.liveSubscribe) {
@@ -543,29 +533,13 @@ export default {
         this.msgs = this.msgs.concat(result.value)
         return this.conv.join()
       }).then((conv) => {
-        if (!util.isDebug()) {
-          var needSendIntoRoom = true;
-          if (this.msgs.length > 0) {
-            var lastMsg = this.msgs[this.msgs.length - 1]
-            if (lastMsg.type == SystemMessageType &&
-              lastMsg.from == this.client.id) {
-                needSendIntoRoom = false
-            }
-          }
-          if (this.live.status == 30) {
-            needSendIntoRoom = false
-          }
-          if (this.live.attendanceCount > 200) {
-            needSendIntoRoom = false
-          }
-          needSendIntoRoom = false
-          if (needSendIntoRoom) {
-            this.sendSystemMsg(this.curUser.username + '进入了房间')
-          }
-        }
+
         this.scrollToBottom()
 
         this.initScroll()
+        var word = '1.恭喜入座！主播%s和你不见不散！\n2.听不到声音的，请确认手机没有静音；调成最大音量；插上耳机试试；如果还不行，那可能是主播没说话\n'+
+        '3.观看直播需要稳定的网速，请优先使用 Wifi\n4.若遇到卡顿可点击切换线路或刷新\n5.电脑可用 Chrome 打开 quzhiboapp.com 观看'
+        this.addSystemMsg(sprintf(word, this.live.owner.username))
       }).catch(this.handleError)
     },
     logServer() {
