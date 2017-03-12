@@ -82,7 +82,7 @@
         直播详情
       </div>
 
-      <markdown :content="live.detail" :show-all="false"></markdown>
+      <markdown :content="live.detail" :show-all="true"></markdown>
 
     </div>
 
@@ -107,7 +107,8 @@
     </div>
 
     <overlay :overlay.sync="overlayStatus">
-        <component :is="currentView" :options="options" :live-id="liveId" type="live"></component>
+        <component :is="currentView" :options="options" :live-id="liveId" type="live"
+         :qrcode-url="qrcodeUrl"></component>
     </overlay>
 
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
@@ -166,7 +167,8 @@ export default {
       videoHeight: 250,
       playStatus: 0,
       positiveShare: false, // 主动分享
-      showMoreDetail: true
+      showMoreDetail: true,
+      qrcodeUrl: ''
     }
   },
   computed: {
@@ -341,12 +343,7 @@ export default {
       video.play()
     },
     intoLive() {
-      if (util.isWeixinBrowser()) {
-        this.$router.go('/live/' + this.liveId)
-      } else {
-        window.location = 'http://quzhiboapp.com/?sessionToken='
-           + this.curUser.sessionToken + '&liveId=' + this.liveId
-      }
+      this.$router.go('/live/' + this.liveId)
     },
     payOrCreateAttend() {
       if (this.live.needPay) {
@@ -411,6 +408,9 @@ export default {
         this.$router.go('/reganchor')
       }
     },
+    cleanFromUserId() {
+      window.localStorage.removeItem('fromUserId')
+    },
     pay() {
       if (util.isWeixinBrowser()) {
         util.loading(this)
@@ -426,22 +426,52 @@ export default {
           util.loaded(this)
           return wechat.wxPay(data)
         }).then(() => {
-            window.localStorage.removeItem('fromUserId')
-            util.show(this, 'success', '支付成功')
-            this.reloadLive()
-            this.intoLive()
+          this.payFinishAndIntoLive()
           }, (error) => {
             if (error && error.indexOf('失败') != -1) {
-              this.currentView = 'qrcode-pay-form'
-              this.overlayStatus = true
+              this.fetchQrcodeUrlAndShow()
             } else {
               util.show(this, 'error', error)
             }
         })
       } else {
+        this.fetchQrcodeUrlAndShow()
+      }
+    },
+    payFinishAndIntoLive() {
+      util.loading(this)
+      setTimeout(() => {
+        http.fetchLive(this, this.liveId)
+          .then((data) => {
+            util.loaded(this)
+            this.live = data
+            if (this.live.canJoin) {
+              util.show(this, 'success', '支付成功')
+              this.cleanFromUserId()
+              this.intoLive()
+            } else {
+              util.show(this, 'error', '后台显示未到账，请重试')
+            }
+          }).catch(util.promiseErrorFn(this))
+      }, 1000)
+    },
+    fetchQrcodeUrlAndShow() {
+      util.loading(this)
+      var fromUserId = window.localStorage.getItem('fromUserId')
+      var params = {
+        liveId: this.liveId,
+        channel: 'wechat_qrcode'
+      }
+      if (fromUserId) {
+        params.fromUserId = fromUserId
+      }
+      http.post(this, 'attendances/create', params)
+       .then((data) => {
+        util.loaded(this)
+        this.qrcodeUrl = data.code_url
         this.currentView = 'qrcode-pay-form'
         this.overlayStatus = true
-      }
+      }, util.promiseErrorFn(this))
     },
     goUsers() {
       this.$router.go('/live/' + this.liveId + '/users')
@@ -497,17 +527,7 @@ export default {
       }
     },
     'payFinish': function () {
-      util.loading(this)
-      setTimeout(() => {
-        http.fetchLive(this, this.liveId)
-          .then((data) => {
-            util.loaded(this)
-            this.live = data
-            if (this.live.canJoin) {
-              this.intoLive()
-            }
-          }).catch(util.promiseErrorFn(this))
-      }, 2000)
+      this.payFinishAndIntoLive()
     }
   }
 }

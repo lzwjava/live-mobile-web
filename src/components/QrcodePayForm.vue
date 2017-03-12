@@ -26,11 +26,10 @@ var debug = debugFn('QrcodePayForm')
 
 export default {
   name: 'QrcodePayForm',
-  props: ['liveId'],
+  props: ['qrcodeUrl'],
   components: [],
   data() {
     return {
-      qrcodeUrl: 'test'
     }
   },
   route: {
@@ -39,21 +38,7 @@ export default {
   },
   created() {
   },
-  ready() {
-    util.loading(this)
-    var fromUserId = window.localStorage.getItem('fromUserId')
-    var params = {
-      liveId: this.liveId,
-      channel: 'wechat_qrcode'
-    }
-    if (fromUserId) {
-      params.fromUserId = fromUserId
-    }
-    api.post(this, 'attendances/create', params)
-     .then((data) => {
-      util.loaded(this)
-      this.qrcodeUrl = data.code_url
-    }, util.promiseErrorFn(this))
+  ready() {    
   },
   methods: {
     stop (e){

@@ -234,7 +234,7 @@ export default {
         return ''
       }
       if (this.live.status == 20) {
-        if (util.isMobileBrowser() || util.isSafari()) {
+        if (util.isWeixinBrowser() || util.isSafari()) {
           return this.live.hlsUrls[this.hlsSelected]
         } else {
           return this.live.flvUrl
@@ -344,7 +344,7 @@ export default {
         this.videos = values[1]
         this.curUser = values[2]
 
-        this.live.status = 20
+        // this.live.status = 20
 
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
@@ -578,9 +578,9 @@ export default {
         return
       }
 
-      if (util.isMobileBrowser() || util.isSafari()) {
+      this.logServer()
+      if (util.isWeixinBrowser() || util.isSafari()) {
         var video = document.querySelector('video')
-        this.logServer()
         video.addEventListener('error', (ev) => {
           debug('event')
           debug(ev)
@@ -674,13 +674,17 @@ export default {
     },
     changeLiveUrl() {
       if (this.live.status == 20) {
-        this.hlsSelected = (this.hlsSelected + 1) % this.live.hlsUrls.length
-        var video = document.querySelector('video')
-        video.pause()
-        setTimeout(() => {
-          this.canPlayClick()
-          this.logServer()
-        }, 0)
+        if (util.isWeixinBrowser() || util.isSafari()) {
+          this.hlsSelected = (this.hlsSelected + 1) % this.live.hlsUrls.length
+          var video = document.querySelector('video')
+          video.pause()
+          setTimeout(() => {
+            this.canPlayClick()
+            this.logServer()
+          }, 0)
+        } else {
+          window.location.reload()
+        }
       } else {
         window.location.reload()
       }
