@@ -51,22 +51,8 @@ export default {
   },
   methods: {
     reward(amount) {
-      // this.$dispatch('rewardSucceed', amount)
-      // this.$parent.overlay = false
-      // return
-      util.loading(this)
-      api.post(this, 'rewards', {
-        amount: amount,
-        channel: 'wechat_h5',
-        liveId:this.live.liveId
-      }).then((data) => {
-        util.loaded(this)
-        return wechat.wxPay(data)
-      }).then(() => {
-        util.show(this, 'success', '打赏成功')
-        this.$parent.overlay = false;
-        this.$dispatch('rewardSucceed', amount)
-      }).catch(util.promiseErrorFn(this))
+      this.$dispatch('reward', amount)
+      this.$parent.overlay = false
     },
     stop (e) {
       e.stopPropagation()

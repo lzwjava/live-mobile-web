@@ -113,7 +113,7 @@
     </div>
 
     <overlay :overlay.sync="overlayStatus">
-      <component :is="currentView" :live="live" :live-id="liveId" type="live"></component>
+      <component :is="currentView" :live="live" :live-id="liveId" type="live" :qrcode-url="qrcodeUrl"></component>
     </overlay>
 
   </div>
@@ -131,6 +131,7 @@ import RewardForm from '../components/RewardForm.vue'
 import Overlay from '../components/overlay.vue'
 import Markdown from '../components/markdown.vue'
 import SubscribeForm from '../components/SubscribeForm.vue'
+import QrcodePayForm from '../components/QrcodePayForm.vue'
 
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
@@ -181,7 +182,8 @@ export default {
     RewardForm,
     Overlay,
     'markdown': Markdown,
-    'subscribe-form': SubscribeForm
+    'subscribe-form': SubscribeForm,
+    'qrcode-pay-form': QrcodePayForm
   },
   data() {
     return {
@@ -207,7 +209,10 @@ export default {
       currentTab: 0,   // 0: Chat, 1: Notice
       isSending: false,
       currentView: '',
-      hlsSelected: 0
+      hlsSelected: 0,
+      qrcodeUrl: '',
+      rewardOrderNo: '',
+      rewardAmount: 0
     }
   },
   computed: {
@@ -725,11 +730,65 @@ export default {
            util.show(this, 'success', '取消关注成功')
          }
        })
+    },
+    fetchQrcodeUrlAndShow(amount) {
+      util.loading(this)
+      http.post(this, 'rewards', {
+        amount: amount,
+        liveId: this.live.liveId,
+        channel: 'wechat_qrcode'
+      }).then((data) => {
+        util.loaded(this)
+        this.qrcodeUrl = data.code_url
+        this.rewardOrderNo = data.orderNo
+        this.rewardAmount = amount
+        this.currentView = 'qrcode-pay-form'
+        this.overlayStatus = true
+      }, util.promiseErrorFn(this))
+    },
+    rewardSucceed(amount) {
+      util.show(this, 'success', '打赏成功')
+      this.sendRewardMsg(amount)
     }
   },
   events: {
-    'rewardSucceed': function (amount) {
-      this.sendRewardMsg(amount)
+    'reward': function (amount) {
+      if (util.isWeixinBrowser()) {
+        util.loading(this)
+        http.post(this, 'rewards', {
+          amount: amount,
+          channel: 'wechat_h5',
+          liveId: this.live.liveId
+        }).then((data) => {
+          util.loaded(this)
+          return wechat.wxPay(data)
+        }).then(() => {
+          this.rewardSucceed(amount)
+        }).catch((error) => {
+          if (error && error.indexOf('失败') != -1) {
+            this.fetchQrcodeUrlAndShow(amount)
+          } else {
+            util.show(this, 'error', error)
+          }
+        })
+      } else {
+        this.fetchQrcodeUrlAndShow(amount)
+      }
+    },
+    'payFinish': function () {
+      util.loading(this)
+      setTimeout(() => {
+        http.get(this, 'charges/one', {
+          orderNo: this.rewardOrderNo
+        }).then((charge) => {
+          util.loaded(this)
+          if (charge.paid) {
+            this.rewardSucceed(this.rewardAmount)
+          } else {
+            util.show(this, 'error', '后台显示未到账，请重试')
+          }
+        }, util.promiseErrorFn(this))
+      }, 1000)
     }
   }
 }
