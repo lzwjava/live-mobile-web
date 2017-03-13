@@ -86,6 +86,16 @@
 
     </div>
 
+    <div class="copyright-section card-group">
+
+      <div class="title-label">
+        观众须知
+      </div>
+
+      <markdown :content="copyrightInfo" :show-all="true"></markdown>
+
+    </div>
+
     <div class="lives-section card-group">
 
       <div class="title-label">
@@ -213,6 +223,9 @@ export default {
     },
     introTitle() {
       return this.live.owner.username + '的直播'
+    },
+    copyrightInfo() {
+      return '直播中产生的视频内容版权归主播所有，未经主播许可，任何人不得以任何形式复制、转载和使用主播视频内容。'
     }
   },
   route: {
