@@ -543,8 +543,8 @@ export default {
         this.initScroll()
 
         if (this.live.status != 30) {
-          var word = '1.恭喜入座！主播%s和你不见不散！\n2.听不到声音的，请确认没有静音；调到最大音量；插上耳机试试\n' +
-          '3.请优先使用 Wifi，若遇到卡顿可点击切换线路或刷新\n4.电脑可用 Chrome 打开 quzhiboapp.com 观看'
+          var word = '1.恭喜入座！主播%s和你不见不散！\n2.听不到声音的，请确认没有静音；调到最大音量\n' +
+          '3.请优先使用 Wifi，若遇到卡顿可点击切换线路或刷新\n4.电脑可打开 m.quzhiboapp.com 观看'
           this.addSystemMsg(sprintf(word, this.live.owner.username))
         }
       }).catch(this.handleError)
