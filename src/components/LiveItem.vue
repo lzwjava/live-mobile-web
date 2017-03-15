@@ -48,11 +48,7 @@ export default {
       return util.timeGap(live.planTs)
     },
     goIntro() {
-      if (this.live.canJoin) {
-        this.$router.go('/live/' + this.live.liveId)
-      } else {
-        this.$router.go('/intro/' + this.live.liveId)
-      }
+      this.$router.go('/intro/' + this.live.liveId)
     }
   }
 }

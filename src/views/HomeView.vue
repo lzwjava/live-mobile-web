@@ -34,7 +34,7 @@ export default {
         this.logout()
         return
       }
-      
+
       if (params.fromUserId) {
         window.localStorage.setItem('fromUserId', params.fromUserId)
       }
@@ -46,14 +46,17 @@ export default {
           this.$router.go('/lives')
         }
       } else {
-        if (params.liveId) {
+        if (params.liveId && params.liveId > 0) {
           window.localStorage.setItem('type', 'live')
           window.localStorage.setItem('liveId', params.liveId)
+          this.$router.go('/intro/' + params.liveId)
         } else if (params.packetId) {
           window.localStorage.setItem('type', 'packet')
           window.localStorage.setItem('packetId', params.packetId)
+        } else {
+          this.$router.go('/lives')
         }
-        wechat.silentOauth2(this)
+        //wechat.silentOauth2(this)
       }
     }
   },
