@@ -408,7 +408,7 @@ export default {
       }
       this.sendTextMsg(this.inputMsg).then((msg) => {
         if (this.inputMsg.indexOf('卡') != -1) {
-          this.sendTextMsg('我的直播线路是:' + this.liveHost)
+          // this.sendTextMsg('我的直播线路是:' + this.liveHost)
         }
         this.inputMsg = ''
       })

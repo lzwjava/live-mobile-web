@@ -6,6 +6,7 @@
       <p class="subject">{{live.subject}}</p>
       <p class="owner-name">{{live.owner.username}}</p>
       <div class="live-item-tag">
+
         <span class="time-label" v-show="live.status == 10">
           {{timeGap(live)}}开始
         </span>
@@ -14,7 +15,7 @@
           正在直播
         </span>
 
-        <span class="attend-label" v-show="live.status == 30 || live.status == 35">
+        <span class="attend-label">
           {{live.attendanceCount}} 人参与
         </span>
 
@@ -99,6 +100,7 @@ export default {
       border-radius 3px
       padding 2px 3px
       font-size 14px
+      margin-right 10px
     .attend-label
       font-size 14px
     .amount-label
