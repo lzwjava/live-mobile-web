@@ -4,8 +4,7 @@
       <div class="video-wait video-common" v-show="live.status == 10">
         <p class="big-title">离直播开始还有{{timeDuration}}</p>
         <p class="small-title">开播时您将收到一条微信通知</p>
-        <p class="small-title">另可长按加微信进入用户群和主播聊聊</p>
-        <img class="qrcode" src="../img/qrcode_me_3.jpg" alt="">
+        <img class="qrcode" src="../img/qzbgroup.jpg" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
         <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
@@ -408,7 +407,7 @@ export default {
       }
       this.sendTextMsg(this.inputMsg).then((msg) => {
         if (this.inputMsg.indexOf('卡') != -1) {
-          // this.sendTextMsg('我的直播线路是:' + this.liveHost)
+          this.sendTextMsg('我的直播线路是:' + this.liveHost)
         }
         this.inputMsg = ''
       })
@@ -817,7 +816,7 @@ export default {
       flex-direction column
     .video-wait
       .qrcode
-        width 80px
+        width 120px
         margin-top 5px
     .video-on
       .video-js

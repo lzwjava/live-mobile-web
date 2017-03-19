@@ -4,7 +4,11 @@
 
     <div class="live-info">
       <p class="subject">{{live.subject}}</p>
-      <p class="owner-name">{{live.owner.username}}</p>
+      <div class="">
+        <span class="owner-name">{{live.owner.username}}</span>
+        <span v-show="live.topic" class="topic">{{live.topic.name}}</span>
+      </div>
+
       <div class="live-item-tag">
 
         <span class="time-label" v-show="live.status == 10">
@@ -79,6 +83,14 @@ export default {
     height 80px
     .owner-name
       color #6E6E6E
+    .topic
+      color #6E6E6E
+      float right
+      border 1px solid #6E6E6E
+      border-radius 3px
+      padding 0px 3px
+      font-size 12px
+      margin-right 10px
     p.subject
       height 30px
       overflow hidden
