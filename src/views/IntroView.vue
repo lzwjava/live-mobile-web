@@ -395,11 +395,18 @@ export default {
       }
     },
     createAttend() {
+      var fromUserId = window.localStorage.getItem('fromUserId')
       util.loading(this)
-      http.post(this, 'attendances/create', {
+      var params = {
         liveId: this.liveId
-      }).then((data) => {
+      }
+      if (fromUserId) {
+        params.fromUserId = fromUserId
+      }
+      http.post(this, 'attendances/create', params)
+       .then((data) => {
         util.loaded(this)
+        this.cleanFromUserId()
         util.show(this, 'success', '报名成功')
         this.reloadLive()
         this.intoLive()

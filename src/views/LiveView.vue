@@ -271,7 +271,7 @@ export default {
     },
     defaultNotice() {
       return '\n可打开 quzhiboapp.com 在电脑上观看\n\n可长按二维码加微信进用户群和主播聊聊：\n\n' +
-      ' ![wechat_lzw_short.png](http://i.quzhiboapp.com/qrcode_me_small.jpg)'
+      ' ![wechat_lzw_short.png](http://i.quzhiboapp.com/qzbgroup1.jpg)'
     },
     changeTitle() {
       return '切换线路'
@@ -818,6 +818,7 @@ export default {
       .qrcode
         width 120px
         margin-top 5px
+        overflow hidden
     .video-on
       .video-js
           width 100% !important
