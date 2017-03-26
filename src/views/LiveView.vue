@@ -208,7 +208,11 @@ export default {
       hlsSelected: 0,
       qrcodeUrl: '',
       rewardOrderNo: '',
-      rewardAmount: 0
+      rewardAmount: 0,
+      hasCallReady: false,
+      hasGotLive: false,
+      useVideoJs: false,
+      player: null
     }
   },
   computed: {
@@ -288,6 +292,7 @@ export default {
     debug('created')
   },
   destroyed() {
+    debug('destroyed')
   },
   updated() {
     debug('updated')
@@ -299,10 +304,23 @@ export default {
     debug('detached')
     this.endLiveView()
     this.endInterval()
+    if (this.useVideoJs) {
+      if (this.player != null) {
+        this.player.pause()
+        this.playStatus = 0
+      }
+    }
   },
   ready() {
     var playerArea = this.$els.playerArea
     this.videoHeight =  Math.ceil(playerArea.offsetWidth * 0.625)
+    debug('videoHeight: %j', this.videoHeight)
+    this.hasCallReady = true
+    debug('hasCallReady')
+    setTimeout(() => {
+      // videoHeight 应用上之后才调用 videojs
+      this.tryPlayLiveOrVideo()
+    }, 0)
   },
   watch: {
     videoSelected: function(val, oldVal) {
@@ -356,7 +374,9 @@ export default {
         wechat.shareLive(this, this.live, this.curUser)
         this.openClient()
         this.hlsSelected = util.randInt(this.live.hlsUrls.length)
-        this.playLiveOrVideo()
+
+        this.hasGotLive = true
+        this.tryPlayLiveOrVideo()
 
         this.startLiveView(this.live)
         this.endInterval()
@@ -560,10 +580,18 @@ export default {
         }
       }
     },
+    tryPlayLiveOrVideo() {
+      if (this.hasGotLive && this.hasCallReady) {
+        this.playLiveOrVideo()
+      } else {
+        debug('ignore tryPlayLiveOrVideo')
+      }
+    },
     playLiveOrVideo () {
       if (this.live.status < 20) {
         return
       }
+      debug('playLiveOrVideo')
 
       this.logServer()
       if (util.isWeixinBrowser() || util.isSafari()) {
@@ -575,10 +603,13 @@ export default {
             util.show(this, 'error', '加载出错，请刷新重试')
           }
         })
+        this.useVideoJs = false
       } else {
         // Chrome or another
         var player
+        debug('use videojs')
         if (this.live.status == 20) {
+          this.useVideoJs = true
           player = videojs('player1', {
            		techOrder: ['html5', 'flash'],
            		autoplay: true,
@@ -594,11 +625,13 @@ export default {
             setTimeout(() => {
               this.playStatus = 2
             }, 1000)
+            this.player = player
         } else if (this.live.status == 30) {
           var video = this.videos[this.videoSelected]
           if (video.type == 'mp4') {
-
+            this.useVideoJs = false
           } else if (video.type == 'm3u8') {
+            this.useVideoJs = true
             player = videojs('player1')
             player.src({
               src: video.m3u8Url,
@@ -610,6 +643,7 @@ export default {
             setTimeout(() => {
               this.playStatus = 2
             }, 1000)
+            this.player = player
           }
         }
       }
