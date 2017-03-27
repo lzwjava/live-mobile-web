@@ -274,7 +274,9 @@ export default {
       return this.live.notice + this.defaultNotice
     },
     defaultNotice() {
-      return '\n可打开 quzhiboapp.com 在电脑上观看\n\n可长按二维码加微信进用户群和主播聊聊：\n\n' +
+      var coursewareUrl = this.live.coursewareUrl
+      var coursewareMsg = coursewareUrl ? '课件地址：' + coursewareUrl + '\n'  : '主播未上传课件\n';
+      return coursewareMsg + '\n可打开 quzhiboapp.com 在电脑上观看\n\n可长按二维码加微信进用户群和主播聊聊：\n\n' +
       ' ![wechat_lzw_short.png](http://i.quzhiboapp.com/qzbgroup1.jpg)'
     },
     changeTitle() {
