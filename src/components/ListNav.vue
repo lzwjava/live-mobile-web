@@ -20,11 +20,7 @@
                 <img class="default-avatar" src="../img/defaultAvatar.png" />
             </div>
             <div slot="options">
-                <!-- <p class="dropdown-item">登录</p> -->
                 <a href="#" class="dropdown-item" @click.prevent="login">登录</a>
-                <!-- <div class="dropdown-divider"></div> -->
-          <!-- <a href="#" class="dropdown-item" @click.prevent="register">注册</a> -->
-                <!-- <a class="dropdown-item" @click.prevent="about" href="/">关于</a> -->
             </div>
         </dropdown>
 
@@ -86,9 +82,6 @@ export default {
     methods: {
         login() {
             this.$dispatch('loginOrRegister', this.liveId)
-        },
-        register() {
-            this.$router.go('/register/?liveId=' + this.liveId)
         },
         goList() {
             this.$router.go('/lives')

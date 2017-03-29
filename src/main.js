@@ -9,7 +9,6 @@ import HomeView from './views/HomeView.vue'
 import LiveView from './views/LiveView.vue'
 import IntroView from './views/IntroView.vue'
 import UsersView from './views/UsersView.vue'
-import RegisterView from './views/RegisterView.vue'
 import WeChatView from './views/WeChatView.vue'
 import ScanView from './views/ScanView.vue'
 import ListView from './views/ListView.vue'
@@ -52,8 +51,8 @@ if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
   // 可以用
-  localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,RegisterView,loading,IntroView,' +
-    'UsersView,main,http,RegisterView,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
+  localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,loading,IntroView,' +
+    'UsersView,main,http,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
     'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AppUploadView,AccountView,InviteView';
 }
 
@@ -72,9 +71,6 @@ router.map({
   },
   '/live/:liveId/users': {
     component: UsersView
-  },
-  '/register': {
-    component: RegisterView
   },
   'wechat/:type': {
     component: WeChatView

@@ -50,11 +50,6 @@ export default {
           window.localStorage.setItem('type', 'live')
           window.localStorage.setItem('liveId', params.liveId)
           // this.$router.go('/intro/' + params.liveId)
-        } else if (params.packetId) {
-          window.localStorage.setItem('type', 'packet')
-          window.localStorage.setItem('packetId', params.packetId)
-        } else {
-          // this.$router.go('/lives')
         }
         wechat.silentOauth2(this)
       }

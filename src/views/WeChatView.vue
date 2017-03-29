@@ -34,9 +34,6 @@ export default {
         } else {
           this.$router.replace('/lives')
         }
-      } else if (type == 'packet') {
-        var packetId = window.localStorage.getItem('packetId')
-        this.$router.replace('/packets/' + packetId)
       } else {
         this.$router.replace('/lives')
       }

@@ -68,7 +68,7 @@ export default {
   methods: {
     loginOrRegister(liveId) {
         if (util.isWeixinBrowser()) {
-          this.$router.go('/register/?liveId=' + liveId)
+          wechat.oauth2()
         } else {
           this.liveId = liveId
           this.currentView = 'login-options-form'
