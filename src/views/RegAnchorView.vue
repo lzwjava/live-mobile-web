@@ -100,13 +100,15 @@ export default {
     },
     route: {
       data({ to }) {
+        if (!util.checkInSession(this)) {
+          return
+        }
+        this.curUser = util.curUser()
         util.loading(this)
         Promise.all([
-          api.fetchCurUser(this),
           wechat.configWeixin(this)
         ]).then((values) => {
           util.loaded(this)
-          this.curUser = values[0]
           wechat.sharePage(this, '申请成为主播', 'reganchor')
         }, util.promiseErrorFn(this))
       }

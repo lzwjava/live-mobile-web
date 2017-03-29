@@ -719,15 +719,6 @@ export default {
       this.currentView = 'subscribe-form'
       this.overlayStatus = true
     },
-    reloadUser() {
-      util.loading(this)
-      return http.fetchCurUser(this, this.liveId)
-        .then((data) => {
-          util.loaded(this)
-          this.curUser = data
-          return Promise.resolve()
-        }).catch(util.promiseErrorFn(this))
-    },
     subscribeLive(subscribe) {
       return http.post(this, 'self', {
         liveSubscribe: subscribe

@@ -63,14 +63,16 @@ export default {
   },
   route: {
     data ({to}) {
+      if (!util.checkInSession(this)) {
+        return
+      }
+      this.curUser = util.curUser()
       util.loading(this)
       Promise.all([
-        api.fetchCurUserNoError(this),
         api.get(this, 'accounts/me')
       ]).then((values) => {
         util.loaded(this)
-        this.curUser = values[0]
-        this.account = values[1]
+        this.account = values[0]
       }, util.promiseErrorFn(this))
     }
   },

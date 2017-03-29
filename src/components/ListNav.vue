@@ -15,29 +15,9 @@
 
     <div class="right-drop">
 
-        <dropdown v-show="!curUser.username">
-            <div class="dropdown-anchor" slot="showText">
-                <img class="default-avatar" src="../img/defaultAvatar.png" />
-            </div>
-            <div slot="options">
-                <a href="#" class="dropdown-item" @click.prevent="login">登录</a>
-            </div>
-        </dropdown>
+      <user-avatar v-if="curUser.username" :user="curUser" @click="goProfile"></user-avatar>
 
-        <dropdown v-show="curUser.username">
-            <div class="dropdown-anchor" slot="showText">
-                <user-avatar :user="curUser" @click="viewUserDropdown"></user-avatar>
-            </div>
-            <div slot="options">
-                <!-- <a class="dropdown-item" v-if="!isAnchor" @click.prevent="goRegAnchor" href="#">成为主播</a> -->
-                <a class="dropdown-item" @click.prevent="goAccount" href="/">账户</a>
-                <!-- <div class="dropdown-divider"></div>
-                <a class="dropdown-item" @click.prevent="about" href="/">关于</a> -->
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" @click.prevent="logout" href="/">注销</a>
-            </div>
-
-        </dropdown>
+      <img v-if="!curUser.username" class="default-avatar" src="../img/defaultAvatar.png" @click="goProfile"/>
     </div>
 
 </div>
@@ -69,15 +49,14 @@ export default {
     computed: {
     },
     created() {
-        this.$emit('updateCurUser')
+      this.curUser = util.curUser({})
     },
-    ready() {},
+    ready() {
+    },
     route: {
-        data({
-            to
-        }) {
-            debug('route nav')
-        }
+      data({to}) {
+        debug('route nav')
+      }
     },
     methods: {
         login() {
@@ -95,6 +74,9 @@ export default {
         viewUserDropdown(e) {
             e && e.preventDefault()
             this.showUserDropdown = true
+        },
+        goProfile() {
+          this.$router.go('/profile')
         },
         logout(e) {
             this.$http.get('logout').then((resp) => {
@@ -115,13 +97,6 @@ export default {
         }
     },
     events: {
-        'updateCurUser': function() {
-            debug('mode: %j', this.mode)
-            api.fetchCurUserNoError(this)
-                .then((data) => {
-                    this.curUser = data
-                })
-        }
     }
 }
 </script>

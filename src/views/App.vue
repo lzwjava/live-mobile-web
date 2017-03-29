@@ -142,7 +142,7 @@ export default {
 .view
   position absolute
   width 100%
-  height 100%
+  min-height 100%
   transition opacity .2s ease
   box-sizing border-box
   &.v-enter, &.v-leave

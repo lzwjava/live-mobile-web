@@ -98,17 +98,16 @@ export default {
       this.loading = false
       this.invites = []
 
+      this.curUser = util.curUser({})
+
       util.loading(this)
       Promise.all([
-        api.fetchCurUserNoError(this),
         api.fetchLive(this, this.liveId),
         wechat.configWeixin(this)
       ]).then((values) => {
         util.loaded(this)
 
-        this.curUser = values[0]
-
-        this.live = values[1]
+        this.live = values[0]
 
         wechat.shareLive(this, this.live, this.curUser)
 

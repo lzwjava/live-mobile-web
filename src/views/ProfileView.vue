@@ -61,7 +61,7 @@ export default {
       api.get(this, 'logout').then((resp) => {
         this.curUser = {}
         util.removeCurUser()
-        window.location.reload()
+        this.$router.go('/lives')
       }, util.promiseErrorFn(this))
     },
     goAccount() {
