@@ -905,6 +905,7 @@ export default {
       position absolute
       overflow hidden
       overflow-y scroll
+      -webkit-overflow-scrolling touch
       left 5px
       right 5px
       top 5px

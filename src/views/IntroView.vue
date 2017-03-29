@@ -264,7 +264,7 @@ export default {
       util.loading(this)
 
       this.curUser = util.curUser({})
-      
+
       Promise.all([
         http.fetchLive(this, this.liveId),
         http.fetchPartUsers(this, this.liveId),

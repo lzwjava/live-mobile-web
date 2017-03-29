@@ -14,6 +14,12 @@
       </div>
 
       <div class="menu-section">
+        <div class="menu-item" @click="goMylist">
+          参与的直播
+        </div>
+      </div>
+
+      <div class="menu-section">
         <div class="menu-item" @click="goAccount">
           账户
         </div>
@@ -74,6 +80,9 @@ export default {
     },
     goAccount() {
       this.$router.go('/account')
+    },
+    goMylist() {
+      this.$router.go('/mylist')
     },
     goUpdateUserInfo() {
 

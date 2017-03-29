@@ -61,9 +61,7 @@ export default {
   },
   route: {
     data ({to}) {
-      
       util.initTitle()
-
     }
   },
   methods: {
@@ -82,10 +80,9 @@ export default {
 
 .list-view
   .live-container
-    position absolute
+    position relative
     width 100%
-    bottom 54px
-    top 0
-    overflow-y scroll
+    min-height 100%
+    margin-bottom 54px
 
 </style>
