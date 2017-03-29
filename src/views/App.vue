@@ -1,7 +1,5 @@
 <template>
   <div id="wrapper">
-    <my-nav></my-nav>
-
     <!-- main view -->
     <router-view
       class="view"
@@ -143,6 +141,7 @@ export default {
 .view
   position absolute
   width 100%
+  height 100%
   transition opacity .2s ease
   box-sizing border-box
   &.v-enter, &.v-leave
