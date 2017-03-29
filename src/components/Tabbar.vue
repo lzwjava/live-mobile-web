@@ -86,7 +86,7 @@ export default {
       .tab-title
          color #00BDEF
     .tab-title
-       color #4d4d4d
+       color #848484
        font-size 14px
 
 </style>
