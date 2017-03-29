@@ -8,7 +8,6 @@
           <div class="avatar-area">
             <user-avatar :user="curUser"></user-avatar>
             <i class="fa fa-pencil-square-o pencil-edit" aria-hidden="true"></i>
-            <!-- <i class="fa fa-pencil-square-o pencil-edit"></i> -->
           </div>
           <div class="username">{{curUser.username}}</div>
         </div>
@@ -68,14 +67,14 @@ export default {
       this.$router.go('/account')
     },
     goUpdateUserInfo() {
-      
+
     }
   },
   created() {
-    api.fetchCurUser(this)
-      .then((data) => {
-        this.curUser = data
-      }, util.promiseErrorFn(this))
+    if (!util.checkInSession(this)) {
+      return
+    }
+    this.curUser = util.curUser()
   }
 }
 

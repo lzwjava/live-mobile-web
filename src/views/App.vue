@@ -70,7 +70,6 @@ export default {
         if (util.isWeixinBrowser()) {
           this.$router.go('/register/?liveId=' + liveId)
         } else {
-          debug('showView')
           this.liveId = liveId
           this.currentView = 'login-options-form'
           this.overlayStatus = true

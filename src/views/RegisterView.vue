@@ -55,6 +55,7 @@ export default {
         platform: 'wechat'
       }).then((data) => {
         util.loaded(this)
+        util.saveCurUser(data)
         this.$dispatch('toast', '注册成功', 1000, () => {
           this.goSucceed()
         })

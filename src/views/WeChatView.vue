@@ -72,6 +72,7 @@ export default {
         util.loading(this)
         http.get(this, 'wechat/silentOauth', {code: code})
           .then((data) => {
+            util.saveCurUser(data)
             util.loaded(this)
             this.goLiveOrList()
           }, errorFn)
@@ -80,14 +81,9 @@ export default {
         http.get(this, 'wechat/oauth', {code: code})
           .then((data) => {
             util.loaded(this)
-            this.$router.replace('/register/?openId=' + data.openId)
-          }, (error) => {
-            if (error && error.indexOf('早已注册') != -1) {
-               this.goLiveOrList()
-            } else {
-               errorFn(error)
-            }
-          })
+            util.saveCurUser(data)
+            this.goLiveOrList()
+          }, errorFn)
       } else if (params.type == 'oauthTest') {
         var url = window.location.href
         var newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
@@ -103,6 +99,7 @@ export default {
         http.get(this, 'wechat/webOauth', {code: code})
          .then((data) => {
            util.loaded(this)
+           util.saveCurUser(data)
            this.goLiveOrList()
          }, util.promiseErrorFn(this))
        } else if (params.type == 'webOauthTest') {
