@@ -41,6 +41,9 @@ export default {
   },
   route: {
     data({to}) {
+      if (!util.checkInSession(this)) {
+        return
+      }
       util.loading(this)
       Promise.all([
         http.get(this, 'lives/attended'),
