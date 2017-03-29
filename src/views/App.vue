@@ -65,6 +65,8 @@ export default {
   },
   created() {
   },
+  ready() {
+  },
   methods: {
     loginOrRegister(liveId) {
         if (util.isWeixinBrowser()) {

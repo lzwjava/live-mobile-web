@@ -33,7 +33,7 @@ export default {
       e.stopPropagation()
     },
     initWechatLogin() {
-      var redirectUrl;
+      var redirectUrl
       if (util.isDebug()) {
         redirectUrl = 'http://quzhiboapp.com/#wechat/webOauthTest'
       } else {

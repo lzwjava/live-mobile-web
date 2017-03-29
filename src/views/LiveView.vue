@@ -353,17 +353,20 @@ export default {
       this.msgs = []
       this.playStatus = 0
 
+      if (!util.checkInSession(this)) {
+        return
+      }
+      this.curUser = util.curUser()
+
       Promise.all([
         http.fetchLive(this, this.liveId),
         http.fetchVideos(this, this.liveId),
-        http.fetchCurUser(this),
         wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
 
         this.live = values[0]
         this.videos = values[1]
-        this.curUser = values[2]
 
         // this.live.status = 20
 

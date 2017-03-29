@@ -262,8 +262,10 @@ export default {
     },
     loadAllData() {
       util.loading(this)
+
+      this.curUser = util.curUser({})
+      
       Promise.all([
-        http.fetchCurUserNoError(this),
         http.fetchLive(this, this.liveId),
         http.fetchPartUsers(this, this.liveId),
         http.get(this, 'attendances/invites', {
@@ -274,13 +276,11 @@ export default {
       ]).then(values => {
         util.loaded(this)
 
-        this.curUser = values[0]
-        this.live = values[1]
+        this.live = values[0]
+        this.attendedUsers = values[1]
 
-        this.attendedUsers = values[2]
-
-        if (values[3].length > 0) {
-          this.invites = values[3]
+        if (values[2].length > 0) {
+          this.invites = values[2]
         } else {
           this.invites = [util.defaultUser()]
         }
@@ -370,26 +370,25 @@ export default {
       this.overlayStatus = true
     },
     attendLive () {
-      if (!this.curUser.userId) {
-        this.$dispatch('loginOrRegister', this.liveId)
+      if (!util.checkInSession(this)) {
+        return
+      }
+      if (this.curUser.wechatSubscribe == 0) {
+        this.showSubscribeForm()
       } else {
-        if (this.curUser.wechatSubscribe == 0) {
-          this.showSubscribeForm()
+        if (this.live.canJoin) {
+          this.intoLive()
         } else {
-          if (this.live.canJoin) {
-            this.intoLive()
-          } else {
-            if (util.isWeixinBrowser()) {
-              if (this.live.shareId) {
-                this.payOrCreateAttend()
-              } else {
-                this.positiveShare = true
-                this.currentView = 'options-form'
-                this.overlayStatus = true
-              }
-            } else {
+          if (util.isWeixinBrowser()) {
+            if (this.live.shareId) {
               this.payOrCreateAttend()
+            } else {
+              this.positiveShare = true
+              this.currentView = 'options-form'
+              this.overlayStatus = true
             }
+          } else {
+            this.payOrCreateAttend()
           }
         }
       }

@@ -174,12 +174,12 @@ function randInt(n) {
   return Math.floor(Math.random() * n)
 }
 
-function curUser() {
+function curUser(defaultValue) {
   var userStr = window.localStorage.getItem('user')
   if (userStr) {
     return JSON.parse(userStr)
   } else {
-    return null;
+    return defaultValue
   }
 }
 
@@ -191,6 +191,10 @@ function saveCurUser(user) {
   } else {
     return false
   }
+}
+
+function removeCurUser(comp) {
+  window.localStorage.removeItem('user')
 }
 
 function checkInSession(comp) {
@@ -228,3 +232,4 @@ exports.isSafari = isSafari
 exports.curUser = curUser
 exports.saveCurUser = saveCurUser
 exports.checkInSession = checkInSession
+exports.removeCurUser = removeCurUser

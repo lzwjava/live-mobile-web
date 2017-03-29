@@ -59,7 +59,8 @@ export default {
   methods: {
     logout(e) {
       api.get(this, 'logout').then((resp) => {
-        this.curUser = {};
+        this.curUser = {}
+        util.removeCurUser()
         window.location.reload()
       }, util.promiseErrorFn(this))
     },
