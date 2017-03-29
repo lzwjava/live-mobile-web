@@ -17,8 +17,6 @@ import ProfileView from './views/ProfileView.vue'
 import ContactView from './views/ContactView.vue'
 import MyListView from './views/MyListView.vue'
 import StaffView from './views/StaffView.vue'
-import PacketView from './views/PacketView.vue'
-import PacketCreateView from './views/PacketCreateView.vue'
 import RegAnchorView from './views/RegAnchorView.vue'
 import AgreementView from './views/AgreementView.vue'
 import BindPhoneView from './views/BindPhoneView.vue'
@@ -98,12 +96,6 @@ router.map({
   },
   'staff': {
     component: StaffView
-  },
-  'packets/:packetId': {
-    component: PacketView
-  },
-  'packet': {
-    component: PacketCreateView
   },
   'reganchor': {
     // 申请成为主播

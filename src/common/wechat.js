@@ -204,12 +204,6 @@ function sharePage(comp, title, path) {
   share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#' + path, 0)
 }
 
-function sharePacket(comp, packet) {
-  var title = packet.user.username + '的红包：' + packet.wishing
-  share(title, 'http://i.quzhiboapp.com/packet1.jpg', title,
-     'http://m.quzhiboapp.com/?packetId=' + packet.packetId + '&t=' + new Date().getTime(), 0)
-}
-
 function wxPay(data) {
   return new Promise(function (resolve, reject){
     wx.ready(() => {
@@ -290,5 +284,4 @@ exports.scanQRcode = scanQRcode
 exports.scanQRcodeWithLive = scanQRcodeWithLive
 exports.showOptionMenu = showOptionMenu
 exports.wxPay = wxPay
-exports.sharePacket = sharePacket
 exports.sharePage = sharePage
