@@ -56,6 +56,14 @@ export default {
       curUser: {}
     }
   },
+  route: {
+    data({to}) {
+      if (!util.checkInSession(this)) {
+        return
+      }
+      this.curUser = util.curUser()
+    }
+  },
   methods: {
     logout(e) {
       api.get(this, 'logout').then((resp) => {
@@ -72,10 +80,6 @@ export default {
     }
   },
   created() {
-    if (!util.checkInSession(this)) {
-      return
-    }
-    this.curUser = util.curUser()
   }
 }
 
