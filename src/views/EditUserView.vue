@@ -86,7 +86,7 @@ export default {
        }, util.promiseErrorFn(this))
     },
     editAvatar() {
-      if (!util.isWeixinBrowser()) {
+      if (!util.isWeixinBrowser()) {        
         util.show(this, 'warn', '仅支持在微信浏览器中更改头像')
       } else {
         wechat.chooseAndUploadImage()
@@ -103,7 +103,6 @@ export default {
   },
   events: {
     'updateCurUser': function () {
-      debug('event updateCurUser')
       this.curUser = util.curUser()
     },
     'inputTextFormConfirm': function (newUsername) {
