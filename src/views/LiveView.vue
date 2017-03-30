@@ -353,17 +353,20 @@ export default {
       this.msgs = []
       this.playStatus = 0
 
+      if (!util.checkInSession(this)) {
+        return
+      }
+      this.curUser = util.curUser()
+
       Promise.all([
         http.fetchLive(this, this.liveId),
         http.fetchVideos(this, this.liveId),
-        http.fetchCurUser(this),
         wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
 
         this.live = values[0]
         this.videos = values[1]
-        this.curUser = values[2]
 
         // this.live.status = 20
 
@@ -716,15 +719,6 @@ export default {
       this.currentView = 'subscribe-form'
       this.overlayStatus = true
     },
-    reloadUser() {
-      util.loading(this)
-      return http.fetchCurUser(this, this.liveId)
-        .then((data) => {
-          util.loaded(this)
-          this.curUser = data
-          return Promise.resolve()
-        }).catch(util.promiseErrorFn(this))
-    },
     subscribeLive(subscribe) {
       return http.post(this, 'self', {
         liveSubscribe: subscribe
@@ -911,6 +905,7 @@ export default {
       position absolute
       overflow hidden
       overflow-y scroll
+      -webkit-overflow-scrolling touch
       left 5px
       right 5px
       top 5px

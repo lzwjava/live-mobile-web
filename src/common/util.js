@@ -174,6 +174,39 @@ function randInt(n) {
   return Math.floor(Math.random() * n)
 }
 
+function curUser(defaultValue) {
+  var userStr = window.localStorage.getItem('user')
+  if (userStr) {
+    return JSON.parse(userStr)
+  } else {
+    return defaultValue
+  }
+}
+
+function saveCurUser(user) {
+  if (user && user.username) {
+    debug('save curUser')
+    window.localStorage.setItem('user', JSON.stringify(user))
+    return true
+  } else {
+    return false
+  }
+}
+
+function removeCurUser(comp) {
+  window.localStorage.removeItem('user')
+}
+
+function checkInSession(comp) {
+  var user = curUser()
+  if (user && user.username) {
+    return true
+  } else {
+    comp.$dispatch('loginOrRegister', 0)
+    return false
+  }
+}
+
 exports.getParams = getParams
 exports.show = show
 exports.promiseErrorFn = promiseErrorFn
@@ -196,3 +229,7 @@ exports.shareLink = shareLink
 exports.randInt = randInt
 exports.isMobileBrowser = isMobileBrowser
 exports.isSafari = isSafari
+exports.curUser = curUser
+exports.saveCurUser = saveCurUser
+exports.checkInSession = checkInSession
+exports.removeCurUser = removeCurUser

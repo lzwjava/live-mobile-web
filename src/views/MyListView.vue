@@ -2,9 +2,7 @@
 
   <div class="my-list-view">
 
-    <list-nav :mode="2" :live-id="0"></list-nav>
-
-    <div v-show="login == 1">
+    <div>
       <p class="lives-title">
         我参与的直播
       </p>
@@ -15,12 +13,6 @@
       </p>
 
       <live-list :lives="myLives"></live-list>
-    </div>
-
-    <div class="not-login" v-show="login == 2">
-
-      <p>您尚未登录或注册</p>
-
     </div>
 
   </div>
@@ -44,12 +36,14 @@ export default {
   data() {
     return {
       attendedLives:[],
-      myLives:[],
-      login: 0
+      myLives:[]
     }
   },
   route: {
     data({to}) {
+      if (!util.checkInSession(this)) {
+        return
+      }
       util.loading(this)
       Promise.all([
         http.get(this, 'lives/attended'),
@@ -59,14 +53,7 @@ export default {
         this.login = 1
         this.attendedLives = values[0]
         this.myLives = values[1]
-      }).catch((error) => {
-        util.loaded(this)
-        if (error == '当前没有用户登录') {
-          this.login = 2
-        } else {
-          util.show(this, 'error', error)
-        }
-      })
+      }, util.promiseErrorFn(this))
     }
   },
   methods: {

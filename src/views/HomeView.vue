@@ -39,25 +39,12 @@ export default {
         window.localStorage.setItem('fromUserId', params.fromUserId)
       }
 
-      if (!util.isWeixinBrowser()) {
-        if (params.liveId && params.liveId != 0) {
-          this.$router.go('/intro/' + params.liveId)
-        } else {
-          this.$router.go('/lives')
-        }
+      if (params.liveId && params.liveId != 0) {
+        this.$router.go('/intro/' + params.liveId)
       } else {
-        if (params.liveId) {
-          window.localStorage.setItem('type', 'live')
-          window.localStorage.setItem('liveId', params.liveId)
-          // this.$router.go('/intro/' + params.liveId)
-        } else if (params.packetId) {
-          window.localStorage.setItem('type', 'packet')
-          window.localStorage.setItem('packetId', params.packetId)
-        } else {
-          // this.$router.go('/lives')
-        }
-        wechat.silentOauth2(this)
+        this.$router.go('/lives')
       }
+
     }
   },
   methods: {

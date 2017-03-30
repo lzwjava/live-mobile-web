@@ -3,7 +3,7 @@
 
     <div class="close-btn" @click="close">x</div>
 
-    <h3 class="title" v-bind:class="{'packet-margin': !showPic}">{{explainWord}}</h3>
+    <h3 class="title">{{explainWord}}</h3>
 
     <img v-if="showPic" class="notify" alt="" src="../img/wechat_notify.jpg">
 
@@ -25,7 +25,7 @@ const debug = debugFn('SubscribeForm')
 
 export default {
   name: 'SubscribeForm',
-  props: ['type', 'liveId', 'packetId'],
+  props: ['type', 'liveId'],
   data() {
     return {
       ticket: ''
@@ -33,18 +33,14 @@ export default {
   },
   computed: {
     showPic() {
-      if (this.type == 'packet') {
-        return false
-      } else if (this.type == 'live'){
+      if (this.type == 'live'){
         return true
       } else if(this.type == 'share') {
         return false
       }
     },
     explainWord () {
-      if (this.type == 'packet') {
-        return '为了让公众号给您发送红包'
-      } else if (this.type == 'live'){
+      if (this.type == 'live'){
         return '为了方便微信通知您'
       } else if(this.type == 'share') {
         return '为了给您推送邀请的收益通知'
@@ -57,8 +53,7 @@ export default {
     util.loading(this)
     api.get(this, 'wechat/qrcode', {
       'type': this.type,
-      'liveId': this.liveId,
-      'packetId': this.packetId
+      'liveId': this.liveId
     }).then((data) => {
       util.loaded(this)
       this.ticket = encodeURIComponent(data.ticket)
@@ -91,8 +86,6 @@ export default {
     margin-top 15px
   .notify
     padding 10px
-  .packet-margin
-    margin-top 50px
   .close-btn
     float right
     color #000

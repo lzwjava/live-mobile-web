@@ -2,9 +2,9 @@
 
   <div class="list-view">
 
-    <list-nav :mode="1" :live-id="0"></list-nav>
+    <!-- <list-nav :mode="1" :live-id="0"></list-nav> -->
 
-    <div>
+    <div class="live-container">
 
       <!-- <div class="subscribe" @click="goSubscribe">
         <span class="subscribe-btn" >订阅直播</span>
@@ -17,6 +17,8 @@
       <live-list :lives="lives"></live-list>
     </div>
 
+    <tab-bar :active-index="0"></tab-bar>
+
   </div>
 
 </template>
@@ -28,12 +30,14 @@ import http from '../common/api'
 import wechat from '../common/wechat'
 import LiveList from '../components/LiveList.vue'
 import ListNav from '../components/ListNav.vue'
+import Tabbar from '../components/Tabbar.vue'
 
 export default {
   name: 'LiveView',
   components: {
     'live-list': LiveList,
-    'list-nav': ListNav
+    'list-nav': ListNav,
+    'tab-bar': Tabbar
   },
   data() {
     return {
@@ -57,10 +61,7 @@ export default {
   },
   route: {
     data ({to}) {
-      
       util.initTitle()
-
-      this.$broadcast('updateCurUser')
     }
   },
   methods: {
@@ -78,15 +79,10 @@ export default {
 <style lang="stylus">
 
 .list-view
-  .subscribe
-    border-width 1px 0
-    border solid #eee
-    background-color #fff
-    padding 10px 10px
+  .live-container
     position relative
-    text-align center
-    margin-top 3px
-    .subscribe-btn
-      color #00ABD8
+    width 100%
+    min-height 100%
+    margin-bottom 54px
 
 </style>

@@ -1,7 +1,5 @@
 <template>
   <div id="wrapper">
-    <my-nav></my-nav>
-
     <!-- main view -->
     <router-view
       class="view"
@@ -67,12 +65,13 @@ export default {
   },
   created() {
   },
+  ready() {
+  },
   methods: {
     loginOrRegister(liveId) {
         if (util.isWeixinBrowser()) {
-          this.$router.go('/register/?liveId=' + liveId)
+          wechat.oauth2()
         } else {
-          debug('showView')
           this.liveId = liveId
           this.currentView = 'login-options-form'
           this.overlayStatus = true
@@ -143,6 +142,7 @@ export default {
 .view
   position absolute
   width 100%
+  min-height 100%
   transition opacity .2s ease
   box-sizing border-box
   &.v-enter, &.v-leave

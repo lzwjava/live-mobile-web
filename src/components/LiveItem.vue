@@ -6,7 +6,7 @@
       <p class="subject">{{live.subject}}</p>
       <div class="">
         <span class="owner-name">{{live.owner.username}}</span>
-        <span v-show="live.topic" class="topic">{{live.topic.name}}</span>
+        <span v-if="live.topic" class="topic">{{live.topic.name}}</span>
       </div>
 
       <div class="live-item-tag">
