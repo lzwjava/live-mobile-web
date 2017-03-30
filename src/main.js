@@ -19,10 +19,9 @@ import StaffView from './views/StaffView.vue'
 import RegAnchorView from './views/RegAnchorView.vue'
 import AgreementView from './views/AgreementView.vue'
 import BindPhoneView from './views/BindPhoneView.vue'
-import AppUploadView from './views/AppUploadView.vue'
-import AppMyListView from './views/AppMyListView.vue'
 import AccountView from './views/AccountView.vue'
 import InviteView from './views/InviteView.vue'
+import EditUserView from './views/EditUserView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -53,7 +52,7 @@ if (process.env.NODE_ENV === 'production') {
   // 可以用
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,loading,IntroView,' +
     'UsersView,main,http,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
-    'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AppUploadView,AccountView,InviteView';
+    'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AccountView,InviteView';
 }
 
 // routing
@@ -103,17 +102,14 @@ router.map({
   'bindPhone': {
     component: BindPhoneView
   },
-  'appUpload/:appId': {
-    component: AppUploadView
-  },
-  'appMyList': {
-    component: AppMyListView
-  },
   'account' : {
     component: AccountView
   },
   'live/:liveId/invites': {
     component: InviteView
+  },
+  'editUser': {
+    component: EditUserView
   }
 })
 
