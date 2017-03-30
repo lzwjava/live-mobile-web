@@ -4,7 +4,7 @@
       <div class="video-wait video-common" v-show="live.status == 10">
         <p class="big-title">离直播开始还有{{timeDuration}}</p>
         <p class="small-title">开播时您将收到一条微信通知</p>
-        <img class="qrcode" src="../img/qzbgroup.jpg" alt="">
+        <img class="qrcode" :src="live.liveQrcodeUrl" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
         <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
@@ -271,12 +271,12 @@ export default {
       }
     },
     noticeContent() {
-      return this.live.notice + this.defaultNotice
+      var coursewareUrl = this.live.coursewareUrl
+      var coursewareMsg = coursewareUrl ? '课件地址：' + coursewareUrl + '\n'  : '主播未上传课件\n\n';
+      return coursewareMsg + this.live.notice + this.defaultNotice
     },
     defaultNotice() {
-      var coursewareUrl = this.live.coursewareUrl
-      var coursewareMsg = coursewareUrl ? '课件地址：' + coursewareUrl + '\n'  : '主播未上传课件\n';
-      return coursewareMsg + '\n可打开 quzhiboapp.com 在电脑上观看\n\n可长按二维码加微信进用户群和主播聊聊：\n\n' +
+      return '\n可打开 quzhiboapp.com 在电脑上观看\n\n可长按二维码加微信进用户群和主播聊聊：\n\n' +
       ' ![wechat_lzw_short.png](http://i.quzhiboapp.com/qzbgroup1.jpg)'
     },
     changeTitle() {
