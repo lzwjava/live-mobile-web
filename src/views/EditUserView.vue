@@ -15,7 +15,7 @@
 
     <div class="edit-section">
       <span class="edit-title">
-        用户名
+        名称
       </span>
 
       <span class="edit-right" @click="editUsername">
@@ -25,6 +25,10 @@
       </span>
 
     </div>
+
+    <overlay :overlay.sync="overlayStatus">
+        <input-text-form title="名称" :text="curUser.username"></input-text-form>
+    </overlay>
 
   </div>
 
@@ -37,17 +41,22 @@ import util from '../common/util'
 import api from '../common/api'
 import wechat from '../common/wechat'
 import UserAvatar from '../components/user-avatar.vue'
+import Overlay from '../components/overlay.vue'
+import InputTextForm from '../components/InputTextForm.vue'
 
 var debug = debugFn('EditUserView')
 
 export default {
   name: 'EditUserView',
   components: {
-    'user-avatar': UserAvatar
+    'user-avatar': UserAvatar,
+    'overlay': Overlay,
+    'input-text-form': InputTextForm
   },
   data() {
     return {
-      curUser: {}
+      curUser: {},
+      overlayStatus: false
     }
   },
   route: {
@@ -71,8 +80,8 @@ export default {
       api.post(this,'self', info)
        .then((data) => {
          util.loaded(this)
-         this.$dispatch('updateCurUser')
          util.saveCurUser(data)
+         this.$dispatch('updateCurUser')
          util.show(this, 'success', '更新成功')
        }, util.promiseErrorFn(this))
     },
@@ -89,13 +98,20 @@ export default {
       }
     },
     editUsername() {
-
+      this.overlayStatus = true
     }
   },
   events: {
     'updateCurUser': function () {
       debug('event updateCurUser')
       this.curUser = util.curUser()
+    },
+    'inputTextFormConfirm': function (newUsername) {
+      if (newUsername != this.curUser.username) {
+        this.updateUser({
+          username: newUsername
+        })
+      }
     }
   }
 }

@@ -24,7 +24,7 @@ export default {
       e.stopPropagation()
     },
     chooseType(type) {
-      this.$parent.overlay = false;
+      this.$parent.overlay = false
       this.$dispatch('hideLoginOptionsForm', type)
     }
   }

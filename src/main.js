@@ -52,7 +52,8 @@ if (process.env.NODE_ENV === 'production') {
   // 可以用
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,loading,IntroView,' +
     'UsersView,main,http,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
-    'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AccountView,InviteView';
+    'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AccountView,InviteView,InputTextForm,' +
+    'EditUserView';
 }
 
 // routing
