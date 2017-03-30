@@ -11,6 +11,7 @@
 
 import util from '../common/util'
 import wechat from '../common/wechat'
+import api from '../common/api'
 var debug = require('debug')('HomeView')
 
 export default {
@@ -48,20 +49,19 @@ export default {
     }
   },
   methods: {
-    loginBySessionToken: function (sessionToken, liveId) {
-      this.$http.get('self', {
+    loginBySessionToken (sessionToken, liveId) {
+      api.get(this, 'self', {
         sessionToken: sessionToken
-      }).then((resp) => {
-        if (util.filterError(this, resp)) {
-          var token = resp.data.result.sessionToken;
-          document.cookie = "SessionToken=" + token;
-          if (liveId) {
-            this.$router.go('/live/' + liveId)
-          } else {
-            this.$router.go('/lives')
-          }
+      }).then((data) => {
+        var token = data.sessionToken
+        document.cookie = "SessionToken=" + token
+        util.saveCurUser(data)
+        if (liveId) {
+          this.$router.go('/live/' + liveId)
+        } else {
+          this.$router.go('/lives')
         }
-      }, util.httpErrorFn(this));
+      }, util.promiseErrorFn(this))
     },
     logout() {
       this.$http.get('logout')

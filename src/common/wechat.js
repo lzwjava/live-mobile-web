@@ -89,7 +89,8 @@ function configWeixin(comp) {
         signature: data.signature,
         jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ',
                     'showMenuItems', 'hideMenuItems', 'chooseWXPay', 'scanQRCode', 'startRecord','stopRecord',
-                    'onRecordEnd','playVoice','pauseVoice','stopVoice','uploadVoice','downloadVoice']
+                    'onRecordEnd','playVoice','pauseVoice','stopVoice','uploadVoice','downloadVoice',
+                    'chooseImage', 'uploadImage']
     })
     wx.error((res) => {
       util.show(comp, 'error', '微信出错' + JSON.stringify(res))
@@ -271,6 +272,47 @@ function scanQRcodeWithLive(comp, liveId) {
   })
 }
 
+function chooseAndUploadImage(comp) {
+  return new Promise(
+    function(resolve, reject) {
+      wx.chooseImage({
+          count: 1,
+          sizeType: ['compressed'],
+          sourceType: ['album'],
+          success: (res) => {
+            var localIds = res.localIds
+            if (localIds.length > 0) {
+              wx.uploadImage({
+                  localId: localIds[0],
+                  isShowProgressTips: 1,
+                  success: (res) => {
+                    var serverId = res.serverId
+                    util.loading(comp)
+                    api.get(this, 'files/wechatToQiniu', {
+                      mediaId: serverId
+                    }).then((data) => {
+                      util.loaded(comp)
+                      resolve(data)
+                    }, (error) => {
+                      reject(error)
+                    })
+                  },
+                  fail: () => {
+                    reject('上传头像失败')
+                  }
+              })
+            } else {
+              reject('localIds length is 0')
+            }
+          },
+          fail: () => {
+            reject('选取头像失败')
+          }
+      })
+    }
+  )
+}
+
 exports.weixinAppId = weixinAppId
 exports.oauth2 = oauth2
 exports.silentOauth2 = silentOauth2
@@ -285,3 +327,4 @@ exports.scanQRcodeWithLive = scanQRcodeWithLive
 exports.showOptionMenu = showOptionMenu
 exports.wxPay = wxPay
 exports.sharePage = sharePage
+exports.chooseAndUploadImage = chooseAndUploadImage

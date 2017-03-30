@@ -37,6 +37,10 @@ var show = (component, type, text, duration) => {
   component.$dispatch('show-msg', type, text)
 }
 
+var showError = (component, text) => {
+  show(component, 'error', text)
+}
+
 var promiseErrorFn = (comp, callback) => {
   return (error) => {
     show(comp, 'error', error, 3000)
@@ -209,6 +213,7 @@ function checkInSession(comp) {
 
 exports.getParams = getParams
 exports.show = show
+exports.showError = showError
 exports.promiseErrorFn = promiseErrorFn
 exports.httpErrorFn = httpErrorFn
 exports.escape = escape

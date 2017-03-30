@@ -35,6 +35,7 @@
 import debugFn from 'debug'
 import util from '../common/util'
 import api from '../common/api'
+import wechat from '../common/wechat'
 import UserAvatar from '../components/user-avatar.vue'
 
 var debug = debugFn('EditUserView')
@@ -65,18 +66,26 @@ export default {
   ready() {
   },
   methods: {
+    updateUser(info) {
+      util.loading(this)
+      api.post(this,'self', info)
+       .then((data) => {
+         util.loaded(this)
+         this.$dispatch('updateCurUser')
+         util.saveCurUser(data)
+         util.show(this, 'success', '更新成功')
+       }, util.promiseErrorFn(this))
+    },
     editAvatar() {
       if (!util.isWeixinBrowser()) {
-        util.show(this, 'warn', '请使用微信浏览器打开网站')
+        util.show(this, 'warn', '仅支持在微信浏览器中更改头像')
       } else {
-        wx.chooseImage({
-            count: 1,
-            sizeType: ['compressed'],
-            sourceType: ['album'],
-            success: function (res) {
-              var localIds = res.localIds              
-            }
-        })
+        wechat.chooseAndUploadImage()
+         .then((data) => {
+           this.updateUser({
+             avatarUrl: data.url
+           })
+         }, util.promiseErrorFn(this))
       }
     },
     editUsername() {
@@ -84,6 +93,10 @@ export default {
     }
   },
   events: {
+    'updateCurUser': function () {
+      debug('event updateCurUser')
+      this.curUser = util.curUser()
+    }
   }
 }
 

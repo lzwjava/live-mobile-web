@@ -120,6 +120,10 @@ export default {
                 }, 600)
             }
         }
+    },
+    'updateCurUser': function () {
+      debug('event updateCurUser')
+      this.$broadcast('updateCurUser')
     }
   }
 }
