@@ -263,8 +263,6 @@ export default {
     loadAllData() {
       util.loading(this)
 
-      this.curUser = util.curUser({})
-
       Promise.all([
         http.fetchLive(this, this.liveId),
         http.fetchPartUsers(this, this.liveId),
@@ -272,6 +270,7 @@ export default {
           liveId: this.liveId,
           limit: 6
         }),
+        http.fetchCurUserNoError(this),
         wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
@@ -284,6 +283,7 @@ export default {
         } else {
           this.invites = [util.defaultUser()]
         }
+        this.curUser = values[3]
 
         wechat.showOptionMenu()
         wechat.shareLive(this, this.live, this.curUser)

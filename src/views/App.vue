@@ -33,6 +33,7 @@ import RegisterForm from '../components/RegisterForm.vue'
 import WeiboForm from '../components/WeiboForm.vue'
 import Overlay from '../components/Overlay.vue'
 import util from '../common/util'
+import api from '../common/api'
 
 var debug = require('debug')('nav')
 
