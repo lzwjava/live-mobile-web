@@ -288,12 +288,13 @@ function chooseAndUploadImage(comp) {
                   success: (res) => {
                     var serverId = res.serverId
                     util.loading(comp)
-                    api.get(this, 'files/wechatToQiniu', {
+                    http.get(comp, 'files/wechatToQiniu', {
                       mediaId: serverId
                     }).then((data) => {
                       util.loaded(comp)
                       resolve(data)
                     }, (error) => {
+                      util.loaded(comp)
                       reject(error)
                     })
                   },

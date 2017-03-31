@@ -86,10 +86,10 @@ export default {
        }, util.promiseErrorFn(this))
     },
     editAvatar() {
-      if (!util.isWeixinBrowser()) {        
+      if (!util.isWeixinBrowser()) {
         util.show(this, 'warn', '仅支持在微信浏览器中更改头像')
       } else {
-        wechat.chooseAndUploadImage()
+        wechat.chooseAndUploadImage(this)
          .then((data) => {
            this.updateUser({
              avatarUrl: data.url
