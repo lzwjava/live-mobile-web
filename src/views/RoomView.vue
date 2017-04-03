@@ -16,11 +16,11 @@
 
     <div class="tab-area">
 
-      <div class="tab-item" @click="toggleTab" v-bind:class="{active: curTab == 0}">
+      <div class="tab-item" @click="showAttend" v-bind:class="{active: curTab == 0}">
         参与的直播
       </div>
 
-      <div class="tab-item" @click="toggleTab" v-bind:class="{active: curTab == 1}">
+      <div class="tab-item" @click="showCreate" v-bind:class="{active: curTab == 1}">
         创建的直播
       </div>
 
@@ -86,8 +86,11 @@ export default {
     }
   },
   methods: {
-    toggleTab() {
-      this.curTab = ! this.curTab
+    showCreate() {
+      this.curTab = 1
+    },
+    showAttend() {
+      this.curTab = 0
     }
   },
   events: {
