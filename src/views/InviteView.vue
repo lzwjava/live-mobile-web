@@ -2,6 +2,10 @@
 
   <div class="invite-view">
 
+    <div class="invite-head">
+
+    </div>
+
     <div class="me">
       <user-avatar :user="curUser.userId ? curUser : defaultUser"></user-avatar>
       <div class="right-panel">
@@ -169,9 +173,16 @@ export default {
 
 .invite-view
   font-size 16px
+  .invite-head
+    background url('../img/invite-cover.jpg')
+    background-size cover
+    width 100%
+    height 220px
+    position relative
   .title
     text-align center
   .me
+    margin-top 10px
     background-color #fff
     padding 5px 20px
     margin-bottom 5px

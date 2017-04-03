@@ -17,7 +17,7 @@
 
           <switch-cell name="switch" label="是否需要付费" :on.sync="needPay"></switch-cell>
 
-          <input-cell type="number" label="直播门票¥" placeholder="请输入门票" :value.sync="amount"></input-cell>
+          <input-cell type="number" label="直播门票 ¥" placeholder="请输入门票" :value.sync="amountValue"></input-cell>
 
           <input-cell type="datetime-local" label="时间" :value.sync="planTsValue"></input-cell>
 
@@ -27,7 +27,7 @@
           <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon"></switch-cell>
 
           <cell>
-            <span slot="header">请设定直播分类</span>
+            <span slot="header">设定直播分类</span>
           </cell>
 
           <select-cell :options="topicOptions" :selected.sync="topicSelected"></select-cell>
@@ -118,7 +118,7 @@ export default {
       detail: '',
       title: '',
       user: {},
-      amount: 0,
+      amountValue: '',
       coverUrl: '',
       coursewareUrl: '',
       liveId: 0,
@@ -172,7 +172,7 @@ export default {
     setLive(live) {
       this.live = live
       this.title = live.subject
-      this.amount = live.amount / 100
+      this.amountValue = live.amount / 100.0 + ''
       this.detail = live.detail
       this.planTsValue = moment(live.planTs).format('YYYY-MM-DDTHH:mm')
       this.coverUrl = live.coverUrl
@@ -198,8 +198,8 @@ export default {
       if (this.title) {
         data.subject = this.title
       }
-      if (this.amount) {
-        data.amount = this.amount * 100
+      if (this.amountValue) {
+        data.amount = Number(this.amountValue) * 100
       }
       if (this.planTsValue) {
         data.planTs = moment(this.planTsValue).format('YYYY-MM-DD HH:mm:ss')
@@ -386,7 +386,7 @@ export default {
       } else {
         return '未填写'
       }
-    }    
+    }
   } // methods
 }
 
