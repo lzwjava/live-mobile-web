@@ -76,10 +76,11 @@
 
         </cells>
 
-        <div class="row row-action">
-          <button class="btn btn-blue" @click="saveLive">保存</button>
+        <cells class="row-action">
+          <button class="btn btn-gray" @click="saveLive">保存</button>
           <button class="btn btn-blue" @click="publishLive">提交审核</button>
-        </div>
+        </cells>
+
     </div>
 
   </div>
@@ -304,17 +305,17 @@ export default {
             'UploadProgress': (up, file) => {
             },
             'FileUploaded': (up, file, info) => {
-                    var res = JSON.parse(info);
-                    var sourceLink = bucketUrl + '/' + res.key;
-                    this.updateCover(sourceLink)
+              var res = JSON.parse(info)
+              var sourceLink = bucketUrl + '/' + res.key;
+              this.updateCover(sourceLink)
             },
             'Error': (up, err, errTip) => {
-                    util.show(this, 'error', errTip)
+              util.show(this, 'error', errTip)
             },
-            'UploadComplete': function() {
+            'UploadComplete': () => {
               util.loaded(this)
             },
-            'Key': function(up, file) {
+            'Key': (up, file) => {
                 return util.randomString(6)
             }
         }
@@ -362,10 +363,10 @@ export default {
           'Error': (up, err, errTip) => {
             util.show(this, 'error', errTip)
           },
-          'UploadComplete': function() {
+          'UploadComplete': () => {
             util.loaded(this)
           },
-          'Key': function(up, file) {
+          'Key': (up, file) => {
             var ext = '.' + file.name.split('.').pop()
             return util.randomString(6) + ext
           }
@@ -403,62 +404,11 @@ export default {
       .cover
         width 50px
         float right
-        margin-bottom 10px
         margin-right 10px
-    .row
-      margin 10px 0
-      &.need-pay-row
-        .hint
-          display inline-block
-        input
-          margin-left 10px
-      .hint
-        color rgba(40,47,49,0.6)
-        display block
-        line-height 32px
-      .suffix
-        color rgba(40,47,49,0.6)
-      .upload-btn
-        background-color #9B9B9B
-        border-radius 3px
-        color #fff
-      input
-        line-height 30px
-        border 1px solid rgba(40,47,49,0.3)
-        border 1px inset
-        text-indent 10px
-        &:focus
-          border 1px solid #1CB2EF
-    .intro-area
-      textarea
-        margin-top 5px
-        font-size 16px
-        border 1px solid rgba(40,47,49,0.3)
-        opacity 0.8
-        padding 10px
-        &:focus
-          border 1px solid #1CB2EF
-    .edit-area
-      textarea
-        margin-top 5px
-      p.tip
-        color rgba(40,47,49,.6)
-        font-size 13px
-        margin 8px 0px
-    .notice-area
-        textarea
-            margin-top 5px
-        p.tip
-          color rgba(40,47,49,.6)
-          font-size 13px
-          margin 8px 0px
-    #upload-container
-      img
-        margin-top 10px
-    .status
-      border 1px solid #1CB2EF
-      border-radius 3px
-      padding 3px
-      float right
+    .row-action
+      display flex
+      button
+        flex 1
+        margin 0 10px
 
 </style>
