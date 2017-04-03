@@ -23,6 +23,7 @@ import AccountView from './views/AccountView.vue'
 import InviteView from './views/InviteView.vue'
 import EditUserView from './views/EditUserView.vue'
 import RoomView from './views/RoomView.vue'
+import EditLiveView from './views/EditLiveView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -54,7 +55,7 @@ if (process.env.NODE_ENV === 'production') {
   localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,loading,IntroView,' +
     'UsersView,main,http,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
     'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AccountView,InviteView,InputTextForm,' +
-    'EditUserView,RoomView';
+    'EditUserView,RoomView,EditLiveView';
 }
 
 // routing
@@ -115,6 +116,9 @@ router.map({
   },
   'room/:userId': {
     component: RoomView
+  },
+  'editLive/:liveId': {
+    component: EditLiveView
   }
 })
 

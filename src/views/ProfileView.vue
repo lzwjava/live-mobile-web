@@ -94,7 +94,7 @@ export default {
       this.$router.go('/editUser')
     },
     goRoom() {
-      this.$router.go('/room/' + this.curUser.userId)
+      this.$router.go('/room/' + this.curUser.userId + '?from=profile')
     }
   },
   created() {

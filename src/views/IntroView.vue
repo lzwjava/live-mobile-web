@@ -108,9 +108,13 @@
 
     <div class="attend-section">
 
-      <div class="create-btn" @click="createLive">
+      <div class="create-btn left-btn" v-if="curUser.userId != live.owner.userId" @click="createLive">
         <img src="../img/apply-icon.png" alt="">
         <p>发起直播</p>
+      </div>
+
+      <div class="edit-btn left-btn" v-if="curUser.userId == live.owner.userId" @click="editLive">
+        <p>编辑介绍页</p>
       </div>
 
        <div class="attend-btn" @click="attendLive" v-html="btnTitle"></div>
@@ -512,6 +516,9 @@ export default {
     },
     goUserRoom(userId) {
       this.$router.go('/room/' + userId)
+    },
+    editLive() {
+      this.$router.go('/editLive/' + this.liveId)
     }
   },
   events:  {
@@ -730,16 +737,19 @@ export default {
           font-size 13px
           color #FFFFFF
       .create-btn
-        flex 1
         background-color rgba(112, 112, 112, 0.9)
+        img
+          vertical-align middle
+          width 25px
+      .edit-btn
+        background-color rgba(51,201,111,0.9)
+      .left-btn
+        flex 1
         text-align center
         display flex
         flex-direction column
         justify-content center
         align-items center
-        img
-          vertical-align middle
-          width 25px
         p
           font-size 12px
           color #fff

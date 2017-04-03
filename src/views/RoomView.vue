@@ -62,12 +62,21 @@ export default {
       user: {},
       attendLives: [],
       createLives: [],
-      curTab: 0
+      curTab: 0,
+      from: ''
     }
   },
   route: {
     data ({to}) {
-      this.userId = to.params.userId
+      var userId = to.params.userId
+      if (userId == this.userId) {
+        return
+      }
+      this.userId = userId
+      this.from = to.query.from
+      if (this.from == 'profile') {
+        this.curTab = 1
+      }
       util.loading(this)
       Promise.all([
         api.get(this, 'users/' + this.userId),
