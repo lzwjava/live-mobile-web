@@ -3,11 +3,15 @@
 
     <div class="write-container" >
 
-        <cell id="upload-container">
-          <span id="pickfiles" slot="header">设置头图(600*348)</span>
-          <span slot="footer">></span>
-          <img v-if="coverUrl" class="cover" :src="coverUrl"/>
-        </cell>
+        <cells id="upload-container">
+
+          <cell class="cover-cell"  id="pickfiles">
+            <span  slot="header">设置头图(600*348)</span>
+            <img slot="body" v-if="coverUrl" class="cover" :src="coverUrl"/>
+            <span slot="footer">></span>
+          </cell>
+
+        </cells>
 
         <cells type="form">
 
@@ -15,15 +19,20 @@
 
           <input-cell type="number" label="直播门票¥" placeholder="请输入门票" :value.sync="amount"></input-cell>
 
+          <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon"></switch-cell>
+
+          <cell>
+            <span slot="header">请设定直播分类</span>
+          </cell>
+
+          <select-cell :options="topicOptions" :selected.sync="topicSelected"></select-cell>
+
         </cells>
 
         <cells type="form">
-           <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon"></switch-cell>
 
            <input-cell type="text" label="直播标题" placeholder="请输入标题" :value.sync="title"></input-cell>
 
-           <cell-header>请设定直播分类</cell-header>
-           <select-cell :options="topicOptions" :selected.sync="topicSelected"></select-cell>
         </cells>
 
         <cell>
@@ -33,7 +42,6 @@
         <div class="row">
           <span class="hint">请设定直播时间</span>
         </div>
-
 
         <cells>
 
@@ -48,7 +56,7 @@
           </cell>
 
           <cell>
-            <span slot="header">房间公告(可无)</span>
+            <span slot="header">房间公告(可选)</span>
             <span slot="footer">></span>
           </cell>
 
@@ -56,11 +64,15 @@
 
 
         <cells id="upload-container-course">
-          <cell-header class="hint">请上传课件(可选，支持格式ppt,pptx,pdf,key,zip)</cell-header>
-          <button class="upload-btn" id="pick-courseware">本地上传</button>
-          <div v-if="coursewareUrl">
-            <a :href="coursewareUrl">课件地址：{{ coursewareUrl }}</a>
-          </div>
+
+          <cell id="pick-courseware">
+            <span slot="header">上传课件(可选)</span>
+            <span slot="footer">></span>
+          </cell>
+
+          <cell v-if="coursewareUrl">
+            <a slot="body" :href="coursewareUrl" target="_blank">{{coursewareUrl}}</a>
+          </cell>
 
         </cells>
 
@@ -127,7 +139,8 @@ export default {
       topicSelected: 0,
       bucketUrl: '',
       dateValue: '',
-      datetimeValue: ''
+      datetimeValue: '',
+      uptoken: {}
     }
   },
   computed: {
@@ -149,13 +162,15 @@ export default {
       util.loading(this)
       Promise.all([
         api.fetchLive(this, this.liveId),
-        api.get(this, 'topics')
+        api.get(this, 'topics'),
+        api.get(this, 'files/uptoken')
       ]).then((values) => {
         util.loaded(this)
         var live = values[0]
         this.topics = values[1]
+        this.uptoken = values[2]
         this.setLive(live)
-        this.initQiniu()
+        this.initQiniu(this.uptoken)
       }, util.promiseErrorFn(this))
     }
   },
@@ -254,108 +269,103 @@ export default {
       this.coursewareUrl = this.bucketUrl + '/' + key
       this.saveLiveData({coursewareKey: key})
     },
-    initQiniu() {
-      var component = this;
-      api.get(this, 'files/uptoken').then((res) => {
-        var result = res
-        var uptoken = result.uptoken
-        var bucketUrl = result.bucketUrl
-        this.bucketUrl = bucketUrl
-        var key =result.key
-        var uploader = Qiniu.uploader({
-          runtimes: 'html5,flash,html4',    //上传模式,依次退化
-          browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
-          uptoken_url: 'useless',
-          uptoken: uptoken,
-          domain: bucketUrl,
-          flash_swf_url: 'js/plupload/Moxie.swf',
-          unique_names: false,
-          save_key: false,
-          get_new_uptoken: false,           //设置上传文件的时候是否每次都重新获取新的token
-          container: 'upload-container',    //上传区域DOM ID，默认是browser_button的父元素，
-          max_file_size: '100mb',           //最大文件体积限制
-          max_retries: 3,                   //上传失败最大重试次数
-          dragdrop: false,                  //开启可拖曳上传
-          drop_element: 'upload-container',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-          chunk_size: '4mb',                //分块上传时，每片的体积
-          auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传,
-          init: {
-              'FilesAdded': function(up, files) {
-              },
-              'BeforeUpload': function(up, file) {
-              },
-              'UploadProgress': function(up, file) {
-              },
-              'FileUploaded': function(up, file, info) {
-                      // info:
-                      // {
-                      //    "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
-                      //    "key": "gogopher.jpg"
-                      //    }
-                      var res = JSON.parse(info);
-                      var sourceLink = bucketUrl + '/' + res.key;
-                      debug('sourceLink: %j', sourceLink);
-                      component.updateCover(sourceLink)
-              },
-              'Error': function(up, err, errTip) {
-                      debug('qiniu error %j errTip %j', err, errTip);
-                      util.show(component, 'error', errTip)
-              },
-              'UploadComplete': function() {
-              },
-              'Key': function(up, file) {
-                  // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
-                  // 该配置必须要在 unique_names: false , save_key: false 时才生效
-                  return util.randomString(6)
-              }
-          }
-        })
-        var coursewareUploader = Qiniu.uploader({
-          runtimes: 'html5,flash,html4',    //上传模式,依次退化
-          browse_button: 'pick-courseware',       //上传选择的点选按钮，**必需**
-          uptoken_url: 'useless',
-          uptoken: uptoken,
-          domain: bucketUrl,
-          flash_swf_url: 'js/plupload/Moxie.swf',
-          unique_names: false,
-          save_key: false,
-          get_new_uptoken: false,           //设置上传文件的时候是否每次都重新获取新的token
-          container: 'upload-container-course',    //上传区域DOM ID，默认是browser_button的父元素，
-          max_file_size: '100mb',           //最大文件体积限制
-          max_retries: 3,                   //上传失败最大重试次数
-          dragdrop: false,                  //开启可拖曳上传
-          drop_element: 'upload-container-course',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-          chunk_size: '4mb',                //分块上传时，每片的体积
-          filters: {
-            mime_types : [
-              {title : "Courseware Files", extensions: "ppt,pptx,pdf,key,zip"}    //限制文件格式
-            ]
-          },
-          auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传,
-          init: {
-            'FilesAdded': function(up, files) {
+    initQiniu(uptokenData) {
+      var uptoken = uptokenData.uptoken
+      var bucketUrl = uptokenData.bucketUrl
+      this.bucketUrl = bucketUrl
+      var key = uptokenData.key
+      var uploader = Qiniu.uploader({
+        runtimes: 'html5,flash,html4',    //上传模式,依次退化
+        browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
+        uptoken_url: 'useless',
+        uptoken: uptoken,
+        domain: bucketUrl,
+        flash_swf_url: 'js/plupload/Moxie.swf',
+        unique_names: false,
+        save_key: false,
+        get_new_uptoken: false,           //设置上传文件的时候是否每次都重新获取新的token
+        container: 'upload-container',    //上传区域DOM ID，默认是browser_button的父元素，
+        max_file_size: '800kb',           //最大文件体积限制
+        max_retries: 3,                   //上传失败最大重试次数
+        dragdrop: false,                  //开启可拖曳上传
+        drop_element: 'upload-container',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
+        chunk_size: '4mb',                //分块上传时，每片的体积
+        auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传,
+        filters: {
+          mime_types : [
+            {title : "Image files", extensions: "jpg,png,jpeg"}
+          ]
+        },
+        init: {
+            'FilesAdded': (up, files) => {
             },
-            'BeforeUpload': function(up, file) {
+            'BeforeUpload': (up, file) => {
+              util.loading(this)
             },
-            'UploadProgress': function(up, file) {
+            'UploadProgress': (up, file) => {
             },
-            'FileUploaded': function(up, file, info) {
-              var res = JSON.parse(info);
-              component.updateCoursewareKey(res.key)
+            'FileUploaded': (up, file, info) => {
+                    var res = JSON.parse(info);
+                    var sourceLink = bucketUrl + '/' + res.key;
+                    this.updateCover(sourceLink)
             },
-            'Error': function(up, err, errTip) {
-            debug('qiniu error %j errTip %j', err, errTip);
-              util.show(component, 'error', errTip)
+            'Error': (up, err, errTip) => {
+                    util.show(this, 'error', errTip)
             },
             'UploadComplete': function() {
+              util.loaded(this)
             },
             'Key': function(up, file) {
-              var ext = '.' + file.name.split('.').pop()
-                return util.randomString(6) + ext
+                return util.randomString(6)
             }
+        }
+      })
+      var coursewareUploader = Qiniu.uploader({
+        runtimes: 'html5,flash,html4',    //上传模式,依次退化
+        browse_button: 'pick-courseware',       //上传选择的点选按钮，**必需**
+        uptoken_url: 'useless',
+        uptoken: uptoken,
+        domain: bucketUrl,
+        flash_swf_url: 'js/plupload/Moxie.swf',
+        unique_names: false,
+        save_key: false,
+        get_new_uptoken: false,           //设置上传文件的时候是否每次都重新获取新的token
+        container: 'upload-container-course',    //上传区域DOM ID，默认是browser_button的父元素，
+        max_file_size: '10mb',           //最大文件体积限制
+        max_retries: 3,                   //上传失败最大重试次数
+        dragdrop: false,                  //开启可拖曳上传
+        drop_element: 'upload-container-course',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
+        chunk_size: '4mb',                //分块上传时，每片的体积
+        filters: {
+          mime_types : [
+            {title : "Courseware Files", extensions: "ppt,pptx,pdf,key,zip"}    //限制文件格式
+          ]
+        },
+        auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传,
+        init: {
+          'FilesAdded': (up, files) => {
+          },
+          'BeforeUpload': (up, file) => {
+            util.loading(this)
+          },
+          'UploadProgress': (up, file) => {
+          },
+          'FileUploaded': (up, file, info) => {
+            var res = JSON.parse(info);
+            this.updateCoursewareKey(res.key)
+          },
+          'Error': (up, err, errTip) => {
+            util.show(this, 'error', errTip)
+          },
+          'UploadComplete': function() {
+            util.loaded(this)
+          },
+          'Key': function(up, file) {
+            var ext = '.' + file.name.split('.').pop()
+            return util.randomString(6) + ext
           }
-        }) // coursewareUploader
-      }) // api
+        }
+      }) // coursewareUploader
     },
     updateTopic(liveId, op, topicId) {
       util.loading(this)
@@ -376,10 +386,16 @@ export default {
 .edit-view
   .write-container
     background-color #fff
-    padding 10px
+    padding 5px
     border 1px solid rgba(0,0,0,0.15)
     box-shadow 0px 1px 0px rgba(255,255,255,0.15) inset, 0px 1px 2px rgba(0,0,0,0.15)
     -webkit-box-shadow 0px 1px 0px rgba(255,255,255,0.15) inset, 0px 1px 2px rgba(0,0,0,0.15)
+    .cover-cell
+      .cover
+        width 50px
+        float right
+        margin-bottom 10px
+        margin-right 10px
     .row
       margin 10px 0
       &.need-pay-row
