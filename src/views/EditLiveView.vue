@@ -19,6 +19,11 @@
 
           <input-cell type="number" label="直播门票¥" placeholder="请输入门票" :value.sync="amount"></input-cell>
 
+          <input-cell type="datetime-local" label="时间" :value.sync="planTsValue"></input-cell>
+
+        </cells>
+
+        <cells>
           <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon"></switch-cell>
 
           <cell>
@@ -26,38 +31,25 @@
           </cell>
 
           <select-cell :options="topicOptions" :selected.sync="topicSelected"></select-cell>
-
         </cells>
-
-        <cells type="form">
-
-           <input-cell type="text" label="直播标题" placeholder="请输入标题" :value.sync="title"></input-cell>
-
-        </cells>
-
-        <cell>
-
-        </cell>
-
-        <div class="row">
-          <span class="hint">请设定直播时间</span>
-        </div>
 
         <cells>
 
+          <input-cell type="text" label="直播标题" placeholder="请输入标题" :value.sync="title"></input-cell>
+
           <cell>
             <span slot="header">主播介绍</span>
-            <span slot="footer">></span>
+            <span slot="footer">{{titleWord(speakerIntro)}}></span>
           </cell>
 
           <cell>
             <span slot="header">直播详情</span>
-            <span slot="footer">></span>
+            <span slot="footer">{{titleWord(detail)}}></span>
           </cell>
 
           <cell>
             <span slot="header">房间公告(可选)</span>
-            <span slot="footer">></span>
+            <span slot="footer">{{titleWord(notice)}}></span>
           </cell>
 
         </cells>
@@ -123,14 +115,12 @@ export default {
   data() {
     return {
       live: {},
-      content: '',
+      detail: '',
       title: '',
       user: {},
       amount: 0,
-      myDate: {},
       coverUrl: '',
       coursewareUrl: '',
-      previewUrl: '',
       liveId: 0,
       speakerIntro: '',
       needPay: false,
@@ -139,8 +129,7 @@ export default {
       topics: [],
       topicSelected: 0,
       bucketUrl: '',
-      dateValue: '',
-      datetimeValue: '',
+      planTsValue: '',
       uptoken: {}
     }
   },
@@ -184,11 +173,10 @@ export default {
       this.live = live
       this.title = live.subject
       this.amount = live.amount / 100
-      this.content = live.detail
-      this.myDate = new Date(live.planTs)
+      this.detail = live.detail
+      this.planTsValue = moment(live.planTs).format('YYYY-MM-DDTHH:mm')
       this.coverUrl = live.coverUrl
       this.coursewareUrl = live.coursewareUrl
-      this.previewUrl = live.previewUrl
       this.speakerIntro = live.speakerIntro
       if (live.needPay) {
         this.needPay = true
@@ -213,16 +201,14 @@ export default {
       if (this.amount) {
         data.amount = this.amount * 100
       }
-      if (this.myDate) {
-        data.planTs = moment(this.myDate).format('YYYY-MM-DD HH:mm')
+      if (this.planTsValue) {
+        data.planTs = moment(this.planTsValue).format('YYYY-MM-DD HH:mm:ss')
       }
-      debug('type myDate:%j', typeof this.myDate)
-      debug('myDate:%j', data.planTs)
       if (this.speakerIntro) {
         data.speakerIntro = this.speakerIntro
       }
-      if (this.content) {
-        data.detail = this.content
+      if (this.detail) {
+        data.detail = this.detail
       }
       if (this.needPay) {
         data.needPay = 1
@@ -243,21 +229,29 @@ export default {
       if (this.coursewareUrl) {
         data.coursewareUrl = this.coursewareUrl
       }
-      this.saveLiveData(data)
+      return this.saveLiveData(data)
     },
     saveLiveData(data) {
-      util.loading(this)
-      api.post(this, 'lives/' + this.live.liveId, data).then((res) => {
-        util.loaded(this)
-        util.show(this, 'success', '保存成功')
-      }, util.promiseErrorFn(this))
+      return new Promise(
+        (resolve, reject) => {
+          util.loading(this)
+          api.post(this, 'lives/' + this.live.liveId, data).then((res) => {
+            util.loaded(this)
+            resolve()
+            util.show(this, 'success', '保存成功')
+          }, util.promiseErrorFn(this))
+        }
+      )
     },
     publishLive() {
-      util.loading(this)
-      api.get(this, 'lives/' + this.live.liveId + '/submitReview').then((res) => {
-        util.loaded(this)
-        util.show(this, 'success', '提交审核成功')
-      }, util.promiseErrorFn(this))
+      this.saveLive()
+       .then(() => {
+         util.loading(this)
+         api.get(this, 'lives/' + this.live.liveId + '/submitReview').then((res) => {
+           util.loaded(this)
+           util.show(this, 'success', '提交审核成功')
+         }, util.promiseErrorFn(this))
+       })
     },
     updateCover(url) {
       this.coverUrl = url
@@ -385,7 +379,14 @@ export default {
       }).then((res) => {
         util.loaded(this)
       }, util.promiseErrorFn(this))
-     }
+    },
+    titleWord(str) {
+      if (str && str.length > 0) {
+        return str.length + '字'
+      } else {
+        return '未填写'
+      }
+    }    
   } // methods
 }
 
