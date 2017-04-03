@@ -37,7 +37,7 @@
 
     </div>
 
-    <div class="attend-summary-section card-group">
+    <div class="attend-summary-section card-group" @click="goUsers">
       <div class="attend-info">
         <ul class="attended-users">
           <li class="avatar-cell" v-for="u in attendedUsers">
@@ -45,13 +45,13 @@
           </li>
         </ul>
 
-        <div class="attend-summary" @click="goUsers">
+        <div class="attend-summary">
           {{live.attendanceCount}}人已参与 >
         </div>
       </div>
     </div>
 
-    <div class="invite-summary-section card-group">
+    <div class="invite-summary-section card-group" @click="goInvite">
       <div class="attend-info">
         <ul class="attended-users">
           <li class="avatar-cell" v-for="u in invites">
@@ -59,7 +59,7 @@
           </li>
         </ul>
 
-        <div class="attend-summary invite" @click="goInvite">
+        <div class="attend-summary invite">
           邀请榜>
         </div>
 
