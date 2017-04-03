@@ -269,10 +269,9 @@ export default {
       this.coursewareUrl = this.bucketUrl + '/' + key
       this.saveLiveData({coursewareKey: key})
     },
-    initQiniu(uptokenData) {
+    initCoverUploader(uptokenData) {
       var uptoken = uptokenData.uptoken
       var bucketUrl = uptokenData.bucketUrl
-      this.bucketUrl = bucketUrl
       var key = uptokenData.key
       var uploader = Qiniu.uploader({
         runtimes: 'html5,flash,html4',    //上传模式,依次退化
@@ -320,6 +319,12 @@ export default {
             }
         }
       })
+    },
+    initCourseUploader(uptokenData) {
+      var uptoken = uptokenData.uptoken
+      var bucketUrl = uptokenData.bucketUrl
+      this.bucketUrl = bucketUrl
+      var key = uptokenData.key
       var coursewareUploader = Qiniu.uploader({
         runtimes: 'html5,flash,html4',    //上传模式,依次退化
         browse_button: 'pick-courseware',       //上传选择的点选按钮，**必需**
@@ -366,6 +371,10 @@ export default {
           }
         }
       }) // coursewareUploader
+    },
+    initQiniu(uptokenData) {
+      this.initCoverUploader(uptokenData)
+      this.initCourseUploader(uptokenData)
     },
     updateTopic(liveId, op, topicId) {
       util.loading(this)
