@@ -17,7 +17,9 @@ var config = {
   resolve: {
     alias: {
       jquery: path.join(__dirname, './node_modules/jquery'),
-      mediaelement: path.join(__dirname, './node_modules/mediaelement')
+      mediaelement: path.join(__dirname, './node_modules/mediaelement'),
+      moxie: path.join(__dirname, 'plupload/js/moxie.js'),
+      plupload: path.join(__dirname, 'plupload/js/plupload.dev.js')
     }
   },
   module: {
@@ -32,7 +34,7 @@ var config = {
         test: /\.js$/,
         // excluding some local linked packages.
         // for normal use cases only node_modules is needed.
-        exclude: /node_modules|vue\/dist|vue-router\/|vue-loader\/|vue-hot-reload-api\//,
+        exclude: /node_modules|vue\/dist|vue-router\/|vue-loader\/|vue-hot-reload-api\/|plupload/,
         loader: 'babel'
       },
       { test: /\.css$/,
@@ -52,6 +54,10 @@ var config = {
       {
         test: /\.json$/,
         loader: 'json-loader'
+      },
+      {
+        test: /plupload\/js\/moxie\.js/,
+        loader: 'exports?this.mOxie'
       }
     ]
   },
@@ -60,6 +66,9 @@ var config = {
     plugins: ['transform-runtime']
   },
   plugins: [
+    new webpack.ProvidePlugin({
+          mOxie: 'moxie'
+    }),
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery"

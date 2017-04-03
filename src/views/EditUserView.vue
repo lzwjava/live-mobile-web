@@ -1,13 +1,13 @@
 <template>
 
-  <div class="edit-user-view">
+  <div class="edit-user-view" id="upload-container">
 
     <div class="edit-section">
       <span class="edit-title">
         头像
       </span>
 
-      <span class="edit-right" @click="editAvatar">
+      <span class="edit-right" id="pickfiles">
         <user-avatar class="edit-avatar" :user="curUser"></user-avatar>
       </span>
 
@@ -44,6 +44,10 @@ import UserAvatar from '../components/user-avatar.vue'
 import Overlay from '../components/overlay.vue'
 import InputTextForm from '../components/InputTextForm.vue'
 
+require('moxie')
+require('plupload') // use for Qiniu js sdk
+import Qiniu from 'qiniu-js-sdk'
+
 var debug = debugFn('EditUserView')
 
 export default {
@@ -66,7 +70,7 @@ export default {
       Promise.all([
         wechat.configWeixin(this)
       ]).then((values) => {
-
+        this.initQiniu()
       }, util.promiseErrorFn(this))
     }
   },
@@ -99,7 +103,63 @@ export default {
     },
     editUsername() {
       this.overlayStatus = true
-    }
+    },
+    initQiniu() {
+      api.get(this, 'files/uptoken').then((res) => {
+        var result = res
+        var uptoken = result.uptoken
+        var bucketUrl = result.bucketUrl
+        this.bucketUrl = bucketUrl
+        var key =result.key
+        var uploader = Qiniu.uploader({
+          runtimes: 'html5,flash,html4',    //上传模式,依次退化
+          browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
+          uptoken_url: 'useless',
+          uptoken: uptoken,
+          domain: bucketUrl,
+          flash_swf_url: 'js/plupload/Moxie.swf',
+          unique_names: false,
+          save_key: false,
+          get_new_uptoken: false,           //设置上传文件的时候是否每次都重新获取新的token
+          max_file_size: '500kb',           //最大文件体积限制
+          max_retries: 3,                   //上传失败最大重试次数
+          dragdrop: false,                  //开启可拖曳上传
+          drop_element: 'upload-container',  //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
+          chunk_size: '4mb',                //分块上传时，每片的体积
+          auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传,
+          filters: {
+            mime_types : [
+              {title : "Image files", extensions: "jpg,png,jpeg"}    //限制文件格式
+            ]
+          },
+          init: {
+              'FilesAdded': (up, files) => {
+              },
+              'BeforeUpload': (up, file) => {
+                util.loading(this)
+              },
+              'UploadProgress': (up, file) => {
+              },
+              'FileUploaded': (up, file, info) => {
+                var res = JSON.parse(info)
+                var sourceLink = bucketUrl + '/' + res.key
+                this.updateUser({
+                  avatarUrl: sourceLink
+                })
+              },
+              'Error': (up, err, errTip) => {
+                util.show(this, 'error', errTip)
+              },
+              'UploadComplete': () => {
+                util.loaded(this)
+              },
+              'Key': (up, file) => {
+                  return util.randomString(6)
+              }
+          }
+        })
+      }) // api
+    } // initQiniu
   },
   events: {
     'updateCurUser': function () {
