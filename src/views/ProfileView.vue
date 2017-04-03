@@ -20,6 +20,12 @@
       </div>
 
       <div class="menu-section">
+        <div class="menu-item" @click="goRoom">
+          我的直播间
+        </div>
+      </div>
+
+      <div class="menu-section">
         <div class="menu-item" @click="goAccount">
           账户
         </div>
@@ -86,6 +92,9 @@ export default {
     },
     goUpdateUserInfo() {
       this.$router.go('/editUser')
+    },
+    goRoom() {
+      this.$router.go('/room/' + this.curUser.userId)
     }
   },
   created() {

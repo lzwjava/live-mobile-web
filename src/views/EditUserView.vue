@@ -89,18 +89,6 @@ export default {
          util.show(this, 'success', '更新成功')
        }, util.promiseErrorFn(this))
     },
-    editAvatar() {
-      if (!util.isWeixinBrowser()) {
-        util.show(this, 'warn', '仅支持在微信浏览器中更改头像')
-      } else {
-        wechat.chooseAndUploadImage(this)
-         .then((data) => {
-           this.updateUser({
-             avatarUrl: data.url
-           })
-         }, util.promiseErrorFn(this))
-      }
-    },
     editUsername() {
       this.overlayStatus = true
     },
