@@ -17,11 +17,11 @@
     <div class="tab-area">
 
       <div class="tab-item" @click="showAttend" v-bind:class="{active: curTab == 0}">
-        参与的直播
+        参与的直播({{attendLives.length}})
       </div>
 
       <div class="tab-item" @click="showCreate" v-bind:class="{active: curTab == 1}">
-        创建的直播
+        创建的直播({{createLives.length}})
       </div>
 
     </div>

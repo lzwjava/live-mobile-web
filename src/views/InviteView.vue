@@ -16,7 +16,7 @@
 
     <ul class="invite-list">
 
-      <li v-for="(n, i) in invites">
+      <li v-for="(n, i) in invites" @click="goUserRoom(i.userId)">
         <user-avatar :user="i"></user-avatar>
         <div class="right-panel">
           <div class="name">{{n+1}}.{{i.username}}</div>
@@ -149,6 +149,9 @@ export default {
     },
     goAccount() {
       this.$router.go('/account')
+    },
+    goUserRoom(userId) {
+      this.$router.go('/room/' + userId)
     }
   },
   events: {

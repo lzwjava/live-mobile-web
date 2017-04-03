@@ -60,7 +60,7 @@
 
           <div class="bubble-msg" v-if="msg.type !=2 ">
 
-            <span class="name">{{msg.attributes.username}}</span>
+            <span class="name" @click="goUserRoom(msg.from)">{{msg.attributes.username}}</span>
 
             <div class="content">
               <div class="bubble">
@@ -764,6 +764,10 @@ export default {
     },
     showIntroTab() {
       this.$router.go('/intro/' + this.live.liveId)
+    },
+    goUserRoom(userId) {
+      debug('goUserRoom: %j', userId)
+      this.$router.go('/room/' + userId)
     }
   },
   events: {

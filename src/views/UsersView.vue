@@ -6,7 +6,7 @@
         已有 {{live.attendanceCount}} 人参与直播
       </li>
 
-      <li v-for="u in attendUsers">
+      <li v-for="u in attendUsers" @click="goUserRoom(u.userId)">
         <user-avatar :user="u"></user-avatar>
         <span class="name">{{u.username}}</span>
       </li>
@@ -81,6 +81,9 @@ export default {
           this.haveMore = false
         }
       })
+    },
+    goUserRoom(userId) {
+      this.$router.go('/room/' + userId)
     }
   },
   events: {

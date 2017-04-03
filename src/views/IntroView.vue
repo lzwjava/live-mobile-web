@@ -15,7 +15,7 @@
 
       <div class="header-right">
         <div class="subject">{{live.subject}}</div>
-        <div class="ownername">{{live.owner.username}}</div>
+        <div class="ownername" @click="goUserRoom(live.owner.userId)">{{live.owner.username}}</div>
       </div>
 
       <div class="time-section">
@@ -509,6 +509,9 @@ export default {
     },
     goInvite() {
       this.$router.go('/live/' + this.liveId + '/invites')
+    },
+    goUserRoom(userId) {
+      this.$router.go('/room/' + userId)
     }
   },
   events:  {
