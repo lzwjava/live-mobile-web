@@ -191,15 +191,12 @@
     margin-top 15px
     margin-bottom 15px
   .markdown-actions
-    position absolute
-    top -1px
-    right 0
     opacity 0.6
     line-height 10px
     #image-upload-container
       display inline
       #image-btn
-        margin-right 20px
+        margin-right 0px
     a
       color #666
       font-size 16px

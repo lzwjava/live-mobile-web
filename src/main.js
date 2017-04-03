@@ -28,11 +28,15 @@ import EditLiveView from './views/EditLiveView.vue'
 import filters from './common/filter'
 import util from './common/util'
 import wechat from './common/wechat'
+// import iView from 'iview'
+// import 'iview/dist/styles/iview.css'
 
 const debug = require('debug')('main')
 
 // install router
 Vue.use(Router)
+
+// Vue.use(iView)
 
 // register filters globally
 for(let  k in filters) {

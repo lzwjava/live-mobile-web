@@ -1,77 +1,68 @@
 <template>
   <div class="edit-view">
 
-    <div class="write-container">
-        <div class="row" id="upload-container">
-          <span class="hint">请上传封面(最佳尺寸 750x500)</span>
-          <button class="upload-btn" id="pickfiles">本地上传</button>
-          <div v-if="coverUrl">
-            <img class="cover" :src="coverUrl"/>
-          </div>
-        </div>
+    <div class="write-container" >
 
-        <div class="row need-pay-row">
-          <span class="hint">是否需要付费</span>
-          <input type="checkbox" v-model="needPay" name="needPay" value="0">
-        </div>
+        <cell id="upload-container">
+          <span id="pickfiles" slot="header">设置头图(600*348)</span>
+          <span slot="footer">></span>
+          <img v-if="coverUrl" class="cover" :src="coverUrl"/>
+        </cell>
 
-        <div class="row need-pay-row">
-          <span class="hint">分享是否显示封面(默认头像)</span>
-          <input type="checkbox" v-model="shareIcon" name="shareIcon" value="0">
-        </div>
+        <cells type="form">
 
-        <div class="row">
-          <span class="hint">请设定直播门票</span>
-          <input type="number" v-model="amount" class="input-amount"> <span class="suffix">¥<span>
-        </div>
+          <switch-cell name="switch" label="是否需要付费" :on.sync="needPay"></switch-cell>
 
-        <div class="row">
-          <span class="hint">请设定直播分类</span>
-          <select-cell :options="topicOptions" :selected.sync="topicSelected"></select-cell>
-        </div>
+          <input-cell type="number" label="直播门票¥" placeholder="请输入门票" :value.sync="amount"></input-cell>
 
-        <div class="row">
-          <span class="hint">请输入直播标题</span>
-          <input type="text" v-model="title" class="input-title">
-        </div>
+        </cells>
+
+        <cells type="form">
+           <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon"></switch-cell>
+
+           <input-cell type="text" label="直播标题" placeholder="请输入标题" :value.sync="title"></input-cell>
+
+           <cell-header>请设定直播分类</cell-header>
+           <select-cell :options="topicOptions" :selected.sync="topicSelected"></select-cell>
+        </cells>
+
+        <cell>
+
+        </cell>
 
         <div class="row">
           <span class="hint">请设定直播时间</span>
-          <div>
-            <v-date-picker :date-result.sync="myDate"></v-date-picker>
-          </div>
         </div>
 
-        <div class="row">
-          <span class="hint">请输入简介来让观众了解您(50字以上即可)</span>
-          <div class="intro-area">
-            <textarea class="form-field form-content" v-model="speakerIntro"></textarea>
-          </div>
-        </div>
 
-        <div class="row">
-          <span class="hint">请输入直播介绍</span>
-          <div class="edit-area">
-              <markdown-area class="form-field form-content" :content.sync="content" placeholder="" required></markdown-area>
-              <p class="tip">支持 Markdown</p>
-          </div>
-        </div>
+        <cells>
 
-        <div class="row">
-          <span class="hint">请输入房间公告(可无)</span>
-          <div class="notice-area">
-              <markdown-area class="form-field form-content" :content.sync="notice" placeholder=""></markdown-area>
-              <p class="tip">支持 Markdown</p>
-          </div>
-        </div>
+          <cell>
+            <span slot="header">主播介绍</span>
+            <span slot="footer">></span>
+          </cell>
 
-        <div class="row" id="upload-container-course">
-          <span class="hint">请上传课件(可选，支持后缀格式ppt,pptx,pdf,sketch,key,zip)</span>
+          <cell>
+            <span slot="header">直播详情</span>
+            <span slot="footer">></span>
+          </cell>
+
+          <cell>
+            <span slot="header">房间公告(可无)</span>
+            <span slot="footer">></span>
+          </cell>
+
+        </cells>
+
+
+        <cells id="upload-container-course">
+          <cell-header class="hint">请上传课件(可选，支持格式ppt,pptx,pdf,key,zip)</cell-header>
           <button class="upload-btn" id="pick-courseware">本地上传</button>
           <div v-if="coursewareUrl">
             <a :href="coursewareUrl">课件地址：{{ coursewareUrl }}</a>
           </div>
-        </div>
+
+        </cells>
 
         <div class="row row-action">
           <button class="btn btn-blue" @click="saveLive">保存</button>
@@ -90,7 +81,9 @@ import VDatePicker from '../components/date_picker.vue'
 import Loading from '../components/loading.vue'
 import util from '../common/util'
 import api from '../common/api'
-import {Toast, SelectCell, Cells} from 'vue-weui'
+import {Toast, SelectCell, Cells, SwitchCell, InputCell, CellBody, Cell,CellHeader, CellFooter} from 'vue-weui'
+import moment from 'moment-timezone'
+moment.locale('zh-cn')
 
 require('moxie')
 require('plupload')
@@ -105,7 +98,14 @@ export default {
     'user-avatar': UserAvatar,
     'v-date-picker': VDatePicker,
     'loading': Loading,
-    SelectCell
+    SelectCell,
+    SwitchCell,
+    InputCell,
+    Cells,
+    Cell,
+    CellBody,
+    CellFooter,
+    CellHeader
   },
   data() {
     return {
@@ -114,18 +114,20 @@ export default {
       title: '',
       user: {},
       amount: 0,
-      myDate: '',
+      myDate: {},
       coverUrl: '',
       coursewareUrl: '',
       previewUrl: '',
       liveId: 0,
       speakerIntro: '',
-      needPay: 0,
-      shareIcon: 0,
+      needPay: false,
+      shareIcon: false,
       notice: '',
       topics: [],
       topicSelected: 0,
-      bucketUrl: ''
+      bucketUrl: '',
+      dateValue: '',
+      datetimeValue: ''
     }
   },
   computed: {
@@ -153,13 +155,13 @@ export default {
         var live = values[0]
         this.topics = values[1]
         this.setLive(live)
+        this.initQiniu()
       }, util.promiseErrorFn(this))
     }
   },
   created() {
   },
   ready() {
-    this.initQiniu()
   },
   methods: {
     setLive(live) {
@@ -167,13 +169,21 @@ export default {
       this.title = live.subject
       this.amount = live.amount / 100
       this.content = live.detail
-      this.myDate = live.planTs
+      this.myDate = new Date(live.planTs)
       this.coverUrl = live.coverUrl
       this.coursewareUrl = live.coursewareUrl
       this.previewUrl = live.previewUrl
       this.speakerIntro = live.speakerIntro
-      this.needPay = live.needPay
-      this.shareIcon = live.shareIcon
+      if (live.needPay) {
+        this.needPay = true
+      } else {
+        this.needPay = false
+      }
+      if (live.shareIcon) {
+        this.shareIcon = true
+      } else {
+        this.shareIcon = false
+      }
       this.notice = live.notice
       if (live.topic) {
         this.topicSelected = live.topic.topicId
@@ -188,8 +198,10 @@ export default {
         data.amount = this.amount * 100
       }
       if (this.myDate) {
-        data.planTs = this.myDate
+        data.planTs = moment(this.myDate).format('YYYY-MM-DD HH:mm')
       }
+      debug('type myDate:%j', typeof this.myDate)
+      debug('myDate:%j', data.planTs)
       if (this.speakerIntro) {
         data.speakerIntro = this.speakerIntro
       }
@@ -206,7 +218,6 @@ export default {
       } else {
         data.shareIcon = 0
       }
-
       if (this.topicSelected == 0) {
         this.updateTopic(this.liveId, 'del')
       } else {
@@ -317,7 +328,7 @@ export default {
           chunk_size: '4mb',                //分块上传时，每片的体积
           filters: {
             mime_types : [
-              {title : "Courseware Files", extensions: "ppt,pptx,pdf,sketch,key,zip"}    //限制文件格式
+              {title : "Courseware Files", extensions: "ppt,pptx,pdf,key,zip"}    //限制文件格式
             ]
           },
           auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传,
@@ -363,7 +374,6 @@ export default {
 <style lang="stylus">
 
 .edit-view
-  justify-content center
   .write-container
     background-color #fff
     padding 10px
@@ -394,21 +404,8 @@ export default {
         text-indent 10px
         &:focus
           border 1px solid #1CB2EF
-      .input-url
-        width 300px
-      .input-amount
-        width 80px
-      .input-title
-        width 300px
-    .row-action
-        text-align center
-        button
-          width 150px
     .intro-area
-      width 95%
       textarea
-        width 100%
-        height 60px
         margin-top 5px
         font-size 16px
         border 1px solid rgba(40,47,49,0.3)
@@ -417,20 +414,14 @@ export default {
         &:focus
           border 1px solid #1CB2EF
     .edit-area
-      width 95%
       textarea
-        width 100%
-        height 200px
         margin-top 5px
       p.tip
         color rgba(40,47,49,.6)
         font-size 13px
         margin 8px 0px
     .notice-area
-        width 95%
         textarea
-            width 100%
-            height 60px
             margin-top 5px
         p.tip
           color rgba(40,47,49,.6)
@@ -438,7 +429,6 @@ export default {
           margin 8px 0px
     #upload-container
       img
-        width 200px
         margin-top 10px
     .status
       border 1px solid #1CB2EF

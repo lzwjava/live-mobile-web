@@ -52,6 +52,7 @@
     "highlight.js": "^9.6.0",
     "inherit": "^2.2.6",
     "iphone-inline-video": "^1.9.3",
+    "iview": "^1.0.2",
     "jquery": "^3.1.0",
     "json-loader": "^0.5.4",
     "leancloud-realtime": "^3.2.3",
