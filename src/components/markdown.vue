@@ -51,7 +51,6 @@ export default {
             if (!this.content) {
               return '';
             }
-            debug('showMore:%j', this.showAll)
             if (!this.showAll && this.content.length > 100) {
               var partContent = '';
               for (var i = 0; i < 100; i++) {

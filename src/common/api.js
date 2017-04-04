@@ -1,5 +1,7 @@
 var debug = require('debug')('api')
 
+import util from './util'
+
 var callback = {
   success: function (resolve,reject) {
     return function (resp) {
@@ -94,6 +96,19 @@ var fetchOneUser = function (comp, userId) {
   return get(comp, 'users/' + userId)
 }
 
+var saveLiveData = function (comp, liveId, data) {
+  return new Promise(
+    (resolve, reject) => {
+      util.loading(comp)
+      post(comp, 'lives/' + liveId, data).then((res) => {
+        util.loaded(comp)
+        resolve()
+        util.show(comp, 'success', '保存成功')
+      }, util.promiseErrorFn(comp))
+    }
+  )
+}
+
 exports.fetchLive = fetchLive
 exports.fetchVideos = fetchVideos
 exports.fetchUsers = fetchUsers
@@ -103,3 +118,4 @@ exports.fetchCurUserNoError = fetchCurUserNoError
 exports.fetchOneUser = fetchOneUser
 exports.post = post
 exports.get = get
+exports.saveLiveData = saveLiveData

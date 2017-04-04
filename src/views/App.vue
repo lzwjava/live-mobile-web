@@ -124,6 +124,10 @@ export default {
     'updateCurUser': function () {
       debug('event updateCurUser')
       this.$broadcast('updateCurUser')
+    },
+    'saveLive': function(type, content) {
+      debug('saveLiveDetail in app: %j', content)
+      this.$broadcast('saveLive', type, content)
     }
   }
 }

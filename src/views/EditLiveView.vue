@@ -37,17 +37,17 @@
 
           <input-cell type="text" label="直播标题" placeholder="请输入标题" :value.sync="title"></input-cell>
 
-          <cell>
+          <cell @click="goSpeakerIntro">
             <span slot="header">主播介绍</span>
             <span slot="footer">{{titleWord(speakerIntro)}}></span>
           </cell>
 
-          <cell>
+          <cell @click="goDetail">
             <span slot="header">直播详情</span>
             <span slot="footer">{{titleWord(detail)}}></span>
           </cell>
 
-          <cell>
+          <cell @click="goNotice">
             <span slot="header">房间公告(可选)</span>
             <span slot="footer">{{titleWord(notice)}}></span>
           </cell>
@@ -146,8 +146,11 @@ export default {
   },
   route: {
     data({to}) {
-      var query = this.$route.params
-      this.liveId = query.liveId
+      var liveId = to.params.liveId
+      if (liveId == this.liveId) {
+        return
+      }
+      this.liveId = liveId
 
       util.loading(this)
       Promise.all([
@@ -232,16 +235,7 @@ export default {
       return this.saveLiveData(data)
     },
     saveLiveData(data) {
-      return new Promise(
-        (resolve, reject) => {
-          util.loading(this)
-          api.post(this, 'lives/' + this.live.liveId, data).then((res) => {
-            util.loaded(this)
-            resolve()
-            util.show(this, 'success', '保存成功')
-          }, util.promiseErrorFn(this))
-        }
-      )
+      return api.saveLiveData(this, this.live.liveId, data)
     },
     publishLive() {
       this.saveLive()
@@ -386,8 +380,28 @@ export default {
       } else {
         return '未填写'
       }
+    },
+    goSpeakerIntro() {
+      this.$router.go('/editDetail/' + this.liveId + '/0')
+    },
+    goDetail() {
+      this.$router.go('/editDetail/' + this.liveId + '/1')
+    },
+    goNotice() {
+      this.$router.go('/editDetail/' + this.liveId + '/2')
     }
-  } // methods
+  }, // methods
+  events: {
+    'saveLive': function (type, content) {
+      if (type == 0) {
+        this.speakerIntro = content
+      } else if (type == 1) {
+        this.detail = content
+      } else if (type == 2) {
+        this.notice = content
+      }      
+    }
+  }
 }
 
 </script>
@@ -408,6 +422,7 @@ export default {
         margin-right 10px
     .row-action
       display flex
+      margin-bottom 20px
       button
         flex 1
         margin 0 10px
