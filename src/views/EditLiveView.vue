@@ -207,12 +207,6 @@ export default {
       if (this.planTsValue) {
         data.planTs = moment(this.planTsValue).format('YYYY-MM-DD HH:mm:ss')
       }
-      if (this.speakerIntro) {
-        data.speakerIntro = this.speakerIntro
-      }
-      if (this.detail) {
-        data.detail = this.detail
-      }
       if (this.needPay) {
         data.needPay = 1
       } else {
@@ -228,7 +222,6 @@ export default {
       } else {
         this.updateTopic(this.liveId, 'add', this.topicSelected)
       }
-      data.notice = this.notice
       if (this.coursewareUrl) {
         data.coursewareUrl = this.coursewareUrl
       }
@@ -399,7 +392,7 @@ export default {
         this.detail = content
       } else if (type == 2) {
         this.notice = content
-      }      
+      }
     }
   }
 }

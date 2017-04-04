@@ -144,6 +144,7 @@ export default {
   position relative
   width 100%
   min-height 100%
+  background-color #e7e7e7
   +above(700px)
     margin 0 auto
     max-width 700px
