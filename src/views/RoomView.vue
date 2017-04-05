@@ -8,7 +8,7 @@
 
         <img class="room-avatar" :src="user.avatarUrl"/>
 
-        <span class="room-name">{{user.username}}的直播间</span>
+        <div class="room-name">{{user.username}}的直播间</div>
 
       </div>
 
@@ -129,7 +129,9 @@ export default {
       margin-bottom 20px
     .room-name
       margin-left 10px
+      display inline-block
       vertical-align top
+      padding-top 20px
       color #fff
   .tab-area
     display flex
