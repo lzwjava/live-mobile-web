@@ -6,7 +6,7 @@
         <cells id="upload-container">
 
           <cell class="cover-cell"  id="pickfiles">
-            <span  slot="header">设置头图(600*348)</span>
+            <span class="item-title" slot="header">设置头图(600*348)</span>
             <img slot="body" v-if="coverUrl" class="cover" :src="coverUrl"/>
             <span slot="footer">></span>
           </cell>
@@ -27,7 +27,7 @@
           <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon"></switch-cell>
 
           <cell>
-            <span slot="header">设定直播分类</span>
+            <span class="item-title" slot="header">设定直播分类</span>
           </cell>
 
           <select-cell :options="topicOptions" :selected.sync="topicSelected"></select-cell>
@@ -38,17 +38,17 @@
           <input-cell type="text" label="直播标题" placeholder="请输入标题" :value.sync="title"></input-cell>
 
           <cell @click="goSpeakerIntro">
-            <span slot="header">主播介绍</span>
+            <span class="item-title" slot="header">主播介绍</span>
             <span slot="footer">{{titleWord(speakerIntro)}}></span>
           </cell>
 
           <cell @click="goDetail">
-            <span slot="header">直播详情</span>
+            <span class="item-title" slot="header">直播详情</span>
             <span slot="footer">{{titleWord(detail)}}></span>
           </cell>
 
           <cell @click="goNotice">
-            <span slot="header">房间公告(可选)</span>
+            <span class="item-title" slot="header">房间公告(可选)</span>
             <span slot="footer">{{titleWord(notice)}}></span>
           </cell>
 
@@ -58,7 +58,7 @@
         <cells id="upload-container-course">
 
           <cell id="pick-courseware">
-            <span slot="header">上传课件(可选)</span>
+            <span class="item-title" slot="header">上传课件(可选)</span>
             <span slot="footer">></span>
           </cell>
 
@@ -408,6 +408,14 @@ export default {
     border 1px solid rgba(0,0,0,0.15)
     box-shadow 0px 1px 0px rgba(255,255,255,0.15) inset, 0px 1px 2px rgba(0,0,0,0.15)
     -webkit-box-shadow 0px 1px 0px rgba(255,255,255,0.15) inset, 0px 1px 2px rgba(0,0,0,0.15)
+    .weui_cell_switch
+      .weui_cell_primary
+        color #555555
+    .weui_cell_hd
+      .weui_label
+        color #555555
+    .item-title
+      color #555555
     .cover-cell
       .cover
         width 50px

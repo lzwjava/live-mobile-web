@@ -140,6 +140,7 @@
                   'FilesAdded': (up, files) => {
                   },
                   'BeforeUpload': (up, file) => {
+                    util.loading(this)
                   },
                   'UploadProgress': (up, file) => {
                   },
@@ -152,13 +153,14 @@
                     util.show(this, 'error', errTip)
                   },
                   'UploadComplete': () => {
+                    util.loaded(this)
                   },
                   'Key': (up, file) => {
                       return util.randomString(6)
                   }
               }
           })
-        }, util.httpErrorFn(this))
+        }, util.promiseErrorFn(this))
       }
     }
   }
