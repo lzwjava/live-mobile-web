@@ -71,6 +71,8 @@ export default {
   methods: {
     loginOrRegister(liveId) {
         if (util.isWeixinBrowser()) {
+          window.localStorage.setItem('liveId', liveId)
+          window.localStorage.setItem('type', 'live')
           wechat.oauth2()
         } else {
           this.liveId = liveId

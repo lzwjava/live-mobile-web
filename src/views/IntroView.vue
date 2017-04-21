@@ -375,7 +375,7 @@ export default {
     },
     attendLive () {
       if (!this.curUser.username) {
-        this.$dispatch('loginOrRegister', 0)
+        this.$dispatch('loginOrRegister', this.liveId)
         return
       }
       if (this.curUser.wechatSubscribe == 0) {
