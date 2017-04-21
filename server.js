@@ -17,8 +17,6 @@ var rewriteUrl = function(replacePath) {
         var originalUrl = req.url
         var query = queryIndex >= 0 ? req.url.substr(queryIndex) : "";
         req.url = req.path.replace(opt.path, replacePath) + query;
-        console.log("rewriting ",'originalUrl:', originalUrl,'after url:', req.url,
-        'host:', req.headers.host, 'cookie:', req.headers.cookie);
     };
 };
 

@@ -374,7 +374,8 @@ export default {
       this.overlayStatus = true
     },
     attendLive () {
-      if (!util.checkInSession(this)) {
+      if (!this.curUser.username) {
+        this.$dispatch('loginOrRegister', 0)
         return
       }
       if (this.curUser.wechatSubscribe == 0) {
