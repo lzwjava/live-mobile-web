@@ -388,9 +388,13 @@ export default {
             if (this.live.shareId) {
               this.payOrCreateAttend()
             } else {
-              this.positiveShare = true
-              this.currentView = 'options-form'
-              this.overlayStatus = true
+              if (this.live.needPay) {
+                this.positiveShare = true
+                this.currentView = 'options-form'
+                this.overlayStatus = true
+              } else {
+                this.createAttend()
+              }
             }
           } else {
             this.payOrCreateAttend()
