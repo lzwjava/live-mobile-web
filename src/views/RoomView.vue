@@ -116,14 +116,9 @@ export default {
       this.curTab = 0
     },
     createLive() {
-      try {
-        api.post(this, 'lives/').then((data) => {
-          this.$router.go(`/editLive/${data.liveId}`)
-        })
-      } catch (e) {
-        console.log('Create Live Error')
-      }
-
+      api.post(this, 'lives/').then((data) => {
+        this.$router.go(`/editLive/${data.liveId}`)
+      }).catch(util.promiseErrorFn(this))
     }
   },
   events: {
@@ -158,14 +153,14 @@ export default {
       padding-top 20px
       color #fff
   .createLive
-    width: 100%
+    width 100%
     .createLiveBtn
-      width: 95%
-      background-color: #00bdef
-      color: white
-      border-radius: 5px
-      margin: 3%
-      height: 35px
+      width 95%
+      background-color #00bdef
+      color white
+      border-radius 5px
+      margin 3%
+      height 35px
   .tab-area
     display flex
     height 40px
