@@ -78,8 +78,8 @@ export default {
       if (!util.checkInSession(this)) {
         return
       }
+
       this.curUser = util.curUser()
-      var currentUserId = this.curUser.userId
 
       var userId = to.params.userId
       if (userId == this.userId) {
@@ -116,7 +116,9 @@ export default {
       this.curTab = 0
     },
     createLive() {
+      util.loading(this)
       api.post(this, 'lives/').then((data) => {
+        util.loaded(this)
         this.$router.go(`/editLive/${data.liveId}`)
       }).catch(util.promiseErrorFn(this))
     }
