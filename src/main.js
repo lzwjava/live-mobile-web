@@ -127,9 +127,6 @@ router.map({
   },
   'editDetail/:liveId/:type' : {
     component: EditDetailView
-  },
-  'createLive' : {
-    component: createLive
   }
 })
 
