@@ -157,7 +157,8 @@ export default {
   .createLive
     width 100%
     .createLiveBtn
-      width 95%
+      position relative
+      width 94vw
       background-color #00bdef
       color white
       border-radius 5px
