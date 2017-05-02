@@ -8,10 +8,16 @@
 
         <img class="room-avatar" :src="user.avatarUrl"/>
 
-        <div class="room-name">{{user.username}}的直播间</div>
+        <div class="room-name">{{user.username}} 的直播间</div>
 
       </div>
 
+    </div>
+
+    <div class="createLive" v-if="curUser.userId == userId">
+      <button type="button" name="button" class="createLiveBtn" @click="createLive">
+        <h2>发起直播</h2>
+      </button>
     </div>
 
     <div class="tab-area">
@@ -63,16 +69,24 @@ export default {
       attendLives: [],
       createLives: [],
       curTab: 0,
-      from: ''
+      from: '',
+      curUser: {}
     }
   },
   route: {
     data ({to}) {
+      if (!util.checkInSession(this)) {
+        return
+      }
+      this.curUser = util.curUser()
+      var currentUserId = this.curUser.userId
+
       var userId = to.params.userId
       if (userId == this.userId) {
         return
       }
       this.userId = userId
+
       this.from = to.query.from
       if (this.from == 'profile') {
         this.curTab = 1
@@ -100,6 +114,9 @@ export default {
     },
     showAttend() {
       this.curTab = 0
+    },
+    createLive() {
+      this.$router.go('/createLive')
     }
   },
   events: {
@@ -133,6 +150,15 @@ export default {
       vertical-align top
       padding-top 20px
       color #fff
+  .createLive
+    width: 100%
+    .createLiveBtn
+      width: 95%
+      background-color: #00bdef
+      color: white
+      border-radius: 5px
+      margin: 3%
+      height: 35px
   .tab-area
     display flex
     height 40px
