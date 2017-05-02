@@ -116,7 +116,14 @@ export default {
       this.curTab = 0
     },
     createLive() {
-      this.$router.go('/createLive')
+      try {
+        api.post(this, 'lives/').then((data) => {
+          this.$router.go(`/editLive/${data.liveId}`)
+        })
+      } catch (e) {
+        console.log('Create Live Error')
+      }
+
     }
   },
   events: {
