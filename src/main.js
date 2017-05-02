@@ -25,7 +25,6 @@ import EditUserView from './views/EditUserView.vue'
 import RoomView from './views/RoomView.vue'
 import EditLiveView from './views/EditLiveView.vue'
 import EditDetailView from './views/EditDetailView.vue'
-import createLive from './views/createLive.vue'
 
 import filters from './common/filter'
 import util from './common/util'
