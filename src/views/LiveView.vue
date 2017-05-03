@@ -94,7 +94,7 @@
         <div class="input-ways">
 
           <div class="text-input">
-            <input type="text" v-model="inputMsg">
+            <input type="text" v-model="inputMsg" @keyup.enter="sendMsg">
             <button type="button" class="btn btn-gray" @click="sendMsg">发送</button>
           </div>
         </div>
@@ -892,6 +892,7 @@ export default {
       line-height 35px
       transition all .5s ease
       color $font-gray
+      cursor pointer
       &.active
         color $blue
         border-bottom 1px solid $blue
