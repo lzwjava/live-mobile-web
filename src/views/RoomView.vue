@@ -156,8 +156,11 @@ export default {
       color #fff
   .createLive
     width 100%
+    position relative
     .createLiveBtn
-      width 95%
+      width 94%
+      display block
+      overflow hidden
       background-color #00bdef
       color white
       border-radius 5px
