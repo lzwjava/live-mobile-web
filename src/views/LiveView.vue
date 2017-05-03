@@ -49,6 +49,9 @@
 
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
          v-show="currentTab == 0">
+         <div class="viewers" v-if="viewers">
+           在线：{{viewers}}
+         </div>
 
       <ul class="msg-list" v-el:msg-list>
 
@@ -190,6 +193,7 @@ export default {
       client: {},
       conv: {},
       curUser: {},
+      viewers: '',
       msgs: [],
       inputMsg: '',
       playStatus: 0,   // 0: none, 1: loading 2: play,
@@ -552,12 +556,21 @@ export default {
         }
         this.conv = conv
         this.addSystemMsg('正在加载聊天记录...')
+
         var messageIterator = this.conv.createMessagesIterator({ limit: 100 })
         this.messageIterator = messageIterator
         return messageIterator.next()
       }).then((result)=> {
         if (result.done) {
         }
+        let conversation = this.conv
+        
+        setInterval(function () {
+          conversation.count().then(function(membersCount) {
+            this.viewers = membersCount
+          }.bind(this)).catch(console.error.bind(console));
+        }.bind(this), 3000);
+
         this.msgs = this.msgs.concat(result.value)
         return this.conv.join()
       }).then((conv) => {
@@ -570,6 +583,9 @@ export default {
           var word = '1.恭喜入座！主播%s和您不见不散！\n2.可在上面或公告里扫描微信，邀请您进主播用户群'
           this.addSystemMsg(sprintf(word, this.live.owner.username))
         }
+
+
+
       }).catch(this.handleError)
     },
     logServer() {
@@ -905,6 +921,14 @@ export default {
     right 0
     transition all .5s ease
   .chat-area
+    .viewers
+      position relative
+      color black
+      margin 5px
+      padding 5px
+      float right
+      border-radius 5px
+      z-index 100
     .msg-list
       position absolute
       overflow hidden
