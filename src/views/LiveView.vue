@@ -49,7 +49,7 @@
 
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
          v-show="currentTab == 0">
-         <div class="membersCount" v-if="membersCount">
+         <div class="members-count" v-if="membersCount">
            在线：{{membersCount}}
          </div>
 
@@ -919,7 +919,7 @@ export default {
     right 0
     transition all .5s ease
   .chat-area
-    .membersCount
+    .members-count
       position relative
       color black
       margin 5px
