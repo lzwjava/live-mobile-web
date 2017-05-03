@@ -49,8 +49,8 @@
 
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
          v-show="currentTab == 0">
-         <div class="viewers" v-if="viewers">
-           在线：{{viewers}}
+         <div class="members-count" v-if="membersCount">
+           在线：{{membersCount}}
          </div>
 
       <ul class="msg-list" v-el:msg-list>
@@ -193,7 +193,7 @@ export default {
       client: {},
       conv: {},
       curUser: {},
-      viewers: '',
+      membersCount: '',
       msgs: [],
       inputMsg: '',
       playStatus: 0,   // 0: none, 1: loading 2: play,
@@ -563,13 +563,6 @@ export default {
       }).then((result)=> {
         if (result.done) {
         }
-        let conversation = this.conv
-        
-        setInterval(function () {
-          conversation.count().then(function(membersCount) {
-            this.viewers = membersCount
-          }.bind(this)).catch(console.error.bind(console));
-        }.bind(this), 3000);
 
         this.msgs = this.msgs.concat(result.value)
         return this.conv.join()
@@ -584,8 +577,13 @@ export default {
           this.addSystemMsg(sprintf(word, this.live.owner.username))
         }
 
+        let conversation = this.conv
 
-
+        setInterval(() => {
+          conversation.count().then((membersCount) => {
+            this.membersCount = membersCount
+          }).catch(util.promiseErrorFn(this))
+        }, 3000)
       }).catch(this.handleError)
     },
     logServer() {
@@ -922,7 +920,7 @@ export default {
     right 0
     transition all .5s ease
   .chat-area
-    .viewers
+    .members-count
       position relative
       color black
       margin 5px
