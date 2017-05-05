@@ -131,7 +131,9 @@ export default {
       bucketUrl: '',
       planTsValue: '',
       uptoken: {},
-      uptokenData: {}
+      uptokenData: {},
+      hasGotUptoken: false,
+      hasDomReady: false
     }
   },
   computed: {
@@ -164,14 +166,16 @@ export default {
         this.topics = values[1]
         this.uptoken = values[2]
         this.setLive(live)
-        this.initQiniu(this.uptoken)
+        this.hasGotUptoken = true
+        this.tryInitQiniu()
       }, util.promiseErrorFn(this))
     }
   },
   created() {
   },
   ready() {
-    this.initQiniu(this.uptokenData)
+    this.hasDomReady = true
+    this.tryInitQiniu()
   },
   methods: {
     setLive(live) {
@@ -254,7 +258,6 @@ export default {
       this.saveLiveData({coursewareKey: key})
     },
     initCoverUploader(uptokenData) {
-      this.uptokenData = uptokenData
       var uptoken = uptokenData.uptoken
       var bucketUrl = uptokenData.bucketUrl
       var key = uptokenData.key
@@ -356,6 +359,13 @@ export default {
           }
         }
       }) // coursewareUploader
+    },
+    tryInitQiniu() {
+      if (this.hasDomReady && this.hasGotUptoken) {
+        this.initQiniu(this.uptoken)
+      } else {
+        debug(' ignore tryInitQiniu ')
+      }
     },
     initQiniu(uptokenData) {
       this.initCoverUploader(uptokenData)
