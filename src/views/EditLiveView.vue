@@ -8,7 +8,7 @@
           <cell class="cover-cell"  id="pickfiles">
             <span class="item-title" slot="header">设置头图(600*348)</span>
             <img slot="body" v-if="coverUrl" class="cover" :src="coverUrl"/>
-            <span slot="footer">></span>
+            <span slot="footer"></span>
           </cell>
 
         </cells>
@@ -130,7 +130,8 @@ export default {
       topicSelected: 0,
       bucketUrl: '',
       planTsValue: '',
-      uptoken: {}
+      uptoken: {},
+      uptokenData: {}
     }
   },
   computed: {
@@ -170,6 +171,7 @@ export default {
   created() {
   },
   ready() {
+    this.initQiniu(this.uptokenData)
   },
   methods: {
     setLive(live) {
@@ -252,6 +254,7 @@ export default {
       this.saveLiveData({coursewareKey: key})
     },
     initCoverUploader(uptokenData) {
+      this.uptokenData = uptokenData
       var uptoken = uptokenData.uptoken
       var bucketUrl = uptokenData.bucketUrl
       var key = uptokenData.key
@@ -301,7 +304,9 @@ export default {
             }
         }
       })
+      uploader;      
     },
+
     initCourseUploader(uptokenData) {
       var uptoken = uptokenData.uptoken
       var bucketUrl = uptokenData.bucketUrl
