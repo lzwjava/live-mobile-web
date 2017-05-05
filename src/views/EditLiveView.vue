@@ -131,7 +131,6 @@ export default {
       bucketUrl: '',
       planTsValue: '',
       uptoken: {},
-      uptokenData: {},
       hasGotUptoken: false,
       hasDomReady: false
     }
@@ -363,8 +362,6 @@ export default {
     tryInitQiniu() {
       if (this.hasDomReady && this.hasGotUptoken) {
         this.initQiniu(this.uptoken)
-      } else {
-        debug(' ignore tryInitQiniu ')
       }
     },
     initQiniu(uptokenData) {
