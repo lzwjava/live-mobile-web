@@ -303,10 +303,8 @@ export default {
                 return util.randomString(6)
             }
         }
-      })
-      uploader;      
+      })      
     },
-
     initCourseUploader(uptokenData) {
       var uptoken = uptokenData.uptoken
       var bucketUrl = uptokenData.bucketUrl
