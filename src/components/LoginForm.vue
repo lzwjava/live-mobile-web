@@ -35,9 +35,9 @@ export default {
     initWechatLogin() {
       var redirectUrl
       if (util.isDebug()) {
-        redirectUrl = 'http://quzhiboapp.com/#wechat/webOauthTest'
+        redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauthTest'
       } else {
-        redirectUrl = 'http://quzhiboapp.com/#wechat/webOauth'
+        redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauth'
       }
       var obj = new WxLogin({
         id:'login_container',
