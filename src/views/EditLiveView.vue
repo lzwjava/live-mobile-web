@@ -8,7 +8,7 @@
           <cell class="cover-cell"  id="pickfiles">
             <span class="item-title" slot="header">设置头图(600*348)</span>
             <img slot="body" v-if="coverUrl" class="cover" :src="coverUrl"/>
-            <span slot="footer">></span>
+            <span slot="footer"></span>
           </cell>
 
         </cells>
@@ -130,7 +130,9 @@ export default {
       topicSelected: 0,
       bucketUrl: '',
       planTsValue: '',
-      uptoken: {}
+      uptoken: {},
+      hasGotUptoken: false,
+      hasDomReady: false
     }
   },
   computed: {
@@ -163,13 +165,16 @@ export default {
         this.topics = values[1]
         this.uptoken = values[2]
         this.setLive(live)
-        this.initQiniu(this.uptoken)
+        this.hasGotUptoken = true
+        this.tryInitQiniu()
       }, util.promiseErrorFn(this))
     }
   },
   created() {
   },
   ready() {
+    this.hasDomReady = true
+    this.tryInitQiniu()
   },
   methods: {
     setLive(live) {
@@ -300,7 +305,7 @@ export default {
                 return util.randomString(6)
             }
         }
-      })
+      })      
     },
     initCourseUploader(uptokenData) {
       var uptoken = uptokenData.uptoken
@@ -353,6 +358,11 @@ export default {
           }
         }
       }) // coursewareUploader
+    },
+    tryInitQiniu() {
+      if (this.hasDomReady && this.hasGotUptoken) {
+        this.initQiniu(this.uptoken)
+      }
     },
     initQiniu(uptokenData) {
       this.initCoverUploader(uptokenData)

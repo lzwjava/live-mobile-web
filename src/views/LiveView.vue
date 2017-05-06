@@ -49,6 +49,9 @@
 
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
          v-show="currentTab == 0">
+         <div class="members-count" v-if="membersCount">
+           在线 {{membersCount}}
+         </div>
 
       <ul class="msg-list" v-el:msg-list>
 
@@ -94,7 +97,7 @@
         <div class="input-ways">
 
           <div class="text-input">
-            <input type="text" v-model="inputMsg">
+            <input type="text" v-model="inputMsg" @keyup.enter="sendMsg">
             <button type="button" class="btn btn-gray" @click="sendMsg">发送</button>
           </div>
         </div>
@@ -190,6 +193,7 @@ export default {
       client: {},
       conv: {},
       curUser: {},
+      membersCount: '',
       msgs: [],
       inputMsg: '',
       playStatus: 0,   // 0: none, 1: loading 2: play,
@@ -552,12 +556,14 @@ export default {
         }
         this.conv = conv
         this.addSystemMsg('正在加载聊天记录...')
+
         var messageIterator = this.conv.createMessagesIterator({ limit: 100 })
         this.messageIterator = messageIterator
         return messageIterator.next()
       }).then((result)=> {
         if (result.done) {
         }
+
         this.msgs = this.msgs.concat(result.value)
         return this.conv.join()
       }).then((conv) => {
@@ -570,6 +576,14 @@ export default {
           var word = '1.恭喜入座！主播%s和您不见不散！\n2.可在上面或公告里扫描微信，邀请您进主播用户群'
           this.addSystemMsg(sprintf(word, this.live.owner.username))
         }
+
+        let conversation = this.conv
+
+        setInterval(() => {
+          conversation.count().then((membersCount) => {
+            this.membersCount = membersCount
+          }).catch(util.promiseErrorFn(this))
+        }, 3000)
       }).catch(this.handleError)
     },
     logServer() {
@@ -892,6 +906,7 @@ export default {
       line-height 35px
       transition all .5s ease
       color $font-gray
+      cursor pointer
       &.active
         color $blue
         border-bottom 1px solid $blue
@@ -905,6 +920,14 @@ export default {
     right 0
     transition all .5s ease
   .chat-area
+    .members-count
+      position relative
+      color gray
+      margin 5px
+      padding 5px
+      float right
+      border-radius 5px
+      z-index 100
     .msg-list
       position absolute
       overflow hidden
