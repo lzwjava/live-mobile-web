@@ -454,6 +454,7 @@ export default {
           util.loaded(this)
           return wechat.wxPay(data)
         }).then(() => {
+          util.loaded(this)
           this.payFinishAndIntoLive()
           }, (error) => {
             if (error && error.indexOf('失败') != -1) {
