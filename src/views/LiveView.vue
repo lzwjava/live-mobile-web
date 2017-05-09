@@ -7,9 +7,10 @@
         <img class="qrcode" :src="live.liveQrcodeUrl" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
-        <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
-           controls webkit-playsinline
-           playsinline :src="videoSrc" class="video-js vjs-default-skin"></video>
+        <video id="player" width="100%" :style="{height: videoHeight + 'px'}" :src="videoSrc" preload="preload"
+            controls webkit-playsinline
+            playsinline :src="videoSrc" class="video-js vjs-default-skin" ></video>
+
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
           <div class="video-center">
@@ -117,8 +118,10 @@
   </div>
 </template>
 
+
 <script type="text/javascript">
 
+import Hls from 'hls.js'
 import util from '../common/util'
 import http from '../common/api'
 import wechat from '../common/wechat'
@@ -139,7 +142,7 @@ var TextMessage = lcChat.TextMessage
 var messageType = lcChat.messageType
 var TypedMessage = lcChat.TypedMessage
 
-var inherit = require('inherit');
+var inherit = require('inherit');//const or var???
 export const WxAudioMessage = inherit(TypedMessage)
 
 var WxAudioType = 1
@@ -215,8 +218,9 @@ export default {
       rewardAmount: 0,
       hasCallReady: false,
       hasGotLive: false,
-      useVideoJs: false,
-      player: null
+      useHjsJs: false,
+      player: null,
+      hlsBlobVideo: '',
     }
   },
   computed: {
@@ -239,15 +243,18 @@ export default {
       }
     },
     videoSrc() {
+      //如果获得hls转码blob地址，将此地址赋予src
+      if (this.hlsBlobVideo){
+        debug("hlsBlobVideo",this.hlsBlobVideo)
+        return this.hlsBlobVideo
+      }
+
       if (!this.live.liveId) {
         return ''
       }
+
       if (this.live.status == 20) {
-        if (util.isWeixinBrowser() || util.isSafari()) {
-          return this.live.hlsUrls[this.hlsSelected]
-        } else {
-          return this.live.flvUrl
-        }
+        return this.live.hlsUrls[this.hlsSelected]
       } else if (this.live.status == 30) {
         var video = this.videos[this.videoSelected]
         if (video.type == 'mp4') {
@@ -310,7 +317,7 @@ export default {
     debug('detached')
     this.endLiveView()
     this.endInterval()
-    if (this.useVideoJs) {
+    if (this.useHjsJs) {
       if (this.player != null) {
         this.player.pause()
         this.playStatus = 0
@@ -318,6 +325,14 @@ export default {
     }
   },
   ready() {
+    // var a="sss"
+    // debug("1%s",a)
+    //
+    //
+    // debug("====this.videoSrc "+this.videoSrc())
+    // this.hlsBlobVideo = this.videoSrc()
+    // debug("=====hlsBlobVideo %j", this.hlsBlobVideo)
+
     var playerArea = this.$els.playerArea
     this.videoHeight =  Math.ceil(playerArea.offsetWidth * 0.625)
     debug('videoHeight: %j', this.videoHeight)
@@ -372,7 +387,12 @@ export default {
         this.live = values[0]
         this.videos = values[1]
 
-        // this.live.status = 20
+
+        if(this.live.liveId==491)
+          this.live.status = 20
+        else {
+          debug(this.live)
+        }
 
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
@@ -606,15 +626,32 @@ export default {
         debug('ignore tryPlayLiveOrVideo')
       }
     },
-    playLiveOrVideo () {
-      if (this.live.status < 20) {
-        return
+    hlsPlay(src, player){
+      //this fuction:hlsjs init and play
+      if(Hls.isSupported()) {
+        this.useHjsJs = true
+        this.player = player
+        var hls = new Hls()
+        hls.loadSource(src)
+        hls.attachMedia(player)
+        this.hlsBlobVideo = player.src
+        debug("so the player.src",player.src)
+        hls.on(Hls.Events.MANIFEST_PARSED,function() {
+          player.play();
+      });
+      this.playStatus = 1
+      setTimeout(() => {
+        this.playStatus = 2
+        }, 1000)
       }
-      debug('playLiveOrVideo')
-
+    },
+    playLiveOrVideo () {
+      debug(this.live.status)
+      if (this.live.status < 20)
+        return
       this.logServer()
       if (util.isWeixinBrowser() || util.isSafari()) {
-        var video = document.querySelector('video')
+        let video = document.querySelector('video')
         video.addEventListener('error', (ev) => {
           debug('event')
           debug(ev)
@@ -622,51 +659,24 @@ export default {
             util.show(this, 'error', '加载出错，请刷新重试')
           }
         })
-        this.useVideoJs = false
+        this.useHjsJs = false
       } else {
-        // Chrome or another
-        var player
-        debug('use videojs')
-        if (this.live.status == 20) {
-          this.useVideoJs = true
-          player = videojs('player1', {
-           		techOrder: ['html5', 'flash'],
-           		autoplay: true,
-           		sources: [
-                 {
-                   type: "video/x-flv",
-                   src: this.live.flvUrl
-                 }
-               ]
-           	})
-            player.play()
-            this.playStatus = 1
-            setTimeout(() => {
-              this.playStatus = 2
-            }, 1000)
-            this.player = player
-        } else if (this.live.status == 30) {
-          var video = this.videos[this.videoSelected]
-          if (video.type == 'mp4') {
-            this.useVideoJs = false
-          } else if (video.type == 'm3u8') {
-            this.useVideoJs = true
-            player = videojs('player1')
-            player.src({
-              src: video.m3u8Url,
-              type: 'application/x-mpegURL',
-              withCredentials: false
-            })
-            player.play()
-            this.playStatus = 1
-            setTimeout(() => {
-              this.playStatus = 2
-            }, 1000)
-            this.player = player
+        let player = document.getElementById('player')
+        if (this.live.status == 20) {//play the this.live
+            this.hlsPlay(this.live.hlsUrl, player)
+            debug("player(<video>)", player)
+          }
+        else if(this.live.status == 30){//playback this.videos
+          debug("linshi", player)
+          let video = this.videos[this.videoSelected]
+          if (video.type == 'mp4')
+            this.useHjsJs = false
+          else if (video.type == 'm3u8'){
+            this.hlsPlay(video.m3u8Url, player)
+            }
           }
         }
-      }
-    },
+      },
     canPlayClick() {
       this.playStatus = 1
       var video = document.querySelector('video')
