@@ -7,9 +7,9 @@
         <img class="qrcode" :src="live.liveQrcodeUrl" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
-      <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
-            controls webkit-playsinline
-            playsinline  class="video-js vjs-default-skin" v-el:video></video>
+        <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
+           controls webkit-playsinline
+           playsinline :src="videoSrc" class="video-js vjs-default-skin"></video>
 
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
@@ -132,7 +132,6 @@ import Markdown from '../components/markdown.vue'
 import SubscribeForm from '../components/SubscribeForm.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
 import {sprintf} from 'sprintf-js'
-import Hls from "hls.js"
 
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
@@ -141,7 +140,7 @@ var TextMessage = lcChat.TextMessage
 var messageType = lcChat.messageType
 var TypedMessage = lcChat.TypedMessage
 
-var inherit = require('inherit')
+var inherit = require('inherit');
 export const WxAudioMessage = inherit(TypedMessage)
 
 var WxAudioType = 1
@@ -217,8 +216,8 @@ export default {
       rewardAmount: 0,
       hasCallReady: false,
       hasGotLive: false,
-      useHjsJs: false,
-      player: null,
+      useVideoJs: false,
+      player: null
     }
   },
   computed: {
@@ -239,6 +238,30 @@ export default {
       } else {
         return 0
       }
+    },
+    videoSrc() {
+      if (!this.live.liveId) {
+        return ''
+      }
+      if (this.live.status == 20) {
+        if (util.isWeixinBrowser() || util.isSafari()) {
+          return this.live.hlsUrls[this.hlsSelected]
+        } else {
+          return this.live.hlsUrls
+        }
+      } else if (this.live.status == 30) {
+        var video = this.videos[this.videoSelected]
+        if (video.type == 'mp4') {
+          return video.url
+        } else if (video.type == 'm3u8') {
+          if (util.isWeixinBrowser() || util.isSafari()) {
+            return video.m3u8Url
+          } else {
+            return ''
+          }
+        }
+      }
+      return this.live.hlsUrls[this.hlsSelected]
     },
     liveHost() {
       if (!this.videoSrc) {
@@ -282,13 +305,13 @@ export default {
     debug('updated')
   },
   attached() {
-    debug("attached")
+    debug('attached')
   },
   detached() {
     debug('detached')
     this.endLiveView()
     this.endInterval()
-    if (this.useHjsJs) {
+    if (this.useVideoJs) {
       if (this.player != null) {
         this.player.pause()
         this.playStatus = 0
@@ -349,12 +372,17 @@ export default {
 
         this.live = values[0]
         this.videos = values[1]
+
         // this.live.status = 20
-        if( this.live.liveId == 491 ){
+        if(this.live.liveId == 491){
+          debug("这是491")
           this.live.status = 20
         }
+        else {
+          debug("这不是491")
+          //debug(this.live)
+        }
 
-        this.setPlayerSrc()
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
           return
@@ -580,55 +608,6 @@ export default {
         }
       }
     },
-    setPlayerSrc(){
-      // debug("setPlayerSrc")
-      let player = this.$els.video
-      let url= this.live.hlsUrls[this.hlsSelected]
-      if (!this.live.liveId) {
-        url = ''
-      }
-      if (this.live.status == 20) {
-          url = this.live.hlsUrls[this.hlsSelected]
-      } else if (this.live.status == 30) {
-        var video = this.videos[this.videoSelected]
-        if (video.type == 'mp4') {
-          url = video.url
-        }
-        else if (video.type == 'm3u8') {
-          if (util.isWeixinBrowser() || util.isSafari()) {
-            url = video.m3u8Url
-          } else {
-            url = ''
-          }
-        }
-      }
-        player.src = url
-    },
-
-    hlsPlay(url){
-      //hlsjs init and play
-      let player = this.$els.video
-      if(Hls.isSupported()) {
-        debug("hls is supported!")
-        this.useHjsJs = true
-        this.player = player
-        var hls = new Hls()
-        debug(url)
-        hls.loadSource(url)
-        hls.attachMedia(player)
-        debug("blob",player.src)
-        hls.on(Hls.Events.MANIFEST_PARSED,function() {
-          player.play();
-      });
-      this.playStatus = 1
-      setTimeout(() => {
-        this.playStatus = 2
-        }, 1000)
-      }
-      else{
-        util.show(this,"error","不支持hls，请切换浏览器")
-      }
-    },
     tryPlayLiveOrVideo() {
       if (this.hasGotLive && this.hasCallReady) {
         this.playLiveOrVideo()
@@ -637,12 +616,14 @@ export default {
       }
     },
     playLiveOrVideo () {
-      //debug("playLiveOrVideo")
-      if (this.live.status < 20)
+      if (this.live.status < 20) {
         return
+      }
+      debug('playLiveOrVideo')
+
       this.logServer()
       if (util.isWeixinBrowser() || util.isSafari()) {
-        let video = document.querySelector('video')
+        var video = document.querySelector('video')
         video.addEventListener('error', (ev) => {
           debug('event')
           debug(ev)
@@ -650,22 +631,51 @@ export default {
             util.show(this, 'error', '加载出错，请刷新重试')
           }
         })
-        this.useHjsJs = false
-      } else {//chrome
-        if (this.live.status == 20) {//play the this.live
-            this.hlsPlay(this.live.hlsUrl, "player1")
-          }
-        else if(this.live.status == 30) {//playback this.videos
-          let video = this.videos[this.videoSelected]
-          if (video.type == 'mp4'){
-            this.useHjsJs = false
-          }
-          else if (video.type == 'm3u8'){
-            this.hlsPlay(video.m3u8Url, player)
-            }
+        this.useVideoJs = false
+      } else {
+        // Chrome or another
+        var player
+        debug('use videojs')
+        if (this.live.status == 20) {
+          this.useVideoJs = true
+          player = videojs('player1', {
+           		techOrder: ['html5', 'flash'],
+           		autoplay: true,
+           		sources: [
+                 {
+                   type: "video/x-flv",
+                   src: this.live.flvUrl
+                 }
+               ]
+           	})
+            player.play()
+            this.playStatus = 1
+            setTimeout(() => {
+              this.playStatus = 2
+            }, 1000)
+            this.player = player
+        } else if (this.live.status == 30) {
+          var video = this.videos[this.videoSelected]
+          if (video.type == 'mp4') {
+            this.useVideoJs = false
+          } else if (video.type == 'm3u8') {
+            this.useVideoJs = true
+            player = videojs('player1')
+            player.src({
+              src: video.m3u8Url,
+              type: 'application/x-mpegURL',
+              withCredentials: false
+            })
+            player.play()
+            this.playStatus = 1
+            setTimeout(() => {
+              this.playStatus = 2
+            }, 1000)
+            this.player = player
           }
         }
-      },
+      }
+    },
     canPlayClick() {
       this.playStatus = 1
       var video = document.querySelector('video')

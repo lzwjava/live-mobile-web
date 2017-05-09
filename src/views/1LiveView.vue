@@ -7,9 +7,21 @@
         <img class="qrcode" :src="live.liveQrcodeUrl" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
-      <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
+
+         <!-- <video id="video-player"   preload="preload"
+                controls webkit-playsinline
+                playsinline :src="videoSrc" class="video-js vjs-default-skin" v-if=" videoType == 'mp4' " ></video>
+
+         <video id="hls-player" width="100%" :style="{height: videoHeight + 'px'}"  preload="preload" v-else src="{{hlsBlobVideo}}" ></video> -->
+
+
+         <video width="100%" :style="{height: videoHeight + 'px'}" v-if="videoType == 'm3u8'" id="videoPlayer"></video>
+         <video src="{{videoUrl}}" autoplay width="100%" :style="{height: videoHeight + 'px'}" v-else="videoType == 'mp4'"></video>
+
+<!--
+        <video id="player" width="100%" :style="{height: videoHeight + 'px'}" :src="videoSrc" preload="preload"
             controls webkit-playsinline
-            playsinline  class="video-js vjs-default-skin" v-el:video></video>
+            playsinline :src="videoSrc" class="video-js vjs-default-skin" ></video> -->
 
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
@@ -51,7 +63,7 @@
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
          v-show="currentTab == 0">
          <div class="members-count" v-if="membersCount">
-           在线 {{membersCount}}
+           在线：{{membersCount}}
          </div>
 
       <ul class="msg-list" v-el:msg-list>
@@ -118,8 +130,10 @@
   </div>
 </template>
 
+
 <script type="text/javascript">
 
+import Hls from 'hls.js'
 import util from '../common/util'
 import http from '../common/api'
 import wechat from '../common/wechat'
@@ -132,7 +146,6 @@ import Markdown from '../components/markdown.vue'
 import SubscribeForm from '../components/SubscribeForm.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
 import {sprintf} from 'sprintf-js'
-import Hls from "hls.js"
 
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
@@ -141,7 +154,7 @@ var TextMessage = lcChat.TextMessage
 var messageType = lcChat.messageType
 var TypedMessage = lcChat.TypedMessage
 
-var inherit = require('inherit')
+var inherit = require('inherit');//const or var???
 export const WxAudioMessage = inherit(TypedMessage)
 
 var WxAudioType = 1
@@ -219,6 +232,9 @@ export default {
       hasGotLive: false,
       useHjsJs: false,
       player: null,
+      hlsBlobVideo: '',
+      videoType: '',
+      videoUrl: ''
     }
   },
   computed: {
@@ -239,6 +255,47 @@ export default {
       } else {
         return 0
       }
+    },
+    videoSrc() {
+      debug("videoSrc")
+      console.log('Live object', this.live)
+      //如果获得hls转码blob地址，将此地址赋予src
+      if (this.hlsBlobVideo){
+        debug("hlsBlobVideo",this.hlsBlobVideo)
+        return this.hlsBlobVideo
+      }
+
+      if (!this.live.liveId) {
+        return ''
+      }
+
+      if (this.live.status == 20) {
+        debug('videoSrc m3u8')
+        console.log(this.live)
+        this.videoType = "m3u8"
+        let hls = new Hls()
+        let player = document.getElementById(videoPlayer)
+        let src = this.live.hlsUrl
+        console.log('========================================', src)
+        hls.loadSource(src)
+        hls.attachMedia(player)
+      } else if (this.live.status == 30) {
+        var video = this.videos[this.videoSelected]
+        if (video.type == 'mp4') {
+          debug('videoSrc mp4')
+          this.videoType = "mp4"
+          this.videoSrc = this.live.videoUrl
+        } else if (video.type == 'm3u8') {
+          debug('videoSrc m3u8')
+          this.videoType = "m3u8"
+          if (util.isWeixinBrowser() || util.isSafari()) {
+            return video.m3u8Url
+          } else {
+            return ''
+          }
+        }
+      }
+      return this.live.hlsUrls[this.hlsSelected]
     },
     liveHost() {
       if (!this.videoSrc) {
@@ -282,7 +339,19 @@ export default {
     debug('updated')
   },
   attached() {
-    debug("attached")
+    debug('attached')
+    //videoSrc()
+    //debug(this.live.liveId)
+    debug(this.videoType)
+    if(this.videoType == "m3u8")
+      debug("this is m3u8")
+
+
+    let video = document.querySelector('video')
+    debug(video)
+    debug(video.src)
+    debug(this.videoSrc)
+
   },
   detached() {
     debug('detached')
@@ -296,6 +365,7 @@ export default {
     }
   },
   ready() {
+    debug("ready")
     var playerArea = this.$els.playerArea
     this.videoHeight =  Math.ceil(playerArea.offsetWidth * 0.625)
     debug('videoHeight: %j', this.videoHeight)
@@ -349,12 +419,14 @@ export default {
 
         this.live = values[0]
         this.videos = values[1]
-        // this.live.status = 20
-        if( this.live.liveId == 491 ){
+
+
+        if(this.live.liveId==491)
           this.live.status = 20
+        else {
+          debug(this.live)
         }
 
-        this.setPlayerSrc()
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
           return
@@ -580,43 +652,26 @@ export default {
         }
       }
     },
-    setPlayerSrc(){
-      // debug("setPlayerSrc")
-      let player = this.$els.video
-      let url= this.live.hlsUrls[this.hlsSelected]
-      if (!this.live.liveId) {
-        url = ''
+    tryPlayLiveOrVideo() {
+      if (this.hasGotLive && this.hasCallReady) {
+        this.playLiveOrVideo()
+      } else {
+        debug('ignore tryPlayLiveOrVideo')
       }
-      if (this.live.status == 20) {
-          url = this.live.hlsUrls[this.hlsSelected]
-      } else if (this.live.status == 30) {
-        var video = this.videos[this.videoSelected]
-        if (video.type == 'mp4') {
-          url = video.url
-        }
-        else if (video.type == 'm3u8') {
-          if (util.isWeixinBrowser() || util.isSafari()) {
-            url = video.m3u8Url
-          } else {
-            url = ''
-          }
-        }
-      }
-        player.src = url
     },
-
-    hlsPlay(url){
-      //hlsjs init and play
-      let player = this.$els.video
+    hlsPlay(src, playerId){
+      let player =  document.getElementById(playerId)
+      debug('hlsPlay')
+      //this fuction:hlsjs init and play
       if(Hls.isSupported()) {
-        debug("hls is supported!")
+        debug("hls is support")
         this.useHjsJs = true
         this.player = player
         var hls = new Hls()
-        debug(url)
-        hls.loadSource(url)
+        hls.loadSource(src)
         hls.attachMedia(player)
-        debug("blob",player.src)
+        this.hlsBlobVideo = player.src
+        debug("so the player.src",player.src)
         hls.on(Hls.Events.MANIFEST_PARSED,function() {
           player.play();
       });
@@ -625,19 +680,10 @@ export default {
         this.playStatus = 2
         }, 1000)
       }
-      else{
-        util.show(this,"error","不支持hls，请切换浏览器")
-      }
-    },
-    tryPlayLiveOrVideo() {
-      if (this.hasGotLive && this.hasCallReady) {
-        this.playLiveOrVideo()
-      } else {
-        debug('ignore tryPlayLiveOrVideo')
-      }
     },
     playLiveOrVideo () {
-      //debug("playLiveOrVideo")
+      debug("playLiveOrVideo")
+      //debug(this.live.status)
       if (this.live.status < 20)
         return
       this.logServer()
@@ -650,18 +696,28 @@ export default {
             util.show(this, 'error', '加载出错，请刷新重试')
           }
         })
+        debug(" chrome/20/player/(<video>)", video)
+        debug(video.src)
         this.useHjsJs = false
       } else {//chrome
+        //let player = document.getElementById('player')
         if (this.live.status == 20) {//play the this.live
-            this.hlsPlay(this.live.hlsUrl, "player1")
+            let player = document.getElementById('hls-player')
+            this.hlsPlay(this.live.hlsUrl, "hls-player")
+            debug(" chrome/20/player/(<video>)", player)
           }
-        else if(this.live.status == 30) {//playback this.videos
+        else if(this.live.status == 30){//playback this.videos
+          debug(" chrome/30/player")
           let video = this.videos[this.videoSelected]
           if (video.type == 'mp4'){
+            let player = document.getElementById('video-player')
+            debug(" chrome/30/mp4/player(<video>)", player)
             this.useHjsJs = false
           }
           else if (video.type == 'm3u8'){
-            this.hlsPlay(video.m3u8Url, player)
+            let player = document.getElementById('hls-player')
+            this.hlsPlay(video.m3u8Url, hls-player)
+            debug(" chrome/30/m3u8/player(<video>)", player)
             }
           }
         }
@@ -921,7 +977,7 @@ export default {
   .chat-area
     .members-count
       position relative
-      color gray
+      color black
       margin 5px
       padding 5px
       float right
