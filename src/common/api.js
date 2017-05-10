@@ -34,7 +34,8 @@ var get = function(comp, url, params) {
   debug('http GET %j', url)
   return new Promise(
     function(resolve, reject) {
-      comp.$http.get(url, params)
+      let addHeader = addHttpHeader()
+      comp.$http.get(url, params, addHeader)
       .then(callback.success(resolve, reject),
             callback.failure(reject))
     }
@@ -45,11 +46,21 @@ var post = function (comp, url, params) {
   debug('http POST %j', url)
   return new Promise(
     function(resolve, reject) {
-      comp.$http.post(url, params)
+      let addHeader = addHttpHeader()
+      comp.$http.post(url, params, addHeader)
       .then(callback.success(resolve, reject),
             callback.failure(reject))
     }
   )
+}
+
+var addHttpHeader = function() {
+  let curUser = util.curUser()
+  if (curUser) {
+    return { headers: { 'X-Session': curUser.sessionToken } }
+  } else {
+    return null
+  }
 }
 
 var fetchLive = function(comp, liveId) {
