@@ -49,7 +49,7 @@
 
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
          v-show="currentTab == 0">
-         <div class="members-count" v-if="membersCount">
+         <div class="members-count" v-show="membersCount">
            在线 {{membersCount}}
          </div>
 
@@ -578,12 +578,15 @@ export default {
         }
 
         let conversation = this.conv
-
         setInterval(() => {
           conversation.count().then((membersCount) => {
-            this.membersCount = membersCount
-          }).catch(util.promiseErrorFn(this))
-        }, 3000)
+            if(membersCount * 3 >= this.live.attendanceCount) {
+              this.membersCount = this.live.attendanceCount
+            } else {
+              this.membersCount = membersCount * 3
+            }
+          }).catch()
+        }, 5000)
       }).catch(this.handleError)
     },
     logServer() {
