@@ -218,6 +218,7 @@ export default {
       hasCallReady: false,
       hasGotLive: false,
       useHjsJs: false,
+      m3u8Url:"",
       player: null,
     }
   },
@@ -283,6 +284,10 @@ export default {
   },
   attached() {
     debug("attached")
+    if (this.useHjsJs) {
+      debug("attached m3u8", this.m3u8Url)
+      this.hlsPlay(this.m3u8Url)
+    }
   },
   detached() {
     debug('detached')
@@ -293,6 +298,7 @@ export default {
         this.player.pause()
         this.playStatus = 0
       }
+
     }
   },
   ready() {
@@ -589,6 +595,7 @@ export default {
       }
       if (this.live.status == 20) {
           url = this.live.hlsUrls[this.hlsSelected]
+          this.m3u8Url=url
       } else if (this.live.status == 30) {
         var video = this.videos[this.videoSelected]
         if (video.type == 'mp4') {
@@ -596,7 +603,8 @@ export default {
         }
         else if (video.type == 'm3u8') {
           if (util.isWeixinBrowser() || util.isSafari()) {
-            url = video.m3u8Url
+            this.m3u8Url=video.m3u8Url
+            this.m3u8Url=url
           } else {
             url = ''
           }
@@ -613,10 +621,9 @@ export default {
         this.useHjsJs = true
         this.player = player
         var hls = new Hls()
-        debug(url)
         hls.loadSource(url)
         hls.attachMedia(player)
-        debug("blob",player.src)
+        debug("player.src",player.src)
         hls.on(Hls.Events.MANIFEST_PARSED,function() {
           player.play();
       });
