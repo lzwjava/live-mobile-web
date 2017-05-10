@@ -1,121 +1,121 @@
 <template>
-  <div class="live-view">
-    <div class="player-area" v-el:player-area :style="{height: videoHeight + 'px'}">
-      <div class="video-wait video-common" v-show="live.status == 10">
-        <p class="big-title">离直播开始还有{{timeDuration}}</p>
-        <p class="small-title">开播时您将收到一条微信通知</p>
-        <img class="qrcode" :src="live.liveQrcodeUrl" alt="">
-      </div>
-      <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
-      <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
-            controls webkit-playsinline
-            playsinline  class="video-js vjs-default-skin" v-el:video></video>
 
-        <div class="video-poster-cover" v-show="playStatus != 2">
-          <img :src="live.coverUrl" width="100%" height="100%"/>
-          <div class="video-center">
-            <img class="loading-img" v-show="playStatus == 1" src="../img/video-circle.png">
-            <div class="canplay" v-show="playStatus == 0" @click="canPlayClick"></div>
-          </div>
+<div class="live-view">
+    <div class="player-area" v-el:player-area :style="{height: videoHeight + 'px'}">
+        <div class="video-wait video-common" v-show="live.status == 10">
+            <p class="big-title">离直播开始还有{{timeDuration}}</p>
+            <p class="small-title">开播时您将收到一条微信通知</p>
+            <img class="qrcode" :src="live.liveQrcodeUrl" alt="">
         </div>
-      </div>
-      <div class="video-error video-common" v-show="live.status == 35">
-        <p class="big-title">直播发生了些小故障<br>请到公告栏查看</p>
-      </div>
+        <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
+            <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload" controls webkit-playsinline playsinline class="video-js vjs-default-skin" v-el:video></video>
+
+            <div class="video-poster-cover" v-show="playStatus != 2">
+                <img :src="live.coverUrl" width="100%" height="100%" />
+                <div class="video-center">
+                    <img class="loading-img" v-show="playStatus == 1" src="../img/video-circle.png">
+                    <div class="canplay" v-show="playStatus == 0" @click="canPlayClick"></div>
+                </div>
+            </div>
+        </div>
+        <div class="video-error video-common" v-show="live.status == 35">
+            <p class="big-title">直播发生了些小故障
+                <br>请到公告栏查看</p>
+        </div>
     </div>
 
     <div class="playlist-area" :style="{top:videoHeight + 'px'}" v-if="videos.length > 1">
-      <cells type="split">
-        <select-cell :options="videoOptions" :selected.sync="videoSelected"></select-cell>
-      </cells>
+        <cells type="split">
+            <select-cell :options="videoOptions" :selected.sync="videoSelected"></select-cell>
+        </cells>
     </div>
 
     <div class="tab-area">
-      <div class="intro-tab tab-item" @click="showIntroTab">
-        简介
-      </div>
-      <div class="chat-tab tab-item" @click="showChatTab" v-bind:class="{active: currentTab == 0}">
-        聊天
-      </div>
-      <div class="notice-tab tab-item" @click="showNoticeTab" v-bind:class="{active: currentTab == 1}">
-        公告
-      </div>
-      <div class="subscribe-tab tab-item" @click="toggleSubscribe">
-        {{subscribeTitle}}
-      </div>
-      <div class="live-tab tab-item" @click="changeLiveUrl">
-        {{changeTitle}}
-      </div>
+        <div class="intro-tab tab-item" @click="showIntroTab">
+            简介
+        </div>
+        <div class="chat-tab tab-item" @click="showChatTab" v-bind:class="{active: currentTab == 0}">
+            聊天
+        </div>
+        <div class="notice-tab tab-item" @click="showNoticeTab" v-bind:class="{active: currentTab == 1}">
+            公告
+        </div>
+        <div class="subscribe-tab tab-item" @click="toggleSubscribe">
+            {{subscribeTitle}}
+        </div>
+        <div class="live-tab tab-item" @click="changeLiveUrl">
+            {{changeTitle}}
+        </div>
     </div>
 
-    <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
-         v-show="currentTab == 0">
-         <div class="members-count" v-if="membersCount">
-           在线 {{membersCount}}
-         </div>
-
-      <ul class="msg-list" v-el:msg-list>
-
-        <li class="msg" v-for="msg in msgs">
-
-          <div class="system-msg" v-if="msg.type == 2 && live.status != 30">
-            <div class="content">{{msg.text}}</div>
-          </div>
-
-          <div class="bubble-msg" v-if="msg.type !=2 ">
-
-            <span class="name" @click="goUserRoom(msg.from)">{{msg.attributes.username}}</span>
-
-            <div class="content">
-              <div class="bubble">
-                <div class="text-content bubble-cont" v-if="msg.type == -1">
-                  <div class="plain">
-                    <pre class="text">{{msg.text}}</pre>
-                  </div>
-                </div>
-                <div class="text-content bubble-cont" v-if="msg.type == 3">
-                  <div class="plain">
-                    <pre class="text reward-text">{{msg.text}}</pre>
-                  </div>
-                </div>
-                <div class="audio-content bubble-cont" v-if="msg.type == 1">
-                  <div class="voice" @click="playVoice(msg.attributes.serverId)">
-                    <i class="voice-gray"> </i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </li>
-
-      </ul>
-
-      <div class="send-area tab-sub-area">
-
-        <a class="packet-btn" @click="showRewardForm"></a>
-
-        <div class="input-ways">
-
-          <div class="text-input">
-            <input type="text" v-model="inputMsg" @keyup.enter="sendMsg">
-            <button type="button" class="btn btn-gray" @click="sendMsg">发送</button>
-          </div>
+    <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}" v-show="currentTab == 0">
+        <div class="members-count" v-if="membersCount">
+            在线：{{membersCount}}
         </div>
 
-      </div>
+        <ul class="msg-list" v-el:msg-list>
+
+            <li class="msg" v-for="msg in msgs">
+
+                <div class="system-msg" v-if="msg.type == 2 && live.status != 30">
+                    <div class="content">{{msg.text}}</div>
+                </div>
+
+                <div class="bubble-msg" v-if="msg.type !=2 ">
+
+                    <span class="name" @click="goUserRoom(msg.from)">{{msg.attributes.username}}</span>
+
+                    <div class="content">
+                        <div class="bubble">
+                            <div class="text-content bubble-cont" v-if="msg.type == -1">
+                                <div class="plain">
+                                    <pre class="text">{{msg.text}}</pre>
+                                </div>
+                            </div>
+                            <div class="text-content bubble-cont" v-if="msg.type == 3">
+                                <div class="plain">
+                                    <pre class="text reward-text">{{msg.text}}</pre>
+                                </div>
+                            </div>
+                            <div class="audio-content bubble-cont" v-if="msg.type == 1">
+                                <div class="voice" @click="playVoice(msg.attributes.serverId)">
+                                    <i class="voice-gray"> </i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </li>
+
+        </ul>
+
+        <div class="send-area tab-sub-area">
+
+            <a class="packet-btn" @click="showRewardForm"></a>
+
+            <div class="input-ways">
+
+                <div class="text-input">
+                    <input type="text" v-model="inputMsg" @keyup.enter="sendMsg">
+                    <button type="button" class="btn btn-gray" @click="sendMsg">发送</button>
+                </div>
+            </div>
+
+        </div>
 
     </div>
 
     <div class="notice-area" v-show="currentTab == 1">
-      <markdown :content="noticeContent"></markdown>
+        <markdown :content="noticeContent"></markdown>
     </div>
 
     <overlay :overlay.sync="overlayStatus">
-      <component :is="currentView" :live="live" :live-id="liveId" type="live" :qrcode-url="qrcodeUrl"></component>
+        <component :is="currentView" :live="live" :live-id="liveId" type="live" :qrcode-url="qrcodeUrl"></component>
     </overlay>
 
-  </div>
+</div>
+
 </template>
 
 <script type="text/javascript">
@@ -125,13 +125,15 @@ import http from '../common/api'
 import wechat from '../common/wechat'
 import Loading from '../components/loading.vue'
 import makeVideoPlayableInline from 'iphone-inline-video'
-import {Toast, SelectCell, Cells} from 'vue-weui'
+import {Toast, SelectCell, Cells}
+from 'vue-weui'
 import RewardForm from '../components/RewardForm.vue'
 import Overlay from '../components/overlay.vue'
 import Markdown from '../components/markdown.vue'
 import SubscribeForm from '../components/SubscribeForm.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
-import {sprintf} from 'sprintf-js'
+import {sprintf}
+from 'sprintf-js'
 import Hls from "hls.js"
 
 var debug = require('debug')('LiveView')
@@ -159,9 +161,9 @@ var prodAppId = 's83aTX5nigX1KYu9fjaBTxIa-gzGzoHsz'
 var testAppId = 'YY3S7uNlnXUgX48BHTJlJx4i-gzGzoHsz'
 
 var realtime = new Realtime({
-  appId: prodAppId,
-  region: 'cn',
-  noBinary: true
+    appId: prodAppId,
+    region: 'cn',
+    noBinary: true
 })
 
 realtime.register(WxAudioMessage)
@@ -174,662 +176,666 @@ window.videojs = videojs
 require('videojs-contrib-hls/dist/videojs-contrib-hls.js')
 
 export default {
-  name: 'LiveView',
-  components: {
-    'loading': Loading,
-    'toast': Toast,
-    SelectCell,
-    Cells,
-    RewardForm,
-    Overlay,
-    'markdown': Markdown,
-    'subscribe-form': SubscribeForm,
-    'qrcode-pay-form': QrcodePayForm
-  },
-  data() {
-    return {
-      liveId: 0,
-      live: {
-        owner: {}
-      },
-      client: {},
-      conv: {},
-      curUser: {},
-      membersCount: '',
-      msgs: [],
-      inputMsg: '',
-      playStatus: 0,   // 0: none, 1: loading 2: play,
-      isRecording: false,
-      videoHeight: 230,
-      inputing: 0,
-      videos: [],
-      messageIterator: null,
-      videoSelected: 0,
-      overlayStatus: false,
-      liveViewId: 0,
-      endIntervalId: 0,
-      currentTab: 0,   // 0: Chat, 1: Notice
-      isSending: false,
-      currentView: '',
-      hlsSelected: 0,
-      qrcodeUrl: '',
-      rewardOrderNo: '',
-      rewardAmount: 0,
-      hasCallReady: false,
-      hasGotLive: false,
-      useHjsJs: false,
-      m3u8Url:"",
-      player: null,
-    }
-  },
-  computed: {
-    timeDuration () {
-      return util.timeDuration(this.live.planTs)
+    name: 'LiveView',
+    components: {
+        'loading': Loading,
+        'toast': Toast,
+        SelectCell,
+        Cells,
+        RewardForm,
+        Overlay,
+        'markdown': Markdown,
+        'subscribe-form': SubscribeForm,
+        'qrcode-pay-form': QrcodePayForm
     },
-    videoOptions() {
-      var options = [];
-      for(var i = 0; i < this.videos.length; i++) {
-        var video = this.videos[i]
-        options.push({text: video.title, value: i})
-      }
-      return options
-    },
-    optionHeight() {
-      if (this.videos.length > 1) {
-        return 50
-      } else {
-        return 0
-      }
-    },
-    liveHost() {
-      if (!this.videoSrc) {
-        return ''
-      }
-      var regex = /http:\/\/(.*).quzhiboapp.com.*/g
-      var match = regex.exec(this.videoSrc)
-      if (match) {
-        return match[1]
-      } else {
-        return ''
-      }
-    },
-    noticeContent() {
-      var coursewareUrl = this.live.coursewareUrl
-      var coursewareMsg = coursewareUrl ? '课件地址：' + coursewareUrl + '\n'  : '主播未上传课件\n\n';
-      return coursewareMsg + this.live.notice + this.defaultNotice
-    },
-    defaultNotice() {
-      return '\n可打开 quzhiboapp.com 在电脑上观看\n\n可长按二维码加微信进用户群和主播聊聊：\n\n' +
-      ' ![wechat_lzw_short.png](http://i.quzhiboapp.com/qzbgroup1.jpg)'
-    },
-    changeTitle() {
-      return '切换线路'
-    },
-    subscribeTitle() {
-      if (this.curUser.liveSubscribe) {
-        return '已关注'
-      } else {
-        return '+关注'
-      }
-    }
-  },
-  created() {
-    debug('created')
-  },
-  destroyed() {
-    debug('destroyed')
-  },
-  updated() {
-    debug('updated')
-  },
-  attached() {
-    debug("attached")
-    if (this.useHjsJs) {
-      debug("attached m3u8", this.m3u8Url)
-      this.hlsPlay(this.m3u8Url)
-    }
-  },
-  detached() {
-    debug('detached')
-    this.endLiveView()
-    this.endInterval()
-    if (this.useHjsJs) {
-      if (this.player != null) {
-        this.player.pause()
-        this.playStatus = 0
-      }
-
-    }
-  },
-  ready() {
-    var playerArea = this.$els.playerArea
-    this.videoHeight =  Math.ceil(playerArea.offsetWidth * 0.625)
-    debug('videoHeight: %j', this.videoHeight)
-    this.hasCallReady = true
-    debug('hasCallReady')
-    setTimeout(() => {
-      // videoHeight 应用上之后才调用 videojs
-      this.tryPlayLiveOrVideo()
-    }, 0)
-  },
-  watch: {
-    videoSelected: function(val, oldVal) {
-      this.canPlayClick()
-    }
-  },
-  route: {
-    data ({to}) {
-      util.initTitle()
-      var liveId = to.params.liveId
-
-      if (liveId == this.liveId) {
-        setTimeout(() => {
-          this.scrollToBottom()
-        }, 500)
-        return
-      }
-
-      this.liveId = liveId
-      if (!this.liveId) {
-        util.show(this, 'error', '缺少参数')
-        return
-      }
-      util.loading(this)
-
-      this.conv = {}
-      this.client = {}
-      this.msgs = []
-      this.playStatus = 0
-
-      if (!util.checkInSession(this)) {
-        return
-      }
-      this.curUser = util.curUser()
-
-      Promise.all([
-        http.fetchLive(this, this.liveId),
-        http.fetchVideos(this, this.liveId),
-        wechat.configWeixin(this)
-      ]).then(values => {
-        util.loaded(this)
-
-        this.live = values[0]
-        this.videos = values[1]
-        // this.live.status = 20
-        if( this.live.liveId == 491 ){
-          this.live.status = 20
+    data() {
+        return {
+            liveId: 0,
+            live: {
+                owner: {}
+            },
+            client: {},
+            conv: {},
+            curUser: {},
+            membersCount: '',
+            msgs: [],
+            inputMsg: '',
+            playStatus: 0, // 0: none, 1: loading 2: play,
+            isRecording: false,
+            videoHeight: 230,
+            inputing: 0,
+            videos: [],
+            messageIterator: null,
+            videoSelected: 0,
+            overlayStatus: false,
+            liveViewId: 0,
+            endIntervalId: 0,
+            currentTab: 0, // 0: Chat, 1: Notice
+            isSending: false,
+            currentView: '',
+            hlsSelected: 0,
+            qrcodeUrl: '',
+            rewardOrderNo: '',
+            rewardAmount: 0,
+            hasCallReady: false,
+            hasGotLive: false,
+            useHjsJs: false,
+            m3u8Url: "",
+            player: null,
         }
-
-        this.setPlayerSrc()
-        if (!this.live.canJoin) {
-          util.show(this, 'error', '请先登录或报名直播')
-          return
-        }
-
-        wechat.showOptionMenu()
-        wechat.shareLive(this, this.live, this.curUser)
-        this.openClient()
-        this.hlsSelected = util.randInt(this.live.hlsUrls.length)
-
-        this.hasGotLive = true
-        this.tryPlayLiveOrVideo()
-
-        this.startLiveView(this.live)
-        this.endInterval()
-
-        this.endIntervalId = setInterval(() => {
-          this.endLiveView()
-        }, 1000 * 30)
-
-      }, util.promiseErrorFn(this))
-    }
-  },
-  methods: {
-    handleError (error) {
-      if (typeof error != 'string') {
-        error = JSON.stringify(error)
-      }
-      util.show(this, 'error', error)
     },
-    addMsg(msg) {
-      var msgList = this.$els.msgList
-      var isTouchBottom = msgList.scrollHeight < msgList.scrollTop + msgList.offsetHeight + 100
-      this.msgs.push(msg)
-      setTimeout(() => {
-        if (isTouchBottom) {
-          this.scrollToBottom()
-        }
-      },0)
-    },
-    scrollToBottom() {
-      var msgList = this.$els.msgList
-      msgList.scrollTop = msgList.scrollHeight
-    },
-    addChatMsg(msg) {
-      this.addMsg(msg)
-    },
-    addAudioMsg(msg) {
-      this.addMsg(msg)
-    },
-    addSystemMsg(msg) {
-      var textMsg = new TextMessage(msg)
-      textMsg.setAttributes({username:'系统'})
-      this.addMsg(textMsg)
-    },
-    sendMsg() {
-      if(!this.inputMsg) {
-        this.handleError('请输入点什么~')
-        return
-      }
-      this.sendTextMsg(this.inputMsg).then((msg) => {
-        if (this.inputMsg.indexOf('卡') != -1) {
-          this.sendTextMsg('我的直播线路是:' + this.liveHost)
-        }
-        this.inputMsg = ''
-      })
-    },
-    sendTextMsg(text) {
-      var textMsg = new TextMessage(text)
-      textMsg.setAttributes({username:this.curUser.username})
-      return this.commonSendMsg(textMsg)
-    },
-    commonSendMsg(msg) {
-      if (this.isSending) {
-        util.show(this, 'error', '请等待上一条消息发送完成');
-        return
-      }
-      this.isSending = true
-      return this.conv.send(msg)
-       .then((message) => {
-          this.isSending = false
-          this.addChatMsg(message)
-          return Promise.resolve(message)
-        }, (error) => {
-          this.isSending = false
-          this.handleError(error)
-        })
-    },
-    sendSystemMsg(text) {
-      var systemMsg = new SystemMessage()
-      systemMsg.setText(text)
-      systemMsg.setAttributes({username:this.curUser.username})
-      this.commonSendMsg(systemMsg)
-    },
-    sendRewardMsg(amount) {
-      var rewardMsg = new RewardMessage()
-      rewardMsg.setText('我打赏了主播' + (amount / 100) + '元')
-      rewardMsg.setAttributes({
-        username:this.curUser.username,
-        amount: amount
-      })
-      this.commonSendMsg(rewardMsg)
-    },
-    playVoice(serverId) {
-      wx.downloadVoice({
-        serverId: serverId,
-        success: function (res) {
-          wx.playVoice({
-            localId: res.localId
-          })
-        },
-        fail: this.handleError
-      });
-    },
-    initScroll() {
-      setTimeout(() => {
-        var msgList = this.$els.msgList
-        msgList.addEventListener('scroll', (e) => {
-          var list = e.srcElement
-          if (list.scrollTop == 0) {
-            debug('top')
-            util.loading(this)
-            this.messageIterator.next().then((result) => {
-              util.loaded(this)
-              if (result.done) {
-                util.show(this, 'warn', '没有更多消息了')
+    computed: {
+        timeDuration() {
+                return util.timeDuration(this.live.planTs)
+            },
+        videoOptions() {
+              var options = [];
+              for (var i = 0; i < this.videos.length; i++) {
+                  var video = this.videos[i]
+                  options.push({
+                      text: video.title,
+                      value: i
+                  })
               }
-              var originHeight = msgList.scrollHeight
-              this.msgs = result.value.concat(this.msgs)
-              setTimeout(() => {
-                var afterHeight = msgList.scrollHeight
-                msgList.scrollTop = afterHeight-originHeight
-              }, 0)
-            }, (error) => {
-              util.loaded(this)
-              util.show(this, 'error', error)
-            })
-          }
-        })
-      }, 0)
-    },
-    registerEvent() {
-      this.client.on('message', (message, conversation) => {
-        if (message.type == TextMessage.TYPE) {
-          this.addChatMsg(message)
-        } else if (message.type == WxAudioType) {
-          this.addAudioMsg(message)
-        } else if (message.type == SystemMessageType){
-          this.addChatMsg(message)
-        } else if (message.type == RewardMessageType) {
-          this.addChatMsg(message)
-        } else {
-          this.addSystemMsg('此消息暂不支持显示')
-        }
-      })
-      this.client.on('reuse', () => {
-        this.addSystemMsg('服务器正在重连...')
-      })
-      this.client.on('error', (error) => {
-        this.addSystemMsg('遇到错误 ' + error)
-      })
-    },
-    openClient() {
-      this.addSystemMsg('正在连接聊天服务器...')
-      realtime.createIMClient(this.curUser.userId + '')
-      .then((client) => {
-        this.client = client
-        this.addSystemMsg('聊天服务器连接成功')
-        this.registerEvent()
-        this.fetchConv()
-      }).catch(this.handleError)
-    },
-    fetchConv() {
-      debug('convid:' + this.live.conversationId)
-      this.client.getConversation(this.live.conversationId)
-      .then((conv) => {
-        if (conv == null) {
-          this.handleError('获取对话失败');
-          return
-        }
-        this.conv = conv
-        this.addSystemMsg('正在加载聊天记录...')
-
-        var messageIterator = this.conv.createMessagesIterator({ limit: 100 })
-        this.messageIterator = messageIterator
-        return messageIterator.next()
-      }).then((result)=> {
-        if (result.done) {
-        }
-
-        this.msgs = this.msgs.concat(result.value)
-        return this.conv.join()
-      }).then((conv) => {
-
-        this.scrollToBottom()
-
-        this.initScroll()
-
-        if (this.live.status != 30) {
-          var word = '1.恭喜入座！主播%s和您不见不散！\n2.可在上面或公告里扫描微信，邀请您进主播用户群'
-          this.addSystemMsg(sprintf(word, this.live.owner.username))
-        }
-
-        let conversation = this.conv
-
-        setInterval(() => {
-          conversation.count().then((membersCount) => {
-            this.membersCount = membersCount
-          }).catch(util.promiseErrorFn(this))
-        }, 3000)
-      }).catch(this.handleError)
-    },
-    logServer() {
-      if (this.live.status >= 20) {
-        var word = '';
-        if (this.live.status == 30) {
-          word = '连接了视频服务器'
-        } else {
-          word = '连接了直播服务器'
-        }
-        if (this.liveHost) {
-          this.addSystemMsg(word + this.liveHost)
-        }
-      }
-    },
-    setPlayerSrc(){
-      // debug("setPlayerSrc")
-      let player = this.$els.video
-      let url= this.live.hlsUrls[this.hlsSelected]
-      if (!this.live.liveId) {
-        url = ''
-      }
-      if (this.live.status == 20) {
-          url = this.live.hlsUrls[this.hlsSelected]
-          this.m3u8Url=url
-      } else if (this.live.status == 30) {
-        var video = this.videos[this.videoSelected]
-        if (video.type == 'mp4') {
-          url = video.url
-        }
-        else if (video.type == 'm3u8') {
-          if (util.isWeixinBrowser() || util.isSafari()) {
-            this.m3u8Url=video.m3u8Url
-            this.m3u8Url=url
-          } else {
-            url = ''
-          }
-        }
-      }
-        player.src = url
-    },
-
-    hlsPlay(url){
-      //hlsjs init and play
-      let player = this.$els.video
-      if(Hls.isSupported()) {
-        debug("hls is supported!")
-        this.useHjsJs = true
-        this.player = player
-        var hls = new Hls()
-        hls.loadSource(url)
-        hls.attachMedia(player)
-        debug("player.src",player.src)
-        hls.on(Hls.Events.MANIFEST_PARSED,function() {
-          player.play();
-      });
-      this.playStatus = 1
-      setTimeout(() => {
-        this.playStatus = 2
-        }, 1000)
-      }
-      else{
-        util.show(this,"error","不支持hls，请切换浏览器")
-      }
-    },
-    tryPlayLiveOrVideo() {
-      if (this.hasGotLive && this.hasCallReady) {
-        this.playLiveOrVideo()
-      } else {
-        debug('ignore tryPlayLiveOrVideo')
-      }
-    },
-    playLiveOrVideo () {
-      //debug("playLiveOrVideo")
-      if (this.live.status < 20)
-        return
-      this.logServer()
-      if (util.isWeixinBrowser() || util.isSafari()) {
-        let video = document.querySelector('video')
-        video.addEventListener('error', (ev) => {
-          debug('event')
-          debug(ev)
-          if (ev.type == 'error') {
-            util.show(this, 'error', '加载出错，请刷新重试')
-          }
-        })
-        this.useHjsJs = false
-      } else {//chrome
-        if (this.live.status == 20) {//play the this.live
-            this.hlsPlay(this.live.hlsUrl, "player1")
-          }
-        else if(this.live.status == 30) {//playback this.videos
-          let video = this.videos[this.videoSelected]
-          if (video.type == 'mp4'){
-            this.useHjsJs = false
-          }
-          else if (video.type == 'm3u8'){
-            this.hlsPlay(video.m3u8Url, player)
+              return options
+          },
+        videoSrc() {
+            if (!this.live.liveId) {
+                return ''
             }
-          }
+            if (this.live.status == 20) {
+              this.m3u8Url = this.live.hlsUrls[this.hlsSelected]
+              return this.live.hlsUrls[this.hlsSelected]
+            } else if (this.live.status == 30) {
+                var video = this.videos[this.videoSelected]
+                if (video.type == 'mp4') {
+                    return video.url
+                } else if (video.type == 'm3u8') {
+                    this.m3u8Url = video.m3u8Url
+                    return video.m3u8Url
+                }
+            }
+            return this.live.hlsUrls[this.hlsSelected]
+        },
+        optionHeight() {
+            if (this.videos.length > 1) {
+                return 50
+            } else {
+                return 0
+            }
+        },
+        liveHost() {
+            if (!this.videoSrc) {
+                return ''
+            }
+            var regex = /http:\/\/(.*).quzhiboapp.com.*/g
+            var match = regex.exec(this.videoSrc)
+            if (match) {
+                return match[1]
+            } else {
+                return ''
+            }
+        },
+        noticeContent() {
+            var coursewareUrl = this.live.coursewareUrl
+            var coursewareMsg = coursewareUrl ? '课件地址：' + coursewareUrl + '\n' : '主播未上传课件\n\n';
+            return coursewareMsg + this.live.notice + this.defaultNotice
+        },
+        defaultNotice() {
+            return '\n可打开 quzhiboapp.com 在电脑上观看\n\n可长按二维码加微信进用户群和主播聊聊：\n\n' +
+                ' ![wechat_lzw_short.png](http://i.quzhiboapp.com/qzbgroup1.jpg)'
+        },
+        changeTitle() {
+            return '切换线路'
+        },
+        subscribeTitle() {
+            if (this.curUser.liveSubscribe) {
+                return '已关注'
+            } else {
+                return '+关注'
+            }
         }
-      },
-    canPlayClick() {
-      this.playStatus = 1
-      var video = document.querySelector('video')
-      video.load()
-      video.play()
-      setTimeout(() => {
-        this.playStatus = 2
-      }, 1000)
     },
-    goComputer() {
-      this.$router.go('/scan?liveId=' + this.live.liveId)
+    created() {
+        debug('created')
     },
-    showRewardForm() {
-      this.currentView = 'reward-form'
-      this.overlayStatus = true
+    destroyed() {
+        debug('destroyed')
     },
-    startLiveView(live) {
-      http.post(this, 'liveViews', {
-        liveId: live.liveId,
-        platform: 'wechat',
-        liveStatus: live.status
-      }).then((data) => {
-        this.liveViewId = data.liveViewId
-      }, util.promiseErrorFn(this))
+    updated() {
+        debug('updated')
     },
-    endLiveView() {
-      if (this.liveViewId != 0) {
-        http.get(this, 'liveViews/' + this.liveViewId + '/end')
-        .then((resp) => {
-        }, (error) => {
-        })
-      }
+    attached() {
+        debug("attached")
+        if (this.useHjsJs) {
+            debug("attached m3u8", this.m3u8Url)
+            this.hlsPlay(this.m3u8Url)
+        }
     },
-    endInterval() {
-      if (this.endIntervalId != 0) {
-        clearInterval(this.endIntervalId)
-        this.endIntervalId =0
-      }
+    detached() {
+        debug('detached')
+        this.endLiveView()
+        this.endInterval()
+        if (this.useHjsJs) {
+            if (this.player != null) {
+                this.player.pause()
+                this.playStatus = 0
+            }
+
+        }
     },
-    showChatTab() {
-      this.currentTab = 0
+    ready() {
+        var playerArea = this.$els.playerArea
+        this.videoHeight = Math.ceil(playerArea.offsetWidth * 0.625)
+        debug('videoHeight: %j', this.videoHeight)
+        this.hasCallReady = true
+        debug('hasCallReady')
+        setTimeout(() => {
+            // videoHeight 应用上之后才调用 videojs
+            this.tryPlayLiveOrVideo()
+        }, 0)
     },
-    showNoticeTab() {
-      this.currentTab = 1
-    },
-    changeLiveUrl() {
-      if (this.live.status == 20) {
-        if (util.isWeixinBrowser() || util.isSafari()) {
-          this.hlsSelected = (this.hlsSelected + 1) % this.live.hlsUrls.length
-          var video = document.querySelector('video')
-          video.pause()
-          setTimeout(() => {
+    watch: {
+        videoSelected: function(val, oldVal) {
             this.canPlayClick()
-            this.logServer()
-          }, 0)
-        } else {
-          window.location.reload()
         }
-      } else {
-        window.location.reload()
-      }
     },
-    showSubscribeForm() {
-      this.currentView = 'subscribe-form'
-      this.overlayStatus = true
+    route: {
+        data({
+            to
+        }) {
+            util.initTitle()
+            var liveId = to.params.liveId
+
+            if (liveId == this.liveId) {
+                setTimeout(() => {
+                    this.scrollToBottom()
+                }, 500)
+                return
+            }
+
+            this.liveId = liveId
+            if (!this.liveId) {
+                util.show(this, 'error', '缺少参数')
+                return
+            }
+            util.loading(this)
+
+            this.conv = {}
+            this.client = {}
+            this.msgs = []
+            this.playStatus = 0
+
+            if (!util.checkInSession(this)) {
+                return
+            }
+            this.curUser = util.curUser()
+
+            Promise.all([
+                http.fetchLive(this, this.liveId),
+                http.fetchVideos(this, this.liveId),
+                wechat.configWeixin(this)
+            ]).then(values => {
+                util.loaded(this)
+
+                this.live = values[0]
+                this.videos = values[1]
+                    // this.live.status = 20
+                if (this.live.liveId == 491) {
+                    this.live.status = 20
+                }
+
+                this.setPlayerSrc()
+                if (!this.live.canJoin) {
+                    util.show(this, 'error', '请先登录或报名直播')
+                    return
+                }
+
+                wechat.showOptionMenu()
+                wechat.shareLive(this, this.live, this.curUser)
+                this.openClient()
+                this.hlsSelected = util.randInt(this.live.hlsUrls.length)
+
+                this.hasGotLive = true
+                this.tryPlayLiveOrVideo()
+
+                this.startLiveView(this.live)
+                this.endInterval()
+
+                this.endIntervalId = setInterval(() => {
+                    this.endLiveView()
+                }, 1000 * 30)
+
+            }, util.promiseErrorFn(this))
+        }
     },
-    subscribeLive(subscribe) {
-      return http.post(this, 'self', {
-        liveSubscribe: subscribe
-      })
+    methods: {
+        handleError(error) {
+                if (typeof error != 'string') {
+                    error = JSON.stringify(error)
+                }
+                util.show(this, 'error', error)
+            },
+            addMsg(msg) {
+                var msgList = this.$els.msgList
+                var isTouchBottom = msgList.scrollHeight < msgList.scrollTop + msgList.offsetHeight + 100
+                this.msgs.push(msg)
+                setTimeout(() => {
+                    if (isTouchBottom) {
+                        this.scrollToBottom()
+                    }
+                }, 0)
+            },
+            scrollToBottom() {
+                var msgList = this.$els.msgList
+                msgList.scrollTop = msgList.scrollHeight
+            },
+            addChatMsg(msg) {
+                this.addMsg(msg)
+            },
+            addAudioMsg(msg) {
+                this.addMsg(msg)
+            },
+            addSystemMsg(msg) {
+                var textMsg = new TextMessage(msg)
+                textMsg.setAttributes({
+                    username: '系统'
+                })
+                this.addMsg(textMsg)
+            },
+            sendMsg() {
+                if (!this.inputMsg) {
+                    this.handleError('请输入点什么~')
+                    return
+                }
+                this.sendTextMsg(this.inputMsg).then((msg) => {
+                    if (this.inputMsg.indexOf('卡') != -1) {
+                        this.sendTextMsg('我的直播线路是:' + this.liveHost)
+                    }
+                    this.inputMsg = ''
+                })
+            },
+            sendTextMsg(text) {
+                var textMsg = new TextMessage(text)
+                textMsg.setAttributes({
+                    username: this.curUser.username
+                })
+                return this.commonSendMsg(textMsg)
+            },
+            commonSendMsg(msg) {
+                if (this.isSending) {
+                    util.show(this, 'error', '请等待上一条消息发送完成');
+                    return
+                }
+                this.isSending = true
+                return this.conv.send(msg)
+                    .then((message) => {
+                        this.isSending = false
+                        this.addChatMsg(message)
+                        return Promise.resolve(message)
+                    }, (error) => {
+                        this.isSending = false
+                        this.handleError(error)
+                    })
+            },
+            sendSystemMsg(text) {
+                var systemMsg = new SystemMessage()
+                systemMsg.setText(text)
+                systemMsg.setAttributes({
+                    username: this.curUser.username
+                })
+                this.commonSendMsg(systemMsg)
+            },
+            sendRewardMsg(amount) {
+                var rewardMsg = new RewardMessage()
+                rewardMsg.setText('我打赏了主播' + (amount / 100) + '元')
+                rewardMsg.setAttributes({
+                    username: this.curUser.username,
+                    amount: amount
+                })
+                this.commonSendMsg(rewardMsg)
+            },
+            playVoice(serverId) {
+                wx.downloadVoice({
+                    serverId: serverId,
+                    success: function(res) {
+                        wx.playVoice({
+                            localId: res.localId
+                        })
+                    },
+                    fail: this.handleError
+                });
+            },
+            initScroll() {
+                setTimeout(() => {
+                    var msgList = this.$els.msgList
+                    msgList.addEventListener('scroll', (e) => {
+                        var list = e.srcElement
+                        if (list.scrollTop == 0) {
+                            debug('top')
+                            util.loading(this)
+                            this.messageIterator.next().then((result) => {
+                                util.loaded(this)
+                                if (result.done) {
+                                    util.show(this, 'warn', '没有更多消息了')
+                                }
+                                var originHeight = msgList.scrollHeight
+                                this.msgs = result.value.concat(this.msgs)
+                                setTimeout(() => {
+                                    var afterHeight = msgList.scrollHeight
+                                    msgList.scrollTop = afterHeight - originHeight
+                                }, 0)
+                            }, (error) => {
+                                util.loaded(this)
+                                util.show(this, 'error', error)
+                            })
+                        }
+                    })
+                }, 0)
+            },
+            registerEvent() {
+                this.client.on('message', (message, conversation) => {
+                    if (message.type == TextMessage.TYPE) {
+                        this.addChatMsg(message)
+                    } else if (message.type == WxAudioType) {
+                        this.addAudioMsg(message)
+                    } else if (message.type == SystemMessageType) {
+                        this.addChatMsg(message)
+                    } else if (message.type == RewardMessageType) {
+                        this.addChatMsg(message)
+                    } else {
+                        this.addSystemMsg('此消息暂不支持显示')
+                    }
+                })
+                this.client.on('reuse', () => {
+                    this.addSystemMsg('服务器正在重连...')
+                })
+                this.client.on('error', (error) => {
+                    this.addSystemMsg('遇到错误 ' + error)
+                })
+            },
+            openClient() {
+                this.addSystemMsg('正在连接聊天服务器...')
+                realtime.createIMClient(this.curUser.userId + '')
+                    .then((client) => {
+                        this.client = client
+                        this.addSystemMsg('聊天服务器连接成功')
+                        this.registerEvent()
+                        this.fetchConv()
+                    }).catch(this.handleError)
+            },
+            fetchConv() {
+                debug('convid:' + this.live.conversationId)
+                this.client.getConversation(this.live.conversationId)
+                    .then((conv) => {
+                        if (conv == null) {
+                            this.handleError('获取对话失败');
+                            return
+                        }
+                        this.conv = conv
+                        this.addSystemMsg('正在加载聊天记录...')
+
+                        var messageIterator = this.conv.createMessagesIterator({
+                            limit: 100
+                        })
+                        this.messageIterator = messageIterator
+                        return messageIterator.next()
+                    }).then((result) => {
+                        if (result.done) {}
+
+                        this.msgs = this.msgs.concat(result.value)
+                        return this.conv.join()
+                    }).then((conv) => {
+
+                        this.scrollToBottom()
+
+                        this.initScroll()
+
+                        if (this.live.status != 30) {
+                            var word = '1.恭喜入座！主播%s和您不见不散！\n2.可在上面或公告里扫描微信，邀请您进主播用户群'
+                            this.addSystemMsg(sprintf(word, this.live.owner.username))
+                        }
+
+                        let conversation = this.conv
+
+                        setInterval(() => {
+                            conversation.count().then((membersCount) => {
+                                this.membersCount = membersCount
+                            }).catch(util.promiseErrorFn(this))
+                        }, 3000)
+                    }).catch(this.handleError)
+            },
+            logServer() {
+                if (this.live.status >= 20) {
+                    var word = '';
+                    if (this.live.status == 30) {
+                        word = '连接了视频服务器'
+                    } else {
+                        word = '连接了直播服务器'
+                    }
+                    if (this.liveHost) {
+                        this.addSystemMsg(word + this.liveHost)
+                    }
+                }
+            },
+            setPlayerSrc() {
+                // debug("setPlayerSrc")
+                let player = this.$els.video
+                player.src = this.videoSrc
+            },
+
+            hlsPlay(url) {
+                //hlsjs init and play
+                let player = this.$els.video
+                if (Hls.isSupported()) {
+                    debug("hls is supported!")
+                    this.useHjsJs = true
+                    this.player = player
+                    var hls = new Hls()
+                    hls.loadSource(url)
+                    hls.attachMedia(player)
+                    debug("player.src", player.src)
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        player.play();
+                    });
+                    this.playStatus = 1
+                    setTimeout(() => {
+                        this.playStatus = 2
+                    }, 1000)
+                } else {
+                    util.show(this, "error", "不支持hls，请切换浏览器")
+                }
+            },
+            tryPlayLiveOrVideo() {
+                if (this.hasGotLive && this.hasCallReady) {
+                    this.playLiveOrVideo()
+                } else {
+                    debug('ignore tryPlayLiveOrVideo')
+                }
+            },
+            playLiveOrVideo() {
+                //debug("playLiveOrVideo")
+                if (this.live.status < 20)
+                    return
+                this.logServer()
+                if (util.isWeixinBrowser() || util.isSafari()) {
+                    let video = document.querySelector('video')
+                    video.addEventListener('error', (ev) => {
+                        debug('event')
+                        debug(ev)
+                        if (ev.type == 'error') {
+                            util.show(this, 'error', '加载出错，请刷新重试')
+                        }
+                    })
+                    this.useHjsJs = false
+                } else { //chrome
+                    if (this.live.status == 20) { //play the this.live
+                        this.hlsPlay(this.live.hlsUrl, "player1")
+                    } else if (this.live.status == 30) { //playback this.videos
+                        let video = this.videos[this.videoSelected]
+                        if (video.type == 'mp4') {
+                            this.useHjsJs = false
+                        } else if (video.type == 'm3u8') {
+                            this.hlsPlay(video.m3u8Url, "player1")
+                        }
+                    }
+                }
+            },
+            canPlayClick() {
+                this.playStatus = 1
+                var video = document.querySelector('video')
+                video.load()
+                video.play()
+                setTimeout(() => {
+                    this.playStatus = 2
+                }, 1000)
+            },
+            goComputer() {
+                this.$router.go('/scan?liveId=' + this.live.liveId)
+            },
+            showRewardForm() {
+                this.currentView = 'reward-form'
+                this.overlayStatus = true
+            },
+            startLiveView(live) {
+                http.post(this, 'liveViews', {
+                    liveId: live.liveId,
+                    platform: 'wechat',
+                    liveStatus: live.status
+                }).then((data) => {
+                    this.liveViewId = data.liveViewId
+                }, util.promiseErrorFn(this))
+            },
+            endLiveView() {
+                if (this.liveViewId != 0) {
+                    http.get(this, 'liveViews/' + this.liveViewId + '/end')
+                        .then((resp) => {}, (error) => {})
+                }
+            },
+            endInterval() {
+                if (this.endIntervalId != 0) {
+                    clearInterval(this.endIntervalId)
+                    this.endIntervalId = 0
+                }
+            },
+            showChatTab() {
+                this.currentTab = 0
+            },
+            showNoticeTab() {
+                this.currentTab = 1
+            },
+            changeLiveUrl() {
+                if (this.live.status == 20) {
+                    if (util.isWeixinBrowser() || util.isSafari()) {
+                        this.hlsSelected = (this.hlsSelected + 1) % this.live.hlsUrls.length
+                        var video = document.querySelector('video')
+                        video.pause()
+                        setTimeout(() => {
+                            this.canPlayClick()
+                            this.logServer()
+                        }, 0)
+                    } else {
+                        window.location.reload()
+                    }
+                } else {
+                    window.location.reload()
+                }
+            },
+            showSubscribeForm() {
+                this.currentView = 'subscribe-form'
+                this.overlayStatus = true
+            },
+            subscribeLive(subscribe) {
+                return http.post(this, 'self', {
+                    liveSubscribe: subscribe
+                })
+            },
+            toggleSubscribe() {
+                var newSubscribe
+                if (this.curUser.liveSubscribe) {
+                    newSubscribe = 0
+                } else {
+                    newSubscribe = 1
+                }
+                util.loading(this)
+                this.subscribeLive(newSubscribe)
+                    .then((data) => {
+                        util.loaded(this)
+                        this.curUser = data
+                        if (newSubscribe) {
+                            util.show(this, 'success', '关注成功，有新直播发布时将告知您')
+                        } else {
+                            util.show(this, 'success', '取消关注成功')
+                        }
+                    })
+            },
+            fetchQrcodeUrlAndShow(amount) {
+                util.loading(this)
+                http.post(this, 'rewards', {
+                    amount: amount,
+                    liveId: this.live.liveId,
+                    channel: 'wechat_qrcode'
+                }).then((data) => {
+                    util.loaded(this)
+                    this.qrcodeUrl = data.code_url
+                    this.rewardOrderNo = data.orderNo
+                    this.rewardAmount = amount
+                    this.currentView = 'qrcode-pay-form'
+                    this.overlayStatus = true
+                }, util.promiseErrorFn(this))
+            },
+            rewardSucceed(amount) {
+                util.show(this, 'success', '打赏成功')
+                this.sendRewardMsg(amount)
+            },
+            showIntroTab() {
+                this.$router.go('/intro/' + this.live.liveId)
+            },
+            goUserRoom(userId) {
+                debug('goUserRoom: %j', userId)
+                this.$router.go('/room/' + userId)
+            }
     },
-    toggleSubscribe() {
-      var newSubscribe
-      if (this.curUser.liveSubscribe) {
-        newSubscribe = 0
-      } else {
-        newSubscribe = 1
-      }
-      util.loading(this)
-      this.subscribeLive(newSubscribe)
-       .then((data) => {
-         util.loaded(this)
-         this.curUser = data
-         if (newSubscribe) {
-           util.show(this, 'success', '关注成功，有新直播发布时将告知您')
-         } else {
-           util.show(this, 'success', '取消关注成功')
-         }
-       })
-    },
-    fetchQrcodeUrlAndShow(amount) {
-      util.loading(this)
-      http.post(this, 'rewards', {
-        amount: amount,
-        liveId: this.live.liveId,
-        channel: 'wechat_qrcode'
-      }).then((data) => {
-        util.loaded(this)
-        this.qrcodeUrl = data.code_url
-        this.rewardOrderNo = data.orderNo
-        this.rewardAmount = amount
-        this.currentView = 'qrcode-pay-form'
-        this.overlayStatus = true
-      }, util.promiseErrorFn(this))
-    },
-    rewardSucceed(amount) {
-      util.show(this, 'success', '打赏成功')
-      this.sendRewardMsg(amount)
-    },
-    showIntroTab() {
-      this.$router.go('/intro/' + this.live.liveId)
-    },
-    goUserRoom(userId) {
-      debug('goUserRoom: %j', userId)
-      this.$router.go('/room/' + userId)
+    events: {
+        'reward': function(amount) {
+            if (util.isWeixinBrowser()) {
+                util.loading(this)
+                http.post(this, 'rewards', {
+                    amount: amount,
+                    channel: 'wechat_h5',
+                    liveId: this.live.liveId
+                }).then((data) => {
+                    util.loaded(this)
+                    return wechat.wxPay(data)
+                }).then(() => {
+                    this.rewardSucceed(amount)
+                }).catch((error) => {
+                    if (error && error.indexOf('失败') != -1) {
+                        this.fetchQrcodeUrlAndShow(amount)
+                    } else {
+                        util.show(this, 'error', error)
+                    }
+                })
+            } else {
+                this.fetchQrcodeUrlAndShow(amount)
+            }
+        },
+        'payFinish': function() {
+            util.loading(this)
+            setTimeout(() => {
+                http.get(this, 'charges/one', {
+                    orderNo: this.rewardOrderNo
+                }).then((charge) => {
+                    util.loaded(this)
+                    if (charge.paid) {
+                        this.rewardSucceed(this.rewardAmount)
+                    } else {
+                        util.show(this, 'error', '后台显示未到账，请重试')
+                    }
+                }, util.promiseErrorFn(this))
+            }, 1000)
+        }
     }
-  },
-  events: {
-    'reward': function (amount) {
-      if (util.isWeixinBrowser()) {
-        util.loading(this)
-        http.post(this, 'rewards', {
-          amount: amount,
-          channel: 'wechat_h5',
-          liveId: this.live.liveId
-        }).then((data) => {
-          util.loaded(this)
-          return wechat.wxPay(data)
-        }).then(() => {
-          this.rewardSucceed(amount)
-        }).catch((error) => {
-          if (error && error.indexOf('失败') != -1) {
-            this.fetchQrcodeUrlAndShow(amount)
-          } else {
-            util.show(this, 'error', error)
-          }
-        })
-      } else {
-        this.fetchQrcodeUrlAndShow(amount)
-      }
-    },
-    'payFinish': function () {
-      util.loading(this)
-      setTimeout(() => {
-        http.get(this, 'charges/one', {
-          orderNo: this.rewardOrderNo
-        }).then((charge) => {
-          util.loaded(this)
-          if (charge.paid) {
-            this.rewardSucceed(this.rewardAmount)
-          } else {
-            util.show(this, 'error', '后台显示未到账，请重试')
-          }
-        }, util.promiseErrorFn(this))
-      }, 1000)
-    }
-  }
 }
 
 </script>
