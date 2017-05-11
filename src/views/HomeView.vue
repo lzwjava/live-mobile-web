@@ -38,6 +38,8 @@ export default {
 
       if (params.fromUserId) {
         window.localStorage.setItem('fromUserId', params.fromUserId)
+      } else {
+        window.localStorage.removeItem('fromUserId')
       }
 
       if (params.liveId && params.liveId != 0) {
