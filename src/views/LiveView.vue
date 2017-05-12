@@ -210,7 +210,7 @@ export default {
       rewardAmount: 0,
       hasCallReady: false,
       hasGotLive: false,
-      useHjsJs: false,
+      useHlsjs: false,
       m3u8Url: '',
       player: null,
       membersCountId: 0,
@@ -242,14 +242,12 @@ export default {
           return ''
         }
         if (this.live.status == 20) {
-          this.m3u8Url = this.live.hlsUrls[this.hlsSelected]
           return this.live.hlsUrls[this.hlsSelected]
         } else if (this.live.status == 30) {
             var video = this.videos[this.videoSelected]
             if (video.type == 'mp4') {
               return video.url
             } else if (video.type == 'm3u8') {
-              this.m3u8Url = video.m3u8Url
               return video.m3u8Url
             }
         }
@@ -298,7 +296,7 @@ export default {
   },
   attached() {
     debug("attached")
-    if (this.useHjsJs) {
+    if (this.useHlsjs) {
       debug("attached m3u8", this.m3u8Url)
       this.hlsPlay(this.m3u8Url)
     }
@@ -308,7 +306,7 @@ export default {
     this.endLiveView()
     this.endInterval()
     this.endCountInterval()
-    if (this.useHjsJs) {
+    if (this.useHlsjs) {
       if (this.player != null) {
         this.player.pause()
         this.playStatus = 0
@@ -364,7 +362,7 @@ export default {
         this.live = values[0]
         this.videos = values[1]
         // this.live.status = 20
-        if( this.live.liveId == 491 ){
+        if( this.live.liveId == 455){
           this.live.status = 20
         }
         this.setPlayerSrc()
@@ -425,7 +423,7 @@ export default {
       }
       this.sendTextMsg(this.inputMsg).then((msg) => {
         if (this.inputMsg.indexOf('卡') != -1) {
-          this.sendTextMsg('我的直播线路是:' + this.liveHost)
+          // this.sendTextMsg('我的直播线路是:' + this.liveHost)
         }
         this.inputMsg = ''
       })
@@ -602,25 +600,25 @@ export default {
     hlsPlay(url){
       //hlsjs init and play
       let player = this.$els.video
-      if(Hls.isSupported()) {
-        debug("hls is supported!")
-        this.useHjsJs = true
-        this.player = player
-        var hls = new Hls()
-        hls.loadSource(url)
-        hls.attachMedia(player)
-        debug("player.src",player.src)
-        hls.on(Hls.Events.MANIFEST_PARSED,function() {
-          player.play();
-      });
+      if (!Hls.isSupported()) {
+        util.show(this,'error','不支持hls，请切换浏览器')
+        return
+      }
+      this.player = player
+      var hls = new Hls()
+      hls.loadSource(url)
+      hls.attachMedia(player)
+      debug("player.src",player.src)
+      hls.on(Hls.Events.MANIFEST_PARSED,() => {
+        player.play()
+      })
+      hls.on(Hls.Events.ERROR, () => {
+        util.show(this, 'error', '播放器错误，请刷新重试')
+      })
       this.playStatus = 1
       setTimeout(() => {
         this.playStatus = 2
-        }, 1000)
-      }
-      else{
-        util.show(this,"error","不支持hls，请切换浏览器")
-      }
+      }, 1000)
     },
     tryPlayLiveOrVideo() {
       if (this.hasGotLive && this.hasCallReady) {
@@ -631,8 +629,9 @@ export default {
     },
     playLiveOrVideo () {
       //debug("playLiveOrVideo")
-      if (this.live.status < 20)
+      if (this.live.status < 20) {
         return
+      }
       this.logServer()
       if (util.isWeixinBrowser() || util.isSafari()) {
         let video = document.querySelector('video')
@@ -643,21 +642,24 @@ export default {
             util.show(this, 'error', '加载出错，请刷新重试')
           }
         })
-        this.useHjsJs = false
+        this.useHlsjs = false
       } else {//chrome
         if (this.live.status == 20) {//play the this.live
-            this.hlsPlay(this.live.hlsUrl, "player1")
+          this.useHlsjs = true
+          this.m3u8Url = this.live.webHlsUrl
+          this.hlsPlay(this.live.webHlsUrl)
         } else if (this.live.status == 30) {//playback this.videos
           let video = this.videos[this.videoSelected]
           if (video.type == 'mp4') {
-            this.useHjsJs = false
+            this.useHlsjs = false
           } else if (video.type == 'm3u8'){
             this.m3u8Url = video.m3u8Url
-            this.hlsPlay(video.m3u8Url, player)
-            }
+            this.useHlsjs = true
+            this.hlsPlay(video.m3u8Url)
           }
         }
-      },
+      }
+    },
     canPlayClick() {
       this.playStatus = 1
       var video = document.querySelector('video')
