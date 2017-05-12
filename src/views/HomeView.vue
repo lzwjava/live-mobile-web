@@ -37,7 +37,16 @@ export default {
       }
 
       if (params.fromUserId) {
-        window.localStorage.setItem('fromUserId', params.fromUserId)
+        let fromUser = {fromUserId:params.fromUserId,liveId:params.liveId}
+        window.localStorage.setItem('fromUser', JSON.stringify(fromUser))
+      } else {
+        let fromUser = window.localStorage.getItem('fromUser')
+        if (fromUser) {
+          let localLiveId = JSON.parse(fromUser).liveId
+          if (localLiveId != params.liveId){
+            window.localStorage.removeItem('fromUser')
+          }
+        }
       }
 
       if (params.liveId && params.liveId != 0) {

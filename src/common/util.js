@@ -199,6 +199,7 @@ function saveCurUser(user) {
 
 function removeCurUser(comp) {
   window.localStorage.removeItem('user')
+  window.localStorage.removeItem('fromUser')
 }
 
 function checkInSession(comp) {
