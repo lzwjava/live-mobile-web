@@ -50,7 +50,7 @@
 
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
          v-show="currentTab == 0">
-         <div class="members-count" v-if="membersCount">
+         <div class="members-count" v-show="membersCount">
            在线 {{membersCount}}
          </div>
 
@@ -213,6 +213,9 @@ export default {
       useHjsJs: false,
       m3u8Url: '',
       player: null,
+      membersCountId: 0,
+      randomNum: 0,
+      randomNuMId: 0
     }
   },
   computed: {
@@ -304,6 +307,7 @@ export default {
     debug('detached')
     this.endLiveView()
     this.endInterval()
+    this.endCountInterval()
     if (this.useHjsJs) {
       if (this.player != null) {
         this.player.pause()
@@ -557,12 +561,25 @@ export default {
           this.addSystemMsg(sprintf(word, this.live.owner.username))
         }
         let conversation = this.conv
-        setInterval(() => {
+        this.endCountInterval()
+        this.getRondomNum()
+        this.membersCountId = setInterval(() => {
           conversation.count().then((membersCount) => {
-            this.membersCount = membersCount
-          }).catch(util.promiseErrorFn(this))
-        }, 3000)
+            let randomCount = membersCount * 3 + this.randomNum
+            if(randomCount >= this.live.attendanceCount) {
+              this.membersCount = this.live.attendanceCount
+            } else {
+              this.membersCount = randomCount
+            }
+          }).catch()
+        }, 5000)
       }).catch(this.handleError)
+    },
+    getRondomNum () {
+      clearInterval(this.randomNumId)
+      this.randomNumId = setInterval(() => {
+        this.randomNum = parseInt(3 * Math.random())
+      }, 1000 * 60)
     },
     logServer() {
       if (this.live.status >= 20) {
@@ -678,6 +695,12 @@ export default {
       if (this.endIntervalId != 0) {
         clearInterval(this.endIntervalId)
         this.endIntervalId =0
+      }
+    },
+    endCountInterval() {
+      if (this.membersCountId != 0) {
+        clearInterval(this.membersCountId)
+        this.membersCount = ''
       }
     },
     showChatTab() {
