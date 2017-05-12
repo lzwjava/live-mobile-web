@@ -9,7 +9,7 @@
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
       <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
             controls webkit-playsinline
-            playsinline  class="video-js vjs-default-skin" v-el:video></video>
+            playsinline v-el:video></video>
 
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
@@ -166,11 +166,6 @@ realtime.register(WxAudioMessage)
 realtime.register(SystemMessage)
 realtime.register(RewardMessage)
 
-var videojs = require('video.js/dist/video.min.js')
-require('video.js/dist/video-js.min.css')
-window.videojs = videojs
-require('videojs-contrib-hls/dist/videojs-contrib-hls.js')
-
 export default {
   name: 'LiveView',
   components: {
@@ -323,7 +318,7 @@ export default {
     this.hasCallReady = true
     debug('hasCallReady')
     setTimeout(() => {
-      // videoHeight 应用上之后才调用 videojs
+      // videoHeight 应用上之后才调用
       this.tryPlayLiveOrVideo()
     }, 0)
   },
