@@ -403,7 +403,7 @@ export default {
       }
     },
     createAttend() {
-      var fromUserId = JSON.parse(window.localStorage.getItem('fromUser')).fromUserId
+      var fromUserId = this.getFromUserId()
       util.loading(this)
       var params = {
         liveId: this.liveId
@@ -442,7 +442,7 @@ export default {
     pay() {
       if (util.isWeixinBrowser()) {
         util.loading(this)
-        var fromUserId = JSON.parse(window.localStorage.getItem('fromUser')).fromUserId
+        var fromUserId = this.getFromUserId()
         var params = {
           liveId: this.liveId,
           channel: 'wechat_h5'
@@ -486,7 +486,7 @@ export default {
     },
     fetchQrcodeUrlAndShow() {
       util.loading(this)
-      var fromUserId = JSON.parse(window.localStorage.getItem('fromUser')).fromUserId
+      var fromUserId = this.getFromUserId()
       var params = {
         liveId: this.liveId,
         channel: 'wechat_qrcode'
@@ -501,6 +501,15 @@ export default {
         this.currentView = 'qrcode-pay-form'
         this.overlayStatus = true
       }, util.promiseErrorFn(this))
+    },
+    getFromUserId() {
+      let fromUser = window.localStorage.getItem('fromUser')
+      if (fromUser) {
+        let fromUserId = JSON.parse(fromUser).fromUserId
+        return fromUserId
+      } else {
+        return null
+      }
     },
     goUsers() {
       this.$router.go('/live/' + this.liveId + '/users')
