@@ -313,6 +313,7 @@ export default {
     debug('detached')
     this.endLiveView()
     this.endInterval()
+    this.endCountInterval()
     if (this.useVideoJs) {
       if (this.player != null) {
         this.player.pause()
