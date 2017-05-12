@@ -403,7 +403,7 @@ export default {
       }
     },
     createAttend() {
-      var fromUserId = window.localStorage.getItem('fromUserId')
+      var fromUserId = JSON.parse(window.localStorage.getItem('fromUser')).fromUserId
       util.loading(this)
       var params = {
         liveId: this.liveId
@@ -437,12 +437,12 @@ export default {
       }
     },
     cleanFromUserId() {
-      window.localStorage.removeItem('fromUserId')
+      window.localStorage.removeItem('fromUser')
     },
     pay() {
       if (util.isWeixinBrowser()) {
         util.loading(this)
-        var fromUserId = window.localStorage.getItem('fromUserId')
+        var fromUserId = JSON.parse(window.localStorage.getItem('fromUser')).fromUserId
         var params = {
           liveId: this.liveId,
           channel: 'wechat_h5'
@@ -486,7 +486,7 @@ export default {
     },
     fetchQrcodeUrlAndShow() {
       util.loading(this)
-      var fromUserId = window.localStorage.getItem('fromUserId')
+      var fromUserId = JSON.parse(window.localStorage.getItem('fromUser')).fromUserId
       var params = {
         liveId: this.liveId,
         channel: 'wechat_qrcode'

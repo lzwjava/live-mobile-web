@@ -199,7 +199,7 @@ function saveCurUser(user) {
 
 function removeCurUser(comp) {
   window.localStorage.removeItem('user')
-  window.localStorage.removeItem('fromUserId')
+  window.localStorage.removeItem('fromUser')
 }
 
 function checkInSession(comp) {

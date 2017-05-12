@@ -216,7 +216,10 @@ export default {
       hasCallReady: false,
       hasGotLive: false,
       useVideoJs: false,
-      player: null
+      player: null,
+      membersCountId: 0,
+      randomNum: 0,
+      randomNuMId: 0
     }
   },
   computed: {
@@ -578,16 +581,25 @@ export default {
         }
 
         let conversation = this.conv
-        setInterval(() => {
+        this.endCountInterval()
+        this.getRondomNum()
+        this.membersCountId = setInterval(() => {
           conversation.count().then((membersCount) => {
-            if(membersCount * 3 >= this.live.attendanceCount) {
+            let randomCount = membersCount * 3 + this.randomNum
+            if(randomCount >= this.live.attendanceCount) {
               this.membersCount = this.live.attendanceCount
             } else {
-              this.membersCount = membersCount * 3
+              this.membersCount = randomCount
             }
           }).catch()
         }, 5000)
       }).catch(this.handleError)
+    },
+    getRondomNum () {
+      clearInterval(this.randomNumId)
+      this.randomNumId = setInterval(() => {
+        this.randomNum = parseInt(3 * Math.random())
+      }, 1000 * 60)
     },
     logServer() {
       if (this.live.status >= 20) {
@@ -707,6 +719,12 @@ export default {
       if (this.endIntervalId != 0) {
         clearInterval(this.endIntervalId)
         this.endIntervalId =0
+      }
+    },
+    endCountInterval() {
+      if (this.membersCountId != 0) {
+        clearInterval(this.membersCountId)
+        this.membersCount = ''
       }
     },
     showChatTab() {
