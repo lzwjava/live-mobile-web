@@ -132,22 +132,28 @@ import SubscribeForm from '../components/SubscribeForm.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
 import {sprintf} from 'sprintf-js'
 import Hls from "hls.js"
+
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
-var Realtime = lcChat.Realtime;
+var Realtime = lcChat.Realtime
 var TextMessage = lcChat.TextMessage
 var messageType = lcChat.messageType
 var TypedMessage = lcChat.TypedMessage
+
 var inherit = require('inherit')
 export const WxAudioMessage = inherit(TypedMessage)
+
 var WxAudioType = 1
 messageType(WxAudioType)(WxAudioMessage)
 export const SystemMessage = inherit(TypedMessage)
+
 var SystemMessageType = 2
 messageType(SystemMessageType)(SystemMessage)
 export const RewardMessage = inherit(TypedMessage)
+
 var RewardMessageType = 3
 messageType(RewardMessageType)(RewardMessage)
+
 var prodAppId = 's83aTX5nigX1KYu9fjaBTxIa-gzGzoHsz'
 var testAppId = 'YY3S7uNlnXUgX48BHTJlJx4i-gzGzoHsz'
 var realtime = new Realtime({
@@ -155,13 +161,16 @@ var realtime = new Realtime({
   region: 'cn',
   noBinary: true
 })
+
 realtime.register(WxAudioMessage)
 realtime.register(SystemMessage)
 realtime.register(RewardMessage)
+
 var videojs = require('video.js/dist/video.min.js')
 require('video.js/dist/video-js.min.css')
 window.videojs = videojs
 require('videojs-contrib-hls/dist/videojs-contrib-hls.js')
+
 export default {
   name: 'LiveView',
   components: {
@@ -207,7 +216,7 @@ export default {
       hasCallReady: false,
       hasGotLive: false,
       useHjsJs: false,
-      m3u8Url:"",
+      m3u8Url: '',
       player: null,
     }
   },
