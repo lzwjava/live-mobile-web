@@ -106,6 +106,7 @@ export default {
       line-height 18px
       padding 3px 5px
       font-size 14px
+      margin-right 10px
     .time-label
       color #00bdef
       border 1px solid #00bdef
