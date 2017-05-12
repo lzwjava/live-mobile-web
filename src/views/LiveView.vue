@@ -52,7 +52,19 @@
          <div class="members-count" v-show="membersCount">
            在线 {{membersCount}}
          </div>
-
+         <button type="button" class="live-config-btn" @click="liveConfig = true" v-if="live.owner.userId == curUser.userId">配置</button>
+         <div class="liveConfigArea" v-if="live.owner.userId == curUser.userId">
+           <div class="live-config-area" v-show="liveConfig == true">
+             <h3>配置</h3>
+             <h1>
+               <button type="button" name="button" class="live-config-insider-btn-on" @click="beginLive">開始直播</button>
+               <button type="button" name="button" class="live-config-insider-btn-off" @click="endLive">結束直播</button>
+             </h1>
+             <br>
+             <button type="button" name="button" class="live-config-insider-btn-close" @click="liveConfig = false">關閉配置面板</button>
+             <br>
+           </div>
+         </div>
       <ul class="msg-list" v-el:msg-list>
 
         <li class="msg" v-for="msg in msgs">
@@ -216,7 +228,8 @@ export default {
       hasCallReady: false,
       hasGotLive: false,
       useVideoJs: false,
-      player: null
+      player: null,
+      liveConfig: false
     }
   },
   computed: {
@@ -239,6 +252,9 @@ export default {
       }
     },
     videoSrc() {
+      console.log('=-=====', this.live.owner.userId)
+      console.log(this.curUser)
+
       if (!this.live.liveId) {
         return ''
       }
@@ -785,7 +801,21 @@ export default {
     goUserRoom(userId) {
       debug('goUserRoom: %j', userId)
       this.$router.go('/room/' + userId)
-    }
+    },
+    beginLive() {
+      http.get(this, 'lives/' + this.liveId +'/begin')
+       .then((data) => {
+         util.show(this, 'success', '成功开启直播')
+         // this.fetchLive()
+       }, util.promiseErrorFn(this))
+    },
+    endLive() {
+      http.get(this, 'lives/' + this.liveId +'/end')
+      .then((data) => {
+        util.show(this, 'success', '已设定为转码')
+        // this.fetchLive()
+      }, util.promiseErrorFn(this))
+    },
   },
   events: {
     'reward': function (amount) {
@@ -931,6 +961,57 @@ export default {
       float right
       border-radius 5px
       z-index 100
+    .live-config-btn
+      top 100px
+      position relative
+      color gray
+      margin 5px
+      padding 5px
+      float right
+      border-radius 5px
+      z-index 100
+    .live-config-insider-btn-close
+      color white
+      margin 5px
+      padding 5px
+      float center
+      border-radius 5px
+      z-index 100
+      background-color #d9534f
+
+    .live-config-insider-btn-on
+      color white
+      margin 5px
+      padding 5px
+      float left
+      border-radius 5px
+      z-index 100
+      background-color #5CB860
+    .live-config-insider-btn-off
+      color white
+      margin 5px
+      padding 5px
+      float right
+      border-radius 5px
+      z-index 100
+      background-color #d9534f
+    .live-config-area
+      margin-top 25%
+      margin-left 25%
+      width 50%
+      height 50%
+      display table
+      text-align center
+      position relative
+      color white
+      padding-top 10px
+      padding-bottom 10px
+      padding-right 10px
+      padding-left 10px
+      float center
+      border-radius 5px
+      z-index 100
+      background rgba(0, 189, 239, 0.9)
     .msg-list
       position absolute
       overflow hidden
