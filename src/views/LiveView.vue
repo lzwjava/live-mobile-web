@@ -362,9 +362,9 @@ export default {
         this.live = values[0]
         this.videos = values[1]
         // this.live.status = 20
-        if( this.live.liveId == 455){
-          this.live.status = 20
-        }
+        // if( this.live.liveId == 455){
+        //   this.live.status = 20
+        // }
         this.setPlayerSrc()
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
