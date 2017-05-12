@@ -29,8 +29,6 @@ import EditDetailView from './views/EditDetailView.vue'
 import filters from './common/filter'
 import util from './common/util'
 import wechat from './common/wechat'
-// import iView from 'iview'
-// import 'iview/dist/styles/iview.css'
 
 const debug = require('debug')('main')
 

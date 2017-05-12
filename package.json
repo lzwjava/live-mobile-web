@@ -46,13 +46,11 @@
   "dependencies": {
     "debug": "^2.2.0",
     "es6-promise": "^3.0.2",
-    "firebase": "^2.3.1",
     "font-awesome": "^4.6.3",
     "github-markdown-css": "^2.4.0",
     "highlight.js": "^9.6.0",
     "hls.js": "^0.7.6",
     "inherit": "^2.2.6",
-    "iview": "^1.0.2",
     "jquery": "^3.1.0",
     "json-loader": "^0.5.4",
     "leancloud-realtime": "^3.2.3",
