@@ -52,17 +52,29 @@
          <div class="members-count" v-show="membersCount">
            在线 {{membersCount}}
          </div>
-         <button type="button" class="live-config-btn" @click="liveConfig = true" v-if="live.owner.userId == curUser.userId">配置</button>
+         <button type="button" class="live-config-btn" @click="funcLiveConfig" v-if="live.owner.userId == curUser.userId">配置</button>
          <div class="liveConfigArea" v-if="live.owner.userId == curUser.userId">
-           <div class="live-config-area" v-show="liveConfig == true">
+           <div class="live-config-area" v-if="liveConfig == true">
              <h3>配置</h3>
-             <h1>
-               <button type="button" name="button" class="live-config-insider-btn-on" @click="beginLive">開始直播</button>
-               <button type="button" name="button" class="live-config-insider-btn-off" @click="endLive">結束直播</button>
-             </h1>
-             <br>
-             <button type="button" name="button" class="live-config-insider-btn-close" @click="liveConfig = false">關閉配置面板</button>
-             <br>
+             <br />
+             <button type="button" name="button" @click="beginLive">開始直播</button>
+             <button type="button" name="button" @click="endLive">結束直播</button>
+             <button type="button" name="button" @click="funcLiveConfigUrl">串流資訊</button>
+             <button type="button" name="button" class="live-config-insider-btn-close" @click="funcLiveConfigCloseAll">關閉配置面板</button>
+           </div>
+           <div class="live-config-area" v-if="liveConfigUrl == true">
+             <h3>串流資訊</h3>
+             <p>
+               串流位置
+               <br />
+               <p class="live-config-url">{{pushUrl}}</p>
+               <br />
+               串流密鑰
+               <br />
+               <p class="live-config-url">{{rtmpKey}}</p>
+               <br />
+               <button type="button" name="button" class="live-config-insider-btn-close" @click="funcLiveConfigCloseAll">關閉配置面板</button>
+             </p>
            </div>
          </div>
       <ul class="msg-list" v-el:msg-list>
@@ -229,7 +241,10 @@ export default {
       hasGotLive: false,
       useVideoJs: false,
       player: null,
-      liveConfig: false
+      liveConfig: false,
+      liveConfigUrl: false,
+      pushUrl: '',
+      rtmpKey: ''
     }
   },
   computed: {
@@ -252,8 +267,8 @@ export default {
       }
     },
     videoSrc() {
-      console.log('=-=====', this.live.owner.userId)
-      console.log(this.curUser)
+      this.rtmpKey = this.live.rtmpKey
+      this.pushUrl = this.live.pushUrl
 
       if (!this.live.liveId) {
         return ''
@@ -816,6 +831,18 @@ export default {
         // this.fetchLive()
       }, util.promiseErrorFn(this))
     },
+    funcLiveConfig() {
+      this.liveConfig = true
+      this.liveConfigUrl = false
+    },
+    funcLiveConfigUrl() {
+      this.liveConfigUrl = true
+      this.liveConfig = false
+    },
+    funcLiveConfigCloseAll() {
+      this.liveConfigUrl = false
+      this.liveConfig = false
+    },
   },
   events: {
     'reward': function (amount) {
@@ -865,7 +892,6 @@ export default {
 
 @import "../stylus/base.styl"
 @import "../stylus/variables.styl"
-
 .live-view
   position absolute
   left 0
@@ -970,48 +996,24 @@ export default {
       float right
       border-radius 5px
       z-index 100
-    .live-config-insider-btn-close
-      color white
-      margin 5px
-      padding 5px
-      float center
-      border-radius 5px
-      z-index 100
-      background-color #d9534f
-
-    .live-config-insider-btn-on
-      color white
-      margin 5px
-      padding 5px
-      float left
-      border-radius 5px
-      z-index 100
-      background-color #5CB860
-    .live-config-insider-btn-off
-      color white
-      margin 5px
-      padding 5px
-      float right
-      border-radius 5px
-      z-index 100
-      background-color #d9534f
     .live-config-area
-      margin-top 25%
-      margin-left 25%
-      width 50%
-      height 50%
-      display table
-      text-align center
       position relative
-      color white
-      padding-top 10px
-      padding-bottom 10px
-      padding-right 10px
-      padding-left 10px
-      float center
-      border-radius 5px
+      background #fff
+      border-radius 20px
+      text-align center
+      padding 20px 10px
+      margin-left 5%
+      margin-right 5%
       z-index 100
-      background rgba(0, 189, 239, 0.9)
+      word-break break-all
+      button
+        width 80%
+        font-size 16px
+        border-radius 10px
+        height 50px
+        margin-bottom 20px
+        color white
+        background-color #00bdef
     .msg-list
       position absolute
       overflow hidden
