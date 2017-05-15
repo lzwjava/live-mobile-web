@@ -6,7 +6,7 @@
 
     <div class="cover-section">
 
-      <img class="cover-img" :src="live.coverUrl" alt="cover"/>
+      <img class="cover-img" :src="live.coverUrl" alt="cover" @click="clickCover"/>
 
     </div>
 
@@ -534,6 +534,9 @@ export default {
     },
     editLive() {
       this.$router.go('/editLive/' + this.liveId)
+    },
+    clickCover() {
+      util.show(this, 'warn', '请点击底下蓝色按钮，来进入直播间')
     }
   },
   events:  {
