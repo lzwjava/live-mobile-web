@@ -7,9 +7,10 @@
         <img class="qrcode" :src="live.liveQrcodeUrl" alt="">
       </div>
       <div class="video-on" v-show="live.status == 20 || live.status == 25 || live.status == 30">
-        <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
-           controls webkit-playsinline
-           playsinline :src="videoSrc" class="video-js vjs-default-skin"></video>
+      <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload"
+            controls webkit-playsinline
+            playsinline v-el:video></video>
+
         <div class="video-poster-cover" v-show="playStatus != 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
           <div class="video-center">
@@ -147,12 +148,10 @@
 </template>
 
 <script type="text/javascript">
-
 import util from '../common/util'
 import http from '../common/api'
 import wechat from '../common/wechat'
 import Loading from '../components/loading.vue'
-import makeVideoPlayableInline from 'iphone-inline-video'
 import {Toast, SelectCell, Cells} from 'vue-weui'
 import RewardForm from '../components/RewardForm.vue'
 import Overlay from '../components/overlay.vue'
@@ -160,31 +159,31 @@ import Markdown from '../components/markdown.vue'
 import SubscribeForm from '../components/SubscribeForm.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
 import {sprintf} from 'sprintf-js'
+import Hls from "hls.js"
 
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
-var Realtime = lcChat.Realtime;
+var Realtime = lcChat.Realtime
 var TextMessage = lcChat.TextMessage
 var messageType = lcChat.messageType
 var TypedMessage = lcChat.TypedMessage
 
-var inherit = require('inherit');
+var inherit = require('inherit')
 export const WxAudioMessage = inherit(TypedMessage)
 
 var WxAudioType = 1
 messageType(WxAudioType)(WxAudioMessage)
-
 export const SystemMessage = inherit(TypedMessage)
+
 var SystemMessageType = 2
 messageType(SystemMessageType)(SystemMessage)
-
 export const RewardMessage = inherit(TypedMessage)
+
 var RewardMessageType = 3
 messageType(RewardMessageType)(RewardMessage)
 
 var prodAppId = 's83aTX5nigX1KYu9fjaBTxIa-gzGzoHsz'
 var testAppId = 'YY3S7uNlnXUgX48BHTJlJx4i-gzGzoHsz'
-
 var realtime = new Realtime({
   appId: prodAppId,
   region: 'cn',
@@ -194,11 +193,6 @@ var realtime = new Realtime({
 realtime.register(WxAudioMessage)
 realtime.register(SystemMessage)
 realtime.register(RewardMessage)
-
-var videojs = require('video.js/dist/video.min.js')
-require('video.js/dist/video-js.min.css')
-window.videojs = videojs
-require('videojs-contrib-hls/dist/videojs-contrib-hls.js')
 
 export default {
   name: 'LiveView',
@@ -288,7 +282,8 @@ export default {
       this.pushUrl = pushUrlResult
       this.rtmpKey = this.live.rtmpKey
 
-      if (!this.live.liveId) {
+        if (!this.live.liveId) {
+
           return ''
         }
         if (this.live.status == 20) {
@@ -345,13 +340,18 @@ export default {
     debug('updated')
   },
   attached() {
-    debug('attached')
+    debug("attached")
+    if (this.useHlsjs) {
+      debug("attached m3u8", this.m3u8Url)
+      this.hlsPlay(this.m3u8Url)
+    }
   },
   detached() {
     debug('detached')
     this.endLiveView()
     this.endInterval()
-    if (this.useVideoJs) {
+    this.endCountInterval()
+    if (this.useHlsjs) {
       if (this.player != null) {
         this.player.pause()
         this.playStatus = 0
@@ -365,7 +365,7 @@ export default {
     this.hasCallReady = true
     debug('hasCallReady')
     setTimeout(() => {
-      // videoHeight 应用上之后才调用 videojs
+      // videoHeight 应用上之后才调用
       this.tryPlayLiveOrVideo()
     }, 0)
   },
@@ -378,63 +378,54 @@ export default {
     data ({to}) {
       util.initTitle()
       var liveId = to.params.liveId
-
       if (liveId == this.liveId) {
         setTimeout(() => {
           this.scrollToBottom()
         }, 500)
         return
       }
-
       this.liveId = liveId
       if (!this.liveId) {
         util.show(this, 'error', '缺少参数')
         return
       }
       util.loading(this)
-
       this.conv = {}
       this.client = {}
       this.msgs = []
       this.playStatus = 0
-
       if (!util.checkInSession(this)) {
         return
       }
       this.curUser = util.curUser()
-
       Promise.all([
         http.fetchLive(this, this.liveId),
         http.fetchVideos(this, this.liveId),
         wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
-
         this.live = values[0]
         this.videos = values[1]
-
         // this.live.status = 20
-
+        // if( this.live.liveId == 455){
+        //   this.live.status = 20
+        // }
+        this.setPlayerSrc()
         if (!this.live.canJoin) {
           util.show(this, 'error', '请先登录或报名直播')
           return
         }
-
         wechat.showOptionMenu()
         wechat.shareLive(this, this.live, this.curUser)
         this.openClient()
         this.hlsSelected = util.randInt(this.live.hlsUrls.length)
-
         this.hasGotLive = true
         this.tryPlayLiveOrVideo()
-
         this.startLiveView(this.live)
         this.endInterval()
-
         this.endIntervalId = setInterval(() => {
           this.endLiveView()
         }, 1000 * 30)
-
       }, util.promiseErrorFn(this))
     }
   },
@@ -477,7 +468,7 @@ export default {
       }
       this.sendTextMsg(this.inputMsg).then((msg) => {
         if (this.inputMsg.indexOf('卡') != -1) {
-          this.sendTextMsg('我的直播线路是:' + this.liveHost)
+          // this.sendTextMsg('我的直播线路是:' + this.liveHost)
         }
         this.inputMsg = ''
       })
@@ -597,38 +588,41 @@ export default {
         }
         this.conv = conv
         this.addSystemMsg('正在加载聊天记录...')
-
         var messageIterator = this.conv.createMessagesIterator({ limit: 100 })
         this.messageIterator = messageIterator
         return messageIterator.next()
       }).then((result)=> {
         if (result.done) {
         }
-
         this.msgs = this.msgs.concat(result.value)
         return this.conv.join()
       }).then((conv) => {
-
         this.scrollToBottom()
-
         this.initScroll()
-
         if (this.live.status != 30) {
           var word = '1.恭喜入座！主播%s和您不见不散！\n2.可在上面或公告里扫描微信，邀请您进主播用户群'
           this.addSystemMsg(sprintf(word, this.live.owner.username))
         }
-
         let conversation = this.conv
-        setInterval(() => {
+        this.endCountInterval()
+        this.getRondomNum()
+        this.membersCountId = setInterval(() => {
           conversation.count().then((membersCount) => {
-            if(membersCount * 3 >= this.live.attendanceCount) {
+            let randomCount = membersCount * 3 + this.randomNum
+            if(randomCount >= this.live.attendanceCount) {
               this.membersCount = this.live.attendanceCount
             } else {
-              this.membersCount = membersCount * 3
+              this.membersCount = randomCount
             }
           }).catch()
         }, 5000)
       }).catch(this.handleError)
+    },
+    getRondomNum () {
+      clearInterval(this.randomNumId)
+      this.randomNumId = setInterval(() => {
+        this.randomNum = parseInt(3 * Math.random())
+      }, 1000 * 60)
     },
     logServer() {
       if (this.live.status >= 20) {
@@ -643,6 +637,34 @@ export default {
         }
       }
     },
+    setPlayerSrc() {
+        // debug("setPlayerSrc")
+        let player = this.$els.video
+        player.src = this.videoSrc
+    },
+    hlsPlay(url){
+      //hlsjs init and play
+      let player = this.$els.video
+      if (!Hls.isSupported()) {
+        util.show(this,'error','不支持hls，请切换浏览器')
+        return
+      }
+      this.player = player
+      var hls = new Hls()
+      hls.loadSource(url)
+      hls.attachMedia(player)
+      debug("player.src",player.src)
+      hls.on(Hls.Events.MANIFEST_PARSED,() => {
+        player.play()
+      })
+      hls.on(Hls.Events.ERROR, () => {
+        util.show(this, 'error', '播放器错误，请刷新重试')
+      })
+      this.playStatus = 1
+      setTimeout(() => {
+        this.playStatus = 2
+      }, 1000)
+    },
     tryPlayLiveOrVideo() {
       if (this.hasGotLive && this.hasCallReady) {
         this.playLiveOrVideo()
@@ -651,14 +673,13 @@ export default {
       }
     },
     playLiveOrVideo () {
+      //debug("playLiveOrVideo")
       if (this.live.status < 20) {
         return
       }
-      debug('playLiveOrVideo')
-
       this.logServer()
       if (util.isWeixinBrowser() || util.isSafari()) {
-        var video = document.querySelector('video')
+        let video = document.querySelector('video')
         video.addEventListener('error', (ev) => {
           debug('event')
           debug(ev)
@@ -666,47 +687,20 @@ export default {
             util.show(this, 'error', '加载出错，请刷新重试')
           }
         })
-        this.useVideoJs = false
-      } else {
-        // Chrome or another
-        var player
-        debug('use videojs')
-        if (this.live.status == 20) {
-          this.useVideoJs = true
-          player = videojs('player1', {
-           		techOrder: ['html5', 'flash'],
-           		autoplay: true,
-           		sources: [
-                 {
-                   type: "video/x-flv",
-                   src: this.live.flvUrl
-                 }
-               ]
-           	})
-            player.play()
-            this.playStatus = 1
-            setTimeout(() => {
-              this.playStatus = 2
-            }, 1000)
-            this.player = player
-        } else if (this.live.status == 30) {
-          var video = this.videos[this.videoSelected]
+        this.useHlsjs = false
+      } else {//chrome
+        if (this.live.status == 20) {//play the this.live
+          this.useHlsjs = true
+          this.m3u8Url = this.live.webHlsUrl
+          this.hlsPlay(this.live.webHlsUrl)
+        } else if (this.live.status == 30) {//playback this.videos
+          let video = this.videos[this.videoSelected]
           if (video.type == 'mp4') {
-            this.useVideoJs = false
-          } else if (video.type == 'm3u8') {
-            this.useVideoJs = true
-            player = videojs('player1')
-            player.src({
-              src: video.m3u8Url,
-              type: 'application/x-mpegURL',
-              withCredentials: false
-            })
-            player.play()
-            this.playStatus = 1
-            setTimeout(() => {
-              this.playStatus = 2
-            }, 1000)
-            this.player = player
+            this.useHlsjs = false
+          } else if (video.type == 'm3u8'){
+            this.m3u8Url = video.m3u8Url
+            this.useHlsjs = true
+            this.hlsPlay(video.m3u8Url)
           }
         }
       }
@@ -748,6 +742,12 @@ export default {
       if (this.endIntervalId != 0) {
         clearInterval(this.endIntervalId)
         this.endIntervalId =0
+      }
+    },
+    endCountInterval() {
+      if (this.membersCountId != 0) {
+        clearInterval(this.membersCountId)
+        this.membersCount = ''
       }
     },
     showChatTab() {
@@ -895,11 +895,9 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="stylus">
-
 @import "../stylus/base.styl"
 @import "../stylus/variables.styl"
 .live-view
@@ -1146,11 +1144,9 @@ export default {
             padding 7px 5px
   .notice-area
     padding 10px
-
 @keyframes circle
   0%
     transform rotateZ(0deg)
   100%
     transform rotateZ(360deg)
-
 </style>
