@@ -239,12 +239,16 @@ export default {
       rewardAmount: 0,
       hasCallReady: false,
       hasGotLive: false,
-      useVideoJs: false,
-      player: null,
       liveConfig: false,
       liveConfigUrl: false,
       pushUrl: '',
-      rtmpKey: ''
+      rtmpKey: '',
+      useHlsjs: false,
+      m3u8Url: '',
+      player: null,
+      membersCountId: 0,
+      randomNum: 0,
+      randomNuMId: 0
     }
   },
   computed: {
@@ -271,27 +275,19 @@ export default {
       this.pushUrl = this.live.pushUrl
 
       if (!this.live.liveId) {
-        return ''
-      }
-      if (this.live.status == 20) {
-        if (util.isWeixinBrowser() || util.isSafari()) {
+          return ''
+        }
+        if (this.live.status == 20) {
           return this.live.hlsUrls[this.hlsSelected]
-        } else {
-          return this.live.flvUrl
+        } else if (this.live.status == 30) {
+            var video = this.videos[this.videoSelected]
+            if (video.type == 'mp4') {
+              return video.url
+            } else if (video.type == 'm3u8') {
+              return video.m3u8Url
+            }
         }
-      } else if (this.live.status == 30) {
-        var video = this.videos[this.videoSelected]
-        if (video.type == 'mp4') {
-          return video.url
-        } else if (video.type == 'm3u8') {
-          if (util.isWeixinBrowser() || util.isSafari()) {
-            return video.m3u8Url
-          } else {
-            return ''
-          }
-        }
-      }
-      return this.live.hlsUrls[this.hlsSelected]
+        return this.live.hlsUrls[this.hlsSelected]
     },
     liveHost() {
       if (!this.videoSrc) {
