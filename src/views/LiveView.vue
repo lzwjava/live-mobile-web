@@ -50,7 +50,7 @@
 
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
          v-show="currentTab == 0">
-         <div class="members-count" v-show="membersCount">
+         <div class="members-count" v-show="live.status == 20 && membersCount > 0">
            在线 {{membersCount}}
          </div>
 
