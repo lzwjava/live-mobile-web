@@ -60,7 +60,9 @@ export default {
   data() {
     return {
       curUser: {},
-      overlayStatus: false
+      overlayStatus: false,
+      hasDataReady: false,
+      hasDomReady: false
     }
   },
   route: {
@@ -70,13 +72,16 @@ export default {
       Promise.all([
         wechat.configWeixin(this)
       ]).then((values) => {
-        this.initQiniu()
+        this.hasDataReady = true
+        this.tryInitQiniu()
       }, util.promiseErrorFn(this))
     }
   },
   created() {
   },
   ready() {
+    this.hasDomReady = true
+    this.tryInitQiniu()
   },
   methods: {
     updateUser(info) {
@@ -91,6 +96,11 @@ export default {
     },
     editUsername() {
       this.overlayStatus = true
+    },
+    tryInitQiniu() {
+      if (this.hasDomReady && this.hasDataReady) {
+        this.initQiniu()
+      }
     },
     initQiniu() {
       api.get(this, 'files/uptoken').then((res) => {
