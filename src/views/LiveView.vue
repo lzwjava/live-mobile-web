@@ -48,12 +48,41 @@
       </div>
     </div>
 
+    <div class="liveConfigArea" v-if="live.owner.userId == curUser.userId">
+      <div class="live-config-area" v-if="liveConfig == true">
+        <h3>直播控制</h3>
+        <br />
+        <button type="button" name="button" @click="beginLive">开始直播</button>
+        <button type="button" name="button" @click="endLive">结束直播</button>
+        <button type="button" name="button" @click="funcLiveConfigUrl">直播配置</button>
+        <button type="button" name="button" class="live-config-insider-btn-close" @click="funcLiveConfigCloseAll">关闭控制面板</button>
+      </div>
+      <div class="live-config-area" v-if="liveConfigUrl == true">
+        <!-- <h3>直播配置</h3> -->
+        <p>
+          直播地址
+          <br />
+          <p class="live-config-url">{{pushUrl}}</p>
+          <br />
+          海外直播地址
+          <br />
+          <p class="live-config-url">{{foreignPushUrl}}</p>
+          <br />
+          直播密钥
+          <br />
+          <p class="live-config-url">{{rtmpKey}}</p>
+          <br />
+          <button type="button" name="button" class="live-config-insider-btn-close" @click="funcLiveConfigCloseAll">關閉配置面板</button>
+        </p>
+      </div>
+    </div>
+
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
          v-show="currentTab == 0">
          <div class="members-count" v-show="live.status == 20 && membersCount > 0">
            在线 {{membersCount}}
          </div>
-
+         <button type="button" class="live-config-btn" @click="funcLiveConfig" v-if="live.owner.userId == curUser.userId">直播控制</button>
       <ul class="msg-list" v-el:msg-list>
 
         <li class="msg" v-for="msg in msgs">
@@ -209,12 +238,17 @@ export default {
       rewardAmount: 0,
       hasCallReady: false,
       hasGotLive: false,
+      liveConfig: false,
+      liveConfigUrl: false,
+      pushUrl: '',
+      rtmpKey: '',
       useHlsjs: false,
       m3u8Url: '',
       player: null,
       membersCountId: 0,
       randomNum: 0,
-      randomNuMId: 0
+      randomNuMId: 0,
+      foreignPushUrl: ''
     }
   },
   computed: {
@@ -237,7 +271,19 @@ export default {
       }
     },
     videoSrc() {
+      let foreignPushUrl = this.live.foreignPushUrl
+      let pushUrl = this.live.pushUrl
+      let foreignPushUrlProcess = foreignPushUrl.split('/')
+      let pushUrlProcess = pushUrl.split('/')
+      let pushUrlResult = `${pushUrlProcess[0]}//${pushUrlProcess[2]}/${pushUrlProcess[3]}`
+      let foreignPushUrlResult = `${foreignPushUrlProcess[0]}//${foreignPushUrlProcess[2]}/${foreignPushUrlProcess[3]}`
+
+      this.foreignPushUrl = foreignPushUrlResult
+      this.pushUrl = pushUrlResult
+      this.rtmpKey = this.live.rtmpKey
+
         if (!this.live.liveId) {
+
           return ''
         }
         if (this.live.status == 20) {
@@ -780,7 +826,33 @@ export default {
     goUserRoom(userId) {
       debug('goUserRoom: %j', userId)
       this.$router.go('/room/' + userId)
-    }
+    },
+    beginLive() {
+      http.get(this, 'lives/' + this.liveId +'/begin')
+       .then((data) => {
+         util.show(this, 'success', '成功开启直播')
+         // this.fetchLive()
+       }, util.promiseErrorFn(this))
+    },
+    endLive() {
+      http.get(this, 'lives/' + this.liveId +'/end')
+      .then((data) => {
+        util.show(this, 'success', '已设定为转码')
+        // this.fetchLive()
+      }, util.promiseErrorFn(this))
+    },
+    funcLiveConfig() {
+      this.liveConfig = true
+      this.liveConfigUrl = false
+    },
+    funcLiveConfigUrl() {
+      this.liveConfigUrl = true
+      this.liveConfig = false
+    },
+    funcLiveConfigCloseAll() {
+      this.liveConfigUrl = false
+      this.liveConfig = false
+    },
   },
   events: {
     'reward': function (amount) {
@@ -886,6 +958,34 @@ export default {
             height 100%
             background url("../img/video-play.png") center no-repeat
             background-size 100% 100%
+  .live-config-btn
+    top 270px
+    position relative
+    color gray
+    margin 5px
+    padding 5px
+    float right
+    border-radius 5px
+    z-index 100
+  .live-config-area
+    position relative
+    background #fff
+    border-radius 20px
+    text-align center
+    padding 20px 10px
+    margin-left 5%
+    margin-right 5%
+    z-index 100
+    word-break break-all
+    top: -150px
+    button
+      width 80%
+      font-size 16px
+      border-radius 10px
+      height 50px
+      margin-bottom 20px
+      color white
+      background-color #00bdef
   .playlist-area
     height 50px
     .weui_cells
