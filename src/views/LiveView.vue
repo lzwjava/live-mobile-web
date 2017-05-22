@@ -66,17 +66,17 @@
 
             <span class="name" @click="goUserRoom(msg.from)">{{msg.attributes.username}}: </span>
 
-            <span class="content">
+            <div class="content">
 
               <span class="text-content plain-text" v-if="msg.type == -1">
-                {{msg.text}}
+                <pre>{{msg.text}}</pre>
               </span>
 
               <span class="text-content reward-text" v-if="msg.type == 3">
                 {{msg.text}}
               </span>
 
-            </span>
+            </div>
 
           </div>
 
@@ -960,6 +960,11 @@ export default {
               color #FF4747
             .text-content
               word-wrap break-word
+            pre
+              word-wrap break-word
+              word-break normal
+              white-space pre-wrap
+              display inline
     .send-area
       position absolute
       height 40px
