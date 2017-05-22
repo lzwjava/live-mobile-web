@@ -64,27 +64,20 @@
 
           <div class="bubble-msg" v-if="msg.type !=2 ">
 
-            <span class="name" @click="goUserRoom(msg.from)">{{msg.attributes.username}}</span>
+            <span class="name" @click="goUserRoom(msg.from)">{{msg.attributes.username}}: </span>
 
-            <div class="content">
-              <div class="bubble">
-                <div class="text-content bubble-cont" v-if="msg.type == -1">
-                  <div class="plain">
-                    <pre class="text">{{msg.text}}</pre>
-                  </div>
-                </div>
-                <div class="text-content bubble-cont" v-if="msg.type == 3">
-                  <div class="plain">
-                    <pre class="text reward-text">{{msg.text}}</pre>
-                  </div>
-                </div>
-                <div class="audio-content bubble-cont" v-if="msg.type == 1">
-                  <div class="voice" @click="playVoice(msg.attributes.serverId)">
-                    <i class="voice-gray"> </i>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <span class="content">
+
+              <span class="text-content plain-text" v-if="msg.type == -1">
+                {{msg.text}}
+              </span>
+
+              <span class="text-content reward-text" v-if="msg.type == 3">
+                {{msg.text}}
+              </span>
+
+            </span>
+
           </div>
 
         </li>
@@ -785,7 +778,9 @@ export default {
     },
     goUserRoom(userId) {
       debug('goUserRoom: %j', userId)
-      this.$router.go('/room/' + userId)
+      if (userId) {
+        this.$router.go('/room/' + userId)
+      }
     }
   },
   events: {
@@ -939,6 +934,7 @@ export default {
       top 5px
       bottom 45px
       .msg
+        padding 0 5px
         .system-msg
           margin-bottom 0px
           text-align center
@@ -950,56 +946,20 @@ export default {
             color #fff
             display inline-block
         .bubble-msg
-          margin-bottom 5px
+          display inline-block
+          margin-bottom 6px
+          background #fff
+          padding 2px 5px
+          border-radius 5px
+          font-size 14px
           .name
-            color #868686
-            float left
+            color #009CC6
           .content
-            overflow hidden
-            .bubble
-              max-width 85%
-              min-height 14px
-              margin 0 10px
-              border-radius 3px
-              vertical-align top
-              background-color #fff
-              display inline-block
-              position relative
-              &:before
-              &:after
-                border 5px solid transparent
-                content " "
-                position absolute
-                top 8px
-                right 100%
-              &:after
-                border-right-color #fff
-                border-right-width 5px
-              .bubble-cont
-                word-wrap break-word
-                word-break break-all
-                min-height 25px
-              .audio-content
-                .voice
-                  width 40px
-                  padding 0px 0px
-                  .voice-gray
-                    background url("../img/sprite.png") 0 -2427px
-                    width 23px
-                    height 23px
-                    display inline-block
-                    vertical-align middle
-                    background-size 150px 2489px
-              .text-content
-                .plain
-                  padding 3px 5px
-                  font-size 14px
-                  pre
-                    word-wrap break-word
-                    word-break normal
-                    white-space pre-wrap
-                  .reward-text
-                    color #d65239
+            display inline
+            .reward-text
+              color #FF4747
+            .text-content
+              word-wrap break-word
     .send-area
       position absolute
       height 40px
