@@ -240,8 +240,14 @@ export default {
         if (!this.live.liveId) {
           return ''
         }
-        if (this.live.status == 20) {
-          return this.live.hlsUrls[this.hlsSelected]
+        if (this.live.status < 20) {
+          return ''
+        } else if (this.live.status == 20) {
+          if (util.isWeixinBrowser() || util.isSafari()) {
+            return this.live.hlsUrls[this.hlsSelected]
+          } else {
+            return this.live.webHlsUrl
+          }
         } else if (this.live.status == 30) {
             var video = this.videos[this.videoSelected]
             if (video.type == 'mp4') {
@@ -297,7 +303,7 @@ export default {
     debug("attached")
     if (this.useHlsjs) {
       debug("attached m3u8", this.m3u8Url)
-      this.hlsPlay(this.m3u8Url)
+      // this.hlsPlay(this.m3u8Url)
     }
   },
   detached() {
@@ -612,7 +618,7 @@ export default {
         player.play()
       })
       hls.on(Hls.Events.ERROR, () => {
-        util.show(this, 'error', '播放器错误，请刷新重试')
+        // util.show(this, 'error', '播放器错误，请刷新重试')
       })
       this.playStatus = 1
       setTimeout(() => {
