@@ -324,6 +324,7 @@ export default {
   },
   watch: {
     videoSelected: function(val, oldVal) {
+      this.setPlayerSrc()
       this.canPlayClick()
     }
   },
