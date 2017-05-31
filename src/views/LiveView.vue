@@ -330,7 +330,6 @@ export default {
   },
   route: {
     data ({to}) {
-      util.initTitle()
       var liveId = to.params.liveId
       if (liveId == this.liveId) {
         setTimeout(() => {

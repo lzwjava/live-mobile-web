@@ -61,7 +61,6 @@ export default {
   },
   route: {
     data ({to}) {
-      util.initTitle()
     }
   },
   methods: {
