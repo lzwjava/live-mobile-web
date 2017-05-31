@@ -181,7 +181,7 @@ function shareLive(comp, live, curUser) {
     iconUrl = live.coverUrl
   }
   var title = live.owner.username + '在趣直播：' + live.subject
-  var desc = '来自趣直播-知识直播平台。'
+  var desc = '来自趣直播-技术直播平台。'
   var timelineTitle
   if (curUser && curUser.userId) {
     timelineTitle = title + ' | 邀请自' + curUser.username
@@ -192,7 +192,7 @@ function shareLive(comp, live, curUser) {
 }
 
 function shareApp(comp) {
-  var title = '趣直播-知识直播平台'
+  var title = '趣直播-技术直播平台'
   share(title, 'http://i.quzhiboapp.com/logo.png', title, linkUrl(0), 0)
 }
 
