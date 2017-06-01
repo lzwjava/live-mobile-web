@@ -5,30 +5,30 @@
 		<div class="close-btn" @click="close()">X</div>
 		
 		<div class="live-config-area" v-if="liveConfig">
-	        <h2>直播控制</h2>
-	        <br>
-	        <button class="begin-btn" @click="beginLive">开始直播</button>
-	        <br>
-	        <button class="finish-btn" @click="finishLive">结束直播</button>
-	        <br>
-	        <button @click="funcLiveConfigUrl">直播配置</button>
-	        <br>
+			<h2>直播控制</h2>
+			<br>
+			<button class="begin-btn" @click="beginLive">开始直播</button>
+			<br>
+			<button class="finish-btn" @click="finishLive">结束直播</button>
+			<br>
+			<button @click="funcLiveConfigUrl">直播配置</button>
+			<br>
        	</div>
 
        	<div class="live-config-area live-url-area" v-if="liveConfigUrl">
-            直播地址:
-            <br>
-            <p class="live-config-url">{{pushPrefix}}</p>
-            <br>
-            海外直播地址:
-            <br>
-            <p class="live-config-url">{{foreignPushPrefix}}</p>
-            <br>
-            直播密钥:
-            <br>
-            <p class="live-config-url">{{pushKey}}</p>
-            <br>
-            <button class="live-config-insider-btn-close" @click="funcLiveConfigUrl">返回</button>
+			直播地址:
+			<br>
+			<p class="live-config-url">{{pushPrefix}}</p>
+			<br>
+			海外直播地址:
+			<br>
+			<p class="live-config-url">{{foreignPushPrefix}}</p>
+			<br>
+			直播密钥:
+			<br>
+			<p class="live-config-url">{{pushKey}}</p>
+			<br>
+			<button class="live-config-insider-btn-close" @click="funcLiveConfigUrl">返回</button>
        	</div>
 
 	</div>
@@ -82,7 +82,7 @@ export default {
 			 }, util.promiseErrorFn(this))
 		},
 		beginLive () {
-			if (confirm('开始之后，观众可看到直播画面。请和趣直播运营确认！！！确定要继续开始直播？')) {
+			if (confirm('开始之后，观众可看到直播画面。是否确定继续开始直播？')) {
 				api.get(this, 'lives/' + this.liveId + '/begin')
 				 .then((data) => {
 				 	util.show(this, 'success', '成功开启直播')
