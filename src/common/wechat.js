@@ -2,7 +2,8 @@ import crypto from 'crypto'
 import util from './util'
 import http from '../common/api'
 import {sprintf} from 'sprintf-js'
-var debug = require('debug')('wechat');
+import wx from 'weixin-js-sdk'
+var debug = require('debug')('wechat')
 
 var weixinAppId = 'wx7b5f277707699557'
 

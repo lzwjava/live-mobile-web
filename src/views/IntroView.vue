@@ -146,6 +146,7 @@ import RecommendLiveList from '../components/RecommendLiveList.vue'
 import {Button, Toast} from 'vue-weui'
 import SubscribeForm from '../components/SubscribeForm.vue'
 import wechat from '../common/wechat'
+import wx from 'weixin-js-sdk'
 
 var debug = require('debug')('IntroView');
 

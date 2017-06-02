@@ -123,7 +123,8 @@ import Markdown from '../components/markdown.vue'
 import SubscribeForm from '../components/SubscribeForm.vue'
 import QrcodePayForm from '../components/QrcodePayForm.vue'
 import {sprintf} from 'sprintf-js'
-import Hls from "hls.js"
+import Hls from 'hls.js'
+import wx from 'weixin-js-sdk'
 
 var debug = require('debug')('LiveView')
 var lcChat = require('leancloud-realtime')
