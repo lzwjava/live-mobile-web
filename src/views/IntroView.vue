@@ -536,7 +536,7 @@ export default {
       this.$router.go('/editLive/' + this.liveId)
     },
     clickCover() {
-      util.show(this, 'warn', '请点击底下蓝色按钮，来进入直播间')
+      this.attendLive()
     }
   },
   events:  {
