@@ -50,9 +50,12 @@
 
     <div class="chat-area tab-sub-area" :style="{top: (videoHeight + optionHeight + 35) + 'px'}"
          v-show="currentTab == 0">
+
          <div class="members-count" v-show="live.status == 20 && membersCount > 0">
            在线 {{membersCount}}
          </div>
+
+         <button type="button" class="live-config-btn" @click="showControlForm" v-if="live.owner.userId == curUser.userId">直播控制</button>
 
       <ul class="msg-list" v-el:msg-list>
 
@@ -118,6 +121,7 @@ import wechat from '../common/wechat'
 import Loading from '../components/loading.vue'
 import {Toast, SelectCell, Cells} from 'vue-weui'
 import RewardForm from '../components/RewardForm.vue'
+import ControlForm from '../components/ControlForm.vue'
 import Overlay from '../components/overlay.vue'
 import Markdown from '../components/markdown.vue'
 import SubscribeForm from '../components/SubscribeForm.vue'
@@ -167,6 +171,7 @@ export default {
     SelectCell,
     Cells,
     RewardForm,
+    ControlForm,
     Overlay,
     'markdown': Markdown,
     'subscribe-form': SubscribeForm,
@@ -675,6 +680,10 @@ export default {
       this.currentView = 'reward-form'
       this.overlayStatus = true
     },
+    showControlForm() {
+      this.currentView = 'control-form'
+      this.overlayStatus = true
+    },
     startLiveView(live) {
       http.post(this, 'liveViews', {
         liveId: live.liveId,
@@ -888,6 +897,17 @@ export default {
             height 100%
             background url("../img/video-play.png") center no-repeat
             background-size 100% 100%
+  .live-config-btn
+    bottom 50px
+    right 10px
+    position absolute
+    color #fff
+    background-color #00bdef
+    margin 5px
+    padding 5px
+    float right
+    border-radius 5px
+    z-index 100
   .playlist-area
     height 50px
     .weui_cells
