@@ -1,21 +1,24 @@
 <template>
-	
+
 	<div class="control-form" @click="stop($event)">
 
 		<div class="close-btn" @click="close()">X</div>
-		
+
 		<div class="live-config-area" v-if="liveConfig">
 			<h2>直播控制</h2>
 			<br>
+
+			<button @click="showLiveConfigUrl">直播配置</button>
+			<br>
+
 			<button class="begin-btn" @click="beginLive">开始直播</button>
 			<br>
+
 			<button class="finish-btn" @click="finishLive">结束直播</button>
 			<br>
-			<button @click="funcLiveConfigUrl">直播配置</button>
-			<br>
-       	</div>
+		</div>
 
-       	<div class="live-config-area live-url-area" v-if="liveConfigUrl">
+    <div class="live-config-area live-url-area" v-if="liveConfigUrl">
 			直播地址:
 			<br>
 			<p class="live-config-url">{{pushPrefix}}</p>
@@ -28,8 +31,8 @@
 			<br>
 			<p class="live-config-url">{{pushKey}}</p>
 			<br>
-			<button class="live-config-insider-btn-close" @click="funcLiveConfigUrl">返回</button>
-       	</div>
+			<button class="live-config-insider-btn-close" @click="showLiveConfigUrl">返回</button>
+		</div>
 
 	</div>
 
@@ -75,18 +78,11 @@ export default {
 		close () {
 			this.$parent.overlay = false
 		},
-		fetchLive () {
-			api.get(this, 'lives/' + this.liveId)
-			 .then((data) => {
-			 	this.live = data
-			 }, util.promiseErrorFn(this))
-		},
 		beginLive () {
 			if (confirm('开始之后，观众可看到直播画面。是否确定继续开始直播？')) {
 				api.get(this, 'lives/' + this.liveId + '/begin')
 				 .then((data) => {
 				 	util.show(this, 'success', '成功开启直播')
-				 	this.fetchLive()
 				 }, util.promiseErrorFn(this))
 			}
 		},
@@ -95,11 +91,10 @@ export default {
 				api.get(this, 'lives/' + this.liveId + '/finish')
 				 .then((data) => {
 				 	util.show(this, 'success', '成功结束直播')
-				 	this.fetchLive()
 				 }, util.promiseErrorFn(this))
 			}
 		},
-		funcLiveConfigUrl () {
+		showLiveConfigUrl () {
 			this.liveConfig = !this.liveConfig
 			this.liveConfigUrl = !this.liveConfigUrl
 		},
@@ -116,7 +111,7 @@ export default {
 
 	}
 }
-	
+
 </script>
 
 <style media="screen" lang="stylus">
@@ -133,14 +128,13 @@ export default {
 	border-radius 15px
 	.close-btn
 		float right
-		color red
 		font-size 20px
 		margin-right 12px
 		margin-top 12px
 		line-height 10px
 	.live-config-area
 		padding-top 30px
-		button 
+		button
 			width 80%
 			font-size 16px
 			border-radius 10px
@@ -152,6 +146,6 @@ export default {
 			background-color #ff4747
 	.live-url-area
 		padding-top 50px
-		word-break break-all		
+		word-break break-all
 
 </style>
