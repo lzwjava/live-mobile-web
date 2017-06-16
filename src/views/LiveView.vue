@@ -909,7 +909,7 @@ export default {
     border-radius 5px
     z-index 100
   .playlist-area
-    height 50px
+    height 44px
     .weui_cells
       margin-top 0px !important
       background-color #f1f1f1
