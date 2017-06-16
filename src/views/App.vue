@@ -56,13 +56,11 @@ export default {
       toastText: '',
       overlayStatus: false,
       currentView: 'login-options-form',
-      liveId: 0
+      liveId: 0,
+      options: []
     }
   },
   computed: {
-    options() {
-      return ['电脑登录', '电脑注册', '手机登录']
-    }
   },
   created() {
   },
@@ -70,14 +68,20 @@ export default {
   },
   methods: {
     loginOrRegister(liveId) {
+        window.localStorage.setItem('liveId', liveId)
+        window.localStorage.setItem('type', 'live')
         if (util.isWeixinBrowser()) {
-          window.localStorage.setItem('liveId', liveId)
-          window.localStorage.setItem('type', 'live')
           wechat.oauth2()
         } else {
           this.liveId = liveId
-          this.currentView = 'login-options-form'
-          this.overlayStatus = true
+          if (util.isMobileBrowser()) {
+            this.currentView = 'weibo-form'
+            this.overlayStatus = true
+          } else {
+            this.options = ['登录', '注册']
+            this.currentView = 'login-options-form'
+            this.overlayStatus = true
+          }
         }
     }
   },
@@ -105,22 +109,17 @@ export default {
     },
     'hideLoginOptionsForm': function(type) {
         if (this.currentView == 'login-options-form') {
-            if (type == 0) {
-                setTimeout(() => {
-                    this.currentView = 'login-form'
-                    this.overlayStatus = true
-                }, 600)
-            } else if (type == 2) {
-                setTimeout(() => {
-                    this.currentView = 'weibo-form'
-                    this.overlayStatus = true
-                }, 600)
-            } else if (type == 1) {
-                setTimeout(() => {
-                    this.currentView = 'register-form'
-                    this.overlayStatus = true
-                }, 600)
-            }
+          if (type == 0) {
+            setTimeout(() => {
+                this.currentView = 'login-form'
+                this.overlayStatus = true
+            }, 600)
+          } else if (type == 1) {
+            setTimeout(() => {
+                this.currentView = 'register-form'
+                this.overlayStatus = true
+            }, 600)
+          }
         }
     },
     'updateCurUser': function () {
