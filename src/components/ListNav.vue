@@ -97,6 +97,10 @@ export default {
         }
     },
     events: {
+      'updateCurUser': function() {
+        this.curUser = util.curUser({})
+        debug('updateCurUser in ListNav')
+      }
     }
 }
 </script>

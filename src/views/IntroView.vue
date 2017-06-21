@@ -575,6 +575,10 @@ export default {
     },
     'payFinish': function () {
       this.payFinishAndIntoLive()
+    },
+    'updateCurUser': function() {
+      debug('updateCurUser in IntroView')
+      this.loadAllData()
     }
   }
 }

@@ -71,6 +71,7 @@ export default {
           .then((data) => {
             util.saveCurUser(data)
             util.loaded(this)
+            this.$dispatch('updateCurUser')
             this.goLiveOrList()
           }, errorFn)
       } else if (params.type == 'oauth') {
@@ -79,6 +80,7 @@ export default {
           .then((data) => {
             util.loaded(this)
             util.saveCurUser(data)
+            this.$dispatch('updateCurUser')
             this.goLiveOrList()
           }, errorFn)
       } else if (params.type == 'oauthTest') {

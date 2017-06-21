@@ -81,6 +81,7 @@ export default {
       api.get(this, 'logout').then((resp) => {
         this.curUser = {}
         util.removeCurUser()
+        this.$dispatch('updateCurUser')
         this.$router.go('/lives')
       }, util.promiseErrorFn(this))
     },
