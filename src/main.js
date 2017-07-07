@@ -25,6 +25,7 @@ import EditUserView from './views/EditUserView.vue'
 import RoomView from './views/RoomView.vue'
 import EditLiveView from './views/EditLiveView.vue'
 import EditDetailView from './views/EditDetailView.vue'
+import CardView from './views/CardView.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -76,6 +77,9 @@ router.map({
   },
   '/live/:liveId/users': {
     component: UsersView
+  },
+  '/live/:liveId/card': {
+    component: CardView
   },
   'wechat/:type': {
     component: WeChatView

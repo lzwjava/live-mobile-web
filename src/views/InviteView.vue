@@ -12,7 +12,9 @@
         <div class="name">{{curUser.username}}</div>
       </div>
 
-      <button class="btn-invite btn btn-blue" @click="showShareLead">邀请朋友</button>
+      <button class="btn-card btn btn-blue" @click="goCard">生成邀请卡</button>
+
+      <button class="btn-invite btn btn-blue" @click="showShareLead">邀请链接</button>
 
       <button class="btn-withdraw btn btn-gray" @click="goAccount">提现</button>
 
@@ -156,6 +158,9 @@ export default {
     },
     goUserRoom(userId) {
       this.$router.go('/room/' + userId)
+    },
+    goCard() {
+      this.$router.go('/live/'+this.liveId+'/card')
     }
   },
   events: {
@@ -199,6 +204,13 @@ export default {
     .btn-withdraw
     .btn-invite
       width 80px
+      display inline-block
+      margin-top 10px
+      vertical-align top
+      margin-left 10px
+      font-size 14px
+    .btn-card
+      width 100px
       display inline-block
       margin-top 10px
       vertical-align top

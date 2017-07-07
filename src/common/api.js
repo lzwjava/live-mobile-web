@@ -107,6 +107,10 @@ var fetchOneUser = function (comp, userId) {
   return get(comp, 'users/' + userId)
 }
 
+var makeInvitationCard = function(comp, liveId) {
+  return get(comp, 'lives/' + liveId + '/card')
+}
+
 var saveLiveData = function (comp, liveId, data) {
   return new Promise(
     (resolve, reject) => {
@@ -127,6 +131,7 @@ exports.fetchPartUsers = fetchPartUsers
 exports.fetchCurUser = fetchCurUser
 exports.fetchCurUserNoError = fetchCurUserNoError
 exports.fetchOneUser = fetchOneUser
+exports.makeInvitationCard = makeInvitationCard
 exports.post = post
 exports.get = get
 exports.saveLiveData = saveLiveData
