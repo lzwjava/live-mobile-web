@@ -14,7 +14,7 @@
 
       <button class="btn-card btn btn-blue" @click="goCard">生成邀请卡</button>
 
-      <button class="btn-invite btn btn-blue" @click="showShareLead">邀请链接</button>
+      <button class="btn-invite btn btn-blue" @click="showShareLead">链接</button>
 
       <button class="btn-withdraw btn btn-gray" @click="goAccount">提现</button>
 
@@ -189,7 +189,7 @@ export default {
   .me
     margin-top 10px
     background-color #fff
-    padding 5px 20px
+    padding 5px 10px
     margin-bottom 5px
     .avatar
       width 50px
@@ -202,19 +202,25 @@ export default {
       .name
         font-size 16px
     .btn-withdraw
+      width 50px
+      display inline-block
+      margin-top 10px
+      vertical-align top
+      margin-left 13px
+      font-size 14px
     .btn-invite
-      width 80px
+      width 50px
       display inline-block
       margin-top 10px
       vertical-align top
       margin-left 10px
       font-size 14px
     .btn-card
-      width 100px
+      width 90px
       display inline-block
       margin-top 10px
       vertical-align top
-      margin-left 10px
+      margin-left 1px
       font-size 14px
   .invite-list
     margin-top 10px

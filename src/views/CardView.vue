@@ -122,11 +122,10 @@ export default {
     text-align center
 
   .tips-area
-    margin-top 20px
+    margin 20px
     text-align left
     p
       font-size 30px
-      color #828282
       font-size 14px
 
 
