@@ -111,6 +111,7 @@ export default {
 
 @import "../stylus/variables.styl"
 .invite-view
+  background-color #D2D2D2
   .card
     background-color #2c2c2c
     text-align center
@@ -126,7 +127,6 @@ export default {
     text-align left
     p
       font-size 30px
-      color #828282
       font-size 14px
 
 
