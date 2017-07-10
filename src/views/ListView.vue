@@ -2,6 +2,18 @@
 
   <div class="list-view">
 
+    <div class="tab-area">
+
+      <div class="tab-item" @click="showNewLiveList" v-bind:class="{active: curTab == 0}">
+        最新直播
+      </div>
+
+      <div class="tab-item" @click="showHotLiveList" v-bind:class="{active: curTab == 1}">
+        热门直播
+      </div>
+
+    </div>
+
     <div class="live-container">
 
       <!-- <div class="subscribe" @click="goSubscribe">
@@ -11,7 +23,6 @@
       <!-- <div class="subscribe" @click="goCreate">
         <span class="subscribe-btn" >发起直播</span>
       </div> -->
-
       <live-list :lives="lives"></live-list>
     </div>
 
@@ -37,19 +48,23 @@ export default {
   },
   data() {
     return {
-      lives: []
+      lives: [],
+      hotLives: [],
+      newLives: [],
+      curTab: 0,
     }
   },
   created() {
     util.loading(this)
     Promise.all([
-      http.get(this, 'lives/on'),
+      http.get(this, 'lives/listOrderByPlanTs'),
+      http.get(this, 'lives/listOrderByAttendance'),
       wechat.configWeixin(this)
     ]).then(values => {
       util.loaded(this)
-
-      this.lives = values[0]
-
+      this.livesNew = values[0]
+      this.livesHot = values[1]
+      this.lives = this.livesNew
       wechat.showOptionMenu()
       wechat.shareApp(this)
 
@@ -60,6 +75,16 @@ export default {
     }
   },
   methods: {
+    showNewLiveList() {
+      this.curTab = 0
+      this.lives = this.livesNew
+    },
+
+    showHotLiveList() {
+      this.curTab = 1
+      this.lives = this.livesHot
+    },
+
     goSubscribe() {
       this.$router.go('/contact')
     },
@@ -79,5 +104,19 @@ export default {
     width 100%
     min-height 100%
     margin-bottom 54px
+
+  .tab-area
+    display flex
+    height 40px
+    .tab-item
+      flex-grow 1
+      background-color #fff
+      text-align center
+      line-height 40px
+      transition all .5s ease
+      color rgb(112, 112, 112)
+      &.active
+        color #00BDEF
+        border-bottom 1px solid #00BDEF
 
 </style>
