@@ -4,29 +4,21 @@
 
     <div class="tab-area">
 
-      <div class="tab-item" @click="showNewLiveList" v-bind:class="{active: curTab == 0}">
+      <div class="tab-item" @click="showNewLiveList" v-bind:class="{active: curTab === 0}">
         最新直播
       </div>
 
-      <div class="tab-item" @click="showHotLiveList" v-bind:class="{active: curTab == 1}">
+      <div class="tab-item" @click="showHotLiveList" v-bind:class="{active: curTab === 1}">
         热门直播
       </div>
 
     </div>
 
     <div class="live-container">
-
-      <!-- <div class="subscribe" @click="goSubscribe">
-        <span class="subscribe-btn" >订阅直播</span>
-      </div> -->
-
-      <!-- <div class="subscribe" @click="goCreate">
-        <span class="subscribe-btn" >发起直播</span>
-      </div> -->
-      <live-list :lives="lives"></live-list>
+      <live-list :lives="lives" />
     </div>
 
-    <tab-bar :active-index="0"></tab-bar>
+    <tab-bar :active-index="0" />
 
   </div>
 
@@ -46,7 +38,7 @@ export default {
     'live-list': LiveList,
     'tab-bar': Tabbar
   },
-  data() {
+  data () {
     return {
       lives: [],
       hotLives: [],
@@ -54,7 +46,7 @@ export default {
       curTab: 0,
     }
   },
-  created() {
+  created () {
     util.loading(this)
     Promise.all([
       http.get(this, 'lives/listOrderByPlanTs'),
@@ -67,28 +59,23 @@ export default {
       this.lives = this.livesNew
       wechat.showOptionMenu()
       wechat.shareApp(this)
-
     }).catch(util.promiseErrorFn(this))
   },
-  route: {
-    data ({to}) {
-    }
-  },
   methods: {
-    showNewLiveList() {
+    showNewLiveList () {
       this.curTab = 0
       this.lives = this.livesNew
     },
 
-    showHotLiveList() {
+    showHotLiveList () {
       this.curTab = 1
       this.lives = this.livesHot
     },
 
-    goSubscribe() {
+    goSubscribe () {
       this.$router.go('/contact')
     },
-    goCreate() {
+    goCreate () {
       this.$router.go('/scan')
     }
   }

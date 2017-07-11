@@ -69,8 +69,6 @@ export default {
 
     }).catch(util.promiseErrorFn(this))
   },
-  ready() {
-  },
   methods: {
     bind () {
       api.post(this, 'staffs', {

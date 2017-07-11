@@ -8,7 +8,7 @@
       </span>
 
       <span class="edit-right" id="pickfiles">
-        <user-avatar class="edit-avatar" :user="curUser"></user-avatar>
+        <user-avatar class="edit-avatar" :user="curUser" />
       </span>
 
     </div>
@@ -27,7 +27,7 @@
     </div>
 
     <overlay :overlay.sync="overlayStatus">
-        <input-text-form title="名称" :text="curUser.username"></input-text-form>
+        <input-text-form title="名称" :text="curUser.username" />
     </overlay>
 
   </div>
@@ -48,7 +48,7 @@ require('moxie')
 require('plupload') // use for Qiniu js sdk
 import Qiniu from 'qiniu-js-sdk'
 
-var debug = debugFn('EditUserView')
+const debug = debugFn('EditUserView')
 
 export default {
   name: 'EditUserView',
@@ -66,50 +66,48 @@ export default {
     }
   },
   route: {
-    data ({to}) {
+    data ({ to }) {
       this.curUser = util.curUser()
 
       Promise.all([
         wechat.configWeixin(this)
-      ]).then((values) => {
+      ]).then(values => {
         this.hasDataReady = true
         this.tryInitQiniu()
       }, util.promiseErrorFn(this))
     }
-  },
-  created() {
   },
   ready() {
     this.hasDomReady = true
     this.tryInitQiniu()
   },
   methods: {
-    updateUser(info) {
+    updateUser (info) {
       util.loading(this)
-      api.post(this,'self', info)
-       .then((data) => {
+      api.post(this, 'self', info)
+       .then(data => {
          util.loaded(this)
          util.saveCurUser(data)
          this.$dispatch('updateCurUser')
          util.show(this, 'success', '更新成功')
        }, util.promiseErrorFn(this))
     },
-    editUsername() {
+    editUsername () {
       this.overlayStatus = true
     },
-    tryInitQiniu() {
+    tryInitQiniu () {
       if (this.hasDomReady && this.hasDataReady) {
         this.initQiniu()
       }
     },
-    initQiniu() {
-      api.get(this, 'files/uptoken').then((res) => {
-        var result = res
-        var uptoken = result.uptoken
-        var bucketUrl = result.bucketUrl
+    initQiniu () {
+      api.get(this, 'files/uptoken').then(res => {
+        let result = res
+        let uptoken = result.uptoken
+        let bucketUrl = result.bucketUrl
         this.bucketUrl = bucketUrl
-        var key =result.key
-        var uploader = Qiniu.uploader({
+        let key =result.key
+        let uploader = Qiniu.uploader({
           runtimes: 'html5,flash,html4',    //上传模式,依次退化
           browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
           uptoken_url: 'useless',

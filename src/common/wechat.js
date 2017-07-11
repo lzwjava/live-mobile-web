@@ -3,18 +3,18 @@ import util from './util'
 import http from '../common/api'
 import {sprintf} from 'sprintf-js'
 import wx from 'weixin-js-sdk'
-var debug = require('debug')('wechat')
+const debug = require('debug')('wechat')
 
-var weixinAppId = 'wx7b5f277707699557'
+const weixinAppId = 'wx7b5f277707699557'
 
-var baseOauthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?' +
+const baseOauthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?' +
 'appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s'
 
-var weixinOauthUrl = (state, scope, redirectUrl) => {
+const weixinOauthUrl = (state, scope, redirectUrl) => {
   return sprintf(baseOauthUrl, weixinAppId, encodeURIComponent(redirectUrl),scope,state)
 }
 
-var weixinOauthUserUrl = (state) => {
+const weixinOauthUserUrl = (state) => {
   var redirectUrl;
   if (util.isDebug()) {
     redirectUrl = 'http://m.quzhiboapp.com/#wechat/oauthTest'
@@ -24,7 +24,7 @@ var weixinOauthUserUrl = (state) => {
   return weixinOauthUrl(state, 'snsapi_userinfo', redirectUrl)
 }
 
-var weixinSilentOauthUrl = (state) => {
+const weixinSilentOauthUrl = (state) => {
   var redirectUrl;
   if (util.isDebug()) {
     redirectUrl = 'http://m.quzhiboapp.com/#wechat/silentOauthTest'
@@ -36,7 +36,7 @@ var weixinSilentOauthUrl = (state) => {
 
 function logout(comp, fn) {
   comp.$http.get('logout')
-  .then((resp) => {
+  .then(resp => {
     if (util.filterError(comp, resp)) {
       fn && fn()
     }
@@ -45,14 +45,14 @@ function logout(comp, fn) {
 
 function loadUser() {
   if(window.localStorage.getItem('qzb.user')){
-    return JSON.parse(window.localStorage.getItem('qzb.user'));
+    return JSON.parse(window.localStorage.getItem('qzb.user'))
   }
-  return null;
+  return null
 }
 
 function setUser(user) {
   if (user && user.username) {
-    window.localStorage.setItem('qzb.user',JSON.stringify(user));
+    window.localStorage.setItem('qzb.user',JSON.stringify(user))
     return true
   }
   return false
@@ -146,7 +146,7 @@ var menuList = ['menuItem:share:appMessage', 'menuItem:share:timeline',
 
 function showOptionMenu() {
   wx.ready(function () {
-    wx.showOptionMenu();
+    wx.showOptionMenu()
   })
 }
 

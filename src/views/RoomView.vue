@@ -14,7 +14,7 @@
 
     </div>
 
-    <div class="createLive" v-if="curUser.userId == userId">
+    <div class="createLive" v-if="curUser.userId === userId">
       <button type="button" name="button" class="createLiveBtn" @click="createLive">
         <h2>发起直播</h2>
       </button>
@@ -22,11 +22,11 @@
 
     <div class="tab-area">
 
-      <div class="tab-item" @click="showAttend" v-bind:class="{active: curTab == 0}">
+      <div class="tab-item" @click="showAttend" v-bind:class="{active: curTab === 0}">
         参与的直播({{attendLives.length}})
       </div>
 
-      <div class="tab-item" @click="showCreate" v-bind:class="{active: curTab == 1}">
+      <div class="tab-item" @click="showCreate" v-bind:class="{active: curTab === 1}">
         创建的直播({{createLives.length}})
       </div>
 
@@ -34,12 +34,12 @@
 
     <div class="live-list">
 
-      <div class="attend-lives" v-show="curTab == 0">
-        <live-list :lives="attendLives"></live-list>
+      <div class="attend-lives" v-show="curTab === 0">
+        <live-list :lives="attendLives" />
       </div>
 
-      <div class="create-lives" v-show="curTab == 1">
-        <live-list :lives="createLives"></live-list>
+      <div class="create-lives" v-show="curTab === 1">
+        <live-list :lives="createLives" />
       </div>
 
     </div>
@@ -55,7 +55,7 @@ import util from '../common/util'
 import api from '../common/api'
 import LiveList from '../components/LiveList.vue'
 
-var debug = debugFn('RoomView')
+const debug = debugFn('RoomView')
 
 export default {
   name: 'RoomView',
@@ -74,33 +74,29 @@ export default {
     }
   },
   route: {
-    data ({to}) {
-      if (!util.checkInSession(this)) {
-        return
-      }
+    data ({ to }) {
+      if (!util.checkInSession(this)) return
 
       this.curUser = util.curUser()
 
-      var userId = to.params.userId
-      if (userId == this.userId) {
-        return
-      }
+      let userId = to.params.userId
+      if (userId === this.userId) return
       this.userId = userId
 
       this.from = to.query.from
-      if (this.from == 'profile') {
+      if (this.from === 'profile') {
         this.curTab = 1
       }
       util.loading(this)
       Promise.all([
-        api.get(this, 'users/' + this.userId),
+        api.get(this, `users/${this.userId}`),
         api.get(this, 'lives/userLives', {
           userId: this.userId
         }),
         api.get(this, 'lives/attended', {
           userId: this.userId
         })
-      ]).then((values) => {
+      ]).then(values => {
         util.loaded(this)
         this.user = values[0]
         this.createLives = values[1]
@@ -109,21 +105,19 @@ export default {
     }
   },
   methods: {
-    showCreate() {
+    showCreate () {
       this.curTab = 1
     },
-    showAttend() {
+    showAttend () {
       this.curTab = 0
     },
-    createLive() {
+    createLive () {
       util.loading(this)
-      api.post(this, 'lives/').then((data) => {
+      api.post(this, 'lives/').then(data => {
         util.loaded(this)
         this.$router.go(`/editLive/${data.liveId}`)
       }).catch(util.promiseErrorFn(this))
     }
-  },
-  events: {
   }
 }
 

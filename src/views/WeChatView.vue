@@ -8,29 +8,17 @@
 import util from '../common/util'
 import http from '../common/api'
 
-var debug = require('debug')('WeChatView')
+const debug = require('debug')('WeChatView')
 
 export default {
   name: 'WeChatView',
-  components: {
-  },
-  data() {
-    return {
-    }
-  },
-  methods: {
-  },
-  computed: {
-  },
-  created() {
-  },
   methods: {
     goLiveOrList() {
-      var type = window.localStorage.getItem('type')
-      if (type == 'live') {
+      let type = window.localStorage.getItem('type')
+      if (type === 'live') {
         var liveId = window.localStorage.getItem('liveId')
         if (liveId && liveId > 0) {
-          this.$router.replace('/intro/' + liveId)
+          this.$router.replace(`/intro/${liveId}`)
         } else {
           this.$router.replace('/lives')
         }
@@ -40,76 +28,75 @@ export default {
     }
   },
   route: {
-    data({to}) {
-      var params = this.$route.params
+    data({ to }) {
+      const params = this.$route.params
       if (!params.type) {
         util.show(this, 'error', '路径错误')
         return
       }
-      var type = params.type
-      var hostname = window.location.hostname
-      var isLoalhost = hostname  == 'localhost'
+      let type = params.type
+      let hostname = window.location.hostname
+      let isLoalhost = hostname  == 'localhost'
       debug('WeChatView created')
-      var query = this.$route.query
+      let query = this.$route.query
       if (!query.code || !query.state) {
         util.show(this, 'error', '缺少参数')
         return
       }
-      var code = query.code
-      var state = query.state
-      var errorFn = (error) => {
-        if (error && error.indexOf('invalid code') != -1) {
+      let code = query.code
+      let state = query.state
+      let errorFn = (error) => {
+        if (error && error.indexOf('invalid code') !== -1) {
           debug('history back')
           window.history.back()
         } else {
           util.show(this, 'error', error)
         }
       }
-      if (params.type == 'silentOauth') {
+      if (params.type === 'silentOauth') {
         util.loading(this)
         http.get(this, 'wechat/silentOauth', {code: code})
-          .then((data) => {
+          .then(data => {
             util.loaded(this)
             util.saveCurUser(data)
             this.$dispatch('updateCurUser')
             this.goLiveOrList()
           }, errorFn)
-      } else if (params.type == 'oauth') {
+      } else if (params.type === 'oauth') {
         util.loading(this)
         http.get(this, 'wechat/oauth', {code: code})
-          .then((data) => {
+          .then(data => {
             util.loaded(this)
             util.saveCurUser(data)
             this.$dispatch('updateCurUser')
             this.goLiveOrList()
           }, errorFn)
-      } else if (params.type == 'oauthTest') {
-        var url = window.location.href
-        var newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
+      } else if (params.type === 'oauthTest') {
+        let url = window.location.href
+        let newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
         newUrl = newUrl.replace('oauthTest', 'oauth')
         window.location = newUrl
-      } else if (params.type == 'silentOauthTest') {
-        var url = window.location.href
-        var newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
+      } else if (params.type === 'silentOauthTest') {
+        let url = window.location.href
+        let newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
         newUrl = newUrl.replace('silentOauthTest', 'silentOauth')
         window.location = newUrl
-      } else if (params.type == 'webOauth') {
+      } else if (params.type === 'webOauth') {
         util.loading(this)
         http.get(this, 'wechat/webOauth', {code: code})
-         .then((data) => {
+         .then(data => {
            util.loaded(this)
            util.saveCurUser(data)
            this.$dispatch('updateCurUser')
            this.goLiveOrList()
          }, util.promiseErrorFn(this))
-       } else if (params.type == 'webOauthTest') {
-         var url = window.location.href
-         var newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
+       } else if (params.type === 'webOauthTest') {
+         let url = window.location.href
+         let newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
          newUrl = newUrl.replace('webOauthTest', 'webOauth')
          window.location = newUrl
        }  else {
          this.goLiveOrList()
-        //  util.show(this, 'error', '无法识别的跳转类型')
        }
     }
   }

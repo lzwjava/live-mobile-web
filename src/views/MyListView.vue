@@ -6,13 +6,13 @@
       <p class="lives-title">
         我参与的直播
       </p>
-      <live-list :lives="attendedLives"></live-list>
+      <live-list :lives="attendedLives" />
 
       <p class="lives-title">
         我发起的直播
       </p>
 
-      <live-list :lives="myLives"></live-list>
+      <live-list :lives="myLives" />
     </div>
 
   </div>
@@ -33,17 +33,15 @@ export default {
     'live-list': LiveList,
     'list-nav': ListNav
   },
-  data() {
+  data () {
     return {
       attendedLives:[],
       myLives:[]
     }
   },
   route: {
-    data({to}) {
-      if (!util.checkInSession(this)) {
-        return
-      }
+    data({ to }) {
+      if (!util.checkInSession(this)) return
       util.loading(this)
       Promise.all([
         http.get(this, 'lives/attended'),
@@ -55,8 +53,6 @@ export default {
         this.myLives = values[1]
       }, util.promiseErrorFn(this))
     }
-  },
-  methods: {
   }
 }
 

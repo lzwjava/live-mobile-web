@@ -32,7 +32,7 @@ import {Button} from 'vue-weui'
 import util from '../common/util'
 import api from '../common/api'
 
-var debug = require('debug')('register-form')
+const debug = require('debug')('register-form')
 
 export default {
   name: 'BindPhoneView',
@@ -48,12 +48,8 @@ export default {
       from : ''
     }
   },
-  computed: {
-  },
-  created() {
-  },
   route: {
-    data({to}) {
+    data({ to }) {
       this.from = to.query.from
     }
   },
@@ -66,7 +62,7 @@ export default {
       util.loading(this)
       api.post(this, 'requestSmsCode',{
         mobilePhoneNumber: this.mobile
-      }).then((resp) => {
+      }).then(resp => {
         util.loaded(this)
         util.show(this, 'success', '验证码已发送成功，请稍等片刻')
       }, util.httpErrorFn(this))
@@ -92,7 +88,7 @@ export default {
         }
       }, util.promiseErrorFn(this))
     },
-    goContact() {
+    goContact () {
       this.$router.go('/contact')
     },
   }

@@ -7,11 +7,11 @@
       </li>
 
       <li v-for="u in attendUsers" @click="goUserRoom(u.userId)">
-        <user-avatar :user="u"></user-avatar>
+        <user-avatar :user="u" />
         <span class="name">{{u.username}}</span>
       </li>
 
-      <load-more-bar :have-more="haveMore" :loading="loading"></load-more-bar>
+      <load-more-bar :have-more="haveMore" :loading="loading" />
 
     </ul>
   </div>
@@ -25,7 +25,7 @@ import util from '../common/util'
 import UserAvatar from '../components/user-avatar.vue'
 import LoadMoreBar from '../components/LoadMoreBar.vue'
 
-var debug = require('debug')('UsersView')
+const debug = require('debug')('UsersView')
 
 export default {
   name: 'UsersView',
@@ -33,7 +33,7 @@ export default {
     'user-avatar': UserAvatar,
     'load-more-bar': LoadMoreBar
   },
-  data() {
+  data () {
     return {
       liveId: 0,
       live: {},
@@ -42,15 +42,11 @@ export default {
       loading: false
     }
   },
-  created() {
-  },
   route: {
-    data ({to}) {
+    data ({ to }) {
       debug('params: %j', to.params)
-      var liveId = to.params.liveId
-      if (liveId == this.liveId) {
-        return
-      }
+      const liveId = to.params.liveId
+      if (liveId == this.liveId) return
       this.liveId = liveId
       this.fetchLive()
 
@@ -64,17 +60,17 @@ export default {
     fetchLive () {
       this.$dispatch('loading', true)
       http.fetchLive(this, this.liveId)
-       .then((data) => {
+       .then(data => {
          this.$dispatch('loading', false)
          this.live = data
        }).catch(util.promiseErrorFn(this))
     },
-    loadUsers() {
+    loadUsers () {
       this.loading = true
       http.fetchUsers(this, this.liveId, {
         skip: this.attendUsers.length,
         limit: 100
-      }).then((data) => {
+      }).then(data => {
         this.loading = false
         this.attendUsers = this.attendUsers.concat(data)
         if (data.length < 100) {
@@ -82,8 +78,8 @@ export default {
         }
       })
     },
-    goUserRoom(userId) {
-      this.$router.go('/room/' + userId)
+    goUserRoom (userId) {
+      this.$router.go(`/room/${userId}`)
     }
   },
   events: {
