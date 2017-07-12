@@ -15,11 +15,11 @@
 
         <cells type="form">
 
-          <switch-cell name="switch" label="是否需要付费" :on.sync="needPay" />
+          <switch-cell name="switch" label="是否需要付费" :on.sync="needPay"></switch-cell>
 
-          <input-cell type="number" label="直播门票 ¥" placeholder="请输入门票" :value.sync="amountValue" />
+          <input-cell type="number" label="直播门票 ¥" placeholder="请输入门票" :value.sync="amountValue"></input-cell>
 
-          <input-cell type="datetime-local" label="时间" :value.sync="planTsValue" />
+          <input-cell type="datetime-local" label="时间" :value.sync="planTsValue"></input-cell>
 
         </cells>
 
@@ -30,12 +30,12 @@
             <span class="item-title" slot="header">设定直播分类</span>
           </cell>
 
-          <select-cell :options="topicOptions" :selected.sync="topicSelected" />
+          <select-cell :options="topicOptions" :selected.sync="topicSelected"></select-cell>
         </cells>
 
         <cells>
 
-          <input-cell type="text" label="直播标题" placeholder="请输入标题" :value.sync="title" />
+          <input-cell type="text" label="直播标题" placeholder="请输入标题" :value.sync="title"></input-cell>
 
           <cell @click="goSpeakerIntro">
             <span class="item-title" slot="header">主播介绍</span>

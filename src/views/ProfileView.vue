@@ -6,7 +6,7 @@
       <div class="profile-header" @click="goUpdateUserInfo">
         <div class="user-info">
           <div class="avatar-area">
-            <user-avatar :user="curUser" />
+            <user-avatar :user="curUser"></user-avatar>
             <i class="fa fa-pencil-square-o pencil-edit" aria-hidden="true"></i>
           </div>
           <div class="username">{{curUser.username}}</div>
@@ -39,7 +39,7 @@
 
     </div>
 
-    <tab-bar :active-index="1" />
+    <tab-bar :active-index="1"></tab-bar>
 
   </div>
 

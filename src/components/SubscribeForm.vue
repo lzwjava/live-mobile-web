@@ -32,29 +32,27 @@ export default {
     }
   },
   computed: {
-    showPic() {
-      if (this.type == 'live'){
+    showPic () {
+      if (this.type === 'live'){
         return true
-      } else if(this.type == 'share') {
+      } else if(this.type === 'share') {
         return false
       }
     },
     explainWord () {
-      if (this.type == 'live'){
+      if (this.type === 'live'){
         return '为了方便微信通知您'
-      } else if(this.type == 'share') {
+      } else if(this.type === 'share') {
         return '为了给您推送邀请的收益通知'
       }
     }
   },
-  created() {
-  },
-  ready() {
+  ready () {
     util.loading(this)
     api.get(this, 'wechat/qrcode', {
       'type': this.type,
       'liveId': this.liveId
-    }).then((data) => {
+    }).then(data => {
       util.loaded(this)
       this.ticket = encodeURIComponent(data.ticket)
     }, util.promiseErrorFn(this))
@@ -63,7 +61,7 @@ export default {
     stop (e) {
       e.stopPropagation()
     },
-    close() {
+    close () {
       this.$parent.overlay = false
     }
   }

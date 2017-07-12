@@ -6,7 +6,7 @@
       {{title}}
     </div>
 
-    <markdown-area :content.sync="content" :support-markdown="supportMarkdown" />
+    <markdown-area :content.sync="content" :support-markdown="supportMarkdown"></markdown-area>
 
     <div class="action-btns">
 

@@ -11,11 +11,11 @@
 
       <div class="live-item-tag">
 
-        <span class="time-label" v-show="live.status == 10">
+        <span class="time-label" v-show="live.status === 10">
           {{timeGap(live)}}开始
         </span>
 
-        <span class="on-label" v-show="live.status == 20 || live.status == 25">
+        <span class="on-label" v-show="live.status === 20 || live.status === 25">
           正在直播
         </span>
 
@@ -23,7 +23,7 @@
           {{live.attendanceCount}} 人参与
         </span>
 
-        <span class="amount-label" v-bind:class="{free: live.needPay == 0}">{{live.needPay ? '¥' + (live.amount / 100.0) : '¥0' }}</span>
+        <span class="amount-label" v-bind:class="{free: live.needPay === 0}">{{live.needPay ? '¥' + (live.amount / 100.0) : '¥0' }}</span>
 
       </div>
     </div>
@@ -38,7 +38,7 @@
 import util from '../common/util'
 import UserAvatar from '../components/user-avatar.vue'
 
-var debug = require('debug')('LiveItem')
+const debug = require('debug')('LiveItem')
 
 export default {
   name: 'LiveItem',
@@ -46,14 +46,12 @@ export default {
   components: {
     'user-avatar': UserAvatar
   },
-  created() {
-  },
   methods: {
     timeGap (live) {
       return util.timeGap(live.planTs)
     },
-    goIntro() {
-      this.$router.go('/intro/' + this.live.liveId)
+    goIntro () {
+      this.$router.go(`/intro/${this.live.liveId}`)
     }
   }
 }

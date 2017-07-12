@@ -2,7 +2,7 @@
 
   <div class="intro-view">
 
-    <list-nav :mode="0" :title="introTitle" :live-id="liveId" />
+    <list-nav :mode="0" :title="introTitle" :live-id="liveId"></list-nav>
 
     <div class="cover-section">
 
@@ -11,7 +11,7 @@
     </div>
 
     <div class="header-section card-group">
-      <user-avatar :user="live.owner" />
+      <user-avatar :user="live.owner"></user-avatar>
 
       <div class="header-right">
         <div class="subject">{{live.subject}}</div>
@@ -37,7 +37,7 @@
       <div class="attend-info">
         <ul class="attended-users">
           <li class="avatar-cell" v-for="u in attendedUsers">
-            <user-avatar :user="u" />
+            <user-avatar :user="u"></user-avatar>
           </li>
         </ul>
 
@@ -51,7 +51,7 @@
       <div class="attend-info">
         <ul class="attended-users">
           <li class="avatar-cell" v-for="u in invites">
-            <user-avatar :user="u" />
+            <user-avatar :user="u"></user-avatar>
           </li>
         </ul>
 
@@ -68,7 +68,7 @@
         主播简介
       </div>
 
-      <markdown :content="live.speakerIntro" />
+      <markdown :content="live.speakerIntro"></markdown>
 
     </div>
 
@@ -78,7 +78,7 @@
         直播详情
       </div>
 
-      <markdown :content="live.detail" :show-all="true" />
+      <markdown :content="live.detail" :show-all="true"></markdown>
 
     </div>
 
@@ -88,7 +88,7 @@
         观众须知
       </div>
 
-      <markdown :content="copyrightInfo" :show-all="true" />
+      <markdown :content="copyrightInfo" :show-all="true"></markdown>
 
     </div>
 
@@ -98,7 +98,7 @@
         更多直播
       </div>
 
-      <recommend-live-list :skip-live-id="liveId" />
+      <recommend-live-list :skip-live-id="liveId"></recommend-live-list>
 
     </div>
 

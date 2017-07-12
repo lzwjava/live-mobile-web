@@ -15,10 +15,10 @@
     </div>
 
     <div class="live-container">
-      <live-list :lives="lives" />
+      <live-list :lives="lives"></live-list>
     </div>
 
-    <tab-bar :active-index="0" />
+    <tab-bar :active-index="0"></tab-bar>
 
   </div>
 

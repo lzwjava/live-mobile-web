@@ -60,7 +60,7 @@ export default {
       document.title = '邀请卡'
 
       var liveId = to.params.liveId
-      if (liveId == this.liveId) return
+      if (liveId === this.liveId) return
       this.liveId = liveId
       this.defaultUser = util.defaultUser()
       this.curUser = util.curUser({})
@@ -68,7 +68,7 @@ export default {
 
       Promise.all([
         api.makeInvitationCard(this, this.liveId)
-      ]).then(values) => {
+      ]).then(values => {
         util.loaded(this)
         this.cardUrl = values[0]
       }, util.promiseErrorFn(this))

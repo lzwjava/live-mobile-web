@@ -7,7 +7,7 @@
 <script>
 
 import debugFn from 'debug'
-var debug = debugFn('overlay')
+const debug = debugFn('overlay')
 
   module.exports = {
     props: ['overlay'],

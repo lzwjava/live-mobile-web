@@ -24,7 +24,7 @@
 
     <div class="playlist-area" :style="{top:videoHeight + 'px'}" v-if="videos.length > 1">
       <cells type="split">
-        <select-cell :options="videoOptions" :selected.sync="videoSelected" />
+        <select-cell :options="videoOptions" :selected.sync="videoSelected"></select-cell>
       </cells>
     </div>
 
@@ -101,7 +101,7 @@
     </div>
 
     <div class="notice-area" v-show="currentTab === 1">
-      <markdown :content="noticeContent" />
+      <markdown :content="noticeContent"></markdown>
     </div>
 
     <overlay :overlay.sync="overlayStatus">
@@ -218,7 +218,7 @@ export default {
       return util.timeDuration(this.live.planTs)
     },
     videoOptions () {
-      let options = [];
+      let options = []
       for(let i = 0; i < this.videos.length; i++) {
         let video = this.videos[i]
         options.push({text: video.title, value: i})
@@ -256,7 +256,11 @@ export default {
       if (!this.videoSrc) return ''
       let regex = /http:\/\/(.*).quzhiboapp.com.*/g
       let match = regex.exec(this.videoSrc)
-      match ? return match[1] : return ''
+      if (match) {
+        return match[1]
+      } else {
+        return ''
+      }
     },
     noticeContent () {
       let coursewareUrl = this.live.coursewareUrl
@@ -321,7 +325,7 @@ export default {
   route: {
     data ({ to }) {
       const liveId = to.params.liveId
-      if (liveId == this.liveId) {
+      if (liveId === this.liveId) {
         setTimeout(() => {
           this.scrollToBottom()
         }, 500)
@@ -508,7 +512,7 @@ export default {
     openClient () {
       this.addSystemMsg('正在连接聊天服务器...')
       realtime.createIMClient(this.curUser.userId + '')
-      .then(client) => {
+      .then(client => {
         this.client = client
         this.addSystemMsg('聊天服务器连接成功')
         this.registerEvent()

@@ -8,7 +8,7 @@
       </span>
 
       <span class="edit-right" id="pickfiles">
-        <user-avatar class="edit-avatar" :user="curUser" />
+        <user-avatar class="edit-avatar" :user="curUser"></user-avatar>
       </span>
 
     </div>
@@ -27,7 +27,7 @@
     </div>
 
     <overlay :overlay.sync="overlayStatus">
-        <input-text-form title="名称" :text="curUser.username" />
+        <input-text-form title="名称" :text="curUser.username"></input-text-form>
     </overlay>
 
   </div>

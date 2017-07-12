@@ -7,7 +7,7 @@
     </div>
 
     <div class="me">
-      <user-avatar :user="curUser.userId ? curUser : defaultUser" />
+      <user-avatar :user="curUser.userId ? curUser : defaultUser"></user-avatar>
       <div class="right-panel">
         <div class="name">{{curUser.username}}</div>
       </div>
@@ -23,7 +23,7 @@
     <ul class="invite-list">
 
       <li v-for="(n, i) in invites" @click="goUserRoom(i.userId)">
-        <user-avatar :user="i" />
+        <user-avatar :user="i"></user-avatar>
         <div class="right-panel">
           <div class="name">{{n+1}}.{{i.username}}</div>
           <div class="invite-count">带了<span class="count-num">{{i.inviteCount}}</span>个朋友来，收益<span class="income-num">¥{{i.inviteIncome/100.0}}</span>元</div>
@@ -31,7 +31,7 @@
 
       </li>
 
-      <load-more-bar :have-more="haveMore" :loading="loading" />
+      <load-more-bar :have-more="haveMore" :loading="loading"></load-more-bar>
 
     </ul>
 

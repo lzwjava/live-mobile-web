@@ -5,7 +5,6 @@
 
     </div>
 
-    <!-- <button class="btn btn-blue" @click="goSite">请前往我们的电脑网站打开</button> -->
 
   </div>
 
@@ -17,29 +16,21 @@ import util from '../common/util'
 
 export default {
   name: 'LoginForm',
-  components: {
-  },
-  created() {
-  },
   ready() {
     this.initWechatLogin()
-  },
-  data() {
-    return {
-    }
   },
   methods: {
     stop (e){
       e.stopPropagation()
     },
-    initWechatLogin() {
-      var redirectUrl
+    initWechatLogin () {
+      let redirectUrl
       if (util.isDebug()) {
         redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauthTest'
       } else {
         redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauth'
       }
-      var obj = new WxLogin({
+      let obj = new WxLogin({
         id:'login_container',
         appid: 'wxe80a6d2b5d54985c',
         scope: 'snsapi_login',
@@ -48,7 +39,7 @@ export default {
         style: 'black'
       })
     },
-    goSite() {
+    goSite () {
       window.location = 'http://quzhiboapp.com'
     }
   }

@@ -6,13 +6,13 @@
       <p class="lives-title">
         我参与的直播
       </p>
-      <live-list :lives="attendedLives" />
+      <live-list :lives="attendedLives"></live-list>
 
       <p class="lives-title">
         我发起的直播
       </p>
 
-      <live-list :lives="myLives" />
+      <live-list :lives="myLives"></live-list>
     </div>
 
   </div>

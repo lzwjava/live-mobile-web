@@ -35,11 +35,11 @@
     <div class="live-list">
 
       <div class="attend-lives" v-show="curTab === 0">
-        <live-list :lives="attendLives" />
+        <live-list :lives="attendLives"></live-list>
       </div>
 
       <div class="create-lives" v-show="curTab === 1">
-        <live-list :lives="createLives" />
+        <live-list :lives="createLives"></live-list>
       </div>
 
     </div>

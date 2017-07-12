@@ -7,11 +7,11 @@
       </li>
 
       <li v-for="u in attendUsers" @click="goUserRoom(u.userId)">
-        <user-avatar :user="u" />
+        <user-avatar :user="u"></user-avatar>
         <span class="name">{{u.username}}</span>
       </li>
 
-      <load-more-bar :have-more="haveMore" :loading="loading" />
+      <load-more-bar :have-more="haveMore" :loading="loading"></load-more-bar>
 
     </ul>
   </div>
