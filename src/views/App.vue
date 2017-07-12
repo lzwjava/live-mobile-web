@@ -1,6 +1,5 @@
 <template>
   <div id="wrapper">
-    <!-- main view -->
     <router-view
       class="view"
       keep-alive
@@ -35,7 +34,7 @@ import Overlay from '../components/Overlay.vue'
 import util from '../common/util'
 import api from '../common/api'
 
-var debug = require('debug')('nav')
+const debug = require('debug')('nav')
 
 export default {
   name: 'App',
@@ -49,7 +48,7 @@ export default {
     'register-form': RegisterForm,
     'weibo-form': WeiboForm
   },
-  data() {
+  data () {
     return {
       loading: false,
       toastShow: false,
@@ -60,14 +59,8 @@ export default {
       options: []
     }
   },
-  computed: {
-  },
-  created() {
-  },
-  ready() {
-  },
   methods: {
-    loginOrRegister(liveId) {
+    loginOrRegister (liveId) {
         window.localStorage.setItem('liveId', liveId)
         window.localStorage.setItem('type', 'live')
         if (util.isWeixinBrowser()) {

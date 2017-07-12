@@ -33,17 +33,15 @@ export default {
     'live-list': LiveList,
     'list-nav': ListNav
   },
-  data() {
+  data () {
     return {
       attendedLives:[],
       myLives:[]
     }
   },
   route: {
-    data({to}) {
-      if (!util.checkInSession(this)) {
-        return
-      }
+    data({ to }) {
+      if (!util.checkInSession(this)) return
       util.loading(this)
       Promise.all([
         http.get(this, 'lives/attended'),
@@ -55,8 +53,6 @@ export default {
         this.myLives = values[1]
       }, util.promiseErrorFn(this))
     }
-  },
-  methods: {
   }
 }
 

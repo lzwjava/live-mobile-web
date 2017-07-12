@@ -33,7 +33,7 @@ import Overlay from '../components/overlay.vue'
 import wechat from '../common/wechat'
 import SubscribeForm from '../components/SubscribeForm.vue'
 
-var debug = require('debug')('InviteView')
+const debug = require('debug')('InviteView')
 
 export default {
   name: 'InviteView',
@@ -44,7 +44,7 @@ export default {
     'share-lead': ShareLead,
     'overlay': Overlay
   },
-  data() {
+  data () {
     return {
       liveId: 0,
       cardUrl: "",
@@ -55,16 +55,12 @@ export default {
       overlayStatus: false
     }
   },
-  created() {
-  },
   route: {
-    data ({to}) {
+    data ({ to }) {
       document.title = '邀请卡'
 
       var liveId = to.params.liveId
-      if (liveId == this.liveId) {
-        return
-      }
+      if (liveId === this.liveId) return
       this.liveId = liveId
       this.defaultUser = util.defaultUser()
       this.curUser = util.curUser({})
@@ -72,25 +68,25 @@ export default {
 
       Promise.all([
         api.makeInvitationCard(this, this.liveId)
-      ]).then((values) => {
+      ]).then(values => {
         util.loaded(this)
         this.cardUrl = values[0]
       }, util.promiseErrorFn(this))
     }
   },
   methods: {
-    fetchInvites() {
+    fetchInvites () {
       return api.get(this, 'attendances/invites', {
         liveId: this.liveId,
         skip: this.invites.length,
         limit: 100
       })
     },
-    showShareLead() {
+    showShareLead () {
       if (!this.curUser.userId) {
         this.$dispatch('loginOrRegister', this.liveId)
       } else {
-        if (this.curUser.wechatSubscribe == 0) {
+        if (this.curUser.wechatSubscribe === 0) {
           this.currentView = 'subscribe-form'
           this.overlayStatus = true
         } else {
@@ -99,9 +95,6 @@ export default {
         }
       }
     },
-  },
-  events: {
-
   }
 }
 

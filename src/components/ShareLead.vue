@@ -14,15 +14,7 @@
 <script type="text/javascript">
 
 export default {
-  name:'ShareLead',
-  data() {
-    return {
-    }
-  },
-  components: {
-  },
-  methods: {
-  }
+  name:'ShareLead'
 }
 
 </script>

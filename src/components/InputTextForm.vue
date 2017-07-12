@@ -25,7 +25,7 @@ import debugFn from 'debug'
 import util from '../common/util'
 import api from '../common/api'
 
-var debug = debugFn('InputTextForm')
+const debug = debugFn('InputTextForm')
 
 export default {
   name: 'InputTextForm',
@@ -33,29 +33,17 @@ export default {
     'title',
     'text'
   ],
-  components: {
-  },
-  data() {
-    return {
-    }
-  },
-  route: {
-    data ({to}) {
-    }
-  },
   methods: {
-    stop(e) {
+    stop (e) {
       e.stopPropagation()
     },
-    cancel() {
+    cancel () {
       this.$parent.overlay = false
     },
-    confirm() {
+    confirm () {
       this.$parent.overlay = false
       this.$dispatch('inputTextFormConfirm', this.text)
     }
-  },
-  events: {
   }
 }
 

@@ -22,34 +22,20 @@ import debugFn from 'debug'
 import util from '../common/util'
 import api from '../common/api'
 
-var debug = debugFn('QrcodePayForm')
+const debug = debugFn('QrcodePayForm')
 
 export default {
   name: 'QrcodePayForm',
   props: ['qrcodeUrl'],
   components: [],
-  data() {
-    return {
-    }
-  },
-  route: {
-    data ({to}) {
-    }
-  },
-  created() {
-  },
-  ready() {    
-  },
   methods: {
     stop (e){
       e.stopPropagation()
     },
-    payFinish() {
+    payFinish () {
       this.$parent.overlay = false
       this.$dispatch('payFinish')
     }
-  },
-  events: {
   }
 }
 

@@ -28,20 +28,14 @@ export default {
   components: {
   },
   methods: {
-    stop (e){
+    stop (e) {
       e.stopPropagation()
     }
   },
   computed: {
-    shareLink() {
+    shareLink () {
       return util.shareLink(this.liveId)
     }
-  },
-  data() {
-    return {
-    }
-  },
-  created() {
   }
 }
 

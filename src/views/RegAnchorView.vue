@@ -80,7 +80,6 @@ export default {
     name: 'RegAnchorView',
     data() {
         return {
-            // 预注册主播信息初始化
             anchor: {
                 name: '',
                 wechatAccount: '',
@@ -95,14 +94,9 @@ export default {
             }
         }
     },
-    created() {
-
-    },
     route: {
       data({ to }) {
-        if (!util.checkInSession(this)) {
-          return
-        }
+        if (!util.checkInSession(this)) return
         this.curUser = util.curUser()
         util.loading(this)
         Promise.all([
@@ -114,26 +108,21 @@ export default {
       }
     },
     methods: {
-        // 应当验证表单信息
-        // 微信号本应该从当前用户获取,目前手动输入
-        //  提交
-        submit() {
-            // 表单校验：不允许为空
-            // 其它校验交给后端
+        submit () {
             for(let k in this.anchor){
-              if(''=== this.anchor[k]){
+              if('' === this.anchor[k]){
                 this.toast.message = "请填写完整！"
                 this.toast.show = 1
                 return
               }
             }
             api.post(this, 'applications/create', {
-                    name: this.anchor.name,
-                    wechatAccount: this.anchor.wechatAccount,
-                    socialAccount: this.anchor.socialAccount,
-                    introduction: this.anchor.introduction
+                  name: this.anchor.name,
+                  wechatAccount: this.anchor.wechatAccount,
+                  socialAccount: this.anchor.socialAccount,
+                  introduction: this.anchor.introduction
                 })
-                .then(res=>{
+                .then(res => {
                   this.toast.message = `
                     申请成功！我们正在审核，之后将在公众号通知您。
                   `,
@@ -141,19 +130,18 @@ export default {
                   for(let k in this.anchor){
                     this.anchor[k] = ''
                   }
-                },error=>{
+                }, error => {
                   this.toast.message = error
                   this.toast.show = 1
                 })
         },
-        // 提示框
-        confirm(){
+        confirm () {
           this.toast.show = 0
         },
         agreement () {
           this.$router.go('/agreement')
         },
-        goBindPhone() {
+        goBindPhone () {
           this.$router.go('/bindPhone?from=/reganchor')
         }
     }

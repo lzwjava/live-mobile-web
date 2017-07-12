@@ -1,8 +1,6 @@
 <template>
   <div class="contact-view">
 
-    <!-- <h2>遇到跨号支付的问题？请关注以下公众号，从公众号里报名</h2> -->
-
     <p>您好，我们会将每次的直播预告发送到公众号里，欢迎关注：<p>
 
     <img src="../img/qrcode_subscribe.jpg"/>
@@ -21,10 +19,6 @@
 
 export default {
   name: 'ContactView',
-  data() {
-    return {
-    }
-  },
   methods: {
     goRelease()  {
       this.$router.go('/intro/7')

@@ -10,7 +10,7 @@
 <script type="text/javascript">
 
 import Logo from '../components/logo.vue'
-var debug = require('debug')('loading');
+const debug = require('debug')('loading')
 
 export default {
   name: 'loading',
@@ -19,11 +19,8 @@ export default {
       loading: true
     }
   },
-  props: [],
   components: {
     'logo': Logo
-  },
-  created() {
   },
   events: {
     'loaded': function () {

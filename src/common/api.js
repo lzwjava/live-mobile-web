@@ -1,24 +1,24 @@
-var debug = require('debug')('api')
+let debug = require('debug')('api')
 
 import util from './util'
 
-var callback = {
+let callback = {
   success: function (resolve,reject) {
     return function (resp) {
       debug('resp:%j', resp.data)
-      if (resp.data.status == 'success') {
+      if (resp.data.status === 'success') {
         resolve(resp.data.result)
       } else {
         reject(resp.data.error)
       }
     }
   },
-  failure: function(reject) {
-    return function(res) {
-      var error = '' + res.statusText;
-      var el = document.createElement('html');
+  failure: function (reject) {
+    return function (res) {
+      let error = '' + res.statusText;
+      let el = document.createElement('html');
       el.innerHTML = res.data
-      var container = el.querySelector('#container')
+      let container = el.querySelector('#container')
       if (container) {
         error += '\n' + container.innerHTML
       }
@@ -30,7 +30,7 @@ var callback = {
   }
 }
 
-var get = function(comp, url, params) {
+let get = function(comp, url, params) {
   debug('http GET %j', url)
   return new Promise(
     function(resolve, reject) {
@@ -42,19 +42,18 @@ var get = function(comp, url, params) {
   )
 }
 
-var post = function (comp, url, params) {
+let post = function (comp, url, params) {
   debug('http POST %j', url)
   return new Promise(
     function(resolve, reject) {
       let addHeader = addHttpHeader()
       comp.$http.post(url, params, addHeader)
-      .then(callback.success(resolve, reject),
-            callback.failure(reject))
+      .then(callback.success(resolve, reject), callback.failure(reject))
     }
   )
 }
 
-var addHttpHeader = function() {
+let addHttpHeader = function () {
   let curUser = util.curUser()
   if (curUser) {
     return { headers: { 'X-Session': curUser.sessionToken } }
@@ -63,36 +62,36 @@ var addHttpHeader = function() {
   }
 }
 
-var fetchLive = function(comp, liveId) {
-  return get(comp, 'lives/' + liveId)
+let fetchLive = function (comp, liveId) {
+  return get(comp, `lives/${liveId}`)
 }
 
-var fetchVideos = function(comp, liveId) {
-  return get(comp, 'lives/' + liveId + '/videos')
+let fetchVideos = function (comp, liveId) {
+  return get(comp, `lives/${liveId}/videos`)
 }
 
-var fetchUsers = function(comp, liveId, params) {
-  return get(comp, 'lives/' + liveId +'/users', params)
+let fetchUsers = function (comp, liveId, params) {
+  return get(comp, `lives/${liveId}/users`, params)
 }
 
-var fetchPartUsers = function (comp, liveId) {
-  return get(comp, 'lives/' + liveId +'/users', {
+let fetchPartUsers = function (comp, liveId) {
+  return get(comp, `lives/${liveId}/users`, {
     limit: 7
   })
 }
 
-var fetchCurUser = function (comp) {
+let fetchCurUser = function (comp) {
   return get(comp, 'self')
 }
 
-var fetchCurUserNoError = function (comp) {
+let fetchCurUserNoError = function (comp) {
   return new Promise(
     function (resolve, reject) {
       get(comp, 'self')
-       .then((data) => {
+       .then(data => {
          resolve(data)
-       }).catch((error) => {
-         if (error == '当前没有用户登录') {
+       }).catch(error => {
+         if (error === '当前没有用户登录') {
            debug('not_in_session')
            resolve({})
          } else {
@@ -103,19 +102,19 @@ var fetchCurUserNoError = function (comp) {
   )
 }
 
-var fetchOneUser = function (comp, userId) {
-  return get(comp, 'users/' + userId)
+let fetchOneUser = function (comp, userId) {
+  return get(comp, `users/${userId}`)
 }
 
-var makeInvitationCard = function(comp, liveId) {
-  return get(comp, 'lives/' + liveId + '/card')
+let makeInvitationCard = function (comp, liveId) {
+  return get(comp, `lives/${liveId}/card`)
 }
 
-var saveLiveData = function (comp, liveId, data) {
+let saveLiveData = function (comp, liveId, data) {
   return new Promise(
     (resolve, reject) => {
       util.loading(comp)
-      post(comp, 'lives/' + liveId, data).then((res) => {
+      post(comp, `lives/${liveId}`, data).then(res => {
         util.loaded(comp)
         resolve()
         util.show(comp, 'success', '保存成功')

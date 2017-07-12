@@ -19,14 +19,12 @@
       }
     },
     methods: {
-      choose: function(e) {
-        var el = e.target;
-        if (el.classList.contains('dropdown-item')) {
-          this.show = false;
-        }
+      choose (e) {
+        const el = e.target
+        if (el.classList.contains('dropdown-item')) this.show = false
       }
     }
-  };
+  }
 </script>
 
 <style lang="stylus">

@@ -10,7 +10,7 @@
 require('../../node_modules/github-markdown-css/github-markdown.css')
 require('../../node_modules/highlight.js/styles/solarized-light.css')
 
-var debug = require('debug')('markdown');
+const debug = require('debug')('markdown')
 
 import marked from 'marked'
 import highlight from 'highlight.js'
@@ -42,21 +42,17 @@ export default {
         default: true
       }
     },
-    data() {
-      return {
-      }
-    },
     computed: {
         html () {
             if (!this.content) {
-              return '';
+              return ''
             }
             if (!this.showAll && this.content.length > 100) {
-              var partContent = '';
+              var partContent = ''
               for (var i = 0; i < 100; i++) {
                 var ch = this.content.charAt(i)
                 if (ch != '[' && ch != '(' && ch !='!') {
-                  partContent += ch;
+                  partContent += ch
                 } else {
                   break;
                 }
@@ -65,15 +61,13 @@ export default {
               var html = marked(partContent)
               return html
             } else {
-              var html = marked(this.content);
+              var html = marked(this.content)
               return html
             }
         }
     },
-    created() {
-    },
     methods: {
-      showAllBtn() {
+      showAllBtn () {
         this.showAll = true
       }
     }

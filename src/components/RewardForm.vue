@@ -32,7 +32,7 @@ import api from '../common/api'
 import wechat from '../common/wechat'
 import UserAvatar from '../components/user-avatar.vue'
 
-var debug = debugFn('RewardForm')
+const debug = debugFn('RewardForm')
 
 export default {
   name: 'RewardForm',
@@ -40,17 +40,13 @@ export default {
     UserAvatar
   },
   props: ['live'],
-  data() {
+  data () {
     return {
       amounts: [2 * 100, 5 * 100, 8 * 100, 10 * 100, 20 * 100, 50 * 100]
     }
   },
-  route: {
-    data ({to}) {
-    }
-  },
   methods: {
-    reward(amount) {
+    reward (amount) {
       this.$dispatch('reward', amount)
       this.$parent.overlay = false
     },
@@ -60,9 +56,6 @@ export default {
     close() {
       this.$parent.overlay = false
     }
-  },
-  events: {
-
   }
 }
 

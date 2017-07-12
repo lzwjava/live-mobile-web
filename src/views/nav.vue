@@ -13,7 +13,7 @@
 import UserAvatar from '../components/user-avatar.vue'
 import util from '../common/util'
 
-var debug = require('debug')('nav')
+const debug = require('debug')('nav')
 
 export default {
   name: 'Nav',
@@ -25,16 +25,6 @@ export default {
       userStatus: false,
       user: {}
     }
-  },
-  computed: {
-  },
-  methods: {
-  },
-  created() {
-  },
-  ready() {
-  },
-  events: {
   }
 }
 

@@ -30,10 +30,6 @@ export default {
       color: '#00bdef'
     }
   },
-  created() {
-  },
-  ready() {
-  },
   methods: {
     loadMore() {
       this.$dispatch('loadMore')
