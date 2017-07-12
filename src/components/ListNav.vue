@@ -30,7 +30,7 @@ import api from '../common/api'
 import UserAvatar from '../components/user-avatar.vue'
 import Dropdown from '../components/dropdown.vue'
 
-var debug = debugFn('ListNav')
+const debug = debugFn('ListNav')
 
 export default {
     name: 'ListNav',
@@ -39,60 +39,55 @@ export default {
         'dropdown': Dropdown
     },
     props: ['mode', 'title', 'liveId'],
-    data() {
-        return {
-            isAnchor: false, //是否为主播 默认应该为非主播
-            curUser: {},
-            showUserDropdown: false
-        }
+    data () {
+      return {
+        isAnchor: false, //是否为主播 默认应该为非主播
+        curUser: {},
+        showUserDropdown: false
+      }
     },
-    computed: {
-    },
-    created() {
+    created () {
       this.curUser = util.curUser({})
     },
-    ready() {
-    },
     route: {
-      data({to}) {
+      data({ to }) {
         debug('route nav')
       }
     },
     methods: {
-        login() {
-            this.$dispatch('loginOrRegister', this.liveId)
+        login () {
+          this.$dispatch('loginOrRegister', this.liveId)
         },
-        goList() {
-            this.$router.go('/lives')
+        goList () {
+          this.$router.go('/lives')
         },
-        goMylist() {
-            this.$router.go('/mylist')
+        goMylist () {
+          this.$router.go('/mylist')
         },
-        goRegAnchor() {
-            this.$router.go('/reganchor')
+        goRegAnchor () {
+          this.$router.go('/reganchor')
         },
-        viewUserDropdown(e) {
-            e && e.preventDefault()
-            this.showUserDropdown = true
+        viewUserDropdown (e) {
+          e && e.preventDefault()
+          this.showUserDropdown = true
         },
-        goProfile() {
+        goProfile () {
           this.$router.go('/profile')
         },
-        logout(e) {
-            this.$http.get('logout').then((resp) => {
-                this.user = {};
-                window.localStorage.removeItem('user');
-                //this.$router.go('/lives')
-                window.location.reload()
-            }, util.httpErrorFn(this));
+        logout (e) {
+          this.$http.get('logout').then(resp => {
+            this.user = {}
+            window.localStorage.removeItem('user')
+            window.location.reload()
+          }, util.httpErrorFn(this))
         },
-        about() {
+        about () {
           util.show(this, 'success', '趣直播-知识直播平台，版本发布于：' + process.env.BUILD_TIME)
         },
-        goAll() {
+        goAll () {
             this.$router.go('/lives')
         },
-        goAccount() {
+        goAccount () {
           this.$router.go('/account')
         }
     },

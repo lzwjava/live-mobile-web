@@ -14,7 +14,7 @@
 
 <script type="text/javascript">
 
-var debug = require('debug')('LiveList')
+const debug = require('debug')('LiveList')
 
 import util from '../common/util'
 import LiveItem from '../components/LiveItem.vue'
@@ -22,26 +22,12 @@ import LiveItem from '../components/LiveItem.vue'
 export default {
   name: 'LiveList',
   props: ['lives'],
-  data() {
-    return {
-    }
-  },
-  created() {
-  },
-  ready() {
-  },
   components: {
     'live-item': LiveItem
-  },
-  methods: {
   }
 }
 
 </script>
 
 <style media="screen" lang="stylus">
-
-// .live-list-ul
-//   .live-item-li
-
 </style>

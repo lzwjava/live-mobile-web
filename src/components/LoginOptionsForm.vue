@@ -13,17 +13,11 @@
 export default {
   name: 'OptionsForm',
   props: ['options'],
-  components: {
-  },
-  data() {
-    return {
-    }
-  },
   methods: {
     stop (e){
       e.stopPropagation()
     },
-    chooseType(type) {
+    chooseType (type) {
       this.$parent.overlay = false
       this.$dispatch('hideLoginOptionsForm', type)
     }

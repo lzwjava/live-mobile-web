@@ -44,7 +44,7 @@ import debugFn from 'debug'
 import util from '../common/util'
 import api from '../common/api'
 
-var debug = debugFn('ControlForm')
+const debug = debugFn('ControlForm')
 
 export default {
 	name: 'ControlForm',
@@ -63,11 +63,8 @@ export default {
 			return this.urlPrefix(this.live.foreignPushUrl)
 		},
 		pushKey () {
-			if (!this.live.pushUrl) {
-				return ''
-			}
-			var regex = /(rtmp:\/\/.*)\/(.*)/g
-			var match = regex.exec(this.live.pushUrl)
+			if (!this.live.pushUrl) return ''
+			const match = regex.exec(this.live.pushUrl)
 			return match[2]
 		}
 	},
@@ -80,16 +77,16 @@ export default {
 		},
 		beginLive () {
 			if (confirm('开始之后，观众可看到直播画面。是否确定继续开始直播？')) {
-				api.get(this, 'lives/' + this.liveId + '/begin')
-				 .then((data) => {
+				api.get(this, `lives/${this.liveId}/begin`)
+				 .then(data => {
 				 	util.show(this, 'success', '成功开启直播')
 				 }, util.promiseErrorFn(this))
 			}
 		},
 		finishLive () {
 			if (confirm('请OBS结束推流之后，再点击结束直播，结束后观众将看到回放，是否确认？')) {
-				api.get(this, 'lives/' + this.liveId + '/finish')
-				 .then((data) => {
+				api.get(this, `lives/${this.liveId}/finish`)
+				 .then(data => {
 				 	util.show(this, 'success', '成功结束直播')
 				 }, util.promiseErrorFn(this))
 			}
@@ -99,16 +96,11 @@ export default {
 			this.liveConfigUrl = !this.liveConfigUrl
 		},
 		urlPrefix (rtmpUrl) {
-			if (!rtmpUrl) {
-				return ''
-			}
-			var regex = /(rtmp:\/\/.*)\/(.*)/g
-			var match = regex.exec(rtmpUrl)
+			if (!rtmpUrl) return ''
+			const regex = /(rtmp:\/\/.*)\/(.*)/g
+			const match = regex.exec(rtmpUrl)
 			return match[1]
 		},
-	},
-	events: {
-
 	}
 }
 

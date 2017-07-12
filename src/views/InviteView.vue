@@ -62,7 +62,7 @@ import Overlay from '../components/overlay.vue'
 import wechat from '../common/wechat'
 import SubscribeForm from '../components/SubscribeForm.vue'
 
-var debug = require('debug')('InviteView')
+const debug = require('debug')('InviteView')
 
 export default {
   name: 'InviteView',
@@ -86,16 +86,12 @@ export default {
       overlayStatus: false
     }
   },
-  created() {
-  },
   route: {
-    data ({to}) {
+    data ({ to }) {
       document.title = '邀请榜'
 
-      var liveId = to.params.liveId
-      if (liveId == this.liveId) {
-        return
-      }
+      let liveId = to.params.liveId
+      if (liveId == this.liveId) return
       this.liveId = liveId
 
       this.defaultUser = util.defaultUser()
@@ -123,16 +119,16 @@ export default {
     }
   },
   methods: {
-    fetchInvites() {
+    fetchInvites () {
       return api.get(this, 'attendances/invites', {
         liveId: this.liveId,
         skip: this.invites.length,
         limit: 100
       })
     },
-    loadInvites() {
+    loadInvites () {
       this.loading = true
-      this.fetchInvites().then((data) => {
+      this.fetchInvites().then(data => {
         this.loading = false
         this.invites = this.invites.concat(data)
         if (data.length < 100) {
@@ -140,11 +136,11 @@ export default {
         }
       })
     },
-    showShareLead() {
+    showShareLead () {
       if (!this.curUser.userId) {
         this.$dispatch('loginOrRegister', this.liveId)
       } else {
-        if (this.curUser.wechatSubscribe == 0) {
+        if (this.curUser.wechatSubscribe === 0) {
           this.currentView = 'subscribe-form'
           this.overlayStatus = true
         } else {
@@ -153,14 +149,14 @@ export default {
         }
       }
     },
-    goAccount() {
+    goAccount () {
       this.$router.go('/account')
     },
-    goUserRoom(userId) {
-      this.$router.go('/room/' + userId)
+    goUserRoom (userId) {
+      this.$router.go(`/room/${userId}`)
     },
-    goCard() {
-      this.$router.go('/live/'+this.liveId+'/card')
+    goCard () {
+      this.$router.go(`/live/${this.liveId}/card`)
     }
   },
   events: {

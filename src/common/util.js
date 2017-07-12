@@ -1,31 +1,31 @@
-var debug = require('debug')('util');
+let debug = require('debug')('util')
 
 import moment from 'moment-timezone'
 moment.locale('zh-cn')
 
-var filterError = (component, res) => {
+let filterError = (component, res) => {
   debug('resp:%j', res.data)
   if (res.data.status != "success") {
     component.$dispatch('show-msg', 'error', res.data.error)
-    return false;
+    return false
   } else {
-    return true;
+    return true
   }
 };
 
-var escape = (html) => {
-  html = html || '';
+let escape = (html) => {
+  html = html || ''
   return html
   .replace(/&/g, '&amp;')
   .replace(/</g, '&lt;')
   .replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;')
-  .replace(/'/g, '&#39;');
-};
+  .replace(/'/g, '&#39;')
+}
 
-var httpErrorFn = (component) => {
+let httpErrorFn = (component) => {
   return function (res) {
-    var text = res.statusText
+    let text = res.statusText
     if (text == '') {
       text = '网络超时错误'
     }
@@ -33,15 +33,15 @@ var httpErrorFn = (component) => {
   }
 }
 
-var show = (component, type, text, duration) => {
+let show = (component, type, text, duration) => {
   component.$dispatch('show-msg', type, text)
 }
 
-var showError = (component, text) => {
+let showError = (component, text) => {
   show(component, 'error', text)
 }
 
-var promiseErrorFn = (comp, callback) => {
+let promiseErrorFn = (comp, callback) => {
   return (error) => {
     show(comp, 'error', error, 3000)
     comp.$dispatch('loading', false)
@@ -49,20 +49,20 @@ var promiseErrorFn = (comp, callback) => {
   }
 }
 
-var transformToAssocArray = (prmstr) => {
-    var params = {};
-    var prmarr = prmstr.split("&");
-    for ( var i = 0; i < prmarr.length; i++) {
-        var tmparr = prmarr[i].split("=");
-        params[tmparr[0]] = tmparr[1];
+let transformToAssocArray = (prmstr) => {
+    let params = {}
+    let prmarr = prmstr.split("&")
+    for ( let i = 0; i < prmarr.length; i++) {
+        let tmparr = prmarr[i].split("=")
+        params[tmparr[0]] = tmparr[1]
     }
-    return params;
+    return params
 }
 
-var getParams = () => {
-      var prmstr = window.location.search.substr(1);
+let getParams = () => {
+      let prmstr = window.location.search.substr(1)
       debug('paramStr:' + window.location.search)
-      return prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
+      return prmstr !== null && prmstr !== "" ? transformToAssocArray(prmstr) : {}
 }
 
 function isWeixinBrowser() {
@@ -81,30 +81,30 @@ function isSafari () {
   return /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 }
 
-function randomString(length) {
-    var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    var result = '';
-    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
-    return result;
+function randomString (length) {
+    let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    let result = ''
+    for (let i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)]
+    return result
 }
 
-function loading(comp) {
+function loading (comp) {
   comp.$dispatch('loading', true)
 }
 
-function loaded(comp) {
+function loaded (comp) {
   comp.$dispatch('loading', false)
 }
 
-function getLang() {
+function getLang () {
  if (navigator.languages != undefined)
   return navigator.languages[0]
  else
   return navigator.language
 }
 
-function timeGap(ts) {
-  var text = moment.tz(ts, "YYYY-MM-DD hh:mm::ss", 'Asia/Shanghai').fromNow()
+function timeGap (ts) {
+  let text = moment.tz(ts, "YYYY-MM-DD hh:mm::ss", 'Asia/Shanghai').fromNow()
   if (text) {
     text = text.replace(/[\u5185]/g, '后')
     text = text.replace(' ', '')
@@ -112,44 +112,44 @@ function timeGap(ts) {
   return text
 }
 
-function timeDuration(ts) {
-  var text = moment.tz(ts, "YYYY-MM-DD hh:mm::ss", 'Asia/Shanghai').fromNow(true)
+function timeDuration (ts) {
+  let text = moment.tz(ts, "YYYY-MM-DD hh:mm::ss", 'Asia/Shanghai').fromNow(true)
   if (text) {
     text = text.replace(' ', '')
   }
   return text
 }
 
-function isDebug() {
-  return process.env.NODE_ENV != 'production'
+function isDebug () {
+  return process.env.NODE_ENV !== 'production'
 }
 
-var getKeys = function(obj){
-   var keys = [];
-   for(var key in obj){
-      keys.push(key);
+let getKeys = function(obj){
+   let keys = []
+   for(let key in obj){
+      keys.push(key)
    }
-   return keys;
+   return keys
 }
 
 function statusText (status) {
   switch (status) {
     case 1:
-      return '编辑中';
+      return '编辑中'
     case 5:
-      return '审核中';
+      return '审核中'
     case 10:
-      return '报名中';
+      return '报名中'
     case 20:
-      return '直播中';
+      return '直播中'
     case 25:
-      return '转码中';
+      return '转码中'
     case 30:
-      return '已结束';
+      return '已结束'
     case 35:
-      return '已结束';
+      return '已结束'
   }
-  return '未知';
+  return '未知'
 }
 
 function initTitle() {
@@ -165,13 +165,12 @@ function defaultUser() {
 }
 
 function shareLink(liveId) {
-  var extraParam = ''
-  var fromUserId = window.localStorage.getItem('fromUserId')
+  let extraParam = ''
+  let fromUserId = window.localStorage.getItem('fromUserId')
   if (fromUserId) {
     extraParam += '&fromUserId=' + fromUserId
   }
-  var link = 'http://m.quzhiboapp.com/?liveId=' + liveId + extraParam
-  return link
+  return 'http://m.quzhiboapp.com/?liveId=' + liveId + extraParam
 }
 
 function randInt(n) {
@@ -179,7 +178,7 @@ function randInt(n) {
 }
 
 function curUser(defaultValue) {
-  var userStr = window.localStorage.getItem('user')
+  let userStr = window.localStorage.getItem('user')
   if (userStr) {
     return JSON.parse(userStr)
   } else {
@@ -203,7 +202,7 @@ function removeCurUser(comp) {
 }
 
 function checkInSession(comp) {
-  var user = curUser()
+  let user = curUser()
   if (user && user.username) {
     return true
   } else {

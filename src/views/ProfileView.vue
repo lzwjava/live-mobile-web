@@ -55,7 +55,7 @@ import Tabbar from '../components/Tabbar.vue'
 
 require('font-awesome/css/font-awesome.css')
 
-var debug = require('debug')('ProfileView')
+const debug = require('debug')('ProfileView')
 
 export default {
   name: 'ProfileView',
@@ -63,42 +63,38 @@ export default {
     'user-avatar': UserAvatar,
     'tab-bar': Tabbar
   },
-  data() {
+  data () {
     return {
       curUser: {}
     }
   },
   route: {
-    data({to}) {
-      if (!util.checkInSession(this)) {
-        return
-      }
+    data({ to }) {
+      if (!util.checkInSession(this)) return
       this.curUser = util.curUser()
     }
   },
   methods: {
-    logout(e) {
-      api.get(this, 'logout').then((resp) => {
+    logout (e) {
+      api.get(this, 'logout').then(resp => {
         this.curUser = {}
         util.removeCurUser()
         this.$dispatch('updateCurUser')
         this.$router.go('/lives')
       }, util.promiseErrorFn(this))
     },
-    goAccount() {
+    goAccount () {
       this.$router.go('/account')
     },
-    goMylist() {
+    goMylist () {
       this.$router.go('/mylist')
     },
-    goUpdateUserInfo() {
+    goUpdateUserInfo () {
       this.$router.go('/editUser')
     },
-    goRoom() {
-      this.$router.go('/room/' + this.curUser.userId + '?from=profile')
+    goRoom () {
+      this.$router.go(`/room/${this.curUser.userId}?from=profile`)
     }
-  },
-  created() {
   }
 }
 

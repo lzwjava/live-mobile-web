@@ -54,7 +54,7 @@ var debug = debugFn('ListNav')
 export default {
   name: 'AccountView',
   components: [],
-  data() {
+  data () {
     return {
       account: {},
       curUser: {},
@@ -62,41 +62,37 @@ export default {
     }
   },
   route: {
-    data ({to}) {
-      if (!util.checkInSession(this)) {
-        return
-      }
+    data ({ to }) {
+      if (!util.checkInSession(this)) return
       this.curUser = util.curUser()
       util.loading(this)
       Promise.all([
         api.get(this, 'accounts/me')
-      ]).then((values) => {
+      ]).then(values => {
         util.loaded(this)
         this.account = values[0]
       }, util.promiseErrorFn(this))
     }
   },
   methods: {
-    goBindPhone() {
+    goBindPhone () {
       this.$router.go('/bindPhone?from=/account')
     },
-    clickTip() {
+    clickTip () {
       this.amount = this.account.balance / 100.0
     },
-    goLogin() {
+    goLogin () {
       this.$dispatch('loginOrRegister', 0)
     },
-    applyWithdraw() {
+    applyWithdraw () {
       util.loading(this)
       api.post(this, 'withdraws', {
         amount: Math.floor(this.amount * 100)
-      }).then((data) => {
+      }).then(data => {
         util.loaded(this)
         util.show(this, 'success', '已发出申请，请等待处理')
       }, util.promiseErrorFn(this))
     }
-  },
-  events: {
   }
 }
 

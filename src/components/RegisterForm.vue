@@ -19,19 +19,13 @@ const debug = debugFn('RegisterForm')
 export default {
   name: 'RegisterForm',
   props: ['liveId'],
-  components: {
-  },
   methods: {
     stop (e) {
       e.stopPropagation()
     }
   },
-  created() {
-  },
-  ready() {
-  },
   computed: {
-    shareLink() {
+    shareLink () {
       return util.shareLink(this.liveId)
     }
   }

@@ -16,8 +16,6 @@
         <br />
         <span class="key">分钟</span> <input type="range" max="{{maxMinute}}" min="{{minMinute}}" step="1" v-model="minutePicked"></input>
         <br />
-        <!-- <span class="key">秒种</span> <input type="range" max="{{maxSecond}}" min="{{minSecond}}" step="1" v-model="secondPicked"></input>
-        <br /> -->
         <div class="divider"></div>
         <button v-on:click="setNow" v-show="allowNow">当前时间</button>
         <button v-on:click="setDate(date)">完成</button>

@@ -7,7 +7,7 @@
         <live-item :live="live"></live-item>
       </li>
 
-      <load-more-bar :have-more="haveMore" :loading="loading"><load-more-bar>
+      <load-more-bar :have-more="haveMore" :loading="loading"></load-more-bar>
 
     </ul>
 
@@ -17,7 +17,7 @@
 
 <script type="text/javascript">
 
-var debug = require('debug')('RecommendLiveList')
+const debug = require('debug')('RecommendLiveList')
 
 import util from '../common/util'
 import LiveItem from '../components/LiveItem.vue'
@@ -27,14 +27,12 @@ import LoadMoreBar from '../components/LoadMoreBar.vue'
 export default {
   name: 'RecommendLiveList',
   props: ['skipLiveId'],
-  data() {
+  data () {
     return {
       lives: [],
       haveMore: true,
       loading: false
     }
-  },
-  created() {
   },
   ready() {
     this.loadData(3, 0)
@@ -44,13 +42,11 @@ export default {
     'load-more-bar': LoadMoreBar
   },
   methods: {
-    loadData(limit, skip) {
+    loadData (limit, skip) {
       this.loading = true
       http.get(this, 'lives/recommend', {
-        limit: limit,
-        skip: skip,
-        skipLiveId: this.skipLiveId
-      }).then((data) => {
+        limit, skip, skipLiveId: this.skipLiveId
+      }).then(data => {
         this.loading = false
         this.lives = this.lives.concat(data)
         if (data.length < limit) {
@@ -62,13 +58,6 @@ export default {
   events: {
     'loadMore': function () {
       this.loadData(20, this.lives.length)
-    }
-  },
-  watch: {
-    'skipLiveId': function (val, oldVal) {
-      // this.lives = []
-      // this.haveMore = true
-      // this.loadData(3, 0)
     }
   }
 }

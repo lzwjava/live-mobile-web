@@ -26,14 +26,14 @@ import util from '../common/util'
 import api from '../common/api'
 import MarkdownArea from '../components/markdown-area.vue'
 
-var debug = debugFn('EditDetailView')
+const debug = debugFn('EditDetailView')
 
 export default {
   name: 'EditDetailView',
   components: {
     'markdown-area': MarkdownArea
   },
-  data() {
+  data () {
     return {
       liveId: 0,
       type: 0,
@@ -42,67 +42,65 @@ export default {
     }
   },
   computed: {
-    supportMarkdown() {
-      if (this.type == 0) {
+    supportMarkdown () {
+      if (this.type === 0) {
         return false
       } else {
         return true
       }
     },
-    title() {
-      if (this.type == 0) {
+    title () {
+      if (this.type === 0) {
         return '主播介绍'
-      } else if (this.type == 1) {
+      } else if (this.type === 1) {
         return '直播详情'
-      } else if (this.type == 2) {
+      } else if (this.type === 2) {
         return '房间公告'
       }
       return ''
     }
   },
   route: {
-    data ({to}) {
-      var liveId = to.params.liveId
+    data ({ to }) {
+      const liveId = to.params.liveId
       this.liveId = liveId
       this.type = Number(to.params.type)
       debug('type:%j', this.type)
       util.loading(this)
       api.fetchLive(this, this.liveId)
-       .then((data) => {
+       .then(data => {
          util.loaded(this)
          this.live = data
-          if (this.type == 0) {
+          if (this.type === 0) {
             this.content = this.live.speakerIntro
-          } else if (this.type == 1) {
+          } else if (this.type === 1) {
             this.content = this.live.detail
-          } else if (this.type == 2)  {
+          } else if (this.type === 2)  {
             this.content = this.live.notice
           }
        }, util.promiseErrorFn(this))
     }
   },
   methods: {
-    cancel() {
+    cancel () {
       window.history.back()
     },
-    confirm() {
-      var updateField
-      if (this.type == 0) {
+    confirm () {
+      let updateField
+      if (this.type === 0) {
         updateField = 'speakerIntro'
-      } else if (this.type == 1) {
+      } else if (this.type === 1) {
         updateField = 'detail'
-      } else if (this.type == 2) {
+      } else if (this.type === 2) {
         updateField = 'notice'
       }
-      var data = {}
+      let data = {}
       data[updateField] = this.content
       api.saveLiveData(this, this.live.liveId, data).then(() => {
         this.$dispatch('saveLive', this.type, this.content)
         window.history.back()
       })
     }
-  },
-  events: {
   }
 }
 

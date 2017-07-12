@@ -24,10 +24,6 @@
           <div class="status" v-bind:class="{'live-on': live.status == 20}">
               {{statusText}}
           </div>
-
-          <!-- <div class="feedback" @click="goContact">
-            订阅直播
-          </div> -->
         </div>
 
         <div class="time-label">直播时间</div>
@@ -108,12 +104,12 @@
 
     <div class="attend-section">
 
-      <div class="create-btn left-btn" v-if="curUser.userId != live.owner.userId" @click="createLive">
+      <div class="create-btn left-btn" v-if="curUser.userId !== live.owner.userId" @click="createLive">
         <img src="../img/apply-icon.png" alt="">
         <p>发起直播</p>
       </div>
 
-      <div class="edit-btn left-btn" v-if="curUser.userId == live.owner.userId" @click="editLive">
+      <div class="edit-btn left-btn" v-if="curUser.userId === live.owner.userId" @click="editLive">
         <p>编辑介绍页</p>
       </div>
 
@@ -132,6 +128,8 @@
 </template>
 
 <script>
+import wx from 'weixin-js-sdk'
+const debug = require('debug')('IntroView')
 
 import util from '../common/util'
 import UserAvatar from '../components/user-avatar.vue'
@@ -146,9 +144,6 @@ import RecommendLiveList from '../components/RecommendLiveList.vue'
 import {Button, Toast} from 'vue-weui'
 import SubscribeForm from '../components/SubscribeForm.vue'
 import wechat from '../common/wechat'
-import wx from 'weixin-js-sdk'
-
-var debug = require('debug')('IntroView');
 
 export default {
   name: 'IntroView',
@@ -194,49 +189,48 @@ export default {
         return ['直接报名', '分享朋友圈报名(感谢您)']
       }
     },
-    btnTitle: function () {
-      var statusWord;
+    btnTitle () {
+      let statusWord
       if (this.live.status <= 20) {
-        statusWord = '参与直播';
+        statusWord = '参与直播'
       } else {
-        statusWord = '收看回播';
+        statusWord = '收看回播'
       }
       if (this.live.canJoin) {
-        return '已报名，进入' + statusWord
+        return `已报名，进入${statusWord}`
       } else if (this.curUser.userId) {
         if (this.live.needPay) {
-          var amountWord;
-          if (this.live.realAmount != this.live.amount) {
-            amountWord = '¥' + this.moneyToYuan(this.live.realAmount)  +
-            '  <span class="origin">' +'¥' + this.moneyToYuan(this.live.amount)+ '</span>'
+          let amountWord
+          if (this.live.realAmount !== this.live.amount) {
+            amountWord = `￥${this.moneyToYuan(this.live.realAmount)}  <span class="origin">￥${this.moneyToYuan(this.live.amount)}</span>`
           } else {
-            amountWord = '¥' + this.moneyToYuan(this.live.amount)
+            amountWord = `￥${this.moneyToYuan(this.live.amount)}`
           }
-          return '赞助并' + statusWord + amountWord
+          return `赞助并${statusWord}${amountWord}`
         } else {
-          return '报名' + statusWord
+          return `报名${statusWord}`
         }
       } else {
-        return '请登录后' + statusWord
+        return `请登录后${statusWord}`
       }
     },
-    timeGap: function() {
+    timeGap () {
       return util.timeGap(this.live.planTs)
     },
-    statusText()  {
+    statusText ()  {
       return util.statusText(this.live.status)
     },
-    introTitle() {
-      return this.live.owner.username + '的直播'
+    introTitle () {
+      return `${this.live.owner.username}的直播`
     },
-    copyrightInfo() {
+    copyrightInfo () {
       return '直播中产生的视频内容版权归主播所有，未经主播许可，任何人不得以任何形式复制、转载和使用主播视频内容。'
     }
   },
   route: {
     data ({ to }) {
-      var liveId = to.params.liveId;
-      if (liveId == this.liveId) {
+      const liveId = to.params.liveId
+      if (liveId === this.liveId) {
         if (this.live.liveId) {
           wechat.shareLive(this, this.live, this.curUser)
         }
@@ -246,25 +240,21 @@ export default {
       this.loadAllData()
     }
   },
-  created () {
-  },
-  ready() {
-  },
   destroyed () {
     debug('destroyed')
   },
   methods: {
-    thankWord() {
+    thankWord () {
       if (this.live.amount <= 100) {
-        return '免费';
+        return '免费'
       } else {
-        return '感恩1元';
+        return '感恩1元'
       }
     },
-    moneyToYuan(amount) {
-      return amount /100.0
+    moneyToYuan (amount) {
+      return amount / 100.0
     },
-    loadAllData() {
+    loadAllData () {
       util.loading(this)
 
       Promise.all([
@@ -293,83 +283,72 @@ export default {
         wechat.shareLive(this, this.live, this.curUser)
 
         setTimeout(() => {
-          //this.playVideo()
-        }, 0)
-        // if (to.query.action == 'pay') {
-        //   setTimeout(()=> {
-        //     this.pay()
-        //   }, 500)
-        // }
-        setTimeout(() => {
           this.configPreviewImages()
         },100)
 
       }).catch(util.promiseErrorFn(this))
     },
-    configPreviewImages() {
-      var detailSection = document.querySelector('.detail-section')
+    configPreviewImages () {
+      let detailSection = document.querySelector('.detail-section')
       if(!detailSection) {
         return
       }
-      var images = detailSection.getElementsByTagName('img')
-      var urls = []
-      for (var i = 0; i< images.length;i++) {
-        var image = images[i]
+      let images = detailSection.getElementsByTagName('img')
+      let urls = []
+      for (let i = 0; i < images.length; i++) {
+        let image = images[i]
         urls.push(image.currentSrc)
       }
-      // urls.push('http://i.quzhiboapp.com/wechat_xin.png')
 
-      for (var i = 0; i< images.length;i++) {
-        var image = images[i]
-        image.addEventListener('click', (event) => {
-          var img =  event.srcElement
+      for (let i = 0; i < images.length; i++) {
+        let image = images[i]
+        image.addEventListener('click', event => {
+          let img =  event.srcElement
           debug('preview' + img.currentSrc)
           wx.previewImage({
-              current: img.currentSrc,
-              urls: urls
+            current: img.currentSrc,
+            urls
           })
         })
       }
     },
-    playVideo() {
-      if (!this.live.previewUrl) {
-        return
-      }
-      var video = document.querySelector("video")
-      var events = ['canplay', 'playing', 'loadeddata']
-      for (var i = 0; i < events.length; i++) {
-        var name = events[i]
-        video.addEventListener(name, (ev) => {
+    playVideo () {
+      if (!this.live.previewUrl) return
+      let video = document.querySelector("video")
+      let events = ['canplay', 'playing', 'loadeddata']
+      for (let i = 0; i < events.length; i++) {
+        let name = events[i]
+        video.addEventListener(name, ev => {
           debug('event ' + ev.type + ' fired')
           debug(ev)
-          if (ev.type == 'playing' || ev.type == 'canplay' || ev.type=='loadeddata') {
-            var videoElm = ev.srcElement
+          if (ev.type === 'playing' || ev.type === 'canplay' || ev.type === 'loadeddata') {
+            let videoElm = ev.srcElement
             debug('client height' + videoElm.clientHeight)
             debug('video height' + videoElm.videoHeight)
             // TODO: android videoHeight 为 0 的问题
-            if (videoElm.videoHeight != 0) {
+            if (videoElm.videoHeight !== 0) {
               this.videoHeight = videoElm.clientHeight
             }
           }
         })
       }
     },
-    canPlayClick() {
+    canPlayClick () {
       this.playStatus = 1
-      var video = document.querySelector("video")
+      let video = document.querySelector("video")
       video.play()
     },
-    intoLive() {
-      this.$router.go('/live/' + this.liveId)
+    intoLive () {
+      this.$router.go(`/live/${this.liveId}`)
     },
-    payOrCreateAttend() {
+    payOrCreateAttend () {
       if (this.live.needPay) {
         this.pay()
       } else {
         this.createAttend()
       }
     },
-    showSubscribeForm() {
+    showSubscribeForm () {
       this.currentView = 'subscribe-form'
       this.overlayStatus = true
     },
@@ -378,7 +357,7 @@ export default {
         this.$dispatch('loginOrRegister', this.liveId)
         return
       }
-      if (this.curUser.wechatSubscribe == 0) {
+      if (this.curUser.wechatSubscribe === 0) {
         this.showSubscribeForm()
       } else {
         if (this.live.canJoin) {
@@ -402,10 +381,10 @@ export default {
         }
       }
     },
-    createAttend() {
-      var fromUserId = this.getFromUserId()
+    createAttend () {
+      let fromUserId = this.getFromUserId()
       util.loading(this)
-      var params = {
+      let params = {
         liveId: this.liveId
       }
       if (fromUserId) {
@@ -413,37 +392,37 @@ export default {
       }
       http.post(this, 'attendances/create', params)
        .then((data) => {
-        util.loaded(this)
-        this.cleanFromUserId()
-        util.show(this, 'success', '报名成功')
-        this.reloadLive()
-        this.intoLive()
+         util.loaded(this)
+         this.cleanFromUserId()
+         util.show(this, 'success', '报名成功')
+         this.reloadLive()
+         this.intoLive()
       }).catch(util.promiseErrorFn(this))
     },
-    reloadLive() {
+    reloadLive () {
       util.loading(this)
       return http.fetchLive(this, this.liveId)
-        .then((data) => {
+        .then(data => {
           util.loaded(this)
           this.live = data
           return Promise.resolve()
         }).catch(util.promiseErrorFn(this))
     },
-    createLive() {
+    createLive () {
       if (!this.curUser.userId) {
         this.$dispatch('loginOrRegister', this.liveId)
       } else {
         this.$router.go('/reganchor')
       }
     },
-    cleanFromUserId() {
+    cleanFromUserId () {
       window.localStorage.removeItem('fromUser')
     },
-    pay() {
+    pay () {
       if (util.isWeixinBrowser()) {
         util.loading(this)
-        var fromUserId = this.getFromUserId()
-        var params = {
+        let fromUserId = this.getFromUserId()
+        let params = {
           liveId: this.liveId,
           channel: 'wechat_h5'
         }
@@ -456,8 +435,8 @@ export default {
         }).then(() => {
           util.loaded(this)
           this.payFinishAndIntoLive()
-          }, (error) => {
-            if (error && error.indexOf('失败') != -1) {
+          }, error => {
+            if (error && error.indexOf('失败') !== -1) {
               this.fetchQrcodeUrlAndShow()
             } else {
               util.show(this, 'error', error)
@@ -467,7 +446,7 @@ export default {
         this.fetchQrcodeUrlAndShow()
       }
     },
-    payFinishAndIntoLive() {
+    payFinishAndIntoLive () {
       util.loading(this)
       setTimeout(() => {
         http.fetchLive(this, this.liveId)
@@ -484,10 +463,10 @@ export default {
           }).catch(util.promiseErrorFn(this))
       }, 1000)
     },
-    fetchQrcodeUrlAndShow() {
+    fetchQrcodeUrlAndShow () {
       util.loading(this)
-      var fromUserId = this.getFromUserId()
-      var params = {
+      let fromUserId = this.getFromUserId()
+      let params = {
         liveId: this.liveId,
         channel: 'wechat_qrcode'
       }
@@ -496,13 +475,13 @@ export default {
       }
       http.post(this, 'attendances/create', params)
        .then((data) => {
-        util.loaded(this)
-        this.qrcodeUrl = data.code_url
-        this.currentView = 'qrcode-pay-form'
-        this.overlayStatus = true
+          util.loaded(this)
+          this.qrcodeUrl = data.code_url
+          this.currentView = 'qrcode-pay-form'
+          this.overlayStatus = true
       }, util.promiseErrorFn(this))
     },
-    getFromUserId() {
+    getFromUserId () {
       let fromUser = window.localStorage.getItem('fromUser')
       if (fromUser) {
         let fromUserId = JSON.parse(fromUser).fromUserId
@@ -511,31 +490,31 @@ export default {
         return null
       }
     },
-    goUsers() {
-      this.$router.go('/live/' + this.liveId + '/users')
+    goUsers () {
+      this.$router.go(`/live/${this.liveId}/users`)
     },
-    seeLives() {
+    seeLives () {
       this.$router.go('/lives')
     },
-    goContact() {
+    goContact () {
       this.$router.go('/contact')
     },
-    goQulive() {
+    goQulive () {
       this.$router.go('/intro/7')
     },
-    toggleMoreDetail() {
+    toggleMoreDetail () {
       this.showMoreDetail = !this.showMoreDetail
     },
-    goInvite() {
-      this.$router.go('/live/' + this.liveId + '/invites')
+    goInvite () {
+      this.$router.go(`/live/${this.liveId}/invites`)
     },
-    goUserRoom(userId) {
-      this.$router.go('/room/' + userId)
+    goUserRoom (userId) {
+      this.$router.go(`/room/${userId}`)
     },
-    editLive() {
-      this.$router.go('/editLive/' + this.liveId)
+    editLive () {
+      this.$router.go(`/editLive/${this.liveId}`)
     },
-    clickCover() {
+    clickCover () {
       this.attendLive()
     }
   },
@@ -554,7 +533,7 @@ export default {
         if (this.positiveShare) {
           this.reloadLive()
            .then(() => {
-               this.attendLive()
+             this.attendLive()
            })
         } else {
           this.reloadLive()
@@ -562,10 +541,10 @@ export default {
       }).catch(util.promiseErrorFn(this))
     },
     'hideOptionsForm': function(type) {
-      if (this.currentView == 'options-form'){
-        if (type == 0) {
+      if (this.currentView === 'options-form'){
+        if (type === 0) {
           this.payOrCreateAttend()
-        } else if (type == 1) {
+        } else if (type === 1) {
           setTimeout(() => {
             this.currentView = 'share-lead'
             this.overlayStatus = true

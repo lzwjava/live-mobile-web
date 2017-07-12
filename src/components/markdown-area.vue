@@ -28,7 +28,7 @@
 
 <script>
 
-  var debug = require('debug')('markdown-area');
+  const debug = require('debug')('markdown-area');
   import Markdown from '../components/markdown.vue'
   import util from '../common/util'
   import api from '../common/api'
@@ -60,66 +60,66 @@
         markdownContainerId: 'markdown-container'
       }
     },
-    created() {
+    created () {
       this.imageBtnId = 'image-btn-' + util.randomString(3)
       this.textareaId = 'textarea-' + util.randomString(3)
       this.markdownContainerId = 'markdown-container-' + util.randomString(3)
     },
-    ready() {
+    ready () {
       this.initQiniu()
     },
     methods: {
       keyboardSubmit (e) {
-        if (e.keyCode !== 13) return;
-        var mac = /mac/i.test(navigator.userAgent);
-        if ((mac && !e.metaKey) || (!mac && !e.ctrlKey)) return;
-        this.$emit('submit');
+        if (e.keyCode !== 13) return
+        var mac = /mac/i.test(navigator.userAgent)
+        if ((mac && !e.metaKey) || (!mac && !e.ctrlKey)) return
+        this.$emit('submit')
       },
       focus (e) {
-        e && e.preventDefault();
-        this.showPreview = false;
+        e && e.preventDefault()
+        this.showPreview = false
 
-        var el = this.$els.text;
+        let el = this.$els.text
         setTimeout(function() {
-          el.focus();
-        }, 10);
+          el.focus()
+        }, 10)
       },
       preview (e) {
-        e.preventDefault();
+        e.preventDefault()
         if (this.showPreview) {
-          return;
+          return
         }
-        this.showPreview = true;
+        this.showPreview = true
       },
-      insertLink(link) {
-        var textarea = document.getElementById(this.textareaId)
+      insertLink (link) {
+        let textarea = document.getElementById(this.textareaId)
         this.insertAtCursor(textarea, link)
       },
-      insertAtCursor(myField, myValue) {
+      insertAtCursor (myField, myValue) {
           //IE support
           if (document.selection) {
-              myField.focus();
-              sel = document.selection.createRange();
-              sel.text = myValue;
+              myField.focus()
+              sel = document.selection.createRange()
+              sel.text = myValue
           }
           //MOZILLA and others
           else if (myField.selectionStart || myField.selectionStart == '0') {
-              var startPos = myField.selectionStart;
-              var endPos = myField.selectionEnd;
+              let startPos = myField.selectionStart
+              let endPos = myField.selectionEnd
               myField.value = myField.value.substring(0, startPos)
                   + myValue
-                  + myField.value.substring(endPos, myField.value.length);
+                  + myField.value.substring(endPos, myField.value.length)
           } else {
-              myField.value += myValue;
+              myField.value += myValue
           }
       },
-      initQiniu() {
-        api.get(this, 'files/uptoken').then((res) => {
-          var result = res;
-          var uptoken = result.uptoken;
-          var bucketUrl = result.bucketUrl;
-          var key =result.key;
-          var uploader = Qiniu.uploader({
+      initQiniu () {
+        api.get(this, 'files/uptoken').then(res => {
+          let result = res
+          let uptoken = result.uptoken
+          let bucketUrl = result.bucketUrl
+          let key = result.key
+          let uploader = Qiniu.uploader({
               runtimes: 'html5,flash,html4',    //上传模式,依次退化
               browse_button: this.imageBtnId,       //上传选择的点选按钮，**必需**
               uptoken_url: 'useless',
@@ -145,8 +145,8 @@
                   'UploadProgress': (up, file) => {
                   },
                   'FileUploaded': (up, file, info) => {
-                    var res = JSON.parse(info)
-                    var sourceLink = bucketUrl + '/' + res.key
+                    let res = JSON.parse(info)
+                    let sourceLink = bucketUrl + '/' + res.key
                     this.insertLink(sprintf('![%s](%s)\n', file.name, sourceLink))
                   },
                   'Error': (up, err, errTip) => {
@@ -156,7 +156,7 @@
                     util.loaded(this)
                   },
                   'Key': (up, file) => {
-                      return util.randomString(6)
+                    return util.randomString(6)
                   }
               }
           })

@@ -7,8 +7,6 @@
 <script type="text/javascript">
 
 export default {
-  components: {
-  },
   data () {
     return {
       clock: new Date().getFullYear(),
@@ -17,35 +15,35 @@ export default {
   },
   methods: {
     unique (item, list) {
-      return !list.some(function(data) {
-        return JSON.stringify(data) === JSON.stringify(item);
-      });
+      return !list.some(data => {
+        return JSON.stringify(data) === JSON.stringify(item)
+      })
     },
     flush () {
-      this.messages = [];
+      this.messages = []
     },
     clear (index) {
-      clearTimeout(this.clock);
-      this.messages.splice(index, 1);
-      this.clock = setTimeout(this.flush.bind(this), 4000);
+      clearTimeout(this.clock)
+      this.messages.splice(index, 1)
+      this.clock = setTimeout(this.flush.bind(this), 4000)
     },
     show (type, text, timeout) {
       // 全局 error、warn、success 提示
-      var msg = {type: type, text: text};
-      if (!this.unique(msg, this.messages)) return;
+      var msg = {type: type, text: text}
+      if (!this.unique(msg, this.messages)) return
 
       if (!timeout) {
-        if (type == 'error') {
+        if (type === 'error') {
           timeout = 5000
         } else {
           timeout = 3000
         }
       }
-      this.messages.push(msg);
-      var index = this.messages.length - 1;
+      this.messages.push(msg)
+      const index = this.messages.length - 1
       setTimeout(function() {
-        this.clear(index);
-      }.bind(this), timeout);
+        this.clear(index)
+      }.bind(this), timeout)
     }
   },
   events: {

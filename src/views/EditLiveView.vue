@@ -24,7 +24,7 @@
         </cells>
 
         <cells>
-          <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon"></switch-cell>
+          <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon /">
 
           <cell>
             <span class="item-title" slot="header">设定直播分类</span>
@@ -86,7 +86,7 @@ import VDatePicker from '../components/date_picker.vue'
 import Loading from '../components/loading.vue'
 import util from '../common/util'
 import api from '../common/api'
-import {Toast, SelectCell, Cells, SwitchCell, InputCell, CellBody, Cell,CellHeader, CellFooter} from 'vue-weui'
+import {Toast, SelectCell, Cells, SwitchCell, InputCell, CellBody, Cell, CellHeader, CellFooter} from 'vue-weui'
 import moment from 'moment-timezone'
 moment.locale('zh-cn')
 
@@ -94,7 +94,7 @@ require('moxie')
 require('plupload')
 import Qiniu from 'qiniu-js-sdk'
 
-var debug = require('debug')('EditLiveView')
+const debug = require('debug')('EditLiveView')
 
 export default {
   name: 'EditLiveView',
@@ -112,7 +112,7 @@ export default {
     CellFooter,
     CellHeader
   },
-  data() {
+  data () {
     return {
       live: {},
       detail: '',
@@ -136,22 +136,20 @@ export default {
     }
   },
   computed: {
-    topicOptions() {
-      var options = []
+    topicOptions () {
+      let options = []
       options.push({text: '无', value: 0})
-      for(var i = 0; i < this.topics.length; i++) {
-        var topic = this.topics[i]
+      for(let i = 0; i < this.topics.length; i++) {
+        let topic = this.topics[i]
         options.push({text: topic.name, value: topic.topicId})
       }
       return options
     }
   },
   route: {
-    data({to}) {
-      var liveId = to.params.liveId
-      if (liveId == this.liveId) {
-        return
-      }
+    data({ to }) {
+      const liveId = to.params.liveId
+      if (liveId === this.liveId) return
       this.liveId = liveId
 
       util.loading(this)
@@ -159,9 +157,9 @@ export default {
         api.fetchLive(this, this.liveId),
         api.get(this, 'topics'),
         api.get(this, 'files/uptoken')
-      ]).then((values) => {
+      ]).then(values => {
         util.loaded(this)
-        var live = values[0]
+        let live = values[0]
         this.topics = values[1]
         this.uptoken = values[2]
         this.setLive(live)
@@ -170,14 +168,12 @@ export default {
       }, util.promiseErrorFn(this))
     }
   },
-  created() {
-  },
   ready() {
     this.hasDomReady = true
     this.tryInitQiniu()
   },
   methods: {
-    setLive(live) {
+    setLive (live) {
       this.live = live
       this.title = live.subject
       this.amountValue = live.amount / 100.0 + ''
@@ -201,8 +197,8 @@ export default {
         this.topicSelected = live.topic.topicId
       }
     },
-    saveLive() {
-      var data = {};
+    saveLive () {
+      let data = {}
       if (this.title) {
         data.subject = this.title
       }
@@ -222,7 +218,7 @@ export default {
       } else {
         data.shareIcon = 0
       }
-      if (this.topicSelected == 0) {
+      if (this.topicSelected === 0) {
         this.updateTopic(this.liveId, 'del')
       } else {
         this.updateTopic(this.liveId, 'add', this.topicSelected)
@@ -232,14 +228,14 @@ export default {
       }
       return this.saveLiveData(data)
     },
-    saveLiveData(data) {
+    saveLiveData (data) {
       return api.saveLiveData(this, this.live.liveId, data)
     },
-    publishLive() {
+    publishLive () {
       this.saveLive()
        .then(() => {
          util.loading(this)
-         api.get(this, 'lives/' + this.live.liveId + '/submitReview').then((res) => {
+         api.get(this, `lives/${this.live.liveId}/submitReview`).then(res => {
            util.loaded(this)
            util.show(this, 'success', '提交审核成功')
          }, util.promiseErrorFn(this))
@@ -247,20 +243,20 @@ export default {
     },
     updateCover(url) {
       this.coverUrl = url
-      var data = {
+      let data = {
         coverUrl: this.coverUrl
       }
       this.saveLiveData(data)
     },
-    updateCoursewareKey(key) {
+    updateCoursewareKey (key) {
       this.coursewareUrl = this.bucketUrl + '/' + key
       this.saveLiveData({coursewareKey: key})
     },
-    initCoverUploader(uptokenData) {
-      var uptoken = uptokenData.uptoken
-      var bucketUrl = uptokenData.bucketUrl
-      var key = uptokenData.key
-      var uploader = Qiniu.uploader({
+    initCoverUploader (uptokenData) {
+      let uptoken = uptokenData.uptoken
+      let bucketUrl = uptokenData.bucketUrl
+      let key = uptokenData.key
+      let uploader = Qiniu.uploader({
         runtimes: 'html5,flash,html4',    //上传模式,依次退化
         browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
         uptoken_url: 'useless',
@@ -305,14 +301,14 @@ export default {
                 return util.randomString(6)
             }
         }
-      })      
+      })
     },
-    initCourseUploader(uptokenData) {
-      var uptoken = uptokenData.uptoken
-      var bucketUrl = uptokenData.bucketUrl
+    initCourseUploader (uptokenData) {
+      let uptoken = uptokenData.uptoken
+      let bucketUrl = uptokenData.bucketUrl
       this.bucketUrl = bucketUrl
-      var key = uptokenData.key
-      var coursewareUploader = Qiniu.uploader({
+      let key = uptokenData.key
+      let coursewareUploader = Qiniu.uploader({
         runtimes: 'html5,flash,html4',    //上传模式,依次退化
         browse_button: 'pick-courseware',       //上传选择的点选按钮，**必需**
         uptoken_url: 'useless',
@@ -359,41 +355,39 @@ export default {
         }
       }) // coursewareUploader
     },
-    tryInitQiniu() {
+    tryInitQiniu () {
       if (this.hasDomReady && this.hasGotUptoken) {
         this.initQiniu(this.uptoken)
       }
     },
-    initQiniu(uptokenData) {
+    initQiniu (uptokenData) {
       this.initCoverUploader(uptokenData)
       this.initCourseUploader(uptokenData)
     },
-    updateTopic(liveId, op, topicId) {
+    updateTopic (liveId, op, topicId) {
       util.loading(this)
-      api.post(this, 'lives/' + liveId + '/topic', {
-        op: op,
-        topicId: topicId
-      }).then((res) => {
-        util.loaded(this)
-      }, util.promiseErrorFn(this))
+      api.post(this, `lives/${liveId}/topic`, { op, topicId })
+        .then(res => {
+          util.loaded(this)
+        }, util.promiseErrorFn(this))
     },
-    titleWord(str) {
+    titleWord (str) {
       if (str && str.length > 0) {
         return str.length + '字'
       } else {
         return '未填写'
       }
     },
-    goSpeakerIntro() {
-      this.$router.go('/editDetail/' + this.liveId + '/0')
+    goSpeakerIntro () {
+      this.$router.go(`/editDetail/${this.liveId}/0`)
     },
-    goDetail() {
-      this.$router.go('/editDetail/' + this.liveId + '/1')
+    goDetail () {
+      this.$router.go(`/editDetail/${this.liveId}/1`)
     },
-    goNotice() {
-      this.$router.go('/editDetail/' + this.liveId + '/2')
+    goNotice () {
+      this.$router.go(`/editDetail/${this.liveId}/2`)
     }
-  }, // methods
+  },
   events: {
     'saveLive': function (type, content) {
       if (type == 0) {

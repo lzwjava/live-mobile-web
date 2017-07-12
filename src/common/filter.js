@@ -19,7 +19,7 @@ function fromNow (time) {
   }
 }
 
-function pluralize(time, label) {
+function pluralize (time, label) {
     if (time === 1) {
         return time + label
     }
@@ -39,17 +39,17 @@ let formatTime = (time, format) => {
     return ''
   }
   if (!format) {
-    format = 'll';
+    format = 'll'
   }
   return moment(time).format(format);
 };
 
 let fromNowTime = (time) => {
-  return moment(time).fromNow();
+  return moment(time).fromNow()
 };
 
 let formatTimeCommon = (time) => {
-  var text = formatTime(time, 'llll');
+  var text = formatTime(time, 'llll')
   text = text.replace('2016年', '')
   text = text.replace('星期', '周')
   return text

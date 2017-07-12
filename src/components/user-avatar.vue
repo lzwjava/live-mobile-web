@@ -5,9 +5,9 @@
   </div>
 </template>
 <script>
-  var debug = require('debug')('avatar');
-  var escape = require('../common/util').escape;
-  var wordColor = require('word-color');
+  const debug = require('debug')('avatar')
+  const escape = require('../common/util').escape
+  const wordColor = require('word-color')
   module.exports = {
     props: ['user'],
     data (){
@@ -17,20 +17,18 @@
       }
     },
     compiled: function() {
-      var user = this.user;
-      if (!user.username) {
-        // 因为父对象的 user 一开始可能没有数据
-        return;
-      }
-      debug('user: %j', user);
+      var user = this.user
+      // 因为父对象的 user 一开始可能没有数据
+      if (!user.username) return
+      debug('user: %j', user)
       if (!user.avatarUrl) {
-        var bg = wordColor.rgb(user.username);
+        const bg = wordColor.rgb(user.username)
         if ((bg[0] * 299 + bg[1] * 587 + bg[2] * 114) > 200000) {
-          this.spanColor = 'black';
+          this.spanColor = 'black'
         }
-        this.spanBgColor = 'rgb(' + bg.join(',') + ')';
+        this.spanBgColor = 'rgb(' + bg.join(',') + ')'
         user.username = escape(user.username.charAt(0).toUpperCase())
-        debug('avatarUrl: ' + user.avatarUrl);
+        debug('avatarUrl: ' + user.avatarUrl)
       }else{
         //debug('avatarUrl: ' + user.avatarUrl);
       }
