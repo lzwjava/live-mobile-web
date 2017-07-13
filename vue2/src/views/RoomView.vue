@@ -31,21 +31,17 @@
 </template>
 
 <script type="text/javascript">
-import debugFn from 'debug'
-
 import util from '@/common/util'
 import api from '@/common/api'
 
 import LiveList from '@/components/LiveList.vue'
-
-const debug = debugFn('RoomView')
 
 export default {
   name: 'RoomView',
   components: {
     'live-list': LiveList
   },
-  data() {
+  data () {
     return {
       userId: 0,
       user: {},

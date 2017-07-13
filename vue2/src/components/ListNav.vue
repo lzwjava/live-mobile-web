@@ -17,7 +17,6 @@
 <script type="text/javascript">
 import debugFn from 'debug'
 import util from '@/common/util'
-import api from '@/common/api'
 
 import UserAvatar from '@/components/user-avatar.vue'
 import Dropdown from '@/components/dropdown.vue'
@@ -25,70 +24,70 @@ import Dropdown from '@/components/dropdown.vue'
 const debug = debugFn('ListNav')
 
 export default {
-    name: 'ListNav',
-    components: {
-      'user-avatar': UserAvatar,
-      'dropdown': Dropdown
-    },
-    props: ['mode', 'title', 'liveId'],
-    data () {
-      return {
-        isAnchor: false, //是否为主播 默认应该为非主播
-        curUser: {},
-        showUserDropdown: false
-      }
-    },
-    created () {
-      this.curUser = util.curUser({})
-    },
-    route: {
-      data({ to }) {
-        debug('route nav')
-      }
-    },
-    methods: {
-      login () {
-        this.$dispatch('loginOrRegister', this.liveId)
-      },
-      goList () {
-        this.$router.push('/lives')
-      },
-      goMylist () {
-        this.$router.push('/mylist')
-      },
-      goRegAnchor () {
-        this.$router.push('/reganchor')
-      },
-      viewUserDropdown (e) {
-        e && e.preventDefault()
-        this.showUserDropdown = true
-      },
-      goProfile () {
-        this.$router.push('/profile')
-      },
-      logout (e) {
-        this.$http.get('logout').then(resp => {
-          this.user = {}
-          window.localStorage.removeItem('user')
-          window.location.reload()
-        }, util.httpErrorFn(this))
-      },
-      about () {
-        util.show(this, 'success', '趣直播-知识直播平台，版本发布于：' + process.env.BUILD_TIME)
-      },
-      goAll () {
-        this.$router.push('/lives')
-      },
-      goAccount () {
-        this.$router.push('/account')
-      }
-    },
-    events: {
-      'updateCurUser': function() {
-        this.curUser = util.curUser({})
-        debug('updateCurUser in ListNav')
-      }
+  name: 'ListNav',
+  components: {
+    'user-avatar': UserAvatar,
+    'dropdown': Dropdown
+  },
+  props: ['mode', 'title', 'liveId'],
+  data () {
+    return {
+      isAnchor: false,
+      curUser: {},
+      showUserDropdown: false
     }
+  },
+  created () {
+    this.curUser = util.curUser({})
+  },
+  route: {
+    data ({ to }) {
+      debug('route nav')
+    }
+  },
+  methods: {
+    login () {
+      this.$dispatch('loginOrRegister', this.liveId)
+    },
+    goList () {
+      this.$router.push('/lives')
+    },
+    goMylist () {
+      this.$router.push('/mylist')
+    },
+    goRegAnchor () {
+      this.$router.push('/reganchor')
+    },
+    viewUserDropdown (e) {
+      e && e.preventDefault()
+      this.showUserDropdown = true
+    },
+    goProfile () {
+      this.$router.push('/profile')
+    },
+    logout (e) {
+      this.$http.get('logout').then(resp => {
+        this.user = {}
+        window.localStorage.removeItem('user')
+        window.location.reload()
+      }, util.httpErrorFn(this))
+    },
+    about () {
+      util.show(this, 'success', '趣直播-知识直播平台，版本发布于：' + process.env.BUILD_TIME)
+    },
+    goAll () {
+      this.$router.push('/lives')
+    },
+    goAccount () {
+      this.$router.push('/account')
+    }
+  },
+  events: {
+    'updateCurUser': function () {
+      this.curUser = util.curUser({})
+      debug('updateCurUser in ListNav')
+    }
+  }
 }
 </script>
 

@@ -9,8 +9,6 @@
 require('../../node_modules/github-markdown-css/github-markdown.css')
 require('../../node_modules/highlight.js/styles/solarized-light.css')
 
-const debug = require('debug')('markdown')
-
 import marked from 'marked'
 import highlight from 'highlight.js'
 
@@ -24,50 +22,50 @@ marked.setOptions({
   smartLists: true,
   smartypants: false,
   highlight: function (code) {
-    return highlight.highlightAuto(code).value;
+    return highlight.highlightAuto(code).value
   }
-});
+})
 
 export default {
-    props: {
-      'content': {
-        type: String,
-        required: true,
-        default: ""
-      },
-      'showAll': {
-        type: Boolean,
-        required: false,
-        default: true
+  props: {
+    'content': {
+      type: String,
+      required: true,
+      default: ''
+    },
+    'showAll': {
+      type: Boolean,
+      required: false,
+      default: true
+    }
+  },
+  computed: {
+    html () {
+      if (!this.content) {
+        return ''
       }
-    },
-    computed: {
-        html () {
-            if (!this.content) {
-              return ''
-            }
-            if (!this.showAll && this.content.length > 100) {
-              let partContent = ''
-              for (let i = 0; i < 100; i++) {
-                var ch = this.content.charAt(i)
-                if (ch !== '[' && ch !== '(' && ch !== '!') {
-                  partContent += ch
-                } else {
-                  break
-                }
-              }
-              partContent += '....'
-              return marked(partContent)
-            } else {
-              return marked(this.content)
-            }
+      if (!this.showAll && this.content.length > 100) {
+        let partContent = ''
+        for (let i = 0; i < 100; i++) {
+          var ch = this.content.charAt(i)
+          if (ch !== '[' && ch !== '(' && ch !== '!') {
+            partContent += ch
+          } else {
+            break
+          }
         }
-    },
-    methods: {
-      showAllBtn () {
-        this.showAll = true
+        partContent += '....'
+        return marked(partContent)
+      } else {
+        return marked(this.content)
       }
     }
+  },
+  methods: {
+    showAllBtn () {
+      this.showAll = true
+    }
+  }
 }
 
 </script>

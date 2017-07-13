@@ -12,14 +12,12 @@
 </template>
 
 <script type="text/javascript">
-import debugFn from 'debug'
-
 import util from '@/common/util'
 import api from '@/common/api'
 
 import MarkdownArea from '@/components/markdown-area.vue'
 
-const debug = debugFn('EditDetailView')
+const debug = require('debug')('EditDetailView')
 
 export default {
   name: 'EditDetailView',
@@ -61,17 +59,17 @@ export default {
       debug('type:%j', this.type)
       util.loading(this)
       api.fetchLive(this, this.liveId)
-       .then(data => {
-         util.loaded(this)
-         this.live = data
-          if (this.type === 0) {
-            this.content = this.live.speakerIntro
-          } else if (this.type === 1) {
-            this.content = this.live.detail
-          } else if (this.type === 2)  {
-            this.content = this.live.notice
-          }
-       }, util.promiseErrorFn(this))
+      .then(data => {
+        util.loaded(this)
+        this.live = data
+        if (this.type === 0) {
+          this.content = this.live.speakerIntro
+        } else if (this.type === 1) {
+          this.content = this.live.detail
+        } else if (this.type === 2) {
+          this.content = this.live.notice
+        }
+      }, util.promiseErrorFn(this))
     }
   },
   methods: {

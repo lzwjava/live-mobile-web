@@ -94,7 +94,7 @@ export default {
       return hour + ':' + minute + ':' + second
     }
   },
-  created() {
+  created () {
     if (this.dateResult === '') {
       this.setNow()
     }

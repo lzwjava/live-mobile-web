@@ -17,24 +17,23 @@
 
 import util from '@/common/util'
 import http from '@/common/api'
-import wechat from '@/common/wechat'
 import LiveList from '@/components/LiveList.vue'
 import ListNav from '@/components/ListNav.vue'
 
 export default {
   name: 'MyListView',
-  components:{
+  components: {
     'live-list': LiveList,
     'list-nav': ListNav
   },
   data () {
     return {
-      attendedLives:[],
-      myLives:[]
+      attendedLives: [],
+      myLives: []
     }
   },
   route: {
-    data({ to }) {
+    data ({ to }) {
       if (!util.checkInSession(this)) return
       util.loading(this)
       Promise.all([

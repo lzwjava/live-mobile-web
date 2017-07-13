@@ -28,7 +28,6 @@
 require('moxie')
 require('plupload')
 
-import debugFn from 'debug'
 import Qiniu from 'qiniu-js-sdk'
 
 import util from '@/common/util'
@@ -39,8 +38,6 @@ import UserAvatar from '@/components/user-avatar.vue'
 import Overlay from '@/components/overlay.vue'
 import InputTextForm from '@/components/InputTextForm.vue'
 
-const debug = debugFn('EditUserView')
-
 export default {
   name: 'EditUserView',
   components: {
@@ -48,7 +45,7 @@ export default {
     'overlay': Overlay,
     'input-text-form': InputTextForm
   },
-  data() {
+  data () {
     return {
       curUser: {},
       overlayStatus: false,
@@ -96,56 +93,58 @@ export default {
         let uptoken = result.uptoken
         let bucketUrl = result.bucketUrl
         this.bucketUrl = bucketUrl
+        /* eslint-disable */
         let key =result.key
         let uploader = Qiniu.uploader({
-          runtimes: 'html5,flash,html4',    //上传模式,依次退化
-          browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
+          runtimes: 'html5,flash,html4',
+          browse_button: 'pickfiles',
           uptoken_url: 'useless',
           uptoken: uptoken,
           domain: bucketUrl,
           flash_swf_url: 'js/plupload/Moxie.swf',
           unique_names: false,
           save_key: false,
-          get_new_uptoken: false,           //设置上传文件的时候是否每次都重新获取新的token
-          max_file_size: '500kb',           //最大文件体积限制
-          max_retries: 3,                   //上传失败最大重试次数
-          dragdrop: false,                  //开启可拖曳上传
-          drop_element: 'upload-container',  //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-          chunk_size: '4mb',                //分块上传时，每片的体积
-          auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传,
+          get_new_uptoken: false,
+          max_file_size: '500kb',
+          max_retries: 3,
+          dragdrop: false,
+          drop_element: 'upload-container',
+          chunk_size: '4mb',
+          auto_start: true,
           filters: {
-            mime_types : [
-              {title : "Image files", extensions: "jpg,png,jpeg"}    //限制文件格式
+            mime_types: [
+              {title: "Image files", extensions: "jpg,png,jpeg"}
             ]
           },
           init: {
-              'FilesAdded': (up, files) => {
-              },
-              'BeforeUpload': (up, file) => {
-                util.loading(this)
-              },
-              'UploadProgress': (up, file) => {
-              },
-              'FileUploaded': (up, file, info) => {
-                var res = JSON.parse(info)
-                var sourceLink = bucketUrl + '/' + res.key
-                this.updateUser({
-                  avatarUrl: sourceLink
-                })
-              },
-              'Error': (up, err, errTip) => {
-                util.show(this, 'error', errTip)
-              },
-              'UploadComplete': () => {
-                util.loaded(this)
-              },
-              'Key': (up, file) => {
-                  return util.randomString(6)
-              }
+            'FilesAdded': (up, files) => {
+            },
+            'BeforeUpload': (up, file) => {
+              util.loading(this)
+            },
+            'UploadProgress': (up, file) => {
+            },
+            'FileUploaded': (up, file, info) => {
+              var res = JSON.parse(info)
+              var sourceLink = bucketUrl + '/' + res.key
+              this.updateUser({
+                avatarUrl: sourceLink
+              })
+            },
+            'Error': (up, err, errTip) => {
+              util.show(this, 'error', errTip)
+            },
+            'UploadComplete': () => {
+              util.loaded(this)
+            },
+            'Key': (up, file) => {
+                return util.randomString(6)
+            }
           }
         })
-      }) // api
-    } // initQiniu
+      })
+      /* eslint-enable */
+    }
   },
   events: {
     'updateCurUser': function () {

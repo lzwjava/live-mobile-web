@@ -8,10 +8,6 @@
 <script type="text/javascript">
 
 import UserAvatar from '@/components/user-avatar.vue'
-import util from '@/common/util'
-
-const debug = require('debug')('nav')
-
 export default {
   name: 'Nav',
   components: {

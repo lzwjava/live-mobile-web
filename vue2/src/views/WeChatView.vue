@@ -27,7 +27,8 @@ export default {
     }
   },
   route: {
-    data({ to }) {
+    data ({ to }) {
+      /* eslint-disable */
       const params = this.$route.params
       if (!params.type) {
         util.show(this, 'error', '路径错误')
@@ -35,7 +36,7 @@ export default {
       }
       let type = params.type
       let hostname = window.location.hostname
-      let isLoalhost = hostname  === 'localhost'
+      let isLoalhost = hostname === 'localhost'
       debug('WeChatView created')
       let query = this.$route.query
       if (!query.code || !query.state) {
@@ -94,9 +95,10 @@ export default {
          let newUrl = url.replace('m.quzhiboapp.com', 'localhost:9060')
          newUrl = newUrl.replace('webOauthTest', 'webOauth')
          window.location = newUrl
-       }  else {
+       } else {
          this.goLiveOrList()
        }
+       /* eslint-enable */
     }
   }
 }

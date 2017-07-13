@@ -5,13 +5,13 @@ moment.locale('zh-cn')
 
 let filterError = (component, res) => {
   debug('resp:%j', res.data)
-  if (res.data.status != "success") {
+  if (res.data.status !== 'success') {
     component.$dispatch('show-msg', 'error', res.data.error)
     return false
   } else {
     return true
   }
-};
+}
 
 let escape = (html) => {
   html = html || ''
@@ -26,7 +26,7 @@ let escape = (html) => {
 let httpErrorFn = (component) => {
   return function (res) {
     let text = res.statusText
-    if (text == '') {
+    if (text === '') {
       text = '网络超时错误'
     }
     component.$dispatch('show-msg', 'error', text)
@@ -50,30 +50,30 @@ let promiseErrorFn = (comp, callback) => {
 }
 
 let transformToAssocArray = (prmstr) => {
-    let params = {}
-    let prmarr = prmstr.split("&")
-    for ( let i = 0; i < prmarr.length; i++) {
-        let tmparr = prmarr[i].split("=")
-        params[tmparr[0]] = tmparr[1]
-    }
-    return params
+  let params = {}
+  let prmarr = prmstr.split('&')
+  for (let i = 0; i < prmarr.length; i++) {
+    let tmparr = prmarr[i].split('')
+    params[tmparr[0]] = tmparr[1]
+  }
+  return params
 }
 
 let getParams = () => {
-      let prmstr = window.location.search.substr(1)
-      debug('paramStr:' + window.location.search)
-      return prmstr !== null && prmstr !== "" ? transformToAssocArray(prmstr) : {}
+  let prmstr = window.location.search.substr(1)
+  debug('paramStr:' + window.location.search)
+  return prmstr !== null && prmstr !== '' ? transformToAssocArray(prmstr) : {}
 }
 
-function isWeixinBrowser() {
+function isWeixinBrowser () {
   return /micromessenger/.test(navigator.userAgent.toLowerCase())
 }
 
-function isAndroidBrowser() {
+function isAndroidBrowser () {
   return /android/.test(navigator.userAgent.toLowerCase())
 }
 
-function isMobileBrowser() {
+function isMobileBrowser () {
   return typeof window.orientation !== 'undefined'
 }
 
@@ -82,10 +82,10 @@ function isSafari () {
 }
 
 function randomString (length) {
-    let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    let result = ''
-    for (let i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)]
-    return result
+  let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  let result = ''
+  for (let i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)]
+  return result
 }
 
 function loading (comp) {
@@ -96,15 +96,8 @@ function loaded (comp) {
   comp.$dispatch('loading', false)
 }
 
-function getLang () {
- if (navigator.languages != undefined)
-  return navigator.languages[0]
- else
-  return navigator.language
-}
-
 function timeGap (ts) {
-  let text = moment.tz(ts, "YYYY-MM-DD hh:mm::ss", 'Asia/Shanghai').fromNow()
+  let text = moment.tz(ts, 'YYYY-MM-DD hh:mm::ss', 'Asia/Shanghai').fromNow()
   if (text) {
     text = text.replace(/[\u5185]/g, '后')
     text = text.replace(' ', '')
@@ -113,7 +106,7 @@ function timeGap (ts) {
 }
 
 function timeDuration (ts) {
-  let text = moment.tz(ts, "YYYY-MM-DD hh:mm::ss", 'Asia/Shanghai').fromNow(true)
+  let text = moment.tz(ts, 'YYYY-MM-DD hh:mm::ss', 'Asia/Shanghai').fromNow(true)
   if (text) {
     text = text.replace(' ', '')
   }
@@ -124,12 +117,12 @@ function isDebug () {
   return process.env.NODE_ENV !== 'production'
 }
 
-let getKeys = function(obj){
-   let keys = []
-   for(let key in obj){
-      keys.push(key)
-   }
-   return keys
+let getKeys = function (obj) {
+  let keys = []
+  for (let key in obj) {
+    keys.push(key)
+  }
+  return keys
 }
 
 function statusText (status) {
@@ -152,11 +145,11 @@ function statusText (status) {
   return '未知'
 }
 
-function initTitle() {
+function initTitle () {
   document.title = '趣直播 - 知识直播平台'
 }
 
-function defaultUser() {
+function defaultUser () {
   return {
     userId: 0,
     username: '系统',
@@ -164,7 +157,7 @@ function defaultUser() {
   }
 }
 
-function shareLink(liveId) {
+function shareLink (liveId) {
   let extraParam = ''
   let fromUserId = window.localStorage.getItem('fromUserId')
   if (fromUserId) {
@@ -173,11 +166,11 @@ function shareLink(liveId) {
   return 'http://m.quzhiboapp.com/?liveId=' + liveId + extraParam
 }
 
-function randInt(n) {
+function randInt (n) {
   return Math.floor(Math.random() * n)
 }
 
-function curUser(defaultValue) {
+function curUser (defaultValue) {
   let userStr = window.localStorage.getItem('user')
   if (userStr) {
     return JSON.parse(userStr)
@@ -186,7 +179,7 @@ function curUser(defaultValue) {
   }
 }
 
-function saveCurUser(user) {
+function saveCurUser (user) {
   if (user && user.username) {
     debug('save curUser')
     window.localStorage.setItem('user', JSON.stringify(user))
@@ -196,12 +189,12 @@ function saveCurUser(user) {
   }
 }
 
-function removeCurUser(comp) {
+function removeCurUser (comp) {
   window.localStorage.removeItem('user')
   window.localStorage.removeItem('fromUser')
 }
 
-function checkInSession(comp) {
+function checkInSession (comp) {
   let user = curUser()
   if (user && user.username) {
     return true
@@ -221,7 +214,7 @@ exports.filterError = filterError
 exports.isWeixinBrowser = isWeixinBrowser
 exports.randomString = randomString
 exports.loading = loading
-exports.loaded =loaded
+exports.loaded = loaded
 exports.timeGap = timeGap
 exports.isAndroidBrowser = isAndroidBrowser
 exports.isDebug = isDebug

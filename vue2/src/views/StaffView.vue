@@ -21,13 +21,9 @@
 </template>
 
 <script type="text/javascript">
-import debugFn from 'debug'
-
 import api from '@/common/api'
 import util from '@/common/util'
 import wechat from '@/common/wechat'
-
-const debug = debugFn('StaffView')
 
 export default {
   name: 'StaffView',

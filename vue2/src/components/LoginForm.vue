@@ -9,11 +9,11 @@ import util from '@/common/util'
 
 export default {
   name: 'LoginForm',
-  ready() {
+  mounted () {
     this.initWechatLogin()
   },
   methods: {
-    stop (e){
+    stop (e) {
       e.stopPropagation()
     },
     initWechatLogin () {
@@ -23,8 +23,9 @@ export default {
       } else {
         redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauth'
       }
+      /* eslint-disable */
       let obj = new WxLogin({
-        id:'login_container',
+        id: 'login_container',
         appid: 'wxe80a6d2b5d54985c',
         scope: 'snsapi_login',
         redirect_uri: encodeURIComponent(redirectUrl),

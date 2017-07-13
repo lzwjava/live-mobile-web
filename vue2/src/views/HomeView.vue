@@ -9,12 +9,10 @@ import util from '@/common/util'
 import wechat from '@/common/wechat'
 import api from '@/common/api'
 
-const debug = require('debug')('HomeView')
-
 export default {
   name: 'HomeView',
   route: {
-    data({to}) {
+    data ({to}) {
       let { sessionToken, liveId, action, fromUserId } = this.$route.query
       if (sessionToken) {
         this.loginBySessionToken(sessionToken, liveId)
@@ -24,7 +22,6 @@ export default {
         this.logout()
         return
       }
-
       if (fromUserId) {
         let fromUser = {fromUserId, liveId}
         window.localStorage.setItem('fromUser', JSON.stringify(fromUser))
@@ -32,18 +29,16 @@ export default {
         let fromUser = window.localStorage.getItem('fromUser')
         if (fromUser) {
           let localLiveId = JSON.parse(fromUser).liveId
-          if (localLiveId !== liveId){
+          if (localLiveId !== liveId) {
             window.localStorage.removeItem('fromUser')
           }
         }
       }
-
       if (liveId && liveId !== 0) {
         ('/intro/' + liveId)
       } else {
         ('/lives')
       }
-
     }
   },
   methods: {
@@ -68,7 +63,7 @@ export default {
               window.location = '/'
             })
           }
-      }, util.httpErrorFn(this))
+        }, util.httpErrorFn(this))
     }
   }
 }

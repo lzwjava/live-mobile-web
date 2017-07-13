@@ -10,10 +10,6 @@
 </template>
 
 <script type="text/javascript">
-/*eslint-disable*/
-const debug = require('debug')('RecommendLiveList')
-/*eslint-enable*/
-
 import util from '@/common/util'
 import http from '@/common/api'
 

@@ -29,8 +29,6 @@ import util from '@/common/util'
 
 import UserAvatar from '@/components/user-avatar.vue'
 
-const debug = require('debug')('LiveItem')
-
 export default {
   name: 'LiveItem',
   props: ['live'],

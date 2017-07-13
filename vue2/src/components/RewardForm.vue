@@ -17,12 +17,6 @@
 </template>
 
 <script type="text/javascript">
-const debug = require('debug')('RewardForm')
-
-import util from '@/common/util'
-import api from '@/common/api'
-import wechat from '@/common/wechat'
-
 import UserAvatar from '@/components/user-avatar.vue'
 
 export default {
@@ -44,7 +38,7 @@ export default {
     stop (e) {
       e.stopPropagation()
     },
-    close() {
+    close () {
       this.$parent.overlay = false
     }
   }

@@ -12,7 +12,7 @@
 
 <script>
   module.exports = {
-    data (){
+    data () {
       return {
         show: false
       }

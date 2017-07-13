@@ -41,7 +41,7 @@ export default {
     data ({ to }) {
       debug('params: %j', to.params)
       const liveId = to.params.liveId
-      if (liveId == this.liveId) return
+      if (liveId === this.liveId) return
       this.liveId = liveId
       this.fetchLive()
 

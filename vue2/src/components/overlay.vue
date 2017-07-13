@@ -5,8 +5,7 @@
 </template>
 
 <script>
-import debugFn from 'debug'
-const debug = debugFn('overlay')
+const debug = require('debug')('overlay')
 export default {
   props: ['overlay'],
   methods: {

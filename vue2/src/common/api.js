@@ -3,7 +3,7 @@ let debug = require('debug')('api')
 import util from './util'
 
 let callback = {
-  success: function (resolve,reject) {
+  success: function (resolve, reject) {
     return function (resp) {
       debug('resp:%j', resp.data)
       if (resp.data.status === 'success') {
@@ -15,8 +15,8 @@ let callback = {
   },
   failure: function (reject) {
     return function (res) {
-      let error = '' + res.statusText;
-      let el = document.createElement('html');
+      let error = '' + res.statusText
+      let el = document.createElement('html')
       el.innerHTML = res.data
       let container = el.querySelector('#container')
       if (container) {
@@ -30,10 +30,10 @@ let callback = {
   }
 }
 
-let get = function(comp, url, params) {
+let get = function (comp, url, params) {
   debug('http GET %j', url)
   return new Promise(
-    function(resolve, reject) {
+    function (resolve, reject) {
       let addHeader = addHttpHeader()
       comp.$http.get(url, params, addHeader)
       .then(callback.success(resolve, reject),
@@ -45,7 +45,7 @@ let get = function(comp, url, params) {
 let post = function (comp, url, params) {
   debug('http POST %j', url)
   return new Promise(
-    function(resolve, reject) {
+    function (resolve, reject) {
       let addHeader = addHttpHeader()
       comp.$http.post(url, params, addHeader)
       .then(callback.success(resolve, reject), callback.failure(reject))

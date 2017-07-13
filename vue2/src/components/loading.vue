@@ -9,8 +9,6 @@
 
 <script type="text/javascript">
 import Logo from '@/components/logo.vue'
-const debug = require('debug')('loading')
-
 export default {
   name: 'loading',
   data () {
@@ -29,8 +27,7 @@ export default {
       this.loading = true
     }
   }
-};
-
+}
 </script>
 
 <style lang="stylus">

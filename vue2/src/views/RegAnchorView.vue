@@ -65,74 +65,72 @@ import api from '@/common/api'
 import wechat from '@/common/wechat'
 
 export default {
-    name: 'RegAnchorView',
-    data () {
-      return {
-        anchor: {
-          name: '',
-          wechatAccount: '',
-          socialAccount: '',
-          introduction: ''
-        },
-        toast: {
-          show: 0,
-          message: '注册成功'
-        },
-        curUser: {
-        }
+  name: 'RegAnchorView',
+  data () {
+    return {
+      anchor: {
+        name: '',
+        wechatAccount: '',
+        socialAccount: '',
+        introduction: ''
+      },
+      toast: {
+        show: 0,
+        message: '注册成功'
+      },
+      curUser: {
       }
-    },
-    route: {
-      data({ to }) {
-        if (!util.checkInSession(this)) return
-        this.curUser = util.curUser()
-        util.loading(this)
-        Promise.all([
-          wechat.configWeixin(this)
-        ]).then((values) => {
-          util.loaded(this)
-          wechat.sharePage(this, '申请成为主播', 'reganchor')
-        }, util.promiseErrorFn(this))
-      }
-    },
-    methods: {
-        submit () {
-            for(let k in this.anchor){
-              if('' === this.anchor[k]){
-                this.toast.message = "请填写完整！"
-                this.toast.show = 1
-                return
-              }
-            }
-            api.post(this, 'applications/create', {
-              name: this.anchor.name,
-              wechatAccount: this.anchor.wechatAccount,
-              socialAccount: this.anchor.socialAccount,
-              introduction: this.anchor.introduction
-            })
-            .then(res => {
-              this.toast.message = `
-                申请成功！我们正在审核，之后将在公众号通知您。
-              `,
-              this.toast.show = 1
-              for(let k in this.anchor){
-                this.anchor[k] = ''
-              }
-            }, error => {
-              this.toast.message = error
-              this.toast.show = 1
-            })
-        },
-        confirm () {
-          this.toast.show = 0
-        },
-        agreement () {
-          this.$router.push('/agreement')
-        },
-        goBindPhone () {
-          this.$router.push('/bindPhone?from=/reganchor')
-        }
     }
+  },
+  route: {
+    data ({ to }) {
+      if (!util.checkInSession(this)) return
+      this.curUser = util.curUser()
+      util.loading(this)
+      Promise.all([
+        wechat.configWeixin(this)
+      ]).then(values => {
+        util.loaded(this)
+        wechat.sharePage(this, '申请成为主播', 'reganchor')
+      }, util.promiseErrorFn(this))
+    }
+  },
+  methods: {
+    submit () {
+      for (let k in this.anchor) {
+        if (this.anchor[k] === '') {
+          this.toast.message = '请填写完整！'
+          this.toast.show = 1
+          return
+        }
+      }
+      api.post(this, 'applications/create', {
+        name: this.anchor.name,
+        wechatAccount: this.anchor.wechatAccount,
+        socialAccount: this.anchor.socialAccount,
+        introduction: this.anchor.introduction
+      })
+      .then(res => {
+        this.toast.message = `申请成功！我们正在审核，之后将在公众号通知您。`
+        this.toast.show = 1
+        for (let k in this.anchor) {
+          this.anchor[k] = ''
+        }
+      }, error => {
+        this.toast.message = error
+        this.toast.show = 1
+      })
+    },
+    confirm () {
+      this.toast.show = 0
+    },
+    agreement () {
+      this.$router.push('/agreement')
+    },
+    goBindPhone () {
+      this.$router.push('/bindPhone?from=/reganchor')
+    }
+  }
 }
 </script>
 

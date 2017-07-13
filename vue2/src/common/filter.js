@@ -20,10 +20,10 @@ function fromNow (time) {
 }
 
 function pluralize (time, label) {
-    if (time === 1) {
-        return time + label
-    }
-    return time + label + 's'
+  if (time === 1) {
+    return time + label
+  }
+  return time + label + 's'
 }
 
 function moneyAsYuan (money) {
@@ -41,12 +41,8 @@ let formatTime = (time, format) => {
   if (!format) {
     format = 'll'
   }
-  return moment(time).format(format);
-};
-
-let fromNowTime = (time) => {
-  return moment(time).fromNow()
-};
+  return moment(time).format(format)
+}
 
 let formatTimeCommon = (time) => {
   var text = formatTime(time, 'llll')

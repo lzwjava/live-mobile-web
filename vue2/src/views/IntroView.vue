@@ -177,7 +177,7 @@ export default {
     timeGap () {
       return util.timeGap(this.live.planTs)
     },
-    statusText ()  {
+    statusText () {
       return util.statusText(this.live.status)
     },
     introTitle () {
@@ -228,29 +228,24 @@ export default {
         wechat.configWeixin(this)
       ]).then(values => {
         util.loaded(this)
-
         this.live = values[0]
         this.attendedUsers = values[1]
-
         if (values[2].length > 0) {
           this.invites = values[2]
         } else {
           this.invites = [util.defaultUser()]
         }
         this.curUser = values[3]
-
         wechat.showOptionMenu()
         wechat.shareLive(this, this.live, this.curUser)
-
         setTimeout(() => {
           this.configPreviewImages()
-        },100)
-
+        }, 100)
       }).catch(util.promiseErrorFn(this))
     },
     configPreviewImages () {
       let detailSection = document.querySelector('.detail-section')
-      if(!detailSection) return
+      if (!detailSection) return
       let images = detailSection.getElementsByTagName('img')
       let urls = []
       for (let i = 0; i < images.length; i++) {
@@ -261,7 +256,7 @@ export default {
       for (let i = 0; i < images.length; i++) {
         let image = images[i]
         image.addEventListener('click', event => {
-          let img =  event.srcElement
+          let img = event.srcElement
           debug('preview' + img.currentSrc)
           wx.previewImage({
             current: img.currentSrc,
@@ -272,7 +267,7 @@ export default {
     },
     playVideo () {
       if (!this.live.previewUrl) return
-      let video = document.querySelector("video")
+      let video = document.querySelector('video')
       let events = ['canplay', 'playing', 'loadeddata']
       for (let i = 0; i < events.length; i++) {
         let name = events[i]
@@ -293,7 +288,7 @@ export default {
     },
     canPlayClick () {
       this.playStatus = 1
-      let video = document.querySelector("video")
+      let video = document.querySelector('video')
       video.play()
     },
     intoLive () {
@@ -349,12 +344,12 @@ export default {
         params.fromUserId = fromUserId
       }
       http.post(this, 'attendances/create', params)
-       .then((data) => {
-         util.loaded(this)
-         this.cleanFromUserId()
-         util.show(this, 'success', '报名成功')
-         this.reloadLive()
-         this.intoLive()
+      .then((data) => {
+        util.loaded(this)
+        this.cleanFromUserId()
+        util.show(this, 'success', '报名成功')
+        this.reloadLive()
+        this.intoLive()
       }).catch(util.promiseErrorFn(this))
     },
     reloadLive () {
@@ -393,12 +388,12 @@ export default {
         }).then(() => {
           util.loaded(this)
           this.payFinishAndIntoLive()
-          }, error => {
-            if (error && error.indexOf('失败') !== -1) {
-              this.fetchQrcodeUrlAndShow()
-            } else {
-              util.show(this, 'error', error)
-            }
+        }, error => {
+          if (error && error.indexOf('失败') !== -1) {
+            this.fetchQrcodeUrlAndShow()
+          } else {
+            util.show(this, 'error', error)
+          }
         })
       } else {
         this.fetchQrcodeUrlAndShow()
@@ -432,11 +427,11 @@ export default {
         params.fromUserId = fromUserId
       }
       http.post(this, 'attendances/create', params)
-       .then((data) => {
-          util.loaded(this)
-          this.qrcodeUrl = data.code_url
-          this.currentView = 'qrcode-pay-form'
-          this.overlayStatus = true
+      .then((data) => {
+        util.loaded(this)
+        this.qrcodeUrl = data.code_url
+        this.currentView = 'qrcode-pay-form'
+        this.overlayStatus = true
       }, util.promiseErrorFn(this))
     },
     getFromUserId () {
@@ -476,13 +471,13 @@ export default {
       this.attendLive()
     }
   },
-  events:  {
-    'shareTimeline': function(liveId) {
+  events: {
+    'shareTimeline': function (liveId) {
       debug('event shareTimeline fired liveId' + liveId)
       util.loading(this)
       http.post(this, 'shares', {
-        liveId: liveId,
-        shareTs: Math.round(new Date().getTime()/1000),
+        liveId,
+        shareTs: Math.round(new Date().getTime() / 1000),
         channel: 'wechat_timeline'
       }).then((result) => {
         util.loaded(this)
@@ -498,8 +493,8 @@ export default {
         }
       }).catch(util.promiseErrorFn(this))
     },
-    'hideOptionsForm': function(type) {
-      if (this.currentView === 'options-form'){
+    'hideOptionsForm': function (type) {
+      if (this.currentView === 'options-form') {
         if (type === 0) {
           this.payOrCreateAttend()
         } else if (type === 1) {
@@ -513,7 +508,7 @@ export default {
     'payFinish': function () {
       this.payFinishAndIntoLive()
     },
-    'updateCurUser': function() {
+    'updateCurUser': function () {
       debug('updateCurUser in IntroView')
       this.loadAllData()
     }

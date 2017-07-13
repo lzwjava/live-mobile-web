@@ -18,11 +18,6 @@
 </template>
 
 <script type="text/javascript">
-const debug = require('debug')('Tabbar')
-
-import util from '@/common/util'
-import api from '@/common/api'
-
 export default {
   name: 'Tabbar',
   props: ['activeIndex'],

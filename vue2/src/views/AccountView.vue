@@ -31,12 +31,8 @@
 </template>
 
 <script type="text/javascript">
-import debugFn from 'debug'
-
 import util from '@/common/util'
 import api from '@/common/api'
-
-const debug = debugFn('ListNav')
 
 export default {
   name: 'AccountView',
@@ -45,7 +41,7 @@ export default {
     return {
       account: {},
       curUser: {},
-      amount: null,
+      amount: null
     }
   },
   route: {

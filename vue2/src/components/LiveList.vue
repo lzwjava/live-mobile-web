@@ -9,9 +9,6 @@
 </template>
 
 <script type="text/javascript">
-const debug = require('debug')('LiveList')
-
-import util from '@/common/util'
 import LiveItem from '@/components/LiveItem.vue'
 
 export default {

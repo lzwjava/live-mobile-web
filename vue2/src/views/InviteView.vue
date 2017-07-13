@@ -46,8 +46,6 @@ import ShareLead from '@/components/ShareLead.vue'
 import Overlay from '@/components/overlay.vue'
 import SubscribeForm from '@/components/SubscribeForm.vue'
 
-const debug = require('debug')('InviteView')
-
 export default {
   name: 'InviteView',
   components: {
@@ -75,7 +73,7 @@ export default {
       document.title = '邀请榜'
 
       let liveId = to.params.liveId
-      if (liveId == this.liveId) return
+      if (liveId === this.liveId) return
       this.liveId = liveId
 
       this.defaultUser = util.defaultUser()
@@ -92,13 +90,9 @@ export default {
         wechat.configWeixin(this)
       ]).then((values) => {
         util.loaded(this)
-
         this.live = values[0]
-
         wechat.shareLive(this, this.live, this.curUser)
-
       }, util.promiseErrorFn(this))
-
       this.loadInvites()
     }
   },

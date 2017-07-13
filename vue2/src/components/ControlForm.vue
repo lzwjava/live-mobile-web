@@ -30,13 +30,9 @@
 </template>
 
 <script type="text/javascript">
-import debugFn from 'debug'
-
+/* eslint-disable */
 import util from '@/common/util'
 import api from '@/common/api'
-
-const debug = debugFn('ControlForm')
-
 export default {
 	name: 'ControlForm',
 	props: ['live', 'liveId'],
@@ -68,18 +64,18 @@ export default {
 		},
 		beginLive () {
 			if (confirm('开始之后，观众可看到直播画面。是否确定继续开始直播？')) {
-				api.get(this, `lives/${this.liveId}/begin`)
-				 .then(data => {
-				 	util.show(this, 'success', '成功开启直播')
-				 }, util.promiseErrorFn(this))
+			api.get(this, `lives/${this.liveId}/begin`)
+			.then(data => {
+				util.show(this, 'success', '成功开启直播')
+			}, util.promiseErrorFn(this))
 			}
 		},
 		finishLive () {
 			if (confirm('请OBS结束推流之后，再点击结束直播，结束后观众将看到回放，是否确认？')) {
-				api.get(this, `lives/${this.liveId}/finish`)
-				 .then(data => {
-				 	util.show(this, 'success', '成功结束直播')
-				 }, util.promiseErrorFn(this))
+			api.get(this, `lives/${this.liveId}/finish`)
+			.then(data => {
+				util.show(this, 'success', '成功结束直播')
+			}, util.promiseErrorFn(this))
 			}
 		},
 		showLiveConfigUrl () {
@@ -88,12 +84,13 @@ export default {
 		},
 		urlPrefix (rtmpUrl) {
 			if (!rtmpUrl) return ''
-			const regex = /(rtmp:\/\/.*)\/(.*)/g
+			let regex = /(rtmp:\/\/.*)\/(.*)/g
 			const match = regex.exec(rtmpUrl)
 			return match[1]
-		},
+		}
 	}
 }
+/* eslint-enable */
 </script>
 
 <style media="screen" lang="stylus">

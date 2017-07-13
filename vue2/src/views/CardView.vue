@@ -20,15 +20,12 @@
 <script type="text/javascript">
 import api from '@/common/api'
 import util from '@/common/util'
-import wechat from '@/common/wechat'
 
 import UserAvatar from '@/components/user-avatar.vue'
 import LoadMoreBar from '@/components/LoadMoreBar.vue'
 import ShareLead from '@/components/ShareLead.vue'
 import Overlay from '@/components/overlay.vue'
 import SubscribeForm from '@/components/SubscribeForm.vue'
-
-const debug = require('debug')('InviteView')
 
 export default {
   name: 'InviteView',
@@ -42,7 +39,7 @@ export default {
   data () {
     return {
       liveId: 0,
-      cardUrl: "",
+      cardUrl: '',
       curUser: {},
       live: {},
       defaultUser: {},
@@ -89,7 +86,7 @@ export default {
           this.overlayStatus = true
         }
       }
-    },
+    }
   }
 }
 </script>

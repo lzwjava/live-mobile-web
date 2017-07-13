@@ -13,21 +13,19 @@
 <script type="text/javascript">
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
-const debug = require('debug')('LoadMoreBar')
-
 export default {
   name: 'LoadMoreBar',
   props: ['haveMore', 'loading'],
   components: {
     'pulse-loader': PulseLoader
   },
-  data() {
+  data () {
     return {
       color: '#00bdef'
     }
   },
   methods: {
-    loadMore() {
+    loadMore () {
       this.$dispatch('loadMore')
     }
   }

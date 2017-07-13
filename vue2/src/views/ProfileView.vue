@@ -38,14 +38,11 @@
 <script type="text/javascript">
 import util from '@/common/util'
 import api from '@/common/api'
-import wechat from '@/common/wechat'
 
 import UserAvatar from '@/components/user-avatar.vue'
 import Tabbar from '@/components/Tabbar.vue'
 
 require('font-awesome/css/font-awesome.css')
-
-const debug = require('debug')('ProfileView')
 
 export default {
   name: 'ProfileView',
@@ -59,7 +56,7 @@ export default {
     }
   },
   route: {
-    data({ to }) {
+    data ({ to }) {
       if (!util.checkInSession(this)) return
       this.curUser = util.curUser()
     }

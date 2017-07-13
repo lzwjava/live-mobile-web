@@ -12,28 +12,26 @@
 import api from '@/common/api'
 import util from '@/common/util'
 
-const debug = require('debug')('SubscribeForm')
-
 export default {
   name: 'SubscribeForm',
   props: ['type', 'liveId'],
-  data() {
+  data () {
     return {
       ticket: ''
     }
   },
   computed: {
     showPic () {
-      if (this.type === 'live'){
+      if (this.type === 'live') {
         return true
-      } else if(this.type === 'share') {
+      } else if (this.type === 'share') {
         return false
       }
     },
     explainWord () {
-      if (this.type === 'live'){
+      if (this.type === 'live') {
         return '为了方便微信通知您'
-      } else if(this.type === 'share') {
+      } else if (this.type === 'share') {
         return '为了给您推送邀请的收益通知'
       }
     }

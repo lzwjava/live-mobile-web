@@ -34,7 +34,7 @@ export default {
       lives: [],
       hotLives: [],
       newLives: [],
-      curTab: 0,
+      curTab: 0
     }
   },
   created () {

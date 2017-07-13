@@ -1,9 +1,7 @@
-import crypto from 'crypto'
 import util from './util'
 import http from '../common/api'
 import {sprintf} from 'sprintf-js'
 import wx from 'weixin-js-sdk'
-const debug = require('debug')('wechat')
 
 const weixinAppId = 'wx7b5f277707699557'
 
@@ -11,11 +9,11 @@ const baseOauthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?' +
 'appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s'
 
 const weixinOauthUrl = (state, scope, redirectUrl) => {
-  return sprintf(baseOauthUrl, weixinAppId, encodeURIComponent(redirectUrl),scope,state)
+  return sprintf(baseOauthUrl, weixinAppId, encodeURIComponent(redirectUrl), scope, state)
 }
 
 const weixinOauthUserUrl = (state) => {
-  var redirectUrl;
+  var redirectUrl
   if (util.isDebug()) {
     redirectUrl = 'http://m.quzhiboapp.com/#wechat/oauthTest'
   } else {
@@ -25,7 +23,7 @@ const weixinOauthUserUrl = (state) => {
 }
 
 const weixinSilentOauthUrl = (state) => {
-  var redirectUrl;
+  var redirectUrl
   if (util.isDebug()) {
     redirectUrl = 'http://m.quzhiboapp.com/#wechat/silentOauthTest'
   } else {
@@ -34,37 +32,13 @@ const weixinSilentOauthUrl = (state) => {
   return weixinOauthUrl(state, 'snsapi_base', redirectUrl)
 }
 
-function logout(comp, fn) {
-  comp.$http.get('logout')
-  .then(resp => {
-    if (util.filterError(comp, resp)) {
-      fn && fn()
-    }
-  }, util.httpErrorFn(comp))
-}
-
-function loadUser() {
-  if(window.localStorage.getItem('qzb.user')){
-    return JSON.parse(window.localStorage.getItem('qzb.user'))
-  }
-  return null
-}
-
-function setUser(user) {
-  if (user && user.username) {
-    window.localStorage.setItem('qzb.user',JSON.stringify(user))
-    return true
-  }
-  return false
-}
-
-function oauth2(comp) {
+function oauth2 (comp) {
   baseOauth2(comp, false)
 }
 
-function baseOauth2(comp, silent) {
-  var url;
-  var hash = util.randomString(6)
+function baseOauth2 (comp, silent) {
+  let url
+  let hash = util.randomString(6)
   if (silent) {
     url = weixinSilentOauthUrl(hash)
   } else {
@@ -73,25 +47,25 @@ function baseOauth2(comp, silent) {
   window.location = url
 }
 
-function silentOauth2(comp) {
+function silentOauth2 (comp) {
   baseOauth2(comp, true)
 }
 
-function configWeixin(comp) {
+function configWeixin (comp) {
   var url = window.location.href.split('#')[0]
   return http.get(comp, 'wechat/sign', {
     url: encodeURIComponent(url)
   }).then((data) => {
     wx.config({
-        debug: false,
-        appId: data.appId,
-        timestamp: data.timestamp,
-        nonceStr: data.nonceStr,
-        signature: data.signature,
-        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ',
-                    'showMenuItems', 'hideMenuItems', 'chooseWXPay', 'scanQRCode', 'startRecord','stopRecord',
-                    'onRecordEnd','playVoice','pauseVoice','stopVoice','uploadVoice','downloadVoice',
-                    'chooseImage', 'uploadImage']
+      debug: false,
+      appId: data.appId,
+      timestamp: data.timestamp,
+      nonceStr: data.nonceStr,
+      signature: data.signature,
+      jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ',
+        'showMenuItems', 'hideMenuItems', 'chooseWXPay', 'scanQRCode', 'startRecord', 'stopRecord',
+        'onRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'uploadVoice', 'downloadVoice',
+        'chooseImage', 'uploadImage']
     })
     wx.error((res) => {
       util.show(comp, 'error', '微信出错' + JSON.stringify(res))
@@ -100,85 +74,69 @@ function configWeixin(comp) {
   })
 }
 
-function share(title, img, desc, href, comp, liveId, timelineTitle) {
-  wx.ready(function() {
-      if (!timelineTitle) {
-        timelineTitle = title
+function share (title, img, desc, href, comp, liveId, timelineTitle) {
+  wx.ready(function () {
+    if (!timelineTitle) {
+      timelineTitle = title
+    }
+    wx.onMenuShareTimeline({
+      title: timelineTitle,
+      link: href,
+      imgUrl: img,
+      success: function () {
+        comp.$emit('shareTimeline', liveId)
       }
-      wx.onMenuShareTimeline({
-          title: timelineTitle,
-          link: href,
-          imgUrl: img,
-          success: function() {
-            comp.$emit('shareTimeline', liveId)
-          },
-          cancel: function() {
-
-          }
-      })
-      wx.onMenuShareAppMessage({
-          title: title,
-          desc: desc,
-          link: href,
-          imgUrl: img,
-          success: function() {
-          },
-          cancel: function() {
-
-          }
-      })
-      wx.onMenuShareQQ({
-          title: title,
-          desc: desc,
-          link: href,
-          imgUrl: img,
-          success: function() {
-
-          },
-          cancel: function() {
-          }
-      })
+    })
+    wx.onMenuShareAppMessage({
+      title,
+      desc,
+      link: href,
+      imgUrl: img
+    })
+    wx.onMenuShareQQ({
+      title,
+      desc,
+      link: href,
+      imgUrl: img
+    })
   })
 }
 
-var menuList = ['menuItem:share:appMessage', 'menuItem:share:timeline',
-                'menuItem:share:qq']
+var menuList = ['menuItem:share:appMessage', 'menuItem:share:timeline', 'menuItem:share:qq']
 
-function showOptionMenu() {
+function showOptionMenu () {
   wx.ready(function () {
     wx.showOptionMenu()
   })
 }
 
-function showMenu() {
-  wx.ready(function() {
-      wx.showMenuItems({
-          menuList: menuList
-      });
+function showMenu () {
+  wx.ready(function () {
+    wx.showMenuItems({
+      menuList
+    })
   })
 }
 
-function hideMenu() {
-  wx.ready(function() {
-      wx.hideMenuItems({
-          menuList: menuList
-      });
+function hideMenu () {
+  wx.ready(function () {
+    wx.hideMenuItems({
+      menuList
+    })
   })
 }
 
-function linkUrl(liveId, curUser) {
+function linkUrl (liveId, curUser) {
   var extraParams = ''
   if (curUser && curUser.userId) {
     extraParams = '&fromUserId=' + curUser.userId
   }
-  var url = 'http://m.quzhiboapp.com/?liveId=' + liveId + '&t=' + new Date().getTime()
-     + extraParams
-  return url
+  return 'http://m.quzhiboapp.com/?liveId=' + liveId + '&t=' + new Date().getTime() + extraParams
 }
 
-function shareLive(comp, live, curUser) {
+function shareLive (comp, live, curUser) {
   var iconUrl = live.owner.avatarUrl
-  if (live.shareIcon == 1) {
+  if (live.shareIcon === 1) {
     iconUrl = live.coverUrl
   }
   var title = live.owner.username + '在趣直播：' + live.subject
@@ -192,22 +150,22 @@ function shareLive(comp, live, curUser) {
       comp, live.liveId, timelineTitle)
 }
 
-function shareApp(comp) {
+function shareApp (comp) {
   var title = '趣直播-知识直播平台'
-  share(title, 'http://i.quzhiboapp.com/logo.png', title, linkUrl(0), 0)
+  share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#!/lives', 0)
 }
 
-function shareJoin(comp) {
+function shareJoin (comp) {
   var title = '欢迎您加入趣直播'
   share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#staff', 0)
 }
 
-function sharePage(comp, title, path) {
+function sharePage (comp, title, path) {
   share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#' + path, 0)
 }
 
-function wxPay(data) {
-  return new Promise(function (resolve, reject){
+function wxPay (data) {
+  return new Promise(function (resolve, reject) {
     wx.ready(() => {
       wx.chooseWXPay({
         timestamp: data.timeStamp,
@@ -229,7 +187,7 @@ function wxPay(data) {
   })
 }
 
-function wechatScan() {
+function wechatScan () {
   return new Promise(function (resolve, reject) {
     if (util.isDebug()) {
       resolve('quzhibo-IdfuPYUOqRraAM0KcwdWPeQzws6tpN7L')
@@ -251,7 +209,7 @@ function wechatScan() {
   })
 }
 
-function scanQRcode(comp) {
+function scanQRcode (comp) {
   return wechatScan()
   .then((code) => {
     return http.post(comp, 'qrcodes', {
@@ -261,7 +219,7 @@ function scanQRcode(comp) {
   })
 }
 
-function scanQRcodeWithLive(comp, liveId) {
+function scanQRcodeWithLive (comp, liveId) {
   return wechatScan()
   .then((code) => {
     var data = {liveId: liveId}
@@ -273,43 +231,43 @@ function scanQRcodeWithLive(comp, liveId) {
   })
 }
 
-function chooseAndUploadImage(comp) {
+function chooseAndUploadImage (comp) {
   return new Promise(
-    function(resolve, reject) {
+    function (resolve, reject) {
       wx.chooseImage({
-          count: 1,
-          sizeType: ['compressed'],
-          sourceType: ['album'],
-          success: (res) => {
-            var localIds = res.localIds
-            if (localIds.length > 0) {
-              wx.uploadImage({
-                  localId: localIds[0],
-                  isShowProgressTips: 1,
-                  success: (res) => {
-                    var serverId = res.serverId
-                    util.loading(comp)
-                    http.get(comp, 'files/wechatToQiniu', {
-                      mediaId: serverId
-                    }).then((data) => {
-                      util.loaded(comp)
-                      resolve(data)
-                    }, (error) => {
-                      util.loaded(comp)
-                      reject(error)
-                    })
-                  },
-                  fail: () => {
-                    reject('上传头像失败')
-                  }
-              })
-            } else {
-              reject('localIds length is 0')
-            }
-          },
-          fail: () => {
-            reject('选取头像失败')
+        count: 1,
+        sizeType: ['compressed'],
+        sourceType: ['album'],
+        success: (res) => {
+          var localIds = res.localIds
+          if (localIds.length > 0) {
+            wx.uploadImage({
+              localId: localIds[0],
+              isShowProgressTips: 1,
+              success: (res) => {
+                var serverId = res.serverId
+                util.loading(comp)
+                http.get(comp, 'files/wechatToQiniu', {
+                  mediaId: serverId
+                }).then((data) => {
+                  util.loaded(comp)
+                  resolve(data)
+                }, (error) => {
+                  util.loaded(comp)
+                  reject(error)
+                })
+              },
+              fail: () => {
+                reject('上传头像失败')
+              }
+            })
+          } else {
+            reject('localIds length is 0')
           }
+        },
+        fail: () => {
+          reject('选取头像失败')
+        }
       })
     }
   )

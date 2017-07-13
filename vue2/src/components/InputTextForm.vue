@@ -12,13 +12,6 @@
 </template>
 
 <script type="text/javascript">
-
-import debugFn from 'debug'
-import util from '@/common/util'
-import api from '@/common/api'
-
-const debug = debugFn('InputTextForm')
-
 export default {
   name: 'InputTextForm',
   props: [

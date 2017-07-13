@@ -9,7 +9,7 @@ export default {
   name: 'OptionsForm',
   props: ['options'],
   methods: {
-    stop (e){
+    stop (e) {
       e.stopPropagation()
     },
     chooseType (type) {

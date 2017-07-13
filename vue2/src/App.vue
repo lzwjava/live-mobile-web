@@ -11,7 +11,7 @@
     <overlay :overlay.sync="overlayStatus">
       <component :is="currentView" :options="options" :live-id="liveId"></component>
     </overlay>
-    <tip><tip>
+    <tip></tip>
   </div>
 </template>
 
@@ -78,7 +78,7 @@ export default {
     'show-msg': function (type, message) {
       this.$broadcast('show-tip-msg', type, message)
     },
-    'loading': function(loading) {
+    'loading': function (loading) {
       this.loading = loading
     },
     'toast': function (text, timeout, callback) {
@@ -94,10 +94,10 @@ export default {
       }, timeout)
     },
     'loginOrRegister': function (liveId) {
-        this.loginOrRegister(liveId)
+      this.loginOrRegister(liveId)
     },
-    'hideLoginOptionsForm': function(type) {
-      if (this.currentView == 'login-options-form') {
+    'hideLoginOptionsForm': function (type) {
+      if (this.currentView === 'login-options-form') {
         if (type === 0) {
           setTimeout(() => {
             this.currentView = 'login-form'
@@ -115,7 +115,7 @@ export default {
       debug('event updateCurUser')
       this.$broadcast('updateCurUser')
     },
-    'saveLive': function(type, content) {
+    'saveLive': function (type, content) {
       debug('saveLiveDetail in app: %j', content)
       this.$broadcast('saveLive', type, content)
     }

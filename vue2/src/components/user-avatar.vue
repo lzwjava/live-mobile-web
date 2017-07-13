@@ -10,13 +10,13 @@
   const wordColor = require('word-color')
   module.exports = {
     props: ['user'],
-    data (){
+    data () {
       return {
         spanBgColor: '',
         spanColor: 'white'
       }
     },
-    compiled: function() {
+    compiled: function () {
       const user = this.user
       // 因为父对象的 user 一开始可能没有数据
       if (!user.username) return

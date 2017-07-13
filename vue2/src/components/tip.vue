@@ -1,6 +1,6 @@
 <template>
   <div id="message" aria-live="assertive">
-    <div class="message message-{{msg.type}}" v-for="msg in messages" v-text="msg.text" transition="fade"></div>
+    <div :class="`message message-` + msg.type" v-for="msg in messages" v-text="msg.text" transition="fade"></div>
   </div>
 </template>
 
@@ -40,7 +40,7 @@ export default {
       }
       this.messages.push(msg)
       const index = this.messages.length - 1
-      setTimeout(function() {
+      setTimeout(function () {
         this.clear(index)
       }.bind(this), timeout)
     }

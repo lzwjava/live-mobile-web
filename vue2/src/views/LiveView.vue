@@ -16,7 +16,7 @@
           </div>
         </div>
       </div>
-      <div class="video-error video-common" v-show="live.status == 35">
+      <div class="video-error video-common" v-show="live.status === 35">
         <p class="big-title">直播发生了些小故障<br>请到公告栏查看</p>
       </div>
     </div>
@@ -125,7 +125,6 @@ let RewardMessageType = 3
 messageType(RewardMessageType)(RewardMessage)
 
 let prodAppId = 's83aTX5nigX1KYu9fjaBTxIa-gzGzoHsz'
-let testAppId = 'YY3S7uNlnXUgX48BHTJlJx4i-gzGzoHsz'
 let realtime = new Realtime({
   appId: prodAppId,
   region: 'cn',
@@ -219,12 +218,12 @@ export default {
           return this.live.webHlsUrl
         }
       } else if (this.live.status === 30) {
-          let video = this.videos[this.videoSelected]
-          if (video.type === 'mp4') {
-            return video.url
-          } else if (video.type === 'm3u8') {
-            return video.m3u8Url
-          }
+        let video = this.videos[this.videoSelected]
+        if (video.type === 'mp4') {
+          return video.url
+        } else if (video.type === 'm3u8') {
+          return video.m3u8Url
+        }
       }
       return this.live.hlsUrls[this.hlsSelected]
     },
@@ -267,8 +266,8 @@ export default {
     debug('updated')
   },
   attached () {
-    debug("attached")
-    if (this.useHlsjs) debug("attached m3u8", this.m3u8Url)
+    debug('attached')
+    if (this.useHlsjs) debug('attached m3u8', this.m3u8Url)
   },
   detached () {
     debug('detached')
@@ -361,7 +360,7 @@ export default {
         if (isTouchBottom) {
           this.scrollToBottom()
         }
-      },0)
+      }, 0)
     },
     scrollToBottom () {
       let msgList = this.$els.msgList
@@ -375,11 +374,11 @@ export default {
     },
     addSystemMsg (msg) {
       let textMsg = new TextMessage(msg)
-      textMsg.setAttributes({username:'系统'})
+      textMsg.setAttributes({username: '系统'})
       this.addMsg(textMsg)
     },
     sendMsg () {
-      if(!this.inputMsg) {
+      if (!this.inputMsg) {
         this.handleError('请输入点什么~')
         return
       }
@@ -394,7 +393,7 @@ export default {
     },
     commonSendMsg (msg) {
       if (this.isSending) {
-        util.show(this, 'error', '请等待上一条消息发送完成');
+        util.show(this, 'error', '请等待上一条消息发送完成')
         return
       }
       this.isSending = true
@@ -432,14 +431,14 @@ export default {
           })
         },
         fail: this.handleError
-      });
+      })
     },
     initScroll () {
       setTimeout(() => {
         let msgList = this.$els.msgList
         msgList.addEventListener('scroll', e => {
           let list = e.srcElement
-          if (list.scrollTop == 0) {
+          if (list.scrollTop === 0) {
             debug('top')
             util.loading(this)
             this.messageIterator.next().then(result => {
@@ -467,7 +466,7 @@ export default {
           this.addChatMsg(message)
         } else if (message.type === WxAudioType) {
           this.addAudioMsg(message)
-        } else if (message.type === SystemMessageType){
+        } else if (message.type === SystemMessageType) {
           this.addChatMsg(message)
         } else if (message.type === RewardMessageType) {
           this.addChatMsg(message)
@@ -497,7 +496,7 @@ export default {
       this.client.getConversation(this.live.conversationId)
       .then(conv => {
         if (conv === null) {
-          this.handleError('获取对话失败');
+          this.handleError('获取对话失败')
           return
         }
         this.conv = conv
@@ -538,7 +537,7 @@ export default {
     },
     logServer () {
       if (this.live.status >= 20) {
-        let word = '';
+        let word = ''
         if (this.live.status === 30) {
           word = '连接了视频服务器'
         } else {
@@ -563,7 +562,7 @@ export default {
       let hls = new Hls()
       hls.loadSource(url)
       hls.attachMedia(player)
-      debug("player.src",player.src)
+      debug('player.src', player.src)
       hls.on(Hls.Events.MANIFEST_PARSED,() => {
         player.play()
       })
@@ -592,12 +591,12 @@ export default {
           }
         })
         this.useHlsjs = false
-      } else {//chrome
-        if (this.live.status === 20) {//play the this.live
+      } else {
+        if (this.live.status === 20) {
           this.useHlsjs = true
           this.m3u8Url = this.live.webHlsUrl
           this.hlsPlay(this.live.webHlsUrl)
-        } else if (this.live.status === 30) {//playback this.videos
+        } else if (this.live.status === 30) {
           let video = this.videos[this.videoSelected]
           if (video.type === 'mp4') {
             this.useHlsjs = false
@@ -646,7 +645,7 @@ export default {
     endInterval () {
       if (this.endIntervalId !== 0) {
         clearInterval(this.endIntervalId)
-        this.endIntervalId =0
+        this.endIntervalId = 0
       }
     },
     endCountInterval () {
@@ -700,9 +699,9 @@ export default {
           util.loaded(this)
           this.curUser = data
           if (newSubscribe) {
-           util.show(this, 'success', '关注成功，有新直播发布时将告知您')
+            util.show(this, 'success', '关注成功，有新直播发布时将告知您')
           } else {
-           util.show(this, 'success', '取消关注成功')
+            util.show(this, 'success', '取消关注成功')
           }
         })
     },

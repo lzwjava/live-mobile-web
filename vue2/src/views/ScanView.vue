@@ -11,10 +11,7 @@
 
 <script type="text/javascript">
 import util from '@/common/util'
-import http from '@/common/api'
 import wechat from '@/common/wechat'
-
-var debug = require('debug')('ScanView')
 
 export default {
   name: 'ScanView',
@@ -25,7 +22,7 @@ export default {
     }
   },
   route: {
-    data({ to }) {
+    data ({ to }) {
       const query = this.$route.query
       if (query.liveId) {
         this.type = 1
@@ -35,18 +32,18 @@ export default {
   },
   methods: {
     loginWeChat () {
-        wechat.configWeixin(this)
-        if (this.type === 0) {
-          wechat.scanQRcode(this)
-          .then(data => {
-            util.show(this, 'success', '登录成功')
-          }, util.promiseErrorFn(this))
-        } else if (this.type === 1) {
-          wechat.scanQRcodeWithLive(this, this.liveId)
-          .then(data => {
-            util.show(this, 'success', '扫描成功')
-          }, util.promiseErrorFn(this))
-        }
+      wechat.configWeixin(this)
+      if (this.type === 0) {
+        wechat.scanQRcode(this)
+        .then(data => {
+          util.show(this, 'success', '登录成功')
+        }, util.promiseErrorFn(this))
+      } else if (this.type === 1) {
+        wechat.scanQRcodeWithLive(this, this.liveId)
+        .then(data => {
+          util.show(this, 'success', '扫描成功')
+        }, util.promiseErrorFn(this))
+      }
     }
   }
 }

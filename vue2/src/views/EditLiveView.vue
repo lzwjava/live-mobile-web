@@ -14,7 +14,7 @@
         <input-cell type="datetime-local" label="时间" :value.sync="planTsValue"></input-cell>
       </cells>
       <cells>
-        <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon /">
+        <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon"></switch-cell>
         <cell>
           <span class="item-title" slot="header">设定直播分类</span>
         </cell>
@@ -55,7 +55,7 @@
 <script type="text/javascript">
 require('moxie')
 require('plupload')
-import {Toast, SelectCell, Cells, SwitchCell, InputCell, CellBody, Cell, CellHeader, CellFooter} from 'vue-weui'
+import {SelectCell, Cells, SwitchCell, InputCell, CellBody, Cell, CellHeader, CellFooter} from 'vue-weui'
 import moment from 'moment-timezone'
 moment.locale('zh-cn')
 import Qiniu from 'qiniu-js-sdk'
@@ -63,12 +63,10 @@ import Qiniu from 'qiniu-js-sdk'
 import util from '@/common/util'
 import api from '@/common/api'
 
-import MarkdownArea from "@/components/markdown-area.vue"
-import UserAvatar from "@/components/user-avatar.vue"
+import MarkdownArea from '@/components/markdown-area.vue'
+import UserAvatar from '@/components/user-avatar.vue'
 import VDatePicker from '@/components/date_picker.vue'
 import Loading from '@/components/loading.vue'
-
-const debug = require('debug')('EditLiveView')
 
 export default {
   name: 'EditLiveView',
@@ -113,7 +111,7 @@ export default {
     topicOptions () {
       let options = []
       options.push({text: '无', value: 0})
-      for(let i = 0; i < this.topics.length; i++) {
+      for (let i = 0; i < this.topics.length; i++) {
         let topic = this.topics[i]
         options.push({text: topic.name, value: topic.topicId})
       }
@@ -226,84 +224,33 @@ export default {
       this.coursewareUrl = this.bucketUrl + '/' + key
       this.saveLiveData({coursewareKey: key})
     },
+    /* eslint-disable */
     initCoverUploader (uptokenData) {
       let uptoken = uptokenData.uptoken
       let bucketUrl = uptokenData.bucketUrl
       let key = uptokenData.key
       let uploader = Qiniu.uploader({
-        runtimes: 'html5,flash,html4',    //上传模式,依次退化
-        browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
+        runtimes: 'html5,flash,html4',
+        browse_button: 'pickfiles',
         uptoken_url: 'useless',
         uptoken,
         domain: bucketUrl,
         flash_swf_url: 'js/plupload/Moxie.swf',
         unique_names: false,
         save_key: false,
-        get_new_uptoken: false,           //设置上传文件的时候是否每次都重新获取新的token
-        container: 'upload-container',    //上传区域DOM ID，默认是browser_button的父元素，
-        max_file_size: '800kb',           //最大文件体积限制
-        max_retries: 3,                   //上传失败最大重试次数
-        dragdrop: false,                  //开启可拖曳上传
-        drop_element: 'upload-container',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-        chunk_size: '4mb',                //分块上传时，每片的体积
-        auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传,
+        get_new_uptoken: false,
+        container: 'upload-container',
+        max_file_size: '800kb',
+        max_retries: 3,
+        dragdrop: false,
+        drop_element: 'upload-container',
+        chunk_size: '4mb',
+        auto_start: true,
         filters: {
-          mime_types : [
-            {title : "Image files", extensions: "jpg,png,jpeg"}
+          mime_types: [
+            {title: 'Image files', extensions: 'jpg,png,jpeg'}
           ]
         },
-        init: {
-            'FilesAdded': (up, files) => {
-            },
-            'BeforeUpload': (up, file) => {
-              util.loading(this)
-            },
-            'UploadProgress': (up, file) => {
-            },
-            'FileUploaded': (up, file, info) => {
-              var res = JSON.parse(info)
-              var sourceLink = bucketUrl + '/' + res.key;
-              this.updateCover(sourceLink)
-            },
-            'Error': (up, err, errTip) => {
-              util.show(this, 'error', errTip)
-            },
-            'UploadComplete': () => {
-              util.loaded(this)
-            },
-            'Key': (up, file) => {
-                return util.randomString(6)
-            }
-        }
-      })
-    },
-    initCourseUploader (uptokenData) {
-      let uptoken = uptokenData.uptoken
-      let bucketUrl = uptokenData.bucketUrl
-      this.bucketUrl = bucketUrl
-      let key = uptokenData.key
-      let coursewareUploader = Qiniu.uploader({
-        runtimes: 'html5,flash,html4',    //上传模式,依次退化
-        browse_button: 'pick-courseware',       //上传选择的点选按钮，**必需**
-        uptoken_url: 'useless',
-        uptoken: uptoken,
-        domain: bucketUrl,
-        flash_swf_url: 'js/plupload/Moxie.swf',
-        unique_names: false,
-        save_key: false,
-        get_new_uptoken: false,           //设置上传文件的时候是否每次都重新获取新的token
-        container: 'upload-container-course',    //上传区域DOM ID，默认是browser_button的父元素，
-        max_file_size: '10mb',           //最大文件体积限制
-        max_retries: 3,                   //上传失败最大重试次数
-        dragdrop: false,                  //开启可拖曳上传
-        drop_element: 'upload-container-course',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-        chunk_size: '4mb',                //分块上传时，每片的体积
-        filters: {
-          mime_types : [
-            {title : "Courseware Files", extensions: "ppt,pptx,pdf,key,zip"}    //限制文件格式
-          ]
-        },
-        auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传,
         init: {
           'FilesAdded': (up, files) => {
           },
@@ -313,7 +260,59 @@ export default {
           'UploadProgress': (up, file) => {
           },
           'FileUploaded': (up, file, info) => {
-            var res = JSON.parse(info);
+            let res = JSON.parse(info)
+            let sourceLink = bucketUrl + '/' + res.key
+            this.updateCover(sourceLink)
+          },
+          'Error': (up, err, errTip) => {
+            util.show(this, 'error', errTip)
+          },
+          'UploadComplete': () => {
+            util.loaded(this)
+          },
+          'Key': (up, file) => {
+            return util.randomString(6)
+          }
+        }
+      })
+    },
+    initCourseUploader (uptokenData) {
+      let uptoken = uptokenData.uptoken
+      let bucketUrl = uptokenData.bucketUrl
+      this.bucketUrl = bucketUrl
+      let key = uptokenData.key
+      let coursewareUploader = Qiniu.uploader({
+        runtimes: 'html5,flash,html4',
+        browse_button: 'pick-courseware',
+        uptoken_url: 'useless',
+        uptoken: uptoken,
+        domain: bucketUrl,
+        flash_swf_url: 'js/plupload/Moxie.swf',
+        unique_names: false,
+        save_key: false,
+        get_new_uptoken: false,
+        container: 'upload-container-course',
+        max_file_size: '10mb',
+        max_retries: 3,
+        dragdrop: false,
+        drop_element: 'upload-container-course',
+        chunk_size: '4mb',
+        filters: {
+          mime_types: [
+            {title: 'Courseware Files', extensions: 'ppt,pptx,pdf,key,zip'}
+          ]
+        },
+        auto_start: true,
+        init: {
+          'FilesAdded': (up, files) => {
+          },
+          'BeforeUpload': (up, file) => {
+            util.loading(this)
+          },
+          'UploadProgress': (up, file) => {
+          },
+          'FileUploaded': (up, file, info) => {
+            let res = JSON.parse(info)
             this.updateCoursewareKey(res.key)
           },
           'Error': (up, err, errTip) => {
@@ -327,7 +326,8 @@ export default {
             return util.randomString(6) + ext
           }
         }
-      }) // coursewareUploader
+      })
+      /* eslint-enable */
     },
     tryInitQiniu () {
       if (this.hasDomReady && this.hasGotUptoken) {
@@ -364,11 +364,11 @@ export default {
   },
   events: {
     'saveLive': function (type, content) {
-      if (type == 0) {
+      if (type === 0) {
         this.speakerIntro = content
-      } else if (type == 1) {
+      } else if (type === 1) {
         this.detail = content
-      } else if (type == 2) {
+      } else if (type === 2) {
         this.notice = content
       }
     }

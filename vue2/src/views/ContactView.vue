@@ -12,8 +12,8 @@
 export default {
   name: 'ContactView',
   methods: {
-    goRelease ()  {
-      ('/intro/7')
+    goRelease () {
+      this.router.push('/intro/7')
     }
   }
 }
