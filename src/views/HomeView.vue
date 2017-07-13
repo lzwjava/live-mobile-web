@@ -41,12 +41,11 @@ export default {
         }
       }
 
-      if (liveId && liveId !== 0) {
+      if (liveId && parseInt(liveId) !== 0) {
         this.$router.go('/intro/' + liveId)
       } else {
         this.$router.go('/lives')
       }
-
     }
   },
   methods: {
