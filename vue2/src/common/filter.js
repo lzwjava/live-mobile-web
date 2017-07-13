@@ -45,7 +45,7 @@ let formatTime = (time, format) => {
 }
 
 let formatTimeCommon = (time) => {
-  var text = formatTime(time, 'llll')
+  let text = formatTime(time, 'llll')
   text = text.replace('2016年', '')
   text = text.replace('星期', '周')
   return text

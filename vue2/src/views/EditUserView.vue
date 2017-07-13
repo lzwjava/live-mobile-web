@@ -125,8 +125,8 @@ export default {
             'UploadProgress': (up, file) => {
             },
             'FileUploaded': (up, file, info) => {
-              var res = JSON.parse(info)
-              var sourceLink = bucketUrl + '/' + res.key
+              let res = JSON.parse(info)
+              let sourceLink = bucketUrl + '/' + res.key
               this.updateUser({
                 avatarUrl: sourceLink
               })

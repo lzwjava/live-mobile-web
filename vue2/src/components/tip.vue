@@ -28,7 +28,7 @@ export default {
     },
     show (type, text, timeout) {
       // 全局 error、warn、success 提示
-      var msg = {type, text}
+      let msg = {type, text}
       if (!this.unique(msg, this.messages)) return
 
       if (!timeout) {

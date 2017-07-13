@@ -13,7 +13,7 @@ const weixinOauthUrl = (state, scope, redirectUrl) => {
 }
 
 const weixinOauthUserUrl = (state) => {
-  var redirectUrl
+  let redirectUrl
   if (util.isDebug()) {
     redirectUrl = 'http://m.quzhiboapp.com/#wechat/oauthTest'
   } else {
@@ -23,7 +23,7 @@ const weixinOauthUserUrl = (state) => {
 }
 
 const weixinSilentOauthUrl = (state) => {
-  var redirectUrl
+  let redirectUrl
   if (util.isDebug()) {
     redirectUrl = 'http://m.quzhiboapp.com/#wechat/silentOauthTest'
   } else {
@@ -52,7 +52,7 @@ function silentOauth2 (comp) {
 }
 
 function configWeixin (comp) {
-  var url = window.location.href.split('#')[0]
+  let url = window.location.href.split('#')[0]
   return http.get(comp, 'wechat/sign', {
     url: encodeURIComponent(url)
   }).then((data) => {
@@ -102,7 +102,7 @@ function share (title, img, desc, href, comp, liveId, timelineTitle) {
   })
 }
 
-var menuList = ['menuItem:share:appMessage', 'menuItem:share:timeline', 'menuItem:share:qq']
+let menuList = ['menuItem:share:appMessage', 'menuItem:share:timeline', 'menuItem:share:qq']
 
 function showOptionMenu () {
   wx.ready(function () {
@@ -127,7 +127,7 @@ function hideMenu () {
 }
 
 function linkUrl (liveId, curUser) {
-  var extraParams = ''
+  let extraParams = ''
   if (curUser && curUser.userId) {
     extraParams = '&fromUserId=' + curUser.userId
   }
@@ -135,13 +135,13 @@ function linkUrl (liveId, curUser) {
 }
 
 function shareLive (comp, live, curUser) {
-  var iconUrl = live.owner.avatarUrl
+  let iconUrl = live.owner.avatarUrl
   if (live.shareIcon === 1) {
     iconUrl = live.coverUrl
   }
-  var title = live.owner.username + '在趣直播：' + live.subject
-  var desc = '来自趣直播-知识直播平台。'
-  var timelineTitle
+  let title = live.owner.username + '在趣直播：' + live.subject
+  let desc = '来自趣直播-知识直播平台。'
+  let timelineTitle
   if (curUser && curUser.userId) {
     timelineTitle = title + ' | 邀请自' + curUser.username
     desc += curUser.username + '邀请您参加。'
@@ -151,12 +151,12 @@ function shareLive (comp, live, curUser) {
 }
 
 function shareApp (comp) {
-  var title = '趣直播-知识直播平台'
+  let title = '趣直播-知识直播平台'
   share(title, 'http://i.quzhiboapp.com/logo.png', title, linkUrl(0), 0)
 }
 
 function shareJoin (comp) {
-  var title = '欢迎您加入趣直播'
+  let title = '欢迎您加入趣直播'
   share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#staff', 0)
 }
 
@@ -197,7 +197,7 @@ function wechatScan () {
           needResult: 1,
           scanType: ['qrCode'],
           success: (res) => {
-            var result = res.resultStr
+            let result = res.resultStr
             resolve(result)
           },
           fail: (res) => {
@@ -222,7 +222,7 @@ function scanQRcode (comp) {
 function scanQRcodeWithLive (comp, liveId) {
   return wechatScan()
   .then((code) => {
-    var data = {liveId: liveId}
+    let data = {liveId: liveId}
     return http.post(comp, 'qrcodes', {
       code: code,
       type: 1,
@@ -239,13 +239,13 @@ function chooseAndUploadImage (comp) {
         sizeType: ['compressed'],
         sourceType: ['album'],
         success: (res) => {
-          var localIds = res.localIds
+          let localIds = res.localIds
           if (localIds.length > 0) {
             wx.uploadImage({
               localId: localIds[0],
               isShowProgressTips: 1,
               success: (res) => {
-                var serverId = res.serverId
+                let serverId = res.serverId
                 util.loading(comp)
                 http.get(comp, 'files/wechatToQiniu', {
                   mediaId: serverId

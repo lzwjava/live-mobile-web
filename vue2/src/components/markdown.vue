@@ -47,7 +47,7 @@ export default {
       if (!this.showAll && this.content.length > 100) {
         let partContent = ''
         for (let i = 0; i < 100; i++) {
-          var ch = this.content.charAt(i)
+          let ch = this.content.charAt(i)
           if (ch !== '[' && ch !== '(' && ch !== '!') {
             partContent += ch
           } else {

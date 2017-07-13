@@ -322,7 +322,7 @@ export default {
             util.loaded(this)
           },
           'Key': (up, file) => {
-            var ext = '.' + file.name.split('.').pop()
+            let ext = '.' + file.name.split('.').pop()
             return util.randomString(6) + ext
           }
         }

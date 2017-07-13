@@ -57,7 +57,7 @@ export default {
   methods: {
     keyboardSubmit (e) {
       if (e.keyCode !== 13) return
-      var mac = /mac/i.test(navigator.userAgent)
+      let mac = /mac/i.test(navigator.userAgent)
       if ((mac && !e.metaKey) || (!mac && !e.ctrlKey)) return
       this.$emit('submit')
     },
