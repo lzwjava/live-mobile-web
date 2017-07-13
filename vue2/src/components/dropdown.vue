@@ -11,19 +11,19 @@
 </template>
 
 <script>
-  module.exports = {
-    data () {
-      return {
-        show: false
-      }
-    },
-    methods: {
-      choose (e) {
-        const el = e.target
-        if (el.classList.contains('dropdown-item')) this.show = false
-      }
+export default {
+  data () {
+    return {
+      show: false
+    }
+  },
+  methods: {
+    choose (e) {
+      const el = e.target
+      if (el.classList.contains('dropdown-item')) this.show = false
     }
   }
+}
 </script>
 
 <style lang="stylus">

@@ -194,7 +194,7 @@ export default {
     },
     videoOptions () {
       let options = []
-      for(let i = 0; i < this.videos.length; i++) {
+      for (let i = 0; i < this.videos.length; i++) {
         let video = this.videos[i]
         options.push({text: video.title, value: i})
       }
@@ -283,7 +283,7 @@ export default {
   },
   ready () {
     const playerArea = this.$els.playerArea
-    this.videoHeight =  Math.ceil(playerArea.offsetWidth * 0.625)
+    this.videoHeight = Math.ceil(playerArea.offsetWidth * 0.625)
     debug('videoHeight: %j', this.videoHeight)
     this.hasCallReady = true
     debug('hasCallReady')
@@ -398,26 +398,26 @@ export default {
       }
       this.isSending = true
       return this.conv.send(msg)
-       .then(message => {
-          this.isSending = false
-          this.addChatMsg(message)
-          return Promise.resolve(message)
-        }, error => {
-          this.isSending = false
-          this.handleError(error)
-        })
+      .then(message => {
+        this.isSending = false
+        this.addChatMsg(message)
+        return Promise.resolve(message)
+      }, error => {
+        this.isSending = false
+        this.handleError(error)
+      })
     },
     sendSystemMsg (text) {
       let systemMsg = new SystemMessage()
       systemMsg.setText(text)
-      systemMsg.setAttributes({username:this.curUser.username})
+      systemMsg.setAttributes({username: this.curUser.username})
       this.commonSendMsg(systemMsg)
     },
     sendRewardMsg (amount) {
       let rewardMsg = new RewardMessage()
       rewardMsg.setText('我打赏了主播' + (amount / 100) + '元')
       rewardMsg.setAttributes({
-        username:this.curUser.username,
+        username: this.curUser.username,
         amount
       })
       this.commonSendMsg(rewardMsg)
@@ -450,7 +450,7 @@ export default {
               this.msgs = result.value.concat(this.msgs)
               setTimeout(() => {
                 let afterHeight = msgList.scrollHeight
-                msgList.scrollTop = afterHeight-originHeight
+                msgList.scrollTop = afterHeight - originHeight
               }, 0)
             }, error => {
               util.loaded(this)
@@ -520,7 +520,7 @@ export default {
         this.membersCountId = setInterval(() => {
           conversation.count().then((membersCount) => {
             let randomCount = membersCount * 3 + this.randomNum
-            if(randomCount >= this.live.attendanceCount) {
+            if (randomCount >= this.live.attendanceCount) {
               this.membersCount = this.live.attendanceCount
             } else {
               this.membersCount = randomCount
@@ -549,13 +549,13 @@ export default {
       }
     },
     setPlayerSrc () {
-        let player = this.$els.video
-        player.src = this.videoSrc
+      let player = this.$els.video
+      player.src = this.videoSrc
     },
-    hlsPlay (url){
+    hlsPlay (url) {
       let player = this.$els.video
       if (!Hls.isSupported()) {
-        util.show(this,'error','不支持hls，请切换浏览器')
+        util.show(this, 'error', '不支持hls，请切换浏览器')
         return
       }
       this.player = player
@@ -563,7 +563,7 @@ export default {
       hls.loadSource(url)
       hls.attachMedia(player)
       debug('player.src', player.src)
-      hls.on(Hls.Events.MANIFEST_PARSED,() => {
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
         player.play()
       })
       this.playStatus = 1
@@ -600,7 +600,7 @@ export default {
           let video = this.videos[this.videoSelected]
           if (video.type === 'mp4') {
             this.useHlsjs = false
-          } else if (video.type === 'm3u8'){
+          } else if (video.type === 'm3u8') {
             this.m3u8Url = video.m3u8Url
             this.useHlsjs = true
             this.hlsPlay(video.m3u8Url)

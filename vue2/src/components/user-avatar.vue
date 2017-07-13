@@ -5,33 +5,33 @@
   </div>
 </template>
 <script>
-  const debug = require('debug')('avatar')
-  const escape = require('@/common/util').escape
-  const wordColor = require('word-color')
-  module.exports = {
-    props: ['user'],
-    data () {
-      return {
-        spanBgColor: '',
-        spanColor: 'white'
+const debug = require('debug')('avatar')
+const escape = require('@/common/util').escape
+const wordColor = require('word-color')
+export default {
+  props: ['user'],
+  data () {
+    return {
+      spanBgColor: '',
+      spanColor: 'white'
+    }
+  },
+  compiled: function () {
+    const user = this.user
+    // 因为父对象的 user 一开始可能没有数据
+    if (!user.username) return
+    debug('user: %j', user)
+    if (!user.avatarUrl) {
+      const bg = wordColor.rgb(user.username)
+      if ((bg[0] * 299 + bg[1] * 587 + bg[2] * 114) > 200000) {
+        this.spanColor = 'black'
       }
-    },
-    compiled: function () {
-      const user = this.user
-      // 因为父对象的 user 一开始可能没有数据
-      if (!user.username) return
-      debug('user: %j', user)
-      if (!user.avatarUrl) {
-        const bg = wordColor.rgb(user.username)
-        if ((bg[0] * 299 + bg[1] * 587 + bg[2] * 114) > 200000) {
-          this.spanColor = 'black'
-        }
-        this.spanBgColor = 'rgb(' + bg.join(',') + ')'
-        user.username = escape(user.username.charAt(0).toUpperCase())
-        debug('avatarUrl: ' + user.avatarUrl)
-      }
+      this.spanBgColor = 'rgb(' + bg.join(',') + ')'
+      user.username = escape(user.username.charAt(0).toUpperCase())
+      debug('avatarUrl: ' + user.avatarUrl)
     }
   }
+}
 </script>
 
 <style lang="stylus">

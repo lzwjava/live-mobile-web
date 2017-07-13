@@ -20,7 +20,6 @@ import { Toast } from 'vue-weui'
 
 import wechat from '@/common/wechat'
 import util from '@/common/util'
-import api from '@/common/api'
 
 import Nav from '@/views/nav.vue'
 import Tip from '@/components/tip.vue'

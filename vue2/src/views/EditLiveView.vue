@@ -119,7 +119,7 @@ export default {
     }
   },
   route: {
-    data({ to }) {
+    data ({ to }) {
       const liveId = to.params.liveId
       if (liveId === this.liveId) return
       this.liveId = liveId

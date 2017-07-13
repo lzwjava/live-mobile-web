@@ -6,7 +6,6 @@
 
 <script type="text/javascript">
 import util from '@/common/util'
-import wechat from '@/common/wechat'
 import api from '@/common/api'
 
 export default {
@@ -34,7 +33,7 @@ export default {
           }
         }
       }
-      if (liveId && liveId !== 0) {
+      if (liveId && parseInt(liveId) !== 0) {
         ('/intro/' + liveId)
       } else {
         ('/lives')

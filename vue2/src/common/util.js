@@ -59,7 +59,7 @@ let transformToAssocArray = (prmstr) => {
   return params
 }
 
-let getParams = () => {
+function getParams () {
   let prmstr = window.location.search.substr(1)
   debug('paramStr:' + window.location.search)
   return prmstr !== null && prmstr !== '' ? transformToAssocArray(prmstr) : {}
