@@ -194,7 +194,7 @@ function shareLive(comp, live, curUser) {
 
 function shareApp(comp) {
   var title = '趣直播-知识直播平台'
-  share(title, 'http://i.quzhiboapp.com/logo.png', title, linkUrl(0), 0)
+  share(title, 'http://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#!/lives', 0)
 }
 
 function shareJoin(comp) {
