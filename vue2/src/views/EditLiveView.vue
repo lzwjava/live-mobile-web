@@ -9,19 +9,19 @@
         </cell>
       </cells>
       <cells type="form">
-        <switch-cell name="switch" label="是否需要付费" :on.sync="needPay"></switch-cell>
-        <input-cell type="number" label="直播门票 ¥" placeholder="请输入门票" :value.sync="amountValue"></input-cell>
-        <input-cell type="datetime-local" label="时间" :value.sync="planTsValue"></input-cell>
+        <switch-cell name="switch" label="是否需要付费" :on="needPay"></switch-cell>
+        <input-cell type="number" label="直播门票 ¥" placeholder="请输入门票" :value="amountValue"></input-cell>
+        <input-cell type="datetime-local" label="时间" :value="planTsValue"></input-cell>
       </cells>
       <cells>
-        <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon"></switch-cell>
+        <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on="shareIcon"></switch-cell>
         <cell>
           <span class="item-title" slot="header">设定直播分类</span>
         </cell>
-        <select-cell :options="topicOptions" :selected.sync="topicSelected"></select-cell>
+        <select-cell :options="topicOptions" :selected="topicSelected"></select-cell>
       </cells>
       <cells>
-        <input-cell type="text" label="直播标题" placeholder="请输入标题" :value.sync="title"></input-cell>
+        <input-cell type="text" label="直播标题" placeholder="请输入标题" :value="title"></input-cell>
         <cell @click="goSpeakerIntro">
           <span class="item-title" slot="header">主播介绍</span>
           <span slot="footer">{{titleWord(speakerIntro)}}></span>

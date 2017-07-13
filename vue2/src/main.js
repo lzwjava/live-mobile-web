@@ -15,7 +15,6 @@ for (let k in filters) {
   Vue.filter(k, filters[k])
 }
 
-Vue.config.debug = true
 Vue.use(Ajax)
 Vue.http.options.root = '/api'
 Vue.http.options.emulateJSON = true

@@ -1,6 +1,8 @@
 <template>
   <div id="message" aria-live="assertive">
-    <div :class="`message message-` + msg.type" v-for="msg in messages" v-text="msg.text" transition="fade"></div>
+    <transition name="fade">
+      <div :class="`message message-` + msg.type" v-for="msg in messages" v-text="msg.text"></div>
+    </transition>
   </div>
 </template>
 

@@ -16,7 +16,7 @@ export default {
       spanColor: 'white'
     }
   },
-  compiled: function () {
+  mounted: {
     const user = this.user
     // 因为父对象的 user 一开始可能没有数据
     if (!user.username) return

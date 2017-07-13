@@ -6,7 +6,7 @@
       <button class="btn btn-gray btn-edit" @click="focus" v-show="showPreview">编辑模式</button>
     </div>
     <div class="markdown-content">
-      <textarea class="markdown-area-common" :id="textareaId" :placeholder="placeholder" v-show="!showPreview" v-model='content' v-el:text @keydown="keyboardSubmit"></textarea>
+      <textarea class="markdown-area-common" :id="textareaId" :placeholder="placeholder" v-show="!showPreview" v-model='content' ref="text" @keydown="keyboardSubmit"></textarea>
       <markdown class="markdown-preview markdown-area-common" v-show="showPreview" :content="content" :show="showPreview"></markdown>
       <p class="tips" v-if="supportMarkdown">* 支持 Markdown</p>
     </div>
@@ -65,7 +65,7 @@ export default {
       e && e.preventDefault()
       this.showPreview = false
 
-      let el = this.$els.text
+      let el = this.$refs.text
       setTimeout(function () {
         el.focus()
       }, 10)

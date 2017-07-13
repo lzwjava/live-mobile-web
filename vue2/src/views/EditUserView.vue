@@ -18,7 +18,7 @@
         </span>
       </span>
     </div>
-    <overlay :overlay.sync="overlayStatus">
+    <overlay :overlay="overlayStatus">
         <input-text-form title="名称" :text="curUser.username"></input-text-form>
     </overlay>
   </div>

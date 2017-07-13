@@ -11,7 +11,7 @@
       <p>4.为了让您收到收益通知，请先关注「平方根科技」服务号</p>
       <p>5.如需帮助请联系客服(微信号：lzwjava2048)</p>
     </div>
-    <overlay :overlay.sync="overlayStatus">
+    <overlay :overlay="overlayStatus">
       <component :is="currentView" type="share" :live-id="liveId"></component>
     </overlay>
   </div>

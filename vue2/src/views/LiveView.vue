@@ -1,13 +1,13 @@
 <template>
   <div class="live-view">
-    <div class="player-area" v-el:player-area :style="{height: videoHeight + 'px'}">
+    <div class="player-area" ref="playerArea" :style="{height: videoHeight + 'px'}">
       <div class="video-wait video-common" v-show="live.status === 10">
         <p class="big-title">离直播开始还有{{timeDuration}}</p>
         <p class="small-title">开播时您将收到一条微信通知</p>
         <img class="qrcode" :src="live.liveQrcodeUrl" alt="">
       </div>
       <div class="video-on" v-show="live.status === 20 || live.status === 25 || live.status === 30">
-      <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload" controls webkit-playsinline playsinline v-el:video></video>
+      <video id="player1" width="100%" :style="{height: videoHeight + 'px'}" preload="preload" controls webkit-playsinline playsinline ref="video"></video>
         <div class="video-poster-cover" v-show="playStatus !== 2">
           <img :src="live.coverUrl" width="100%" height="100%"/>
           <div class="video-center">
@@ -22,7 +22,7 @@
     </div>
     <div class="playlist-area" :style="{top:videoHeight + 'px'}" v-if="videos.length > 1">
       <cells type="split">
-        <select-cell :options="videoOptions" :selected.sync="videoSelected"></select-cell>
+        <select-cell :options="videoOptions" :selected="videoSelected"></select-cell>
       </cells>
     </div>
     <div class="tab-area">
@@ -47,7 +47,7 @@
            在线 {{membersCount}}
          </div>
          <button type="button" class="live-config-btn" @click="showControlForm" v-if="live.owner.userId === curUser.userId">直播控制</button>
-      <ul class="msg-list" v-el:msg-list>
+      <ul class="msg-list" ref="msg-list">
         <li class="msg" v-for="msg in msgs">
           <div class="system-msg" v-if="msg.type === 2 && live.status !== 30">
             <div class="content">{{msg.text}}</div>
@@ -78,7 +78,7 @@
     <div class="notice-area" v-show="currentTab === 1">
       <markdown :content="noticeContent"></markdown>
     </div>
-    <overlay :overlay.sync="overlayStatus">
+    <overlay :overlay="overlayStatus">
       <component :is="currentView" :live="live" :live-id="liveId" type="live" :qrcode-url="qrcodeUrl"></component>
     </overlay>
   </div>
@@ -281,8 +281,8 @@ export default {
       }
     }
   },
-  ready () {
-    const playerArea = this.$els.playerArea
+  mounted () {
+    const playerArea = this.$refs.playerArea
     this.videoHeight = Math.ceil(playerArea.offsetWidth * 0.625)
     debug('videoHeight: %j', this.videoHeight)
     this.hasCallReady = true
@@ -353,7 +353,7 @@ export default {
       util.show(this, 'error', error)
     },
     addMsg (msg) {
-      let msgList = this.$els.msgList
+      let msgList = this.$refs.msgList
       let isTouchBottom = msgList.scrollHeight < msgList.scrollTop + msgList.offsetHeight + 100
       this.msgs.push(msg)
       setTimeout(() => {
@@ -363,7 +363,7 @@ export default {
       }, 0)
     },
     scrollToBottom () {
-      let msgList = this.$els.msgList
+      let msgList = this.$refs.msgList
       msgList.scrollTop = msgList.scrollHeight
     },
     addChatMsg (msg) {
@@ -435,7 +435,7 @@ export default {
     },
     initScroll () {
       setTimeout(() => {
-        let msgList = this.$els.msgList
+        let msgList = this.$refs.msgList
         msgList.addEventListener('scroll', e => {
           let list = e.srcElement
           if (list.scrollTop === 0) {
@@ -549,11 +549,11 @@ export default {
       }
     },
     setPlayerSrc () {
-      let player = this.$els.video
+      let player = this.$refs.video
       player.src = this.videoSrc
     },
     hlsPlay (url) {
-      let player = this.$els.video
+      let player = this.$refs.video
       if (!Hls.isSupported()) {
         util.show(this, 'error', '不支持hls，请切换浏览器')
         return

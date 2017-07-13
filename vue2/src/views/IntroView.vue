@@ -78,7 +78,7 @@
       </div>
        <div class="attend-btn" @click="attendLive" v-html="btnTitle"></div>
     </div>
-    <overlay :overlay.sync="overlayStatus">
+    <overlay :overlay="overlayStatus">
         <component :is="currentView" :options="options" :live-id="liveId" type="live"
          :qrcode-url="qrcodeUrl"></component>
     </overlay>

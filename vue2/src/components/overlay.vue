@@ -1,6 +1,8 @@
 <template>
-  <div class="overlay" @click="hide" v-if="overlay" transition="overExpand">
-    <slot></slot>
+  <div class="overlay" @click="hide" v-if="overlay">
+    <transition name="overExpand">
+      <slot></slot>
+    </transition>
   </div>
 </template>
 
@@ -28,7 +30,7 @@ export default {
   z-index 9998
   background-color rgba(0,0,0,.5)
 
-.overExpand-transition {
+.overExpand-enter-active, .overExpand-leave-active {
   transition: all .5s ease;
   overflow: hidden;
 }

@@ -2,13 +2,12 @@
   <div id="wrapper">
     <router-view
       class="view"
-      keep-alive
       transition
       transition-mode="out-in">
     </router-view>
     <toast type="loading" v-show="loading">加载中</toast>
     <toast v-show="toastShow">{{toastText}}</toast>
-    <overlay :overlay.sync="overlayStatus">
+    <overlay :overlay="overlayStatus">
       <component :is="currentView" :options="options" :live-id="liveId"></component>
     </overlay>
     <tip></tip>

@@ -3,7 +3,7 @@
     <div class="edit-title">
       {{title}}
     </div>
-    <markdown-area :content.sync="content" :support-markdown="supportMarkdown"></markdown-area>
+    <markdown-area :content="content" :support-markdown="supportMarkdown"></markdown-area>
     <div class="action-btns">
       <button class="btn btn-gray" @click="cancel">取消</button>
       <button class="btn btn-blue" @click="confirm">确定</button>
