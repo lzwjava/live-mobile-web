@@ -6,29 +6,33 @@
       transition
       transition-mode="out-in">
     </router-view>
+
     <toast type="loading" v-show="loading">加载中</toast>
+
     <toast v-show="toastShow">{{toastText}}</toast>
+
     <overlay :overlay.sync="overlayStatus">
       <component :is="currentView" :options="options" :live-id="liveId"></component>
     </overlay>
+
     <tip><tip>
+
   </div>
 </template>
 
 <script type="text/javascript">
-import { Toast } from 'vue-weui'
 
-import wechat from '@/common/wechat'
-import util from '@/common/util'
-import api from '@/common/api'
-
-import Nav from '@/views/nav.vue'
+import Nav from './nav.vue'
+import {Toast} from 'vue-weui'
 import Tip from '@/components/tip.vue'
+import wechat from '@/common/wechat'
 import LoginOptionsForm from '@/components/LoginOptionsForm.vue'
 import LoginForm from '@/components/LoginForm.vue'
 import RegisterForm from '@/components/RegisterForm.vue'
 import WeiboForm from '@/components/WeiboForm.vue'
 import Overlay from '@/components/Overlay.vue'
+import util from '@/common/util'
+import api from '@/common/api'
 
 const debug = require('debug')('nav')
 
@@ -57,21 +61,21 @@ export default {
   },
   methods: {
     loginOrRegister (liveId) {
-      window.localStorage.setItem('liveId', liveId)
-      window.localStorage.setItem('type', 'live')
-      if (util.isWeixinBrowser()) {
-        wechat.oauth2()
-      } else {
-        this.liveId = liveId
-        if (util.isMobileBrowser()) {
-          this.currentView = 'weibo-form'
-          this.overlayStatus = true
+        window.localStorage.setItem('liveId', liveId)
+        window.localStorage.setItem('type', 'live')
+        if (util.isWeixinBrowser()) {
+          wechat.oauth2()
         } else {
-          this.options = ['登录', '注册']
-          this.currentView = 'login-options-form'
-          this.overlayStatus = true
+          this.liveId = liveId
+          if (util.isMobileBrowser()) {
+            this.currentView = 'weibo-form'
+            this.overlayStatus = true
+          } else {
+            this.options = ['登录', '注册']
+            this.currentView = 'login-options-form'
+            this.overlayStatus = true
+          }
         }
-      }
     }
   },
   events: {
@@ -97,19 +101,19 @@ export default {
         this.loginOrRegister(liveId)
     },
     'hideLoginOptionsForm': function(type) {
-      if (this.currentView == 'login-options-form') {
-        if (type === 0) {
-          setTimeout(() => {
-            this.currentView = 'login-form'
-            this.overlayStatus = true
-          }, 600)
-        } else if (type === 1) {
-          setTimeout(() => {
-            this.currentView = 'register-form'
-            this.overlayStatus = true
-          }, 600)
+        if (this.currentView == 'login-options-form') {
+          if (type == 0) {
+            setTimeout(() => {
+                this.currentView = 'login-form'
+                this.overlayStatus = true
+            }, 600)
+          } else if (type == 1) {
+            setTimeout(() => {
+                this.currentView = 'register-form'
+                this.overlayStatus = true
+            }, 600)
+          }
         }
-      }
     },
     'updateCurUser': function () {
       debug('event updateCurUser')
@@ -121,12 +125,14 @@ export default {
     }
   }
 }
+
 </script>
 
 <style lang="stylus">
-@import './stylus/variables.styl';
-@import './stylus/base.styl';
-@import '../node_modules/rupture/rupture/index.styl';
+
+@import '../stylus/variables.styl'
+@import '../stylus/base.styl'
+@import '../../node_modules/rupture/rupture/index.styl'
 
 #wrapper
   position relative
