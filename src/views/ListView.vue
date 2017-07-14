@@ -44,32 +44,59 @@ export default {
       hotLives: [],
       newLives: [],
       curTab: 0,
+      totalHeight: 0,
+      page: 1,
+      tagNext: false,
+      totalPage: 0
     }
   },
   created () {
+    window.addEventListener('scroll', (function (e) {
+      var windowHeight = document.body.clientHeight
+      var scrollTop = document.body.scrollTop
+      if (scrollTop + windowHeight >= this.makeHeight && this.tagNextFn === false) {
+        let page = this.page ++
+        this.tagNext = true
+        if (page > this.totalPage - 1) return
+        this.getNewList(page)
+      }
+    }).bind(this))
+
     util.loading(this)
+    this.showNewLiveList()
     Promise.all([
-      http.get(this, 'lives/listOrderByPlanTs'),
-      http.get(this, 'lives/listOrderByAttendance'),
+      http.get(this, `lives/count`),
       wechat.configWeixin(this)
     ]).then(values => {
+      this.totalPage = parseInt(values[0][0].count / 10) + 1
       util.loaded(this)
-      this.livesNew = values[0]
-      this.livesHot = values[1]
-      this.lives = this.livesNew
       wechat.showOptionMenu()
       wechat.shareApp(this)
     }).catch(util.promiseErrorFn(this))
   },
   methods: {
     showNewLiveList () {
-      this.curTab = 0
-      this.lives = this.livesNew
+      this.page = 1
+      this.tagNext = false
+      util.loading(this)
+      http.get(this, `lives/listOrderByPlanTs?limit=10`)
+      .then(data => {
+        this.lives = data
+        util.loaded(this)
+        this.curTab = 0
+      })
     },
 
     showHotLiveList () {
-      this.curTab = 1
-      this.lives = this.livesHot
+      this.page = 1
+      this.tagNext = false
+      util.loading(this)
+      http.get(this, `lives/listOrderByAttendance?limit=10`)
+      .then(data => {
+        this.lives = data
+        util.loaded(this)
+        this.curTab = 1
+      })
     },
 
     goSubscribe () {
@@ -77,6 +104,21 @@ export default {
     },
     goCreate () {
       this.$router.go('/scan')
+    },
+    getNewList (page) {
+      http.get(this, `lives/${this.curTab === 0 ? 'listOrderByPlanTs' : 'listOrderByAttendance'}?skip=${page * 10}&limit=10`)
+      .then(data => {
+        this.lives.push(...data)
+        this.tagNext = false
+      })
+    }
+  },
+  computed: {
+    makeHeight () {
+      return 40 + 101 * (this.lives.length - 4)
+    },
+    tagNextFn () {
+      return this.tagNext
     }
   }
 }
