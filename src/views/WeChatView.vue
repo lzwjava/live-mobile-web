@@ -59,6 +59,7 @@ export default {
           .then(data => {
             util.loaded(this)
             util.saveCurUser(data)
+            this.$dispatch('hideForm')
             this.$dispatch('updateCurUser')
             this.goLiveOrList()
           }, errorFn)

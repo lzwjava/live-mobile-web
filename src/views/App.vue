@@ -75,6 +75,9 @@ export default {
             this.overlayStatus = true
           }
         }
+    },
+    hideFormAfterLoginSuccess () {
+      this.overlayStatus = false
     }
   },
   events: {
@@ -121,6 +124,9 @@ export default {
     'saveLive': function(type, content) {
       debug('saveLiveDetail in app: %j', content)
       this.$broadcast('saveLive', type, content)
+    },
+    'hideForm': function () {
+      this.hideFormAfterLoginSuccess()
     }
   }
 }
