@@ -14,7 +14,7 @@
 
     </div>
 
-    <div class="createLive" v-if="curUser.userId === userId">
+    <div class="createLive" v-if="curUser.userId === parseInt(userId)">
       <button type="button" name="button" class="createLiveBtn" @click="createLive">
         <h2>发起直播</h2>
       </button>
