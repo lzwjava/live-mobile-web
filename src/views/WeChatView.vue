@@ -59,7 +59,6 @@ export default {
           .then(data => {
             util.loaded(this)
             util.saveCurUser(data)
-            this.$dispatch('hideForm')
             this.$dispatch('updateCurUser')
             this.goLiveOrList()
           }, errorFn)
@@ -89,6 +88,7 @@ export default {
            util.loaded(this)
            util.saveCurUser(data)
            this.$dispatch('updateCurUser')
+           this.$dispatch('hideForm')
            this.goLiveOrList()
          }, util.promiseErrorFn(this))
        } else if (params.type === 'webOauthTest') {
