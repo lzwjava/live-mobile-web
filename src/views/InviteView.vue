@@ -58,7 +58,7 @@ import util from '../common/util'
 import UserAvatar from '../components/user-avatar.vue'
 import LoadMoreBar from '../components/LoadMoreBar.vue'
 import ShareLead from '../components/ShareLead.vue'
-import Overlay from '../components/overlay.vue'
+import Overlay from '../components/Overlay.vue'
 import wechat from '../common/wechat'
 import SubscribeForm from '../components/SubscribeForm.vue'
 

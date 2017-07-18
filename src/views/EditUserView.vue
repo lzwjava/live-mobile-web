@@ -41,7 +41,7 @@ import util from '../common/util'
 import api from '../common/api'
 import wechat from '../common/wechat'
 import UserAvatar from '../components/user-avatar.vue'
-import Overlay from '../components/overlay.vue'
+import Overlay from '../components/Overlay.vue'
 import InputTextForm from '../components/InputTextForm.vue'
 
 require('moxie')
