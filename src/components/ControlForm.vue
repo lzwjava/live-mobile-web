@@ -64,6 +64,7 @@ export default {
 		},
 		pushKey () {
 			if (!this.live.pushUrl) return ''
+			const regex = /(rtmp:\/\/.*)\/(.*)/g
 			const match = regex.exec(this.live.pushUrl)
 			return match[2]
 		}
