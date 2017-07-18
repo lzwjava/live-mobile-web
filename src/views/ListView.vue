@@ -68,7 +68,7 @@ export default {
       http.get(this, `lives/count`),
       wechat.configWeixin(this)
     ]).then(values => {
-      this.totalPage = parseInt(values[0][0].count / 10) + 1
+      this.totalPage = parseInt(values[0][0].count / 20) + 1
       util.loaded(this)
       wechat.showOptionMenu()
       wechat.shareApp(this)
@@ -79,7 +79,7 @@ export default {
       this.page = 1
       this.tagNext = false
       util.loading(this)
-      http.get(this, `lives/listOrderByPlanTs?limit=10`)
+      http.get(this, `lives/listOrderByPlanTs?limit=20`)
       .then(data => {
         this.lives = data
         util.loaded(this)
@@ -91,7 +91,7 @@ export default {
       this.page = 1
       this.tagNext = false
       util.loading(this)
-      http.get(this, `lives/listOrderByAttendance?limit=10`)
+      http.get(this, `lives/listOrderByAttendance?limit=20`)
       .then(data => {
         this.lives = data
         util.loaded(this)
@@ -106,7 +106,7 @@ export default {
       this.$router.go('/scan')
     },
     getNewList (page) {
-      http.get(this, `lives/${this.curTab === 0 ? 'listOrderByPlanTs' : 'listOrderByAttendance'}?skip=${page * 10}&limit=10`)
+      http.get(this, `lives/${this.curTab === 0 ? 'listOrderByPlanTs' : 'listOrderByAttendance'}?skip=${page * 20}&limit=20`)
       .then(data => {
         this.lives.push(...data)
         this.tagNext = false
