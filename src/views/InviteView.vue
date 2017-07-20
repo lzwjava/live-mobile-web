@@ -12,7 +12,7 @@
         <div class="name">{{curUser.username}}</div>
       </div>
 
-      <button class="btn-card btn btn-blue" @click="goCard">生成邀请卡</button>
+      <button class="btn-card btn btn-blue" @click="goCard">邀请卡</button>
 
       <button class="btn-invite btn btn-blue" @click="showShareLead">链接</button>
 
@@ -198,25 +198,22 @@ export default {
       .name
         font-size 16px
     .btn-withdraw
-      width 50px
+      width auto
       display inline-block
-      margin-top 10px
+      margin 10px 0 0 1px
       vertical-align top
-      margin-left 13px
       font-size 14px
     .btn-invite
-      width 50px
+      width auto
       display inline-block
-      margin-top 10px
+      margin 10px 0 0 1px
       vertical-align top
-      margin-left 10px
       font-size 14px
     .btn-card
-      width 90px
+      width auto
       display inline-block
-      margin-top 10px
+      margin 10px 0 0 1px
       vertical-align top
-      margin-left 1px
       font-size 14px
   .invite-list
     margin-top 10px
