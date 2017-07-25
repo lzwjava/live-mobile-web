@@ -89,7 +89,7 @@ var config = {
 }
 
 if (process.env.NODE_ENV === 'production') {
-  config.output.publicPath = 'http://mres.quzhiboapp.com/'
+  config.output.publicPath = '//mres.quzhiboapp.com/'
   config.output.filename = '[name].[chunkhash].js'
   config.output.chunkFilename = '[id].[chunkhash].js'
   config.vue.loaders = {
