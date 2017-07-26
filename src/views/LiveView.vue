@@ -769,11 +769,13 @@ export default {
           channel: 'wechat_h5',
           liveId: this.live.liveId
         }).then(data => {
+            console.log(data);
           util.loaded(this)
           return wechat.wxPay(data)
         }).then(() => {
           this.rewardSucceed(amount)
         }).catch(error => {
+            console.log(error);
           if (error && error.indexOf('失败') !== -1) {
             this.fetchQrcodeUrlAndShow(amount)
           } else {
