@@ -764,22 +764,25 @@ export default {
     'reward': function (amount) {
       if (util.isWeixinBrowser()) {
         util.loading(this)
-        http.post(this, 'rewards', {
-          amount,
-          channel: 'wechat_h5',
-          liveId: this.live.liveId
-        }).then(data => {
-          util.loaded(this)
-          return wechat.wxPay(data)
-        }).then(() => {
-          this.rewardSucceed(amount)
-        }).catch(error => {
-          if (error && error.indexOf('失败') !== -1) {
-            this.fetchQrcodeUrlAndShow(amount)
-          } else {
-            util.show(this, 'error', error)
-          }
-        })
+        wechat.configWeixin(this)
+          .then(() => {
+            http.post(this, 'rewards', {
+              amount,
+              channel: 'wechat_h5',
+              liveId: this.live.liveId
+            }).then(data => {
+              util.loaded(this)
+              return wechat.wxPay(data)
+            }).then(() => {
+              this.rewardSucceed(amount)
+            }).catch(error => {
+              if (error && error.indexOf('失败') !== -1) {
+                this.fetchQrcodeUrlAndShow(amount)
+              } else {
+                util.show(this, 'error', error)
+              }
+            })
+          })
       } else {
         this.fetchQrcodeUrlAndShow(amount)
       }
