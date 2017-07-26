@@ -83,7 +83,7 @@ function configWeixin(comp) {
     url: encodeURIComponent(url)
   }).then((data) => {
     wx.config({
-        debug: false,
+        debug: true,
         appId: data.appId,
         timestamp: data.timestamp,
         nonceStr: data.nonceStr,
@@ -222,6 +222,7 @@ function wxPay(data) {
           reject('已取消微信支付:' + res.errMsg)
         },
         fail: (res) => {
+            console.log(res)
           reject('支付失败:' + res.errMsg)
         }
       })
