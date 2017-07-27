@@ -8,33 +8,25 @@
     <script src="//res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css">
 
-    <!-- <script type="text/javascript">
-        !function () {
-            var searchStr = location.search
-            var hashStr = location.hash
-            console.log('search:' + searchStr)
-            console.log('hashStr:' + hashStr)
-            var newUrl
-            if (hashStr) {
-                if (searchStr) {
-                    if (hashStr.indexOf("?") !== -1) {
-                        newUrl = location.origin + "/?" + hashStr + searchStr.replace("?", "&")
-                    } else {
-                        newUrl = location.origin + "/?" + hashStr + searchStr
-                    }
-                } else {
-                    if (hashStr.indexOf("?") === -1 && hashStr.indexOf("&") !== -1) {
-                        newUrl = location.origin + "/?" + hashStr.replace("&", "?")
-                    }
-                }
+    <script type="text/javascript">
+        (function () {
+            var link = window.location.href;
+            var query = location.search;
+            var hash = location.hash;
+            if (!hash) return;
+
+            const baseURL = location.origin + location.pathname;
+            if (!query) {
+                if (hash.indexOf('?') === -1 && hash.indexOf('&') !== -1) hash = hash.replace('&', '?');
+                return location.replace(baseURL + '?' + hash);
+            };
+            if (hash.indexOf('?') !== -1) {
+                location.replace(baseURL + '?' + hash + query.replace('?', '&'));
             } else {
-              // newUrl = location.origin + '/#/' + searchStr
+                location.replace(baseURL + '?' + hash + query);
             }
-            if (newUrl) {
-                location.replace(newUrl)
-            }
-        }()
-    </script> -->
+        })();
+    </script>
 
     <script>
     var _hmt = _hmt || [];
