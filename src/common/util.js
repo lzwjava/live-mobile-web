@@ -160,7 +160,7 @@ function defaultUser() {
   return {
     userId: 0,
     username: '系统',
-    avatarUrl: 'http://i.quzhiboapp.com/defaultAvatar1.png'
+    avatarUrl: 'https://i.quzhiboapp.com/defaultAvatar1.png'
   }
 }
 
