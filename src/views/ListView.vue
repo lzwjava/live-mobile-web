@@ -115,7 +115,8 @@ export default {
   },
   computed: {
     makeHeight () {
-      return 40 + 101 * (this.lives.length - 4)
+      // 40px为 tab-area 高度
+      return 40 + document.getElementsByClassName('live-item-li')[0].offsetHeight * (this.lives.length - 6)
     },
     tagNextFn () {
       return this.tagNext
