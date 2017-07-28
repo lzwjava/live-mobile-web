@@ -46,7 +46,7 @@ import InputTextForm from '../components/InputTextForm.vue'
 
 require('moxie')
 require('plupload') // use for Qiniu js sdk
-import Qiniu from 'qiniu-js-sdk'
+import Qiniu from '../common/qiniu'
 
 const debug = debugFn('EditUserView')
 
