@@ -24,7 +24,7 @@
         </cells>
 
         <cells>
-          <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon /">
+          <switch-cell name="switch" label="分享是否显示封面(默认头像)" :on.sync="shareIcon"></switch-cell>
 
           <cell>
             <span class="item-title" slot="header">设定直播分类</span>
