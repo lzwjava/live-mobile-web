@@ -92,7 +92,7 @@ moment.locale('zh-cn')
 
 require('moxie')
 require('plupload')
-import Qiniu from 'qiniu-js-sdk'
+import Qiniu from '../common/qiniu'
 
 const debug = require('debug')('EditLiveView')
 
