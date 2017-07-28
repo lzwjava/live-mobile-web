@@ -34,7 +34,7 @@
   import api from '../common/api'
   require('moxie')
   require('plupload')
-  import Qiniu from 'qiniu-js-sdk'
+  import Qiniu from '../common/qiniu'
   import {sprintf} from 'sprintf-js'
 
   module.exports = {
