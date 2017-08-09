@@ -611,13 +611,19 @@ export default {
       this.logServer()
       if (util.isWeixinBrowser() || util.isSafari()) {
         let video = document.querySelector('video')
-        video.addEventListener('error', ev => {
+          let isPlaying = video.currentTime > 0 && !video.paused && !video.ended
+              && video.readyState > 2;
+
+          if (!isPlaying) {
+              video.play();
+          }
+/*        video.addEventListener('error', ev => {
           debug('event')
           debug(ev)
           if (ev.type === 'error') {
             util.show(this, 'error', '加载出错，请刷新重试')
           }
-        })
+        })*/
         this.useHlsjs = false
       } else {//chrome
         if (this.live.status === 20) {//play the this.live
