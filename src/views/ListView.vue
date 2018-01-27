@@ -31,6 +31,9 @@ import http from '../common/api'
 import wechat from '../common/wechat'
 import LiveList from '../components/LiveList.vue'
 import Tabbar from '../components/Tabbar.vue'
+import debugFn from 'debug'
+
+const debug = debugFn('List')
 
 export default {
   name: 'LiveView',
@@ -51,19 +54,24 @@ export default {
     }
   },
   created () {
-    window.addEventListener('scroll', (function (e) {
-      var windowHeight = document.body.clientHeight
-      var scrollTop = document.body.scrollTop
-      if (scrollTop + windowHeight >= this.makeHeight && this.tagNextFn === false) {
-        let page = this.page ++
-        this.tagNext = true
-        if (page > this.totalPage - 1) return
-        this.getNewList(page)
-      }
-    }).bind(this))
-
     util.loading(this)
     this.showNewLiveList()
+
+      // window.addEventListener('scroll', (e) => {
+      //   var windowHeight = document.body.clientHeight
+      //   var scrollTop = document.body.scrollTop
+      //   debug('scrollTop: %j', scrollTop)
+      //   debug('windowHeight: %j', windowHeight)
+      //   debug('makeHeight: %j', this.makeHeight)
+      //   if (scrollTop + windowHeight >= this.makeHeight && this.tagNextFn === false) {
+      //     let page = this.page ++
+      //     this.tagNext = true
+      //     if (page > this.totalPage - 1) return
+      //     this.getNewList(page)
+      //   }
+      // })
+
+
     Promise.all([
       http.get(this, `lives/count`),
       wechat.configWeixin(this)
@@ -72,6 +80,7 @@ export default {
       util.loaded(this)
       wechat.showOptionMenu()
       wechat.shareApp(this)
+
     }).catch(util.promiseErrorFn(this))
   },
   methods: {
@@ -79,7 +88,7 @@ export default {
       this.page = 1
       this.tagNext = false
       util.loading(this)
-      http.get(this, `lives/listOrderByPlanTs?limit=30`)
+      http.get(this, `lives/listOrderByPlanTs?limit=150`)
       .then(data => {
         this.lives = data
         util.loaded(this)
@@ -91,7 +100,7 @@ export default {
       this.page = 1
       this.tagNext = false
       util.loading(this)
-      http.get(this, `lives/listOrderByAttendance?limit=30`)
+      http.get(this, `lives/listOrderByAttendance?limit=150`)
       .then(data => {
         this.lives = data
         util.loaded(this)
