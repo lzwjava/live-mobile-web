@@ -26,6 +26,7 @@ import RoomView from './views/RoomView.vue'
 import EditLiveView from './views/EditLiveView.vue'
 import EditDetailView from './views/EditDetailView.vue'
 import CardView from './views/CardView.vue'
+import LoginPhone from './views/LoginPhone.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -129,7 +130,10 @@ router.map({
   },
   'editDetail/:liveId/:type' : {
     component: EditDetailView
-  }
+  },
+    'LoginPhone':{
+    component:LoginPhone
+    }
 })
 
 router.beforeEach(function () {

@@ -62,17 +62,28 @@ export default {
     loginOrRegister (liveId) {
         window.localStorage.setItem('liveId', liveId)
         window.localStorage.setItem('type', 'live')
+        // this.$router.go('/loginphone')
+
+
         if (util.isWeixinBrowser()) {
-          wechat.oauth2()
+          // wechat.oauth2()
         } else {
+           let isLogin = window.sessionStorage.getItem("isLogin")
+            if(!isLogin){
+                this.overlayStatus = true
+            }else{
+                this.overlayStatus = false
+            }
+
+           // console.log(isLogin)
           this.liveId = liveId
           if (util.isMobileBrowser()) {
             this.currentView = 'weibo-form'
-            this.overlayStatus = true
+            // this.overlayStatus = false
           } else {
-            this.options = ['登录', '注册']
+            this.options = ['登录']
             this.currentView = 'login-options-form'
-            this.overlayStatus = true
+            // this.overlayStatus = false
           }
         }
     },
@@ -89,7 +100,7 @@ export default {
     },
     'toast': function (text, timeout, callback) {
       this.toastText = text
-      this.toastShow = true
+      this.toastShow = false
       if (!timeout) {
         timeout = 2000
       }
@@ -103,12 +114,14 @@ export default {
         this.loginOrRegister(liveId)
     },
     'hideLoginOptionsForm': function(type) {
+        console.log(type)
         if (this.currentView == 'login-options-form') {
           if (type == 0) {
             setTimeout(() => {
-                this.currentView = 'login-form'
-                this.overlayStatus = true
-            }, 600)
+                // this.currentView = 'login-form'
+                // this.overlayStatus = true
+                this.$router.go('/LoginPhone');
+            }, 100)
           } else if (type == 1) {
             setTimeout(() => {
                 this.currentView = 'register-form'

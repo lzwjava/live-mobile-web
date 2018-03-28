@@ -21,23 +21,25 @@ export default {
   },
   methods: {
     stop (e){
-      e.stopPropagation()
+      // e.stopPropagation()
     },
     initWechatLogin () {
-      let redirectUrl
-      if (util.isDebug()) {
-        redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauthTest'
-      } else {
-        redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauth'
-      }
-      let obj = new WxLogin({
-        id:'login_container',
-        appid: 'wxe80a6d2b5d54985c',
-        scope: 'snsapi_login',
-        redirect_uri: encodeURIComponent(redirectUrl),
-        state: util.randomString(6),
-        style: 'black'
-      })
+        this.$router.go('/LoginPhone');
+
+      // let redirectUrl
+      // if (util.isDebug()) {
+      //   redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauthTest'
+      // } else {
+      //   redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauth'
+      // }
+      // let obj = new WxLogin({
+      //   id:'login_container',
+      //   appid: 'wxe80a6d2b5d54985c',
+      //   scope: 'snsapi_login',
+      //   redirect_uri: encodeURIComponent(redirectUrl),
+      //   state: util.randomString(6),
+      //   style: 'black'
+      // })
     },
     goSite () {
       window.location = 'http://quzhiboapp.com'

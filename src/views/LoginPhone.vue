@@ -2,15 +2,15 @@
     <div class="login-phone-view">
         <div class="register-inside">
             <div>
-                <input class="mobile-input" type="number" v-model="mobile" placeholder="手机号码" autofocus>
+                <input class="mobile-input" type="text" v-model="mobile" placeholder="手机号码" autofocus>
 
                 <div class="sms-code-area">
-                    <input class="sms-code-input" type="number" v-model="code" autofocus placeholder="验证码">
+                    <input class="sms-code-input" type="text" v-model="code" autofocus placeholder="验证码">
                     <button class="btn btn-gray btn-send" @click="requestSms">发送验证码</button>
                 </div>
-                <input class="mobile-input" type="number" v-model="password" placeholder="请输入密码" autofocus>
+                <input class="mobile-input" type="text" v-model="password" placeholder="请输入密码" autofocus>
 
-                <button class="btn btn-blue finish-btn" @click="loginAction">立即登录</button>
+                <button class="btn btn-blue finish-btn" @click="go">立即登录</button>
 
                 <p class="small-tips">国外手机号码或无法收到验证码等请<a href="#" @click.prevent="goContact">联系我们</a></p>
             </div>
@@ -60,7 +60,13 @@
                 util.show(this, 'success', '验证码已发送成功，请稍等片刻')
             }, util.httpErrorFn(this))
             },
+
+            go(){
+                window.sessionStorage.setItem("isLogin", "in")
+                this.$router.go('/profile');
+            },
             loginAction () {
+                this.$router.go('/profile');
                 if (!this.mobile) {
                     util.show(this, 'error', '请输入手机号码');
                     return
