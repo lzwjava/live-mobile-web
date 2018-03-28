@@ -5,7 +5,7 @@ from fabric.contrib.project import rsync_project
 from fabric.contrib.files import exists, sed
 from fabric.utils import puts
 
-server_dir = '/home/project/live-mobile-web'
+server_dir = '/home/wwwroot/bbox.tv'
 tmp_dir = '/tmp/live-mobile-web' + str(os.getpid())
 
 def _set_user_dir():
