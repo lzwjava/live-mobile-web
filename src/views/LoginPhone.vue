@@ -10,7 +10,7 @@
                 </div>
                 <input class="mobile-input" type="text" v-model="password" placeholder="请输入密码" autofocus>
 
-                <button class="btn btn-blue finish-btn" @click="go">立即登录</button>
+                <button class="btn btn-blue finish-btn" @click="loginAction">立即登录</button>
 
                 <p class="small-tips">国外手机号码或无法收到验证码等请<a href="#" @click.prevent="goContact">联系我们</a></p>
             </div>
@@ -66,7 +66,6 @@
                 this.$router.go('/profile');
             },
             loginAction () {
-                this.$router.go('/profile');
                 if (!this.mobile) {
                     util.show(this, 'error', '请输入手机号码');
                     return
@@ -82,9 +81,11 @@
                 }).then(() => {
                     util.loaded(this)
                 util.show(this, 'success', '登录成功')
-                if (this.from) {
-                    this.$router.go(this.from)
-                }
+                window.sessionStorage.setItem("isLogin", "in")
+                this.$router.go('/profile');
+                // if (this.from) {
+                //     this.$router.go(this.from)
+                // }
             }, util.promiseErrorFn(this))
             },
             goContact () {

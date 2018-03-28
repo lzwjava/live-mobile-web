@@ -81,7 +81,7 @@ export default {
             this.currentView = 'weibo-form'
             // this.overlayStatus = false
           } else {
-            this.options = ['登录']
+            this.options = ['登录', '注册']
             this.currentView = 'login-options-form'
             // this.overlayStatus = false
           }
