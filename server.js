@@ -23,7 +23,8 @@ var rewriteUrl = function(replacePath) {
 var prod = true;
 var target;
 if (prod) {
-  target = "https://api.quzhiboapp.com";
+  target = "http://api.bbox.tv";
+  // target = "https://api.quzhiboapp.com";
 } else {
   target = "http://localhost:3005";
 }

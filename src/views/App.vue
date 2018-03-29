@@ -64,7 +64,6 @@ export default {
         window.localStorage.setItem('type', 'live')
         // this.$router.go('/loginphone')
 
-
         if (util.isWeixinBrowser()) {
           // wechat.oauth2()
         } else {
@@ -114,25 +113,14 @@ export default {
         this.loginOrRegister(liveId)
     },
     'hideLoginOptionsForm': function(type) {
-        console.log(type)
-        if (this.currentView == 'login-options-form') {
-            setTimeout(() => {
-                // this.currentView = 'login-form'
-                // this.overlayStatus = true
-                this.$router.go('/LoginPhone');
-        }, 100)
-          // if (type == 0) {
-          //   setTimeout(() => {
-          //       // this.currentView = 'login-form'
-          //       // this.overlayStatus = true
-          //       this.$router.go('/LoginPhone');
-          //   }, 100)
-          // } else if (type == 1) {
-          //   setTimeout(() => {
-          //       this.currentView = 'register-form'
-          //       this.overlayStatus = true
-          //   }, 600)
-          // }
+        if (type == 0) {
+          setTimeout(() => {
+              this.$router.go('/LoginPhone');
+          }, 100)
+        } else if (type == 1) {
+          setTimeout(() => {
+            this.$router.go('/RegisterPhone');
+          }, 600)
         }
     },
     'updateCurUser': function () {

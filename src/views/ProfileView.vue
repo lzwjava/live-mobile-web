@@ -6,7 +6,7 @@
       <div class="profile-header" @click="goUpdateUserInfo">
         <div class="user-info">
           <div class="avatar-area">
-            <user-a :user="curUser"></user-a>
+            <user-avatar :user="curUser"></user-avatar>
             <i class="fa fa-pencil-square-o pencil-edit" aria-hidden="true"></i>
           </div>
           <div class="username">{{curUser.username}}</div>
@@ -71,7 +71,9 @@ export default {
   route: {
     data({ to }) {
       if (!util.checkInSession(this)) return
+      
       this.curUser = util.curUser()
+      debug('curUser:%j', this.curUser)
     }
   },
   methods: {
@@ -81,6 +83,8 @@ export default {
         util.removeCurUser()
         this.$dispatch('updateCurUser')
         this.$router.go('/lives')
+        window.sessionStorage.removeItem("isLogin")
+
       }, util.promiseErrorFn(this))
     },
     goAccount () {

@@ -279,6 +279,10 @@ export default {
         }
         this.curUser = values[3]
 
+        debug('curUser: %j', this.curUser)
+
+        debug('liveOwner: %j', this.live.owner)
+
         wechat.showOptionMenu()
         wechat.shareLive(this, this.live, this.curUser)
 
@@ -353,33 +357,36 @@ export default {
       this.overlayStatus = true
     },
     attendLive () {
-      if (!this.curUser.username) {
+      debug('attendLive')
+      if (!this.curUser.userId) {
         this.$dispatch('loginOrRegister', this.liveId)
         return
       }
-      if (this.curUser.wechatSubscribe === 0) {
-        this.showSubscribeForm()
+      if (this.live.canJoin) {
+        this.intoLive()
       } else {
-        if (this.live.canJoin) {
-          this.intoLive()
-        } else {
-          if (util.isWeixinBrowser()) {
-            if (this.live.shareId) {
-              this.payOrCreateAttend()
-            } else {
-              if (this.live.needPay) {
-                this.positiveShare = true
-                this.currentView = 'options-form'
-                this.overlayStatus = true
-              } else {
-                this.createAttend()
-              }
-            }
-          } else {
+        if (util.isWeixinBrowser()) {
+          if (this.live.shareId) {
             this.payOrCreateAttend()
+          } else {
+            if (this.live.needPay) {
+              this.positiveShare = true
+              this.currentView = 'options-form'
+              this.overlayStatus = true
+            } else {
+              this.createAttend()
+            }
           }
+        } else {
+          this.payOrCreateAttend()
         }
       }
+
+      // if (this.curUser.wechatSubscribe === 0) {
+      //   this.showSubscribeForm()
+      // } else {
+
+      // }
     },
     createAttend () {
       let fromUserId = this.getFromUserId()

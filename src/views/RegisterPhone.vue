@@ -9,7 +9,9 @@
                     <button class="btn btn-gray btn-send" @click="requestSms">发送验证码</button>
                 </div>
 
-                <button class="btn btn-blue finish-btn" @click="loginAction">立即登录</button>
+                 <input class="mobile-input" type="text" v-model="username" placeholder="昵称" autofocus>
+
+                <button class="btn btn-blue finish-btn" @click="loginAction">立即注册</button>
 
                 <p class="small-tips">无法收到验证码等请<a href="#" @click.prevent="goContact">联系我们</a></p>
             </div>
@@ -37,7 +39,8 @@
                 mobile: '',
                 code: '',
                 password: '',
-                from : ''
+                from : '',
+                username: ''
             }
         },
         route: {
@@ -54,7 +57,7 @@
                 util.loading(this)
                 api.post(this, 'users/loginSmsCode',{
                     mobilePhoneNumber: this.mobile
-                }).then(resp => {
+                }).then(resp => {                    
                     util.loaded(this)
                 util.show(this, 'success', '验证码已发送成功，请稍等片刻')
             }, util.httpErrorFn(this))
@@ -73,14 +76,19 @@
                     util.show(this, 'error', '请输入验证码');
                     return
                 }
+                if (!this.username) {
+                    util.show(this, 'error', '请输入昵称');
+                    return
+                }                
                 util.loading(this)
-                api.post(this, 'users/login', {
-                    mobilePhoneNumber: this.mobile,
-                    smsCode: this.code
+                api.post(this, 'users/register', {
+                    mobilePhoneNumber: this.mobile,                    
+                    smsCode: this.code,
+                    username: this.username,
+                    avatarUrl: 'https://i.quzhiboapp.com/touxiang.jpg'
                 }).then((data) => {
                     util.loaded(this)
-                    util.show(this, 'success', '登录成功')
-                    console.log('data:%j', data)
+                    util.show(this, 'success', '注册成功')
                     util.saveCurUser(data)
                     window.sessionStorage.setItem("isLogin", "in")
                     this.$router.go('/profile');

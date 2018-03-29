@@ -27,6 +27,7 @@ import EditLiveView from './views/EditLiveView.vue'
 import EditDetailView from './views/EditDetailView.vue'
 import CardView from './views/CardView.vue'
 import LoginPhone from './views/LoginPhone.vue'
+import RegisterPhone from './views/RegisterPhone.vue'
 
 import filters from './common/filter'
 import util from './common/util'
@@ -57,10 +58,11 @@ if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
   // 可以用
-  localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,loading,IntroView,' +
-    'UsersView,main,http,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
-    'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AccountView,InviteView,InputTextForm,' +
-    'EditUserView,RoomView,EditLiveView,EditDetailView';
+  // localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,loading,IntroView,' +
+  //   'UsersView,main,http,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
+  //   'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AccountView,InviteView,InputTextForm,' +
+  //   'EditUserView,RoomView,EditLiveView,EditDetailView';
+  localStorage.debug = '*'
 }
 
 // routing
@@ -133,6 +135,9 @@ router.map({
   },
     'LoginPhone':{
     component:LoginPhone
+    },
+    'RegisterPhone': {
+      component: RegisterPhone
     }
 })
 
