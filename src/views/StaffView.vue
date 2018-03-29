@@ -4,7 +4,7 @@
     <div class="content-area">
 
       <div class="welcome-word">
-        <h1>欢迎您加入趣直播</h1>
+        <h1>欢迎您加入BBOX</h1>
         <h3 class="stats">我们在服务 {{stats.users}} 名用户</h3>
         <h4 class="free-word">团队每一位小伙伴可免费参与直播</h4>
       </div>

@@ -82,7 +82,7 @@ export default {
           }, util.httpErrorFn(this))
         },
         about () {
-          util.show(this, 'success', '趣直播-知识直播平台，版本发布于：' + process.env.BUILD_TIME)
+          util.show(this, 'success', 'BBOX-知识直播平台，版本发布于：' + process.env.BUILD_TIME)
         },
         goAll () {
             this.$router.go('/lives')

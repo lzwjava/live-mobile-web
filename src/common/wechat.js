@@ -181,8 +181,8 @@ function shareLive(comp, live, curUser) {
   if (live.shareIcon == 1) {
     iconUrl = live.coverUrl
   }
-  var title = live.owner.username + '在趣直播：' + live.subject
-  var desc = '来自趣直播-知识直播平台。'
+  var title = live.owner.username + '在BBOX：' + live.subject
+  var desc = '来自BBOX-知识直播平台。'
   var timelineTitle
   if (curUser && curUser.userId) {
     timelineTitle = title + ' | 邀请自' + curUser.username
@@ -193,12 +193,12 @@ function shareLive(comp, live, curUser) {
 }
 
 function shareApp(comp) {
-  var title = '趣直播-知识直播平台'
+  var title = 'BBOX-知识直播平台'
   share(title, 'https://i.quzhiboapp.com/logo.png', title, linkUrl(0), 0)
 }
 
 function shareJoin(comp) {
-  var title = '欢迎您加入趣直播'
+  var title = '欢迎您加入BBOX'
   share(title, 'https://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#staff', 0)
 }
 

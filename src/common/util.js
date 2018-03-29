@@ -153,7 +153,7 @@ function statusText (status) {
 }
 
 function initTitle() {
-  document.title = '趣直播 - 知识直播平台'
+  document.title = 'BBOX - 知识直播平台'
 }
 
 function defaultUser() {
