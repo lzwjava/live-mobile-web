@@ -116,18 +116,23 @@ export default {
     'hideLoginOptionsForm': function(type) {
         console.log(type)
         if (this.currentView == 'login-options-form') {
-          if (type == 0) {
             setTimeout(() => {
                 // this.currentView = 'login-form'
                 // this.overlayStatus = true
                 this.$router.go('/LoginPhone');
-            }, 100)
-          } else if (type == 1) {
-            setTimeout(() => {
-                this.currentView = 'register-form'
-                this.overlayStatus = true
-            }, 600)
-          }
+        }, 100)
+          // if (type == 0) {
+          //   setTimeout(() => {
+          //       // this.currentView = 'login-form'
+          //       // this.overlayStatus = true
+          //       this.$router.go('/LoginPhone');
+          //   }, 100)
+          // } else if (type == 1) {
+          //   setTimeout(() => {
+          //       this.currentView = 'register-form'
+          //       this.overlayStatus = true
+          //   }, 600)
+          // }
         }
     },
     'updateCurUser': function () {

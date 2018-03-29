@@ -53,7 +53,7 @@
                     return
                 }
                 util.loading(this)
-                api.post(this, 'loginSmsCode',{
+                api.post(this, 'users/loginSmsCode',{
                     mobilePhoneNumber: this.mobile
                 }).then(resp => {
                     util.loaded(this)
