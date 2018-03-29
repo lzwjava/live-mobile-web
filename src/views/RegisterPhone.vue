@@ -1,5 +1,5 @@
 <template>
-    <div class="login-phone-view">
+    <div class="register-phone-view">
         <div class="register-inside">
             <div>
                 <input class="mobile-input" type="text" v-model="mobile" placeholder="手机号码" autofocus>
@@ -107,7 +107,7 @@
 
     @import "../stylus/base.styl"
 
-    .login-phone-view
+    .register-phone-view
         position absolute
         width 100%
         top 0
@@ -132,10 +132,10 @@
             .mobile-input
             .sms-code-area
                 display block
-                width 60%
+                width 80%
                 height 40px
                 margin-top 60px
-                margin-left 20%
+                margin-left 10%
                 line-height 40px
             .sms-code-input
                 width 65%
@@ -158,7 +158,7 @@
                 a
                     color #00ABD8
             .finish-btn
-                width 150px
+                width 80%
                 height 44px
                 margin-top 40px
                 font-size 16px

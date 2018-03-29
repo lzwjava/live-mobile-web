@@ -64,27 +64,11 @@ export default {
         window.localStorage.setItem('type', 'live')
         // this.$router.go('/loginphone')
 
-        if (util.isWeixinBrowser()) {
-          // wechat.oauth2()
-        } else {
-           let isLogin = window.sessionStorage.getItem("isLogin")
-            if(!isLogin){
-                this.overlayStatus = true
-            }else{
-                this.overlayStatus = false
-            }
-
-           // console.log(isLogin)
-          this.liveId = liveId
-          if (util.isMobileBrowser()) {
-            this.currentView = 'weibo-form'
-            // this.overlayStatus = false
-          } else {
-            this.options = ['登录', '注册']
-            this.currentView = 'login-options-form'
-            // this.overlayStatus = false
-          }
-        }
+        this.overlayStatus = true
+        
+        this.liveId = liveId
+        this.options = ['登录', '注册']
+        this.currentView = 'login-options-form'
     },
     hideFormAfterLoginSuccess () {
       this.overlayStatus = false
