@@ -84,7 +84,14 @@
                     util.saveCurUser(data)
                     window.sessionStorage.setItem("isLogin", "in")
                     this.$router.go('/profile');
-                }, util.promiseErrorFn(this))
+                }, (error) => {
+                    if (error == '用户不存在，请注册一个') {
+                        util.promiseErrorFn(this)(error)
+                        this.$router.go('/RegisterPhone')
+                    } else {
+                        util.promiseErrorFn(this)(error)
+                    }
+                })
             },
             goContact () {
                 this.$router.go('/contact')
