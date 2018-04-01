@@ -148,7 +148,7 @@ export const RewardMessage = inherit(TypedMessage)
 let RewardMessageType = 3
 messageType(RewardMessageType)(RewardMessage)
 
-let prodAppId = 's83aTX5nigX1KYu9fjaBTxIa-gzGzoHsz'
+let prodAppId = 'InbiUsSQ4e2szdR9hc65bxjH-gzGzoHsz'
 let testAppId = 'YY3S7uNlnXUgX48BHTJlJx4i-gzGzoHsz'
 let realtime = new Realtime({
   appId: prodAppId,
