@@ -20,7 +20,7 @@ var rewriteUrl = function(replacePath) {
     };
 };
 
-var prod = true;
+var prod = true
 var target;
 if (prod) {
   target = "http://api.bbox.tv";

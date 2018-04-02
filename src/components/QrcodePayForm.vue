@@ -8,7 +8,9 @@
       请用微信长按或扫码支付
     </p>
 
-    <img :src="'api/qrcodes/one?text=' + qrcodeUrl" alt="" />
+    <img :src="qrcodeUrl" alt="" />
+
+    <p>请在备注中输入订单号<br/>{{orderNo}}<br/>我们在后台将尽快给您审核通过</p>
 
     <button class="btn btn-gray-2" @click="payFinish">支付完成</button>
 
@@ -26,7 +28,7 @@ const debug = debugFn('QrcodePayForm')
 
 export default {
   name: 'QrcodePayForm',
-  props: ['qrcodeUrl'],
+  props: ['qrcodeUrl', 'orderNo'],
   components: [],
   methods: {
     stop (e){
@@ -46,7 +48,13 @@ export default {
 @import '../stylus/base.styl'
 
 .qrcode-pay-form
-  @extend .base-form
+  @extend .absolute-center
+  max-width 350px
+  height 600px
+  background #fff
+  border-radius 20px
+  text-align center
+  padding 20px 10px
   .pay-title
     font-size 18px
     font-weight 500
@@ -57,7 +65,7 @@ export default {
    img
      margin-top 10px
      width 300px
-     height 300px
+     height 407rpx
    button
     width 200px
     margin-top 10px

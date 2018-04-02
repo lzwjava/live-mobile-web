@@ -118,7 +118,7 @@
 
     <overlay :overlay.sync="overlayStatus">
         <component :is="currentView" :options="options" :live-id="liveId" type="live"
-         :qrcode-url="qrcodeUrl"></component>
+         :qrcode-url="qrcodeUrl" :order-no="orderNo"></component>
     </overlay>
 
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
@@ -178,7 +178,8 @@ export default {
       playStatus: 0,
       positiveShare: false, // 主动分享
       showMoreDetail: true,
-      qrcodeUrl: ''
+      qrcodeUrl: '',
+      orderNo: ''
     }
   },
   computed: {
@@ -365,28 +366,8 @@ export default {
       if (this.live.canJoin) {
         this.intoLive()
       } else {
-        if (util.isWeixinBrowser()) {
-          if (this.live.shareId) {
-            this.payOrCreateAttend()
-          } else {
-            if (this.live.needPay) {
-              this.positiveShare = true
-              this.currentView = 'options-form'
-              this.overlayStatus = true
-            } else {
-              this.createAttend()
-            }
-          }
-        } else {
-          this.payOrCreateAttend()
-        }
+        this.payOrCreateAttend()
       }
-
-      // if (this.curUser.wechatSubscribe === 0) {
-      //   this.showSubscribeForm()
-      // } else {
-
-      // }
     },
     createAttend () {
       let fromUserId = this.getFromUserId()
@@ -426,56 +407,11 @@ export default {
       window.localStorage.removeItem('fromUser')
     },
     pay () {
-      if (util.isWeixinBrowser()) {
-        util.loading(this)
-        let fromUserId = this.getFromUserId()
-        let params = {
-          liveId: this.liveId,
-          channel: 'wechat_h5'
-        }
-        if (fromUserId) {
-          params.fromUserId = fromUserId
-        }
-        return http.post(this, 'attendances/create', params).then((data) => {
-          util.loaded(this)
-          return wechat.wxPay(data)
-        }).then(() => {
-          util.loaded(this)
-          this.payFinishAndIntoLive()
-          }, error => {
-            if (error && error.indexOf('失败') !== -1) {
-              this.fetchQrcodeUrlAndShow()
-            } else {
-              util.show(this, 'error', error)
-            }
-        })
-      } else {
-        this.fetchQrcodeUrlAndShow()
-      }
-    },
-    payFinishAndIntoLive () {
-      util.loading(this)
-      setTimeout(() => {
-        http.fetchLive(this, this.liveId)
-          .then((data) => {
-            util.loaded(this)
-            this.live = data
-            if (this.live.canJoin) {
-              util.show(this, 'success', '支付成功')
-              this.cleanFromUserId()
-              this.intoLive()
-            } else {
-              util.show(this, 'error', '后台显示未到账，请重试')
-            }
-          }).catch(util.promiseErrorFn(this))
-      }, 1000)
-    },
-    fetchQrcodeUrlAndShow () {
       util.loading(this)
       let fromUserId = this.getFromUserId()
       let params = {
         liveId: this.liveId,
-        channel: 'wechat_qrcode'
+        channel: 'qrcode_pay'
       }
       if (fromUserId) {
         params.fromUserId = fromUserId
@@ -483,10 +419,29 @@ export default {
       http.post(this, 'attendances/create', params)
        .then((data) => {
           util.loaded(this)
-          this.qrcodeUrl = data.code_url
+          this.qrcodeUrl = 'https://i.quzhiboapp.com/wechat_pay.jpeg'
+          this.orderNo = data.orderNo
           this.currentView = 'qrcode-pay-form'
           this.overlayStatus = true
       }, util.promiseErrorFn(this))
+    },
+    payFinishAndIntoLive () {
+      util.show(this, 'success', '感谢支付，我们将在半个小时内通过')
+      // util.loading(this)
+      // setTimeout(() => {
+      //   http.fetchLive(this, this.liveId)
+      //     .then((data) => {
+      //       util.loaded(this)
+      //       this.live = data
+      //       if (this.live.canJoin) {
+      //         util.show(this, 'success', '支付成功')
+      //         this.cleanFromUserId()
+      //         this.intoLive()
+      //       } else {
+      //         util.show(this, 'error', '后台显示未到账，请重试')
+      //       }
+      //     }).catch(util.promiseErrorFn(this))
+      // }, 1000)
     },
     getFromUserId () {
       let fromUser = window.localStorage.getItem('fromUser')

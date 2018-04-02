@@ -59,10 +59,9 @@
                     mobilePhoneNumber: this.mobile
                 }).then(resp => {                    
                     util.loaded(this)
-                util.show(this, 'success', '验证码已发送成功，请稍等片刻')
-            }, util.httpErrorFn(this))
+                    util.show(this, 'success', '验证码已发送成功，请稍等片刻')
+                }, util.promiseErrorFn(this))
             },
-
             go(){
                 window.sessionStorage.setItem("isLogin", "in")
                 this.$router.go('/profile');

@@ -34,6 +34,7 @@ export default {
 .login-options-form
   @extend .absolute-center
   width 80%
+  max-width 300px
   height 120px
   background #fff
   border-radius 20px
