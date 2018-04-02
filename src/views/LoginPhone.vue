@@ -6,7 +6,7 @@
 
                 <div class="sms-code-area">
                     <input class="sms-code-input" type="text" v-model="code" autofocus placeholder="验证码">
-                    <button class="btn btn-gray btn-send" @click="requestSms">发送验证码</button>
+                    <button class="btn btn-gray btn-send" @click="requestSms" :disabled="justSendedSms">{{smsText}}</button>
                 </div>
 
                 <button class="btn btn-blue finish-btn" @click="loginAction">立即登录</button>
@@ -37,12 +37,24 @@
                 mobile: '',
                 code: '',
                 password: '',
-                from : ''
+                from : '',
+                justSendedSms: false,
+                countdownSeconds: 60,
+                intervalId: 0
             }
         },
         route: {
             data({ to }) {
                 this.from = to.query.from
+            }
+        },
+        computed: {
+            smsText() {
+                if (this.justSendedSms) {
+                    return `请在${this.countdownSeconds}秒后重试`
+                } else {
+                    return `发送验证码`
+                }
             }
         },
         methods: {
@@ -52,15 +64,34 @@
                     return
                 }
                 util.loading(this)
-                api.post(this, 'users/loginSmsCode',{
+                api.get(this, 'users/isRegister', {
                     mobilePhoneNumber: this.mobile
-                }).then(resp => {
+                }).then((resp) => {
                     util.loaded(this)
-                util.show(this, 'success', '验证码已发送成功，请稍等片刻')
-            }, util.httpErrorFn(this))
+                    if (resp) {
+                       util.loading(this)
+                       api.post(this, 'users/loginSmsCode',{
+                           mobilePhoneNumber: this.mobile
+                       }).then(resp => {
+                           util.loaded(this)
+                           util.show(this, 'success', '验证码已发送成功，请稍等片刻')
+                           this.justSendedSms = true
+                           this.countdownSeconds = 60
+                           this.intervalId = setInterval(() => {
+                               this.countdownSeconds = this.countdownSeconds - 1;
+                               if (this.countdownSeconds < 0) {
+                                   this.justSendedSms = false;
+                                   clearInterval(this.intervalId)
+                               }
+                           }, 1000)
+                       }, util.promiseErrorFn(this))                        
+                    } else {
+                        util.show(this, 'success', '您未注册，请先注册')
+                        this.$router.go('/RegisterPhone')
+                    }
+                }, util.promiseErrorFn(this))             
             },
-
-            go(){
+            go() {
                 window.sessionStorage.setItem("isLogin", "in")
                 this.$router.go('/profile');
             },
