@@ -379,12 +379,15 @@ export default {
       }
     },
     goSpeakerIntro () {
+      this.saveLive()
       this.$router.go(`/editDetail/${this.liveId}/0`)
     },
     goDetail () {
+      this.saveLive()
       this.$router.go(`/editDetail/${this.liveId}/1`)
     },
     goNotice () {
+      this.saveLive()
       this.$router.go(`/editDetail/${this.liveId}/2`)
     }
   },
