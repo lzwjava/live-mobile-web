@@ -268,7 +268,7 @@ export default {
       return coursewareMsg + this.live.notice + this.defaultNotice
     },
     defaultNotice () {
-      return `\n可打开 quzhiboapp.com 在电脑上观看\n\n可长按二维码加微信进用户群和主播聊聊：\n\n ![wechat_lzw_short.png](https://i.quzhiboapp.com/qzbgroup1.jpg)`
+      return `\n可打开 bbox.tv 在电脑上观看\n`
     },
     changeTitle () {
       return '切换线路'
