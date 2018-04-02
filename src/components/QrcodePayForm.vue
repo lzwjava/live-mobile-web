@@ -10,7 +10,7 @@
 
     <img :src="qrcodeUrl" alt="" />
 
-    <p>请在备注中输入订单号<br/>{{orderNo}}<br/>我们在后台将尽快给您审核通过</p>
+    <p>请扫码支付{{live.realAmount / 100.0}}元，备注中输入订单号<br/>{{orderNo}}<br/>我们在后台将尽快给您审核通过</p>
 
     <button class="btn btn-gray-2" @click="payFinish">支付完成</button>
 
@@ -28,7 +28,7 @@ const debug = debugFn('QrcodePayForm')
 
 export default {
   name: 'QrcodePayForm',
-  props: ['qrcodeUrl', 'orderNo'],
+  props: ['qrcodeUrl', 'orderNo', 'live'],
   components: [],
   methods: {
     stop (e){

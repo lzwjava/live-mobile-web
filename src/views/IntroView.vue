@@ -118,7 +118,7 @@
 
     <overlay :overlay.sync="overlayStatus">
         <component :is="currentView" :options="options" :live-id="liveId" type="live"
-         :qrcode-url="qrcodeUrl" :order-no="orderNo"></component>
+         :qrcode-url="qrcodeUrl" :order-no="orderNo" :live="live"></component>
     </overlay>
 
     <toast type="loading" v-show="loadingToastShow">数据加载中</toast>
