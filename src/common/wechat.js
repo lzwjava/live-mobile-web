@@ -194,16 +194,11 @@ function shareLive(comp, live, curUser) {
 
 function shareApp(comp) {
   var title = 'BBOX-知识直播平台'
-  share(title, 'https://i.quzhiboapp.com/logo.png', title, linkUrl(0), 0)
-}
-
-function shareJoin(comp) {
-  var title = '欢迎您加入BBOX'
-  share(title, 'https://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#staff', 0)
+  share(title, 'https://i.quzhiboapp.com/logo.jpg', title, linkUrl(0), 0)
 }
 
 function sharePage(comp, title, path) {
-  share(title, 'https://i.quzhiboapp.com/logo.png', title, 'http://m.quzhiboapp.com/#' + path, 0)
+  share(title, 'https://i.quzhiboapp.com/logo.jpg', title, 'http://bbox.tv/#' + path, 0)
 }
 
 function wxPay(data) {
@@ -323,7 +318,6 @@ exports.hideMenu = hideMenu
 exports.showMenu = showMenu
 exports.shareLive = shareLive
 exports.shareApp = shareApp
-exports.shareJoin = shareJoin
 exports.scanQRcode = scanQRcode
 exports.scanQRcodeWithLive = scanQRcodeWithLive
 exports.showOptionMenu = showOptionMenu
