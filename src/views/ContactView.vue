@@ -1,15 +1,9 @@
 <template>
   <div class="contact-view">
 
-    <p>您好，我们会将每次的直播预告发送到公众号里，欢迎关注：<p>
+    <p>如果您有任何产品意见或使用上遇到 Bug，<br/> 或想更多了解我们这个产品 <br> 或想加入我们的用户群的话，请扫码：</p>
 
-    <img src="../img/qrcode_subscribe.jpg"/>
-
-    <p>如果您有任何产品意见或使用上遇到 Bug，或想更多了解我们这个产品，或<b>想加入我们集结了各界程序大牛、投资人、优质用户的用户群</b>的话，可加BBOX创始人的微信：</p>
-
-    <img src="https://i.quzhiboapp.com/wechat_xin.png" alt="" />
-
-    <p>最后可收看<a @click.prevent="goRelease">发布会</a>回播了解BBOX。</p>
+    <img src="https://i.quzhiboapp.com/bbox.jpg" alt="" />
 
   </div>
 
@@ -20,9 +14,6 @@
 export default {
   name: 'ContactView',
   methods: {
-    goRelease()  {
-      this.$router.go('/intro/7')
-    }
   }
 }
 
