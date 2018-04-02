@@ -2,9 +2,8 @@
 <template>
 <div class="reg-anchor-view">
     <div class="weui_cells_title title-top">申请成为主播</div>
-    <div class="weui-cells_title subtitle">1万用户、7个500人用户群、5000人朋友圈<br>全为您服务，让您的直播瞬间触及上万人</div>
     <div class="weui_cells weui_cells_form">
-
+        
         <div class="bind-phone-tip" v-if="!curUser.mobilePhoneNumber">
           <i class="weui-icon-info"></i>您还没有绑定手机，请先<a href="#" class="a-blue" @click.prevent="goBindPhone">绑定</a>
         </div>

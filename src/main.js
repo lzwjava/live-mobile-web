@@ -15,7 +15,6 @@ import ListView from './views/ListView.vue'
 import ProfileView from './views/ProfileView.vue'
 import ContactView from './views/ContactView.vue'
 import MyListView from './views/MyListView.vue'
-import StaffView from './views/StaffView.vue'
 import RegAnchorView from './views/RegAnchorView.vue'
 import AgreementView from './views/AgreementView.vue'
 import BindPhoneView from './views/BindPhoneView.vue'
@@ -58,10 +57,6 @@ if (process.env.NODE_ENV === 'production') {
   localStorage.debug = ''
 } else {
   // 可以用
-  // localStorage.debug = 'HomeView,markdown-area,nav,util,wechat,filter,LiveView,loading,IntroView,' +
-  //   'UsersView,main,http,WeChatView,api,LiveList,ListNav,overlay,QrcodePayForm,RegisterForm,RewardForm,markdown,' +
-  //   'LiveItem,RecommendLiveList,LoadMoreBar,StaffView,SubscribeForm,RegAnchorView,AccountView,InviteView,InputTextForm,' +
-  //   'EditUserView,RoomView,EditLiveView,EditDetailView';
   localStorage.debug = '*'
 }
 
@@ -101,9 +96,6 @@ router.map({
   },
   'mylist': {
     component: MyListView
-  },
-  'staff': {
-    component: StaffView
   },
   'reganchor': {
     // 申请成为主播
