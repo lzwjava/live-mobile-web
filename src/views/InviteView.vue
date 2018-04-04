@@ -140,13 +140,8 @@ export default {
       if (!this.curUser.userId) {
         this.$dispatch('loginOrRegister', this.liveId)
       } else {
-        if (this.curUser.wechatSubscribe === 0) {
-          this.currentView = 'subscribe-form'
-          this.overlayStatus = true
-        } else {
-          this.currentView = 'share-lead'
-          this.overlayStatus = true
-        }
+        this.currentView = 'share-lead'
+        this.overlayStatus = true
       }
     },
     goAccount () {
