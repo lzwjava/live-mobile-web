@@ -2,14 +2,14 @@
     <div class="register-phone-view">
         <div class="register-inside">
             <div>
-                <input class="mobile-input" type="text" v-model="mobile" placeholder="手机号码" autofocus>
+                <input class="mobile-input" type="text" maxlength="11" v-model="mobile" placeholder="手机号码" autofocus>
 
                 <div class="sms-code-area">
-                    <input class="sms-code-input" type="text" v-model="code" autofocus placeholder="验证码">
+                    <input class="sms-code-input" type="text" maxlength="6" v-model="code" autofocus placeholder="验证码">
                     <button class="btn btn-gray btn-send" @click="requestSms" :disabled="justSendedSms">{{smsText}}</button>                    
                 </div>
 
-                 <input class="mobile-input" type="text" v-model="username" placeholder="昵称" autofocus>
+                 <input class="mobile-input" type="text" maxlength="15" v-model="username" placeholder="昵称" autofocus>
 
                 <button class="btn btn-blue finish-btn" @click="loginAction">立即注册</button>
 
@@ -117,7 +117,7 @@
                     mobilePhoneNumber: this.mobile,                    
                     smsCode: this.code,
                     username: this.username,
-                    avatarUrl: 'https://i.quzhiboapp.com/touxiang.jpg'
+                    avatarUrl: 'http://p6t0dhy64.bkt.clouddn.com/defaultAvatar.png'
                 }).then((data) => {
                     util.loaded(this)
                     util.show(this, 'success', '注册成功')

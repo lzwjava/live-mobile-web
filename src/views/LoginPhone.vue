@@ -2,10 +2,10 @@
     <div class="login-phone-view">
         <div class="register-inside">
             <div>
-                <input class="mobile-input" type="text" v-model="mobile" placeholder="手机号码" autofocus>
+                <input class="mobile-input" type="text" v-model="mobile" maxlength="11" placeholder="手机号码" autofocus>
 
                 <div class="sms-code-area">
-                    <input class="sms-code-input" type="text" v-model="code" autofocus placeholder="验证码">
+                    <input class="sms-code-input" maxlength="6" type="text" v-model="code" autofocus placeholder="验证码">
                     <button class="btn btn-gray btn-send" @click="requestSms" :disabled="justSendedSms">{{smsText}}</button>
                 </div>
 
