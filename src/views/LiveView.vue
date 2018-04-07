@@ -84,7 +84,7 @@
 
       <div class="send-area tab-sub-area">
 
-        <a class="packet-btn" @click="showRewardForm"></a>
+        <!-- <a class="packet-btn" @click="showRewardForm"></a> -->
 
         <div class="input-ways">
 
@@ -942,9 +942,9 @@ export default {
           background-size contain
       .input-ways
         position absolute
-        left 40px
+        left 10px
         top 0
-        right 0
+        right 10px
         bottom 0
         font-size 16px
         .btn-gray
@@ -965,7 +965,7 @@ export default {
             vertical-align middle
             border-radius 5px
           button
-            width 20%
+            width 23%
             vertical-align middle
             padding 7px 5px
   .notice-area
