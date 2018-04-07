@@ -6,7 +6,9 @@
 
     <div class="cover-section">
 
-      <img class="cover-img" :src="live.coverUrl" alt="cover" @click="clickCover"/>
+      <img v-if="live.coverUrl" class="cover-img" :src="live.coverUrl" alt="cover" @click="clickCover"/>
+
+      <img v-if="!live.coverUrl"  class="cover-img" src="../img/defaultCover.jpg" alt="cover" @click="clickCover"/>
 
     </div>
 
