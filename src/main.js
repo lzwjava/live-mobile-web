@@ -31,13 +31,14 @@ import RegisterPhone from './views/RegisterPhone.vue'
 import filters from './common/filter'
 import util from './common/util'
 import wechat from './common/wechat'
+import VeeValidate from 'vee-validate'
 
 const debug = require('debug')('main')
 
 // install router
 Vue.use(Router)
 
-// Vue.use(iView)
+Vue.use(VeeValidate);
 
 // register filters globally
 for(let  k in filters) {

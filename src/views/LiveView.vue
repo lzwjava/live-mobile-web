@@ -38,9 +38,7 @@
       <div class="notice-tab tab-item" @click="showNoticeTab" v-bind:class="{active: currentTab === 1}">
         公告
       </div>
-      <div class="subscribe-tab tab-item" @click="toggleSubscribe">
-        {{subscribeTitle}}
-      </div>
+
       <div class="live-tab tab-item" @click="changeLiveUrl">
         {{changeTitle}}
       </div>
@@ -272,13 +270,6 @@ export default {
     },
     changeTitle () {
       return '切换线路'
-    },
-    subscribeTitle () {
-      if (this.curUser.liveSubscribe) {
-        return '已关注'
-      } else {
-        return '+关注'
-      }
     }
   },
   created () {
@@ -708,30 +699,6 @@ export default {
     showSubscribeForm () {
       this.currentView = 'subscribe-form'
       this.overlayStatus = true
-    },
-    subscribeLive (subscribe) {
-      return http.post(this, 'self', {
-        liveSubscribe: subscribe
-      })
-    },
-    toggleSubscribe () {
-      let newSubscribe
-      if (this.curUser.liveSubscribe) {
-        newSubscribe = 0
-      } else {
-        newSubscribe = 1
-      }
-      util.loading(this)
-      this.subscribeLive(newSubscribe)
-        .then((data) => {
-          util.loaded(this)
-          this.curUser = data
-          if (newSubscribe) {
-           util.show(this, 'success', '关注成功，有新直播发布时将告知您')
-          } else {
-           util.show(this, 'success', '取消关注成功')
-          }
-        })
     },
     fetchQrcodeUrlAndShow (amount) {
       util.loading(this)

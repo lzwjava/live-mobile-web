@@ -1,8 +1,8 @@
 {
    "src_dir"            :   "static",
-   "access_key"         :   "-ON85H3cEMUaCuj8UFpLELeEunEAqslrqYqLbn9g",
-   "secret_key"         :   "X-oHOYDinDEhNk5nr74O1rKDvkmPq0ZQwEZfFt6x",
-   "bucket"             :   "mquzhibo",
+   "access_key"         :   "k3aZ4KvIjDp_nDmhQ61kdLAfShzW62p65T-72acp",
+   "secret_key"         :   "RlVdN2QDPlueXcC0KOIJITrfrCw1lYpNEMHm37_8",
+   "bucket"             :   "bboxres",
    "overwrite"          :   true,
    "rescan_local"       :   true
 }
