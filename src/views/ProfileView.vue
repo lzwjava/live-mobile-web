@@ -121,7 +121,10 @@ export default {
       justify-content center
       align-items center
       .user-info
-        text-align center
+        display flex
+        justify-content center
+        align-items center
+        flex-direction column        
         .avatar-area
           width 70px
           height 70px
@@ -140,7 +143,11 @@ export default {
             width 100%
             height 100%
         .username
+          text-align center
           color #fff
+          font-size 15px
+          line-height 1.1
+          max-width 100px
           font-weight 500
     .menu-section
       margin-top 10px
