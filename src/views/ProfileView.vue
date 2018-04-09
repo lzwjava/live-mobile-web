@@ -25,11 +25,11 @@
         </div>
       </div>
 
-      <div class="menu-section">
+      <!-- <div class="menu-section">
         <div class="menu-item" @click="goAccount">
           账户
         </div>
-      </div>
+      </div> -->
 
       <div class="menu-section">
         <div class="menu-item" @click="logout">

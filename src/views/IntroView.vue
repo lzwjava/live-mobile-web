@@ -49,7 +49,7 @@
       </div>
     </div>
 
-    <div class="invite-summary-section card-group" @click="goInvite">
+    <!-- <div class="invite-summary-section card-group" @click="goInvite">
       <div class="attend-info">
         <ul class="attended-users">
           <li class="avatar-cell" v-for="u in invites">
@@ -62,7 +62,7 @@
         </div>
 
       </div>
-    </div>
+    </div> -->
 
     <div class="speaker-section card-group" v-show="live.speakerIntro">
 
