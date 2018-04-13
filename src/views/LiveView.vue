@@ -648,12 +648,16 @@ export default {
       this.overlayStatus = true
     },
     startLiveView (live) {
+      util.loading(this)
       http.post(this, 'liveViews', {
         liveId: live.liveId,
         platform: 'wechat',
         liveStatus: live.status
       }).then(data => {
+        util.loaded(this)
+
         this.liveViewId = data.liveViewId
+
       }, util.promiseErrorFn(this))
     },
     endLiveView () {

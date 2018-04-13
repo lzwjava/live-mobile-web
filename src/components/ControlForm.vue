@@ -78,17 +78,21 @@ export default {
 		},
 		beginLive () {
 			if (confirm('开始之后，观众可看到直播画面。是否确定继续开始直播？')) {
+				util.loading(this)
 				api.get(this, `lives/${this.liveId}/begin`)
 				 .then(data => {
-				 	util.show(this, 'success', '成功开启直播')
+					 util.loaded(this)					 
+					 util.show(this, 'success', '成功开启直播')
 				 }, util.promiseErrorFn(this))
 			}
 		},
 		finishLive () {
 			if (confirm('请OBS结束推流之后，再点击结束直播，结束后观众将看到回放，是否确认？')) {
+				util.loading(this)
 				api.get(this, `lives/${this.liveId}/finish`)
 				 .then(data => {
-				 	util.show(this, 'success', '成功结束直播')
+					 util.loaded(this)
+					 util.show(this, 'success', '成功结束直播')
 				 }, util.promiseErrorFn(this))
 			}
 		},
@@ -101,7 +105,7 @@ export default {
 			const regex = /(rtmp:\/\/.*)\/(.*)/g
 			const match = regex.exec(rtmpUrl)
 			return match[1]
-		},
+		}
 	}
 }
 
