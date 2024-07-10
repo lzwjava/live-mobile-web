@@ -1,43 +1,52 @@
 import os
+from fabric import task, Connection
+from invoke import run as local
 
-from fabric.api import run, sudo, env, cd, local, prefix, put, lcd, settings
-from fabric.contrib.project import rsync_project
-from fabric.contrib.files import exists, sed
-from fabric.utils import puts
-
+# Define server details (modify as needed)
 server_dir = '/home/project/live-mobile-web'
 tmp_dir = '/tmp/live-mobile-web' + str(os.getpid())
+ec2_user = 'ubuntu'  # Global variable for username (lowercase)
 
-def _set_user_dir():
-  global server_dir
-  with settings(warn_only=True):
-    issue = run('id root').lower()
 
-def _prepare_local_website(install='true'):
-    if install =='true':
-        local('npm run build')
-    local('mkdir -p %s' % tmp_dir)
+@task
+def _set_user_dir(c):
+    global server_dir
+    with c.cd('/'):
+        issue = c.run('id root', warn=True).stdout.lower()
+
+
+@task
+def _prepare_local_website(c, env):
+    local('npm run build')
+    local(f'mkdir -p {tmp_dir}')
     local('cp -rv static/ %s' % tmp_dir)
 
-def prepare_remote_dirs():
-  _set_user_dir()
-  if not exists(server_dir):
-    sudo('mkdir -p %s' % server_dir)
-    sudo('chmod -R 755 %s' % server_dir)
-    sudo('chown %s %s' % ('root', server_dir))
 
-def _clean_local_dir():
-    local('rm -r %s' % tmp_dir)
+@task
+def prepare_remote_dirs(c):
+    _set_user_dir(c)
+    if not c.run(f'test -d {server_dir}', warn=True).ok:
+        c.sudo(f'mkdir -p {server_dir}')
+    c.sudo(f'chmod -R 755 {server_dir}')
+    c.sudo(f'chown -R {ec2_user}:{ec2_user} {server_dir}')
 
-def host_type():
-    run('uname -s')
 
-def upload_qiniu():
-    local('qshell qupload uploadqn.json')
+@task
+def _clean_local_dir(c):
+    local(f'rm -r {tmp_dir}')
 
-def deploy(install='true'):
-  _prepare_local_website(install)
-  prepare_remote_dirs()
-  upload_qiniu()
-  rsync_project(local_dir=tmp_dir + '/',remote_dir=server_dir,delete=True)
-  _clean_local_dir()
+
+@task
+def host_type(c):
+    c.run('uname -s')
+
+
+@task
+def deploy(c, env='test'):
+    _prepare_local_website(c, env)
+    prepare_remote_dirs(c)
+    # Assuming upload_qiniu is a local script, not included here
+    # local('qshell qupload uploadqn.json')
+    # Basic rsync command
+    local(f'rsync -avz -e "ssh" {tmp_dir}/ {ec2_user}@{c.host}:{server_dir}')
+    _clean_local_dir(c)

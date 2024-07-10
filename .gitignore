@@ -7,7 +7,7 @@ npm-debug.log
 webpack.json
 .idea
 .qshell
-
+deploy.sh
 
 # Vim Files
 #-------------------------

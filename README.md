@@ -25,5 +25,9 @@
 npm install
 # build:
 npm run build
+
+git submodule update --init --recursive
+
+fab -H ubuntu@xx.xx.xx.xx deploy
 ```
 
