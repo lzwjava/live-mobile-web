@@ -1,99 +1,70 @@
 <template>
-
   <div class="users-view">
-    <ul>
-      <li class="title">
-        已有 {{live.attendanceCount}} 人参与直播
-      </li>
-
-      <li v-for="u in attendUsers" @click="goUserRoom(u.userId)">
-        <user-avatar :user="u"></user-avatar>
-        <span class="name">{{u.username}}</span>
-      </li>
-
-      <load-more-bar :have-more="haveMore" :loading="loading"></load-more-bar>
-
-    </ul>
+    <ListNav :mode="0" title="参与者" />
+    <div class="users-content">
+      <div class="user-list">
+        <div class="user-item" v-for="user in users" :key="user.userId" @click="goRoom(user.userId)">
+          <UserAvatar :user="user" />
+          <span class="username">{{ user.username }}</span>
+        </div>
+      </div>
+      <LoadMoreBar v-if="hasMore" :have-more="hasMore" :loading="loading" @load-more="loadMore" />
+    </div>
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import ListNav from '@/components/ListNav.vue'
+import UserAvatar from '@/components/user-avatar.vue'
+import LoadMoreBar from '@/components/LoadMoreBar.vue'
+import { get } from '@/common/api'
 
-import http from '../common/api'
-import util from '../common/util'
-import UserAvatar from '../components/user-avatar.vue'
-import LoadMoreBar from '../components/LoadMoreBar.vue'
+const route = useRoute()
+const router = useRouter()
+const users = ref([])
+const hasMore = ref(true)
+const loading = ref(false)
 
-const debug = require('debug')('UsersView')
+onMounted(() => {
+  loadUsers(0)
+})
 
-export default {
-  name: 'UsersView',
-  components: {
-    'user-avatar': UserAvatar,
-    'load-more-bar': LoadMoreBar
-  },
-  data () {
-    return {
-      liveId: 0,
-      live: {},
-      attendUsers: [],
-      haveMore: true,
-      loading: false
-    }
-  },
-  route: {
-    data ({ to }) {
-      debug('params: %j', to.params)
-      const liveId = to.params.liveId
-      if (liveId == this.liveId) return
-      this.liveId = liveId
-      this.fetchLive()
+const loadUsers = (skip) => {
+  const liveId = route.params.liveId
+  loading.value = true
+  get(`lives/${liveId}/users`, { skip, limit: 30 })
+    .then(data => {
+      loading.value = false
+      if (skip === 0) {
+        users.value = data
+      } else {
+        users.value = users.value.concat(data)
+      }
+      if (data.length < 30) {
+        hasMore.value = false
+      }
+    })
+    .catch(() => {
+      loading.value = false
+    })
+}
 
-      this.haveMore = true
-      this.loading = false
-      this.attendUsers = []
-      this.loadUsers()
-    }
-  },
-  methods: {
-    fetchLive () {
-      this.$dispatch('loading', true)
-      http.fetchLive(this, this.liveId)
-       .then(data => {
-         this.$dispatch('loading', false)
-         this.live = data
-       }).catch(util.promiseErrorFn(this))
-    },
-    loadUsers () {
-      this.loading = true
-      http.fetchUsers(this, this.liveId, {
-        skip: this.attendUsers.length,
-        limit: 100
-      }).then(data => {
-        this.loading = false
-        this.attendUsers = this.attendUsers.concat(data)
-        if (data.length < 100) {
-          this.haveMore = false
-        }
-      })
-    },
-    goUserRoom (userId) {
-      this.$router.go(`/room/${userId}`)
-    }
-  },
-  events: {
-    'loadMore': function () {
-      this.loadUsers()
-    }
+const loadMore = () => {
+  if (!loading.value && hasMore.value) {
+    loadUsers(users.value.length)
   }
 }
 
+const goRoom = (userId) => {
+  router.push(`/room/${userId}`)
+}
 </script>
 
 <style lang="stylus">
 
-@import "../stylus/variables.styl"
+
 
 .users-view
   font-size 16px
@@ -114,5 +85,6 @@ export default {
     text-align center
     color gray
     margin 10px 0
+
 
 </style>

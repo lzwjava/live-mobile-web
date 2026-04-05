@@ -1,136 +1,131 @@
-let debug = require('debug')('api')
+import axios from 'axios'
+import { curUser } from './util'
 
-import util from './util'
+const debug = console.debug
 
-let callback = {
-  success: function (resolve,reject) {
-    return function (resp) {
-      debug('resp:%j', resp.data)
-      if (resp.data.status === 'success') {
-        resolve(resp.data.result)
-      } else {
-        reject(resp.data.error)
-      }
+const instance = axios.create({
+  baseURL: '/api',
+  timeout: 20000,
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+})
+
+// Add request interceptor for session token
+instance.interceptors.request.use(
+  (config) => {
+    const user = curUser()
+    if (user && user.sessionToken) {
+      config.headers['X-Session'] = user.sessionToken
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+// Add response interceptor for error handling
+instance.interceptors.response.use(
+  (response) => {
+    debug('api response:', response.data)
+    if (response.data.status === 'success') {
+      return response.data.result
+    } else {
+      return Promise.reject(response.data.error)
     }
   },
-  failure: function (reject) {
-    return function (res) {
-      let error = '' + res.statusText;
-      let el = document.createElement('html');
-      el.innerHTML = res.data
-      let container = el.querySelector('#container')
-      if (container) {
-        error += '\n' + container.innerHTML
+  (error) => {
+    if (error.response) {
+      let errorMsg = error.response.statusText || '网络超时错误'
+      // Try to parse error HTML
+      if (error.response.data) {
+        try {
+          const el = document.createElement('html')
+          el.innerHTML = error.response.data
+          const container = el.querySelector('#container')
+          if (container) {
+            errorMsg += '\n' + container.innerHTML
+          }
+        } catch (e) {
+          // ignore
+        }
       }
-      if (!error) {
-        error = '网络超时错误'
-      }
-      reject(error)
+      return Promise.reject(errorMsg)
     }
+    return Promise.reject('网络超时错误')
   }
+)
+
+export const get = (url, params = {}) => instance.get(url, { params })
+export const post = (url, data = {}) => instance.post(url, data)
+
+export function fetchLive(liveId) {
+  return get(`lives/${liveId}`)
 }
 
-let get = function(comp, url, params) {
-  debug('http GET %j', url)
-  return new Promise(
-    function(resolve, reject) {
-      let addHeader = addHttpHeader()
-      comp.$http.get(url, params, addHeader)
-      .then(callback.success(resolve, reject),
-            callback.failure(reject))
-    }
-  )
+export function fetchVideos(liveId) {
+  return get(`lives/${liveId}/videos`)
 }
 
-let post = function (comp, url, params) {
-  debug('http POST %j', url)
-  return new Promise(
-    function(resolve, reject) {
-      let addHeader = addHttpHeader()
-      comp.$http.post(url, params, addHeader)
-      .then(callback.success(resolve, reject), callback.failure(reject))
-    }
-  )
+export function fetchUsers(liveId, params) {
+  return get(`lives/${liveId}/users`, params)
 }
 
-let addHttpHeader = function () {
-  let curUser = util.curUser()
-  if (curUser) {
-    return { headers: { 'X-Session': curUser.sessionToken } }
-  } else {
-    return null
-  }
-}
-
-let fetchLive = function (comp, liveId) {
-  return get(comp, `lives/${liveId}`)
-}
-
-let fetchVideos = function (comp, liveId) {
-  return get(comp, `lives/${liveId}/videos`)
-}
-
-let fetchUsers = function (comp, liveId, params) {
-  return get(comp, `lives/${liveId}/users`, params)
-}
-
-let fetchPartUsers = function (comp, liveId) {
-  return get(comp, `lives/${liveId}/users`, {
+export function fetchPartUsers(liveId) {
+  return get(`lives/${liveId}/users`, {
     limit: 7
   })
 }
 
-let fetchCurUser = function (comp) {
-  return get(comp, 'self')
+export function fetchCurUser() {
+  return get('self')
 }
 
-let fetchCurUserNoError = function (comp) {
-  return new Promise(
-    function (resolve, reject) {
-      get(comp, 'self')
-       .then(data => {
-         resolve(data)
-       }).catch(error => {
-         if (error === '当前没有用户登录') {
-           debug('not_in_session')
-           resolve({})
-         } else {
-           reject(error)
-         }
-       })
-    }
-  )
+export function fetchCurUserNoError() {
+  return new Promise((resolve, reject) => {
+    get('self')
+      .then(data => {
+        resolve(data)
+      })
+      .catch(error => {
+        if (error === '当前没有用户登录') {
+          resolve({})
+        } else {
+          reject(error)
+        }
+      })
+  })
 }
 
-let fetchOneUser = function (comp, userId) {
-  return get(comp, `users/${userId}`)
+export function fetchOneUser(userId) {
+  return get(`users/${userId}`)
 }
 
-let makeInvitationCard = function (comp, liveId) {
-  return get(comp, `lives/${liveId}/card`)
+export function makeInvitationCard(liveId) {
+  return get(`lives/${liveId}/card`)
 }
 
-let saveLiveData = function (comp, liveId, data) {
-  return new Promise(
-    (resolve, reject) => {
-      util.loading(comp)
-      post(comp, `lives/${liveId}`, data).then(res => {
-        util.loaded(comp)
+export function saveLiveData(liveId, data, showMessage = true) {
+  return new Promise((resolve, reject) => {
+    post(`lives/${liveId}`, data)
+      .then(() => {
         resolve()
-        util.show(comp, 'success', '保存成功')
-      }, util.promiseErrorFn(comp))
-    }
-  )
+      })
+      .catch(reject)
+  })
 }
 
-exports.fetchLive = fetchLive
-exports.fetchVideos = fetchVideos
-exports.fetchUsers = fetchUsers
-exports.fetchPartUsers = fetchPartUsers
-exports.fetchCurUser = fetchCurUser
-exports.fetchCurUserNoError = fetchCurUserNoError
-exports.fetchOneUser = fetchOneUser
-exports.makeInvitationCard = makeInvitationCard
-exports.post = post
-exports.get = get
-exports.saveLiveData = saveLiveData
+export default {
+  fetchLive,
+  fetchVideos,
+  fetchUsers,
+  fetchPartUsers,
+  fetchCurUser,
+  fetchCurUserNoError,
+  fetchOneUser,
+  makeInvitationCard,
+  post,
+  get,
+  saveLiveData
+}

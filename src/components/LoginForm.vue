@@ -1,55 +1,41 @@
 <template>
-  <div class="login-form" @click="stop($event)">
-
-    <div id="login_container">
-
-    </div>
-
-
+  <div class="login-form" @click.stop>
+    <div id="login_container"></div>
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { onMounted } from 'vue'
+import { isDebug, randomString } from '@/common/util'
 
-import util from '../common/util'
+onMounted(() => {
+  initWechatLogin()
+})
 
-export default {
-  name: 'LoginForm',
-  ready() {
-    this.initWechatLogin()
-  },
-  methods: {
-    stop (e){
-      e.stopPropagation()
-    },
-    initWechatLogin () {
-      let redirectUrl
-      if (util.isDebug()) {
-        redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauthTest'
-      } else {
-        redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauth'
-      }
-      let obj = new WxLogin({
-        id:'login_container',
-        appid: 'wxe80a6d2b5d54985c',
-        scope: 'snsapi_login',
-        redirect_uri: encodeURIComponent(redirectUrl),
-        state: util.randomString(6),
-        style: 'black'
-      })
-    },
-    goSite () {
-      window.location = 'http://quzhiboapp.com'
-    }
+const initWechatLogin = () => {
+  let redirectUrl
+  if (isDebug()) {
+    redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauthTest'
+  } else {
+    redirectUrl = 'http://m.quzhiboapp.com/#wechat/webOauth'
+  }
+  
+  if (typeof WxLogin !== 'undefined') {
+    new WxLogin({
+      id: 'login_container',
+      appid: 'wxe80a6d2b5d54985c',
+      scope: 'snsapi_login',
+      redirect_uri: encodeURIComponent(redirectUrl),
+      state: randomString(6),
+      style: 'black'
+    })
   }
 }
-
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
 
-@import '../stylus/base.styl'
+
 
 .login-form
   @extend .absolute-center
@@ -62,5 +48,6 @@ export default {
   display flex
   align-items center
   justify-content center
+
 
 </style>

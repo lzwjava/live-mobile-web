@@ -1,57 +1,49 @@
 <template>
-
-  <div class="input-text-form" @click="stop">
+  <div class="input-text-form" @click.stop>
     <div class="title">
-      {{title}}
+      {{ title }}
     </div>
 
-    <input v-model="text" autofocus="true"></input>
+    <input v-model="textValue" autofocus="true" />
 
     <div class="action-btns">
-
       <button class="btn btn-cancel" type="button" @click="cancel">取消</button>
-
       <button class="btn btn-confirm" type="button" @click="confirm">确定</button>
-
     </div>
-
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref } from 'vue'
 
-import debugFn from 'debug'
-import util from '../common/util'
-import api from '../common/api'
-
-const debug = debugFn('InputTextForm')
-
-export default {
-  name: 'InputTextForm',
-  props: [
-    'title',
-    'text'
-  ],
-  methods: {
-    stop (e) {
-      e.stopPropagation()
-    },
-    cancel () {
-      this.$parent.overlay = false
-    },
-    confirm () {
-      this.$parent.overlay = false
-      this.$dispatch('inputTextFormConfirm', this.text)
-    }
+const props = defineProps({
+  title: {
+    type: String,
+    default: ''
+  },
+  text: {
+    type: String,
+    default: ''
   }
+})
+
+const emit = defineEmits(['confirm', 'close'])
+
+const textValue = ref(props.text)
+
+const cancel = () => {
+  emit('close')
 }
 
+const confirm = () => {
+  emit('confirm', textValue.value)
+  emit('close')
+}
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
 
-@import '../stylus/base.styl'
+
 
 .input-text-form
   @extend .absolute-center
@@ -92,6 +84,7 @@ export default {
       flex 1
       color #fff
       background-color #00BDEF
+
 
 
 

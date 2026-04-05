@@ -8,6 +8,11 @@ webpack.json
 .idea
 .qshell
 deploy.sh
+yarn-error.log
+dist/
+
+# Legacy backup
+src-old/
 
 # Vim Files
 #-------------------------

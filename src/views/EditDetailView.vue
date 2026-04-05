@@ -1,114 +1,45 @@
 <template>
-
   <div class="edit-detail-view">
-
-    <div class="edit-title">
-      {{title}}
+    <ListNav :mode="0" :title="type === 'notice' ? '编辑公告' : '编辑详情'" />
+    <div class="content">
+      <MarkdownArea v-if="type === 'notice'" v-model="content" placeholder="请输入公告内容" />
+      <MarkdownArea v-else v-model="content" placeholder="请输入详情" />
+      <button class="btn btn-blue" @click="saveDetail">保存</button>
     </div>
-
-    <markdown-area :content.sync="content" :support-markdown="supportMarkdown"></markdown-area>
-
-    <div class="action-btns">
-
-      <button class="btn btn-gray" @click="cancel">取消</button>
-
-      <button class="btn btn-blue" @click="confirm">确定</button>
-    </div>
-
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import ListNav from '@/components/ListNav.vue'
+import MarkdownArea from '@/components/markdown-area.vue'
+import { fetchLive, saveLiveData } from '@/common/api'
 
-import debugFn from 'debug'
-import util from '../common/util'
-import api from '../common/api'
-import MarkdownArea from '../components/markdown-area.vue'
+const route = useRoute()
+const content = ref('')
+const type = ref('')
 
-const debug = debugFn('EditDetailView')
+onMounted(() => {
+  const { liveId, type: t } = route.params
+  type.value = t
+  fetchLive(liveId).then(data => {
+    content.value = t === 'notice' ? data.notice : data.detail
+  }).catch(() => {})
+})
 
-export default {
-  name: 'EditDetailView',
-  components: {
-    'markdown-area': MarkdownArea
-  },
-  data () {
-    return {
-      liveId: 0,
-      type: 0,
-      live: {},
-      content: ''
-    }
-  },
-  computed: {
-    supportMarkdown () {
-      if (this.type === 0) {
-        return false
-      } else {
-        return true
-      }
-    },
-    title () {
-      if (this.type === 0) {
-        return '主播介绍'
-      } else if (this.type === 1) {
-        return '直播详情'
-      } else if (this.type === 2) {
-        return '房间公告'
-      }
-      return ''
-    }
-  },
-  route: {
-    data ({ to }) {
-      const liveId = to.params.liveId
-      this.liveId = liveId
-      this.type = Number(to.params.type)
-      debug('type:%j', this.type)
-      util.loading(this)
-      api.fetchLive(this, this.liveId)
-       .then(data => {
-         util.loaded(this)
-         this.live = data
-          if (this.type === 0) {
-            this.content = this.live.speakerIntro
-          } else if (this.type === 1) {
-            this.content = this.live.detail
-          } else if (this.type === 2)  {
-            this.content = this.live.notice
-          }
-       }, util.promiseErrorFn(this))
-    }
-  },
-  methods: {
-    cancel () {
-      window.history.back()
-    },
-    confirm () {
-      let updateField
-      if (this.type === 0) {
-        updateField = 'speakerIntro'
-      } else if (this.type === 1) {
-        updateField = 'detail'
-      } else if (this.type === 2) {
-        updateField = 'notice'
-      }
-      let data = {}
-      data[updateField] = this.content
-      api.saveLiveData(this, this.live.liveId, data).then(() => {
-        this.$dispatch('saveLive', this.type, this.content)
-        window.history.back()
-      })
-    }
-  }
+const saveDetail = () => {
+  const { liveId, type: t } = route.params
+  const key = t === 'notice' ? 'notice' : 'detail'
+  saveLiveData(liveId, { [key]: content.value }).then(() => {
+    alert('保存成功')
+  }).catch(() => {})
 }
-
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
 
-@import "../stylus/base.styl"
+
 
 .edit-detail-view
   padding 10px
@@ -123,5 +54,6 @@ export default {
     button
       flex 1
       margin 0 10px
+
 
 </style>

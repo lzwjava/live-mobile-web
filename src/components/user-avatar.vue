@@ -1,42 +1,58 @@
 <template>
-  <div class="avatar">
-    <img v-if="user.avatarUrl" :src="user.avatarUrl" :alt="user.username" :title="user.username" />
-    <span v-if="!user.avatarUrl" style="{background-color: spanBgColor, color: spanColor}">{{user.username}}</span>
+  <div class="avatar" :class="{ circle: circle }">
+    <img v-if="user?.avatarUrl" :src="user.avatarUrl" :alt="user.username" :title="user.username" />
+    <span v-else :style="{ backgroundColor: spanBgColor, color: spanColor }">
+      {{ firstChar }}
+    </span>
   </div>
 </template>
-<script>
-  const debug = require('debug')('avatar')
-  const escape = require('../common/util').escape
-  const wordColor = require('word-color')
-  module.exports = {
-    props: ['user'],
-    data (){
-      return {
-        spanBgColor: '',
-        spanColor: 'white'
-      }
-    },
-    compiled: function() {
-      var user = this.user
-      // 因为父对象的 user 一开始可能没有数据
-      if (!user.username) return
-      debug('user: %j', user)
-      if (!user.avatarUrl) {
-        const bg = wordColor.rgb(user.username)
-        if ((bg[0] * 299 + bg[1] * 587 + bg[2] * 114) > 200000) {
-          this.spanColor = 'black'
-        }
-        this.spanBgColor = 'rgb(' + bg.join(',') + ')'
-        user.username = escape(user.username.charAt(0).toUpperCase())
-        debug('avatarUrl: ' + user.avatarUrl)
-      }else{
-        //debug('avatarUrl: ' + user.avatarUrl);
-      }
+
+<script setup>
+import { computed, ref, watch } from 'vue'
+
+const props = defineProps({
+  user: {
+    type: Object,
+    default: () => ({})
+  },
+  circle: {
+    type: Boolean,
+    default: true
+  }
+})
+
+const spanBgColor = ref('')
+const spanColor = ref('white')
+
+const firstChar = computed(() => {
+  return props.user?.username?.charAt(0)?.toUpperCase() || '?'
+})
+
+const updateBgColor = () => {
+  if (!props.user?.username) return
+  if (!props.user?.avatarUrl) {
+    // Generate color from username
+    const username = props.user.username
+    let hash = 0
+    for (let i = 0; i < username.length; i++) {
+      hash = username.charCodeAt(i) + ((hash << 5) - hash)
     }
-  };
+    const r = (hash & 0xff0000) >> 16
+    const g = (hash & 0x00ff00) >> 8
+    const b = hash & 0x0000ff
+    spanBgColor.value = `rgb(${r}, ${g}, ${b})`
+    
+    if ((r * 299 + g * 587 + b * 114) > 200000) {
+      spanColor.value = 'black'
+    }
+  }
+}
+
+watch(() => props.user, updateBgColor, { immediate: true, deep: true })
 </script>
 
 <style lang="stylus">
+
 
 .avatar
   display inline-block
@@ -57,5 +73,6 @@
 
 .avatar.circle span, .avatar.circle img
   border-radius 50%
+
 
 </style>

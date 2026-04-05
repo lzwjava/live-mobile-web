@@ -1,22 +1,16 @@
 <template>
   <div class="markdown-comp">
     <div class="markdown-body" v-html="html"></div>
-    <span v-show="!showAll" class="more-content-btn" @click="showAllBtn">查看全部</span>
+    <span v-if="!showAll" class="more-content-btn" @click="showAllBtn">查看全部</span>
   </div>
-
 </template>
 
-<script type="text/javascript">
-require('../../node_modules/github-markdown-css/github-markdown.css')
-require('../../node_modules/highlight.js/styles/solarized-light.css')
-
-const debug = require('debug')('markdown')
-
-import marked from 'marked'
-import highlight from 'highlight.js'
+<script setup>
+import { computed, ref } from 'vue'
+import { marked } from 'marked'
+import hljs from 'highlight.js'
 
 marked.setOptions({
-  renderer: new marked.Renderer(),
   gfm: true,
   tables: true,
   breaks: false,
@@ -25,57 +19,49 @@ marked.setOptions({
   smartLists: true,
   smartypants: false,
   highlight: function (code) {
-    return highlight.highlightAuto(code).value;
+    return hljs.highlightAuto(code).value
   }
-});
+})
 
-export default {
-    props: {
-      'content': {
-        type: String,
-        required: true,
-        default: ""
-      },
-      'showAll': {
-        type: Boolean,
-        required: false,
-        default: true
-      }
-    },
-    computed: {
-        html () {
-            if (!this.content) {
-              return ''
-            }
-            if (!this.showAll && this.content.length > 100) {
-              var partContent = ''
-              for (var i = 0; i < 100; i++) {
-                var ch = this.content.charAt(i)
-                if (ch != '[' && ch != '(' && ch !='!') {
-                  partContent += ch
-                } else {
-                  break;
-                }
-              }
-              partContent += '....'
-              var html = marked(partContent)
-              return html
-            } else {
-              var html = marked(this.content)
-              return html
-            }
-        }
-    },
-    methods: {
-      showAllBtn () {
-        this.showAll = true
+const props = defineProps({
+  content: {
+    type: String,
+    default: ''
+  },
+  showAll: {
+    type: Boolean,
+    default: true
+  }
+})
+
+const showAllLocal = ref(props.showAll)
+
+const html = computed(() => {
+  if (!props.content) return ''
+  
+  if (!showAllLocal.value && props.content.length > 100) {
+    let partContent = ''
+    for (let i = 0; i < 100; i++) {
+      const ch = props.content.charAt(i)
+      if (ch !== '[' && ch !== '(' && ch !== '!') {
+        partContent += ch
+      } else {
+        break
       }
     }
-}
+    partContent += '....'
+    return marked(partContent)
+  }
+  return marked(props.content)
+})
 
+const showAllBtn = () => {
+  showAllLocal.value = true
+}
 </script>
 
 <style lang="stylus">
+
 
 .markdown-comp
   .markdown-body
@@ -86,5 +72,6 @@ export default {
   .more-content-btn
     color #00abd8
     padding 10px 20px
+
 
 </style>

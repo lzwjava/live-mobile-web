@@ -1,176 +1,41 @@
 <template>
-
   <div class="invite-view">
-
-    <div class="invite-head">
-
-    </div>
-
-    <div class="me">
-      <user-avatar :user="curUser.userId ? curUser : defaultUser"></user-avatar>
-      <div class="right-panel">
-        <div class="name">{{curUser.username}}</div>
-      </div>
-
-      <button class="btn-card btn btn-blue" @click="goCard">邀请卡</button>
-
-      <button class="btn-invite btn btn-blue" @click="showShareLead">链接</button>
-
-      <button class="btn-withdraw btn btn-gray" @click="goAccount">提现</button>
-
-    </div>
-
-    <ul class="invite-list">
-
-      <li v-for="(n, i) in invites" @click="goUserRoom(i.userId)">
-        <user-avatar :user="i"></user-avatar>
-        <div class="right-panel">
-          <div class="name">{{n+1}}.{{i.username}}</div>
-          <div class="invite-count">带了<span class="count-num">{{i.inviteCount}}</span>个朋友来，收益<span class="income-num">¥{{i.inviteIncome/100.0}}</span>元</div>
+    <ListNav :mode="0" title="邀请榜" />
+    <div class="content">
+      <div class="invite-list">
+        <div class="invite-item" v-for="invite in invites" :key="invite.userId">
+          <UserAvatar :user="invite" />
+          <div class="invite-info">
+            <p class="username">{{ invite.username }}</p>
+            <p class="count">{{ invite.count }}人</p>
+          </div>
         </div>
-
-      </li>
-
-      <load-more-bar :have-more="haveMore" :loading="loading"></load-more-bar>
-
-    </ul>
-
-    <div class="tips-area">
-      <p>提示</p>
-      <p>1.直播门票，5成归主播，3成归邀请者，2成归平台</p>
-      <p>2.可点击进入<a @click="goAccount">账户</a>进行提现</p>
-      <p>3.没有限制，邀请越多奖励越多</p>
-      <p>4.为了让您收到收益通知，请先关注「平方根科技」服务号</p>
-      <p>5.如需帮助请联系客服(微信号：lzwjava2048)</p>
+      </div>
     </div>
-
-    <overlay :overlay.sync="overlayStatus">
-        <component :is="currentView" type="share" :live-id="liveId"></component>
-    </overlay>
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import ListNav from '@/components/ListNav.vue'
+import UserAvatar from '@/components/user-avatar.vue'
+import { get } from '@/common/api'
 
-import api from '../common/api'
-import util from '../common/util'
-import UserAvatar from '../components/user-avatar.vue'
-import LoadMoreBar from '../components/LoadMoreBar.vue'
-import ShareLead from '../components/ShareLead.vue'
-import Overlay from '../components/Overlay.vue'
-import wechat from '../common/wechat'
-import SubscribeForm from '../components/SubscribeForm.vue'
+const route = useRoute()
+const invites = ref([])
 
-const debug = require('debug')('InviteView')
-
-export default {
-  name: 'InviteView',
-  components: {
-    'subscribe-form': SubscribeForm,
-    'user-avatar': UserAvatar,
-    'load-more-bar': LoadMoreBar,
-    'share-lead': ShareLead,
-    'overlay': Overlay
-  },
-  data() {
-    return {
-      liveId: 0,
-      invites: [],
-      haveMore: true,
-      loading: false,
-      curUser: {},
-      live: {},
-      defaultUser: {},
-      currentView: 'share-lead',
-      overlayStatus: false
-    }
-  },
-  route: {
-    data ({ to }) {
-      document.title = '邀请榜'
-
-      let liveId = to.params.liveId
-      if (liveId == this.liveId) return
-      this.liveId = liveId
-
-      this.defaultUser = util.defaultUser()
-
-      this.haveMore = true
-      this.loading = false
-      this.invites = []
-
-      this.curUser = util.curUser({})
-
-      util.loading(this)
-      Promise.all([
-        api.fetchLive(this, this.liveId),
-        wechat.configWeixin(this)
-      ]).then((values) => {
-        util.loaded(this)
-
-        this.live = values[0]
-
-        wechat.shareLive(this, this.live, this.curUser)
-
-      }, util.promiseErrorFn(this))
-
-      this.loadInvites()
-    }
-  },
-  methods: {
-    fetchInvites () {
-      return api.get(this, 'attendances/invites', {
-        liveId: this.liveId,
-        skip: this.invites.length,
-        limit: 100
-      })
-    },
-    loadInvites () {
-      this.loading = true
-      this.fetchInvites().then(data => {
-        this.loading = false
-        this.invites = this.invites.concat(data)
-        if (data.length < 100) {
-          this.haveMore = false
-        }
-      })
-    },
-    showShareLead () {
-      if (!this.curUser.userId) {
-        this.$dispatch('loginOrRegister', this.liveId)
-      } else {
-        if (this.curUser.wechatSubscribe === 0) {
-          this.currentView = 'subscribe-form'
-          this.overlayStatus = true
-        } else {
-          this.currentView = 'share-lead'
-          this.overlayStatus = true
-        }
-      }
-    },
-    goAccount () {
-      this.$router.go('/account')
-    },
-    goUserRoom (userId) {
-      this.$router.go(`/room/${userId}`)
-    },
-    goCard () {
-      this.$router.go(`/live/${this.liveId}/card`)
-    }
-  },
-  events: {
-    'loadMore': function () {
-      this.loadInvites()
-    }
-  }
-}
-
+onMounted(() => {
+  const liveId = route.params.liveId
+  get('attendances/invites', { liveId, limit: 100 }).then(data => {
+    invites.value = data || []
+  }).catch(() => {})
+})
 </script>
 
 <style lang="stylus">
 
-@import "../stylus/variables.styl"
+
 
 .invite-view
   font-size 16px
@@ -249,5 +114,6 @@ export default {
       font-size 14px
       a
         color #00ABD8
+
 
 </style>

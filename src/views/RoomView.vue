@@ -1,129 +1,51 @@
 <template>
-
   <div class="room-view">
-
-    <div class="room-cover">
-
-      <div class="room-info">
-
-        <img class="room-avatar" :src="user.avatarUrl"/>
-
-        <div class="room-name">{{user.username}} 的直播间</div>
-
+    <ListNav :mode="0" title="主播主页" />
+    <div class="room-content" v-if="user.userId">
+      <div class="user-header">
+        <UserAvatar :user="user" />
+        <div class="user-info">
+          <p class="username">{{ user.username }}</p>
+          <p class="bio">{{ user.bio || '暂无简介' }}</p>
+        </div>
       </div>
-
+      <div class="lives-section">
+        <h3>直播列表</h3>
+        <LiveList v-if="lives.length > 0" :lives="lives" />
+        <div v-else class="empty-tip">暂无直播</div>
+      </div>
     </div>
-
-    <div class="createLive" v-if="curUser.userId === parseInt(userId)">
-      <button type="button" name="button" class="createLiveBtn" @click="createLive">
-        <h2>发起直播</h2>
-      </button>
-    </div>
-
-    <div class="tab-area">
-
-      <div class="tab-item" @click="showAttend" v-bind:class="{active: curTab === 0}">
-        参与的直播({{attendLives.length}})
-      </div>
-
-      <div class="tab-item" @click="showCreate" v-bind:class="{active: curTab === 1}">
-        创建的直播({{createLives.length}})
-      </div>
-
-    </div>
-
-    <div class="live-list">
-
-      <div class="attend-lives" v-show="curTab === 0">
-        <live-list :lives="attendLives"></live-list>
-      </div>
-
-      <div class="create-lives" v-show="curTab === 1">
-        <live-list :lives="createLives"></live-list>
-      </div>
-
-    </div>
-
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import ListNav from '@/components/ListNav.vue'
+import UserAvatar from '@/components/user-avatar.vue'
+import LiveList from '@/components/LiveList.vue'
+import { get } from '@/common/api'
 
-import debugFn from 'debug'
-import util from '../common/util'
-import api from '../common/api'
-import LiveList from '../components/LiveList.vue'
+const route = useRoute()
+const user = ref({})
+const lives = ref([])
 
-const debug = debugFn('RoomView')
-
-export default {
-  name: 'RoomView',
-  components: {
-    'live-list': LiveList
-  },
-  data() {
-    return {
-      userId: 0,
-      user: {},
-      attendLives: [],
-      createLives: [],
-      curTab: 0,
-      from: '',
-      curUser: {}
-    }
-  },
-  route: {
-    data ({ to }) {
-      if (!util.checkInSession(this)) return
-
-      this.curUser = util.curUser()
-
-      let userId = to.params.userId
-      if (userId === this.userId) return
-      this.userId = userId
-
-      this.from = to.query.from
-      if (this.from === 'profile') {
-        this.curTab = 1
-      }
-      util.loading(this)
-      Promise.all([
-        api.get(this, `users/${this.userId}`),
-        api.get(this, 'lives/userLives', {
-          userId: this.userId
-        }),
-        api.get(this, 'lives/attended', {
-          userId: this.userId
-        })
-      ]).then(values => {
-        util.loaded(this)
-        this.user = values[0]
-        this.createLives = values[1]
-        this.attendLives = values[2]
-      }).catch(util.promiseErrorFn(this))
-    }
-  },
-  methods: {
-    showCreate () {
-      this.curTab = 1
-    },
-    showAttend () {
-      this.curTab = 0
-    },
-    createLive () {
-      util.loading(this)
-      api.post(this, 'lives/').then(data => {
-        util.loaded(this)
-        this.$router.go(`/editLive/${data.liveId}`)
-      }).catch(util.promiseErrorFn(this))
-    }
-  }
-}
-
+onMounted(() => {
+  const userId = route.params.userId
+  Promise.all([
+    get(`users/${userId}`),
+    get(`lives/user/${userId}`)
+  ]).then(values => {
+    user.value = values[0]
+    lives.value = values[1] || []
+  }).catch(() => {
+    // handle error
+  })
+})
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
+
 
 .room-view
   .room-cover
@@ -173,5 +95,6 @@ export default {
       &.active
         color #00BDEF
         border-bottom 1px solid #00BDEF
+
 
 </style>

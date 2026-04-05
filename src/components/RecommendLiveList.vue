@@ -1,73 +1,63 @@
 <template>
-
   <div class="live-list">
-
     <ul class="live-list-ul">
-      <li class="live-item-li" v-for="live in lives">
-        <live-item :live="live"></live-item>
+      <li class="live-item-li" v-for="live in lives" :key="live.liveId">
+        <LiveItem :live="live" />
       </li>
-
-      <load-more-bar :have-more="haveMore" :loading="loading"></load-more-bar>
-
+      <LoadMoreBar :have-more="haveMore" :loading="loading" @load-more="loadMore" />
     </ul>
-
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, onMounted } from 'vue'
+import LiveItem from './LiveItem.vue'
+import LoadMoreBar from './LoadMoreBar.vue'
+import { get } from '@/common/api'
 
-const debug = require('debug')('RecommendLiveList')
+const props = defineProps({
+  skipLiveId: {
+    type: [Number, String],
+    default: 0
+  }
+})
 
-import util from '../common/util'
-import LiveItem from '../components/LiveItem.vue'
-import http from '../common/api'
-import LoadMoreBar from '../components/LoadMoreBar.vue'
+const lives = ref([])
+const haveMore = ref(true)
+const loading = ref(false)
 
-export default {
-  name: 'RecommendLiveList',
-  props: ['skipLiveId'],
-  data () {
-    return {
-      lives: [],
-      haveMore: true,
-      loading: false
-    }
-  },
-  ready() {
-    this.loadData(3, 0)
-  },
-  components: {
-    'live-item': LiveItem,
-    'load-more-bar': LoadMoreBar
-  },
-  methods: {
-    loadData (limit, skip) {
-      this.loading = true
-      http.get(this, 'lives/recommend', {
-        limit, skip, skipLiveId: this.skipLiveId
-      }).then(data => {
-        this.loading = false
-        this.lives = this.lives.concat(data)
-        if (data.length < limit) {
-          this.haveMore = false
-        }
-      }).catch(util.promiseErrorFn(this))
-    }
-  },
-  events: {
-    'loadMore': function () {
-      this.loadData(20, this.lives.length)
-    }
+const loadData = (limit, skip) => {
+  loading.value = true
+  get('lives/recommend', { limit, skip, skipLiveId: props.skipLiveId })
+    .then(data => {
+      loading.value = false
+      lives.value = lives.value.concat(data)
+      if (data.length < limit) {
+        haveMore.value = false
+      }
+    })
+    .catch(() => {
+      loading.value = false
+    })
+}
+
+const loadMore = () => {
+  if (!loading.value && haveMore.value) {
+    loadData(20, lives.value.length)
   }
 }
 
+onMounted(() => {
+  loadData(3, 0)
+})
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
+
 
 .live-list-ul
   &:first-child
     border-top 1px solid #eee
+
 
 </style>

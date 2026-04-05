@@ -1,14 +1,27 @@
-import moment from 'moment'
+import moment from 'moment-timezone'
 moment.locale('zh-cn')
 
-const urlParser = document.createElement('a')
+// Vue 3: These are exported as helper functions instead of Vue filters
+// Usage: {{ formatTime(time) }} instead of {{ time | formatTime }}
 
-function domain (url) {
-  urlParser.href = url
-  return urlParser.hostname
+export function formatTime(time, format) {
+  if (!time) {
+    return ''
+  }
+  if (!format) {
+    format = 'll'
+  }
+  return moment(time).format(format)
 }
 
-function fromNow (time) {
+export function formatTimeCommon(time) {
+  let text = formatTime(time, 'llll')
+  text = text.replace('2016年', '')
+  text = text.replace('星期', '周')
+  return text
+}
+
+export function fromNow(time) {
   const between = Date.now() / 1000 - Number(time)
   if (between < 3600) {
     return pluralize(~~(between / 60), ' minute')
@@ -19,14 +32,14 @@ function fromNow (time) {
   }
 }
 
-function pluralize (time, label) {
-    if (time === 1) {
-        return time + label
-    }
-    return time + label + 's'
+function pluralize(time, label) {
+  if (time === 1) {
+    return time + label
+  }
+  return time + label + 's'
 }
 
-function moneyAsYuan (money) {
+export function moneyAsYuan(money) {
   if (!money) {
     return 0
   } else {
@@ -34,30 +47,32 @@ function moneyAsYuan (money) {
   }
 }
 
-let formatTime = (time, format) => {
-  if (!time) {
-    return ''
+export function statusText(status) {
+  switch (status) {
+    case 1:
+      return '编辑中'
+    case 5:
+      return '审核中'
+    case 10:
+      return '报名中'
+    case 20:
+      return '直播中'
+    case 25:
+      return '转码中'
+    case 30:
+      return '已结束'
+    case 35:
+      return '已结束'
   }
-  if (!format) {
-    format = 'll'
-  }
-  return moment(time).format(format);
-};
-
-let fromNowTime = (time) => {
-  return moment(time).fromNow()
-};
-
-let formatTimeCommon = (time) => {
-  var text = formatTime(time, 'llll')
-  text = text.replace('2016年', '')
-  text = text.replace('星期', '周')
-  return text
+  return '未知'
 }
 
-exports.formatTime = formatTime
-exports.formatTimeCommon = formatTimeCommon
-exports.domain = domain
-exports.moneyAsYuan = moneyAsYuan
-exports.fromNow = fromNow
-exports.pluralize = pluralize
+// Legacy filter export for compatibility - these won't work in Vue 3
+// but are kept for reference
+export const filters = {
+  formatTime,
+  formatTimeCommon,
+  fromNow,
+  moneyAsYuan,
+  statusText
+}

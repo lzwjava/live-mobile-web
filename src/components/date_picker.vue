@@ -1,176 +1,121 @@
 <template>
-    <input type="text" class="v-date-picker-result"
-        v-on:click="onInputFocus"
-        v-model="dateResult"
-    ></input>
-    <div class="v-date-picker-input"
-        v-bind:style="{ left: inputPosition.left + 'px', right: inputPosition.right + 'px' }"
-        v-show="showPiker">
-        <input type="date" min="{{minDate}}" max="{{maxDate}}"
-            v-model="datePicked"
-        >
-        </input>
-        <span>{{timePicked}}</span>
-        <br />
-        <span class="key">小时</span> <input type="range" max="{{maxHour}}" min="{{minHour}}" step="1" v-model="hourPicked"></input>
-        <br />
-        <span class="key">分钟</span> <input type="range" max="{{maxMinute}}" min="{{minMinute}}" step="1" v-model="minutePicked"></input>
-        <br />
-        <div class="divider"></div>
-        <button v-on:click="setNow" v-show="allowNow">当前时间</button>
-        <button v-on:click="setDate(date)">完成</button>
-        <div class="divider"></div>
-        <button class="close-btn" v-on:click="hidePicker">取消</button>
+  <div>
+    <input type="text" class="v-date-picker-result" @click="onInputFocus" v-model="dateResult" readonly />
+    <div class="v-date-picker-input" v-show="showPicker">
+      <input type="date" :min="minDate" :max="maxDate" v-model="datePicked" />
+      <span>{{ timePicked }}</span>
+      <br />
+      <span class="key">小时</span>
+      <input type="range" :max="maxHour" :min="minHour" step="1" v-model.number="hourPicked" />
+      <br />
+      <span class="key">分钟</span>
+      <input type="range" :max="maxMinute" :min="minMinute" step="1" v-model.number="minutePicked" />
+      <br />
+      <div class="divider"></div>
+      <button v-if="allowNow" @click="setNow">当前时间</button>
+      <button @click="setDate(date)">完成</button>
+      <div class="divider"></div>
+      <button class="close-btn" @click="hidePicker">取消</button>
     </div>
+  </div>
 </template>
 
-<script>
-    export default {
-        props: {
-            dateResult: {
-                type: String,
-                default: ''
-            },
-            allowNow: {
-                type: Boolean,
-                default: true
-            },
-            maxDate: {
-                type: String,
-                default: ''
-            },
-            minDate: {
-                type: String,
-                default: '1970-01-01'
-            },
-            maxHour: {
-                type: Number,
-                default: 23
-            },
-            minHour: {
-                type: Number,
-                default: 0
-            },
-            maxMinute: {
-                type: Number,
-                default: 59
-            },
-            minMinute: {
-                type: Number,
-                default: 0
-            },
-            maxSecond: {
-                type: Number,
-                default: 59
-            },
-            minSecond: {
-                type: Number,
-                default: 0
-            }
-        },
-        data () {
-            return {
-                showPiker: false,
-                datePicked: '',
-                hourPicked: 0,
-                minutePicked: 0,
-                secondPicked: 0,
-                inputPosition: {
-                    left: 0,
-                    right: 0
-                }
-            };
-        },
-        computed: {
-            date () {
-                return this.datePicked + ' ' + this.timePicked;
-            },
-            timePicked () {
-                let hour = this.addZero(this.hourPicked);
-                let minute = this.addZero(this.minutePicked);
-                let second = this.addZero(this.secondPicked);
-                return hour + ':' + minute + ':' + second;
-            }
-        },
-        created() {
-          if (this.dateResult == '') {
-            this.setNow()
-          }
-        },
-        methods: {
-            addZero (val) {
-                val = Number(val);
-                if (val < 10) {
-                    return '0' + val;
-                }
-                return val;
-            },
-            onInputFocus (e) {
-                this.inputPosition.left = e.target.offsetLeft;
-                this.inputPosition.top = e.target.offsetTop;
-                this.showPiker = !this.showPiker;
-            },
-            ifOutOfRange (date, hour, minute, second) {
-                if (this.maxDate && date > this.maxDate) {
-                    return true;
-                }
-                if (this.minDate && date < this.minDate) {
-                    return true;
-                }
-                if (this.maxHour && hour > this.maxHour) {
-                    return true;
-                }
-                if (this.minHour && hour < this.minHour) {
-                    return true;
-                }
-                if (this.maxMinute && minute > this.maxMinute) {
-                    return true;
-                }
-                if (this.minMinute && minute < this.maxMinute) {
-                    return true;
-                }
-                if (this.maxSecond && second > this.maxSecond) {
-                    return true;
-                }
-                if (this.minSecond && second < this.minSecond) {
-                    return true;
-                }
-                return false;
-            },
-            setNow () {
-                let now = new Date();
-                let _datePicked = now.getFullYear() + '-' + this.addZero(now.getMonth() + 1) + '-' + this.addZero(now.getDate());
-                let _hourPicked = this.addZero(now.getHours());
-                let _minutePicked = this.addZero(now.getMinutes());
-                let _secondPicked = 0;
+<script setup>
+import { ref, computed, onMounted } from 'vue'
 
-                if (this.ifOutOfRange(_datePicked, _hourPicked, _minutePicked, _secondPicked)) {
-                    alert('Out of range !');
-                    return false;
-                }
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: ''
+  },
+  allowNow: {
+    type: Boolean,
+    default: true
+  },
+  maxDate: {
+    type: String,
+    default: ''
+  },
+  minDate: {
+    type: String,
+    default: '1970-01-01'
+  },
+  maxHour: {
+    type: Number,
+    default: 23
+  },
+  minHour: {
+    type: Number,
+    default: 0
+  },
+  maxMinute: {
+    type: Number,
+    default: 59
+  },
+  minMinute: {
+    type: Number,
+    default: 0
+  }
+})
 
-                this.datePicked = _datePicked;
-                this.hourPicked = _hourPicked;
-                this.minutePicked = _minutePicked;
-                this.secondPicked = _secondPicked;
-            },
-            setDate (date) {
-                if (date === ' 00:00:00') {
-                    alert('Please choose a date');
-                    return false;
-                } else {
-                    this.dateResult = date;
-                }
-                this.hidePicker();
-            },
-            hidePicker () {
-                this.showPiker = false;
-            }
-        }
-    };
+const emit = defineEmits(['update:modelValue'])
+
+const showPicker = ref(false)
+const datePicked = ref('')
+const hourPicked = ref(0)
+const minutePicked = ref(0)
+const secondPicked = ref(0)
+
+const dateResult = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
+
+const addZero = (val) => {
+  val = Number(val)
+  if (val < 10) return '0' + val
+  return val
+}
+
+const timePicked = computed(() => {
+  return addZero(hourPicked.value) + ':' + addZero(minutePicked.value) + ':' + addZero(secondPicked.value)
+})
+
+const date = computed(() => datePicked.value + ' ' + timePicked.value)
+
+const onInputFocus = () => {
+  showPicker.value = !showPicker.value
+}
+
+const hidePicker = () => {
+  showPicker.value = false
+}
+
+const setNow = () => {
+  const now = new Date()
+  datePicked.value = now.getFullYear() + '-' + addZero(now.getMonth() + 1) + '-' + addZero(now.getDate())
+  hourPicked.value = now.getHours()
+  minutePicked.value = now.getMinutes()
+  secondPicked.value = 0
+}
+
+const setDate = (d) => {
+  if (d === ' 00:00:00') {
+    return false
+  }
+  dateResult.value = d
+  hidePicker()
+}
+
+onMounted(() => {
+  if (!props.modelValue) {
+    setNow()
+  }
+})
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus">
+
 
 .v-date-picker-result
   text-align center
@@ -200,5 +145,6 @@
     color #fff
     &:hover
       background-color #505050
+
 
 </style>

@@ -1,33 +1,29 @@
 <template>
   <div class="dropdown">
-
-    <div class="dropdown-mask" @click="show=!show">
+    <div class="dropdown-mask" @click="show = !show">
       <slot name="showText"></slot>
     </div>
     <div class="dropdown-inner" @click="choose" v-show="show">
       <slot name="options"></slot>
     </div>
-    </div>
   </div>
 </template>
 
-<script>
-  module.exports = {
-    data (){
-      return {
-        show: false
-      }
-    },
-    methods: {
-      choose (e) {
-        const el = e.target
-        if (el.classList.contains('dropdown-item')) this.show = false
-      }
-    }
+<script setup>
+import { ref } from 'vue'
+
+const show = ref(false)
+
+const choose = (e) => {
+  const el = e.target
+  if (el.classList.contains('dropdown-item')) {
+    show.value = false
   }
+}
 </script>
 
 <style lang="stylus">
+
   .dropdown
     position relative
     width 100%
@@ -85,4 +81,5 @@
       position relative
       margin-left 54px
       margin-top -38px
+
 </style>

@@ -1,61 +1,68 @@
 <template>
-  <div id="message" aria-live="assertive">
-    <div class="message message-{{msg.type}}" v-for="msg in messages" v-text="msg.text" transition="fade"></div>
-  </div>
+  <Teleport to="body">
+    <div id="message" aria-live="assertive">
+      <div 
+        v-for="(msg, index) in messages" 
+        :key="index"
+        :class="['message', `message-${msg.type}`]"
+        v-text="msg.text"
+      ></div>
+    </div>
+  </Teleport>
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, getCurrentInstance } from 'vue'
 
-export default {
-  data () {
-    return {
-      clock: new Date().getFullYear(),
-      messages: []
-    }
-  },
-  methods: {
-    unique (item, list) {
-      return !list.some(data => {
-        return JSON.stringify(data) === JSON.stringify(item)
-      })
-    },
-    flush () {
-      this.messages = []
-    },
-    clear (index) {
-      clearTimeout(this.clock)
-      this.messages.splice(index, 1)
-      this.clock = setTimeout(this.flush.bind(this), 4000)
-    },
-    show (type, text, timeout) {
-      // 全局 error、warn、success 提示
-      var msg = {type: type, text: text}
-      if (!this.unique(msg, this.messages)) return
+const messages = ref([])
+let clock = null
 
-      if (!timeout) {
-        if (type === 'error') {
-          timeout = 5000
-        } else {
-          timeout = 3000
-        }
-      }
-      this.messages.push(msg)
-      const index = this.messages.length - 1
-      setTimeout(function() {
-        this.clear(index)
-      }.bind(this), timeout)
-    }
-  },
-  events: {
-    'show-tip-msg': function (type, msg) {
-      this.show(type, msg)
-    }
-  }
+const unique = (item, list) => {
+  return !list.some(data => {
+    return JSON.stringify(data) === JSON.stringify(item)
+  })
 }
 
+const flush = () => {
+  messages.value = []
+}
+
+const clear = (index) => {
+  clearTimeout(clock)
+  messages.value.splice(index, 1)
+  clock = setTimeout(flush, 4000)
+}
+
+const show = (type, text, timeout) => {
+  const msg = { type, text }
+  if (!unique(msg, messages.value)) return
+
+  if (!timeout) {
+    if (type === 'error') {
+      timeout = 5000
+    } else {
+      timeout = 3000
+    }
+  }
+  messages.value.push(msg)
+  const index = messages.value.length - 1
+  setTimeout(() => {
+    clear(index)
+  }, timeout)
+}
+
+// Listen for show-tip-msg event from parent
+const instance = getCurrentInstance()
+if (instance?.parent?.proxy) {
+  // Event handling will be done through provide/inject pattern
+}
+
+// Expose show method
+defineExpose({ show })
 </script>
 
 <style lang="stylus">
+
 
 #message
   position fixed
@@ -88,5 +95,6 @@ export default {
 .message-warn
   background-color rgba(255, 220, 0, 0.9)
   border-color rgb(255, 220, 0)
+
 
 </style>

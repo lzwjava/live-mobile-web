@@ -1,49 +1,36 @@
 <template>
-
-  <div class="weibo-form" @click="stop">
-
+  <div class="weibo-form" @click.stop>
     <p class="op-word">
       请复制以下链接 <br>到微信中发送给文件助手<br>接着点击链接打开
     </p>
 
     <p class="link">
-      {{shareLink}}
+      {{ shareLink }}
     </p>
 
     <p class="small-tips">
       抱歉，产品还在早期阶段，体验略差
     </p>
-
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { computed } from 'vue'
+import { shareLink as getShareLink } from '@/common/util'
 
-import util from '../common/util'
-
-export default {
-  name: 'WeiboForm',
-  props: ['liveId'],
-  components: {
-  },
-  methods: {
-    stop (e) {
-      e.stopPropagation()
-    }
-  },
-  computed: {
-    shareLink () {
-      return util.shareLink(this.liveId)
-    }
+const props = defineProps({
+  liveId: {
+    type: [Number, String],
+    default: 0
   }
-}
+})
 
+const shareLink = computed(() => getShareLink(props.liveId))
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
 
-@import '../stylus/base.styl'
+
 
 .weibo-form
   @extend .absolute-center
@@ -62,5 +49,6 @@ export default {
     margin-top 20px
     font-size 14px
     color #828282
+
 
 </style>

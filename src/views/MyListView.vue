@@ -1,64 +1,34 @@
 <template>
-
-  <div class="my-list-view">
-
-    <div>
-      <p class="lives-title">
-        我参与的直播
-      </p>
-      <live-list :lives="attendedLives"></live-list>
-
-      <p class="lives-title">
-        我发起的直播
-      </p>
-
-      <live-list :lives="myLives"></live-list>
+  <div class="mylist-view">
+    <ListNav :mode="2" title="我的直播" />
+    <div class="content">
+      <LiveList v-if="lives.length > 0" :lives="lives" />
+      <div v-else class="empty-tip">暂无参与的直播</div>
     </div>
-
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, onMounted } from 'vue'
+import ListNav from '@/components/ListNav.vue'
+import LiveList from '@/components/LiveList.vue'
+import { get } from '@/common/api'
 
-import util from '../common/util'
-import http from '../common/api'
-import wechat from '../common/wechat'
-import LiveList from '../components/LiveList.vue'
-import ListNav from '../components/ListNav.vue'
+const lives = ref([])
 
-export default {
-  name: 'MyListView',
-  components:{
-    'live-list': LiveList,
-    'list-nav': ListNav
-  },
-  data () {
-    return {
-      attendedLives:[],
-      myLives:[]
-    }
-  },
-  route: {
-    data({ to }) {
-      if (!util.checkInSession(this)) return
-      util.loading(this)
-      Promise.all([
-        http.get(this, 'lives/attended'),
-        http.get(this, 'lives/me')
-      ]).then(values => {
-        util.loaded(this)
-        this.login = 1
-        this.attendedLives = values[0]
-        this.myLives = values[1]
-      }, util.promiseErrorFn(this))
-    }
-  }
-}
-
+onMounted(() => {
+  get('lives/my')
+    .then(data => {
+      lives.value = data || []
+    })
+    .catch(() => {
+      lives.value = []
+    })
+})
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
+
 
 .my-list-view
   .lives-title
@@ -74,5 +44,6 @@ export default {
       font-size 20px
     button
       margin-top 20px
+
 
 </style>

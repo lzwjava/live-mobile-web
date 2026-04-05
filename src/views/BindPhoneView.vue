@@ -1,105 +1,51 @@
 <template>
   <div class="bind-phone-view">
-    <div class="register-inside">
-      <div>
-        <div class="tips input-mobile-tips">请绑定手机号码</div>
-
-        <input class="mobile-input" type="number" v-model="mobile" placeholder="手机号码" autofocus>
-
-        <div class="sms-code-area">
-          <input class="sms-code-input" type="number" v-model="code" autofocus placeholder="验证码">
-
-
-          <button class="btn btn-gray btn-send" @click="requestSms">发送验证码</button>
-
-
-        </div>
-
-        <button class="btn btn-blue finish-btn" @click="bindPhone">完成</button>
-
-        <p class="small-tips">国外手机号码或无法收到验证码等请<a href="#" @click.prevent="goContact">联系我们</a></p>
-
+    <ListNav :mode="0" title="绑定手机" />
+    <div class="content">
+      <div class="form-group">
+        <input type="text" v-model="phone" placeholder="请输入手机号" />
       </div>
-
+      <div class="form-group">
+        <input type="text" v-model="code" placeholder="验证码" />
+        <button @click="sendCode" :disabled="countdown > 0">{{ countdownText }}</button>
+      </div>
+      <button class="btn btn-blue submit-btn" @click="bindPhone">绑定</button>
     </div>
-
   </div>
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, computed } from 'vue'
+import ListNav from '@/components/ListNav.vue'
+import { post } from '@/common/api'
 
-import {Button} from 'vue-weui'
-import util from '../common/util'
-import api from '../common/api'
+const phone = ref('')
+const code = ref('')
+const countdown = ref(0)
 
-const debug = require('debug')('register-form')
+const countdownText = computed(() => countdown.value > 0 ? `${countdown.value}s后重发` : '发送验证码')
 
-export default {
-  name: 'BindPhoneView',
-  props: [],
-  components: {
-    'weui-button': Button
-  },
-  data() {
-    return {
-      liveId: 0,
-      mobile: '',
-      code: '',
-      from : ''
-    }
-  },
-  route: {
-    data({ to }) {
-      this.from = to.query.from
-    }
-  },
-  methods: {
-    requestSms () {
-      if (!this.mobile) {
-        util.show(this, 'error', '请输入手机号码');
-        return
-      }
-      util.loading(this)
-      api.post(this, 'requestSmsCode',{
-        mobilePhoneNumber: this.mobile
-      }).then(resp => {
-        util.loaded(this)
-        util.show(this, 'success', '验证码已发送成功，请稍等片刻')
-      }, util.httpErrorFn(this))
-    },
-    bindPhone () {
-      if (!this.mobile) {
-        util.show(this, 'error', '请输入手机号码');
-        return
-      }
-      if (!this.code) {
-        util.show(this, 'error', '请输入验证码');
-        return
-      }
-      util.loading(this)
-      api.post(this, 'users/bindPhone', {
-        mobilePhoneNumber: this.mobile,
-        smsCode: this.code
-      }).then(() => {
-        util.loaded(this)
-        util.show(this, 'success', '绑定成功')
-        if (this.from) {
-          this.$router.go(this.from)
-        }
-      }, util.promiseErrorFn(this))
-    },
-    goContact () {
-      this.$router.go('/contact')
-    },
-  }
+const sendCode = () => {
+  if (countdown.value > 0) return
+  countdown.value = 60
+  const timer = setInterval(() => {
+    countdown.value--
+    if (countdown.value <= 0) clearInterval(timer)
+  }, 1000)
+  // Send code via API
 }
 
+const bindPhone = () => {
+  if (!phone.value || !code.value) return
+  post('self/bindPhone', { phone: phone.value, code: code.value }).then(() => {
+    alert('绑定成功')
+  }).catch(() => {})
+}
 </script>
-
 
 <style lang="stylus">
 
-@import "../stylus/base.styl"
+
 
 .bind-phone-view
   position absolute
@@ -156,6 +102,7 @@ export default {
       height 44px
       margin-top 40px
       font-size 16px
+
 
 
 </style>

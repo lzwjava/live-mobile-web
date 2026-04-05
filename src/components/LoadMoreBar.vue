@@ -1,45 +1,38 @@
 <template>
-
   <div class="load-more-bar">
-    <pulse-loader class="pulse-loader" :loading="loading" :color="color"></pulse-loader>
-    <div class="load-inner" v-show="!loading && haveMore" @click="loadMore">
+    <div v-if="loading" class="pulse-loader">
+      <div class="spinner"></div>
+    </div>
+    <div v-else-if="haveMore" class="load-inner" @click="loadMore">
       点击加载更多
     </div>
-    <div class="load-inner" v-show="!loading && !haveMore">
+    <div v-else class="load-inner">
       没有更多了
     </div>
   </div>
-
 </template>
 
-<script type="text/javascript">
-
-import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import DebugFn from 'debug'
-
-const debug = DebugFn('LoadMoreBar')
-
-export default {
-  name: 'LoadMoreBar',
-  props: ['haveMore', 'loading'],
-  components: {
-    'pulse-loader': PulseLoader
+<script setup>
+defineProps({
+  haveMore: {
+    type: Boolean,
+    default: true
   },
-  data() {
-    return {
-      color: '#00bdef'
-    }
-  },
-  methods: {
-    loadMore() {
-      this.$dispatch('loadMore')
-    }
+  loading: {
+    type: Boolean,
+    default: false
   }
-}
+})
 
+const emit = defineEmits(['loadMore'])
+
+const loadMore = () => {
+  emit('loadMore')
+}
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
+
 
 .load-more-bar
   height 40px
@@ -49,5 +42,6 @@ export default {
     margin-top 15px
   .load-inner
     line-height 40px
+
 
 </style>

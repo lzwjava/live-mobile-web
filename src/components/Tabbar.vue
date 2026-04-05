@@ -1,58 +1,42 @@
 <template>
-
   <ul class="tab-bar">
-
-    <li class="tab-item live" @click="goLive" v-bind:class="{active: activeIndex === 0}">
-      <img class="tab-icon" src="../img/tab_live_n.png" v-show="activeIndex === 1"></img>
-
-      <img class="tab-icon" src="../img/tab_live_p.png" v-show="activeIndex === 0"></img>
-
-      <div class="tab-title">
-        直播
-      </div>
-
+    <li class="tab-item live" :class="{ active: activeIndex === 0 }" @click="goLive">
+      <img v-if="activeIndex === 1" class="tab-icon" src="/img/tab_live_n.png" />
+      <img v-else class="tab-icon" src="/img/tab_live_p.png" />
+      <div class="tab-title">直播</div>
     </li>
 
-    <li class="tab-item me" @click="goProfile" v-bind:class="{active: activeIndex === 1}">
-
-      <img class="tab-icon" src="../img/tab_me_n.png" v-show="activeIndex === 0"></img>
-
-      <img class="tab-icon" src="../img/tab_me_p.png" v-show="activeIndex === 1"></img>
-
-      <div class="tab-title">
-        个人中心
-      </div>
+    <li class="tab-item me" :class="{ active: activeIndex === 1 }" @click="goProfile">
+      <img v-if="activeIndex === 0" class="tab-icon" src="/img/tab_me_n.png" />
+      <img v-else class="tab-icon" src="/img/tab_me_p.png" />
+      <div class="tab-title">个人中心</div>
     </li>
-
   </ul>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { useRouter } from 'vue-router'
 
-import debugFn from 'debug'
-import util from '../common/util'
-import api from '../common/api'
-
-const debug = debugFn('Tabbar')
-
-export default {
-  name: 'Tabbar',
-  props: ['activeIndex'],
-  methods: {
-    goLive () {
-      this.$router.go('/lives')
-    },
-    goProfile () {
-      this.$router.go('/profile')
-    }
+defineProps({
+  activeIndex: {
+    type: Number,
+    default: 0
   }
+})
+
+const router = useRouter()
+
+const goLive = () => {
+  router.push('/lives')
 }
 
-
+const goProfile = () => {
+  router.push('/profile')
+}
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
+
 
 .tab-bar
   position fixed
@@ -77,5 +61,6 @@ export default {
     .tab-title
        color #848484
        font-size 14px
+
 
 </style>

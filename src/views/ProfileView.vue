@@ -1,106 +1,83 @@
 <template>
   <div class="profile-view">
-
     <div class="profile-container">
-
       <div class="profile-header" @click="goUpdateUserInfo">
         <div class="user-info">
           <div class="avatar-area">
-            <user-avatar :user="curUser"></user-avatar>
+            <UserAvatar :user="curUser" />
             <i class="fa fa-pencil-square-o pencil-edit" aria-hidden="true"></i>
           </div>
-          <div class="username">{{curUser.username}}</div>
+          <div class="username">{{ curUser.username }}</div>
         </div>
       </div>
 
       <div class="menu-section">
-        <div class="menu-item" @click="goMylist">
-          参与的直播
-        </div>
+        <div class="menu-item" @click="goMylist">参与的直播</div>
       </div>
 
       <div class="menu-section">
-        <div class="menu-item" @click="goRoom">
-          我的直播间
-        </div>
+        <div class="menu-item" @click="goRoom">我的直播间</div>
       </div>
 
       <div class="menu-section">
-        <div class="menu-item" @click="goAccount">
-          账户
-        </div>
+        <div class="menu-item" @click="goAccount">账户</div>
       </div>
 
       <div class="menu-section">
-        <div class="menu-item" @click="logout">
-          退出登录
-        </div>
+        <div class="menu-item" @click="logout">退出登录</div>
       </div>
-
     </div>
 
-    <tab-bar :active-index="1"></tab-bar>
-
+    <Tabbar :active-index="1" />
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import UserAvatar from '@/components/user-avatar.vue'
+import Tabbar from '@/components/Tabbar.vue'
+import { curUser as getCurUser, removeCurUser } from '@/common/util'
+import { get } from '@/common/api'
 
-import util from '../common/util'
-import api from '../common/api'
-import wechat from '../common/wechat'
-import UserAvatar from '../components/user-avatar.vue'
-import Tabbar from '../components/Tabbar.vue'
+const router = useRouter()
+const curUser = ref({})
 
-require('font-awesome/css/font-awesome.css')
+onMounted(() => {
+  curUser.value = getCurUser({})
+})
 
-const debug = require('debug')('ProfileView')
-
-export default {
-  name: 'ProfileView',
-  components: {
-    'user-avatar': UserAvatar,
-    'tab-bar': Tabbar
-  },
-  data () {
-    return {
-      curUser: {}
-    }
-  },
-  route: {
-    data({ to }) {
-      if (!util.checkInSession(this)) return
-      this.curUser = util.curUser()
-    }
-  },
-  methods: {
-    logout (e) {
-      api.get(this, 'logout').then(resp => {
-        this.curUser = {}
-        util.removeCurUser()
-        this.$dispatch('updateCurUser')
-        this.$router.go('/lives')
-      }, util.promiseErrorFn(this))
-    },
-    goAccount () {
-      this.$router.go('/account')
-    },
-    goMylist () {
-      this.$router.go('/mylist')
-    },
-    goUpdateUserInfo () {
-      this.$router.go('/editUser')
-    },
-    goRoom () {
-      this.$router.go(`/room/${this.curUser.userId}?from=profile`)
-    }
-  }
+const logout = () => {
+  get('logout')
+    .then(() => {
+      curUser.value = {}
+      removeCurUser()
+      router.push('/lives')
+    })
+    .catch(() => {
+      router.push('/lives')
+    })
 }
 
+const goAccount = () => {
+  router.push('/account')
+}
+
+const goMylist = () => {
+  router.push('/mylist')
+}
+
+const goUpdateUserInfo = () => {
+  router.push('/editUser')
+}
+
+const goRoom = () => {
+  router.push(`/room/${curUser.value.userId}?from=profile`)
+}
 </script>
 
 <style lang="stylus">
+
 
 .profile-view
   .profile-container
@@ -147,6 +124,7 @@ export default {
         padding-left 20px
         color #909499
         font-size 16px
+
 
 
 

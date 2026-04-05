@@ -1,41 +1,27 @@
-<template >
-
-  <div class="register-form" @click="stop($event)">
-
+<template>
+  <div class="register-form" @click.stop>
     <p>请用微信扫描以下二维码，在微信上注册</p>
-
-    <img :src="'api/qrcodes/one?text=' + shareLink" alt="" />
-
+    <img :src="'/api/qrcodes/one?text=' + shareLink" alt="" />
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { computed } from 'vue'
+import { shareLink as getShareLink } from '@/common/util'
 
-import util from '../common/util'
-import debugFn from 'debug'
-const debug = debugFn('RegisterForm')
-
-export default {
-  name: 'RegisterForm',
-  props: ['liveId'],
-  methods: {
-    stop (e) {
-      e.stopPropagation()
-    }
-  },
-  computed: {
-    shareLink () {
-      return util.shareLink(this.liveId)
-    }
+const props = defineProps({
+  liveId: {
+    type: [Number, String],
+    default: 0
   }
-}
+})
 
+const shareLink = computed(() => getShareLink(props.liveId))
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
 
-@import '../stylus/base.styl'
+
 
 .register-form
   @extend .absolute-center
@@ -53,5 +39,6 @@ export default {
     margin-top 30px
     width 300px
     height 300px
+
 
 </style>

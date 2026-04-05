@@ -1,82 +1,80 @@
 <template>
-
   <div class="home-view">
-
   </div>
-
 </template>
 
+<script setup>
+import { onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { curUser, saveCurUser } from '@/common/util'
+import { get } from '@/common/api'
 
-<script type="text/javascript">
+const router = useRouter()
+const route = useRoute()
 
-import util from '../common/util'
-import wechat from '../common/wechat'
-import api from '../common/api'
-var debug = require('debug')('HomeView')
+onMounted(() => {
+  const { sessionToken, liveId, action, fromUserId } = route.query
+  
+  if (sessionToken) {
+    loginBySessionToken(sessionToken, liveId)
+    return
+  }
+  
+  if (action === 'logout') {
+    logout()
+    return
+  }
 
-export default {
-  name: 'HomeView',
-  route: {
-    data({to}) {
-      let { sessionToken, liveId, action, fromUserId } = this.$route.query
-      if (sessionToken) {
-        this.loginBySessionToken(sessionToken, liveId)
-        return
+  if (fromUserId) {
+    const fromUser = { fromUserId, liveId }
+    window.localStorage.setItem('fromUser', JSON.stringify(fromUser))
+  } else {
+    const fromUser = window.localStorage.getItem('fromUser')
+    if (fromUser) {
+      const localLiveId = JSON.parse(fromUser).liveId
+      if (localLiveId !== liveId) {
+        window.localStorage.removeItem('fromUser')
       }
-      if (action === 'logout') {
-        this.logout()
-        return
-      }
-
-      if (fromUserId) {
-        let fromUser = {fromUserId, liveId}
-        window.localStorage.setItem('fromUser', JSON.stringify(fromUser))
-      } else {
-        let fromUser = window.localStorage.getItem('fromUser')
-        if (fromUser) {
-          let localLiveId = JSON.parse(fromUser).liveId
-          if (localLiveId != liveId){
-            window.localStorage.removeItem('fromUser')
-          }
-        }
-      }
-
-      if (liveId && parseInt(liveId) !== 0) {
-        this.$router.go('/intro/' + liveId)
-      } else {
-        this.$router.go('/lives')
-      }
-    }
-  },
-  methods: {
-    loginBySessionToken (sessionToken, liveId) {
-      api.get(this, 'self', {
-        sessionToken: sessionToken
-      }).then(data => {
-        document.cookie = `SessionToken=${data.sessionToken}`
-        util.saveCurUser(data)
-        if (liveId) {
-          this.$router.go(`/live/${liveId}`)
-        } else {
-          this.$router.go('/lives')
-        }
-      }, util.promiseErrorFn(this))
-    },
-    logout () {
-      this.$http.get('logout')
-        .then(data => {
-          if (util.filterError(this, data)) {
-            this.$dispatch('toast', '已注销', 1000, () => {
-              window.location = '/'
-            })
-          }
-      }, util.httpErrorFn(this))
     }
   }
+
+  if (liveId && parseInt(liveId) !== 0) {
+    router.push('/intro/' + liveId)
+  } else {
+    router.push('/lives')
+  }
+})
+
+const loginBySessionToken = (sessionToken, liveId) => {
+  get('self', { sessionToken })
+    .then(data => {
+      document.cookie = `SessionToken=${data.sessionToken}`
+      saveCurUser(data)
+      if (liveId) {
+        router.push(`/live/${liveId}`)
+      } else {
+        router.push('/lives')
+      }
+    })
+    .catch((error) => {
+      console.error(error)
+    })
 }
 
+const logout = () => {
+  get('logout')
+    .then(() => {
+      window.localStorage.removeItem('user')
+      window.location = '/'
+    })
+    .catch(() => {
+      window.location = '/'
+    })
+}
 </script>
 
 <style lang="stylus">
+
+
 
 </style>

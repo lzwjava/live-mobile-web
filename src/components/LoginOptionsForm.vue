@@ -1,35 +1,34 @@
 <template>
-
-  <div class="login-options-form" @click="stop($event)">
-
-    <button class="btn btn-blue" v-for="i in options.length" @click="chooseType(i)">{{options[i]}}</button>
-
+  <div class="login-options-form" @click.stop>
+    <button 
+      v-for="(option, index) in options" 
+      :key="index" 
+      class="btn btn-blue"
+      @click="chooseType(index)"
+    >
+      {{ option }}
+    </button>
   </div>
-
 </template>
 
-<script type="text/javascript">
-
-export default {
-  name: 'OptionsForm',
-  props: ['options'],
-  methods: {
-    stop (e){
-      e.stopPropagation()
-    },
-    chooseType (type) {
-      this.$parent.overlay = false
-      this.$dispatch('hideLoginOptionsForm', type)
-    }
+<script setup>
+const props = defineProps({
+  options: {
+    type: Array,
+    default: () => ['登录', '注册']
   }
-}
+})
 
+const emit = defineEmits(['hide'])
+
+const chooseType = (type) => {
+  emit('hide', type)
+}
 </script>
 
+<style lang="stylus">
 
-<style media="screen" lang="stylus">
 
-@import '../stylus/base.styl'
 
 .login-options-form
   @extend .absolute-center
@@ -45,5 +44,6 @@ export default {
     border-radius 10px
     height 50px
     margin-bottom 20px
+
 
 </style>

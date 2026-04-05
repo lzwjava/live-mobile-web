@@ -1,27 +1,18 @@
-<template >
-
+<template>
   <div class="share-lead">
-
     <div id="shareit">
-      <img class="arrow" src="../img/share-it.png">
+      <img class="arrow" src="/img/share-it.png">
       <p id="follow">点击右上角按钮，分享给朋友~~</p>
     </div>
-
   </div>
-
 </template>
 
-<script type="text/javascript">
-
-export default {
-  name:'ShareLead'
-}
-
+<script setup>
 </script>
 
 <style lang="stylus">
 
-@import '../stylus/base.styl'
+
 
 .share-lead
   @extend .full-space
@@ -70,6 +61,7 @@ export default {
         text-decoration none
         color white
         display block
+
 
 
 </style>

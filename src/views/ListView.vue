@@ -1,141 +1,71 @@
 <template>
-
   <div class="list-view">
-
     <div class="tab-area">
-
-      <div class="tab-item" @click="showNewLiveList" v-bind:class="{active: curTab === 0}">
+      <div class="tab-item" :class="{ active: curTab === 0 }" @click="showNewLiveList">
         最新直播
       </div>
-
-      <div class="tab-item" @click="showHotLiveList" v-bind:class="{active: curTab === 1}">
+      <div class="tab-item" :class="{ active: curTab === 1 }" @click="showHotLiveList">
         热门直播
       </div>
-
     </div>
 
     <div class="live-container">
-      <live-list :lives="lives"></live-list>
+      <LiveList :lives="lives" />
     </div>
 
-    <tab-bar :active-index="0"></tab-bar>
-
+    <Tabbar :active-index="0" />
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, onMounted } from 'vue'
+import LiveList from '@/components/LiveList.vue'
+import Tabbar from '@/components/Tabbar.vue'
+import { get } from '@/common/api'
+import { configWeixin, showOptionMenu, shareApp } from '@/common/wechat'
 
-import util from '../common/util'
-import http from '../common/api'
-import wechat from '../common/wechat'
-import LiveList from '../components/LiveList.vue'
-import Tabbar from '../components/Tabbar.vue'
-import debugFn from 'debug'
+const lives = ref([])
+const curTab = ref(0)
 
-const debug = debugFn('List')
+onMounted(() => {
+  showNewLiveList()
+  
+  Promise.all([
+    get('lives/count'),
+    configWeixin(null)
+  ]).then(values => {
+    showOptionMenu()
+    shareApp(null)
+  }).catch(() => {
+    // handle error
+  })
+})
 
-export default {
-  name: 'LiveView',
-  components: {
-    'live-list': LiveList,
-    'tab-bar': Tabbar
-  },
-  data () {
-    return {
-      lives: [],
-      hotLives: [],
-      newLives: [],
-      curTab: 0,
-      totalHeight: 0,
-      page: 1,
-      tagNext: false,
-      totalPage: 0
-    }
-  },
-  created () {
-    util.loading(this)
-    this.showNewLiveList()
-
-      // window.addEventListener('scroll', (e) => {
-      //   var windowHeight = document.body.clientHeight
-      //   var scrollTop = document.body.scrollTop
-      //   debug('scrollTop: %j', scrollTop)
-      //   debug('windowHeight: %j', windowHeight)
-      //   debug('makeHeight: %j', this.makeHeight)
-      //   if (scrollTop + windowHeight >= this.makeHeight && this.tagNextFn === false) {
-      //     let page = this.page ++
-      //     this.tagNext = true
-      //     if (page > this.totalPage - 1) return
-      //     this.getNewList(page)
-      //   }
-      // })
-
-
-    Promise.all([
-      http.get(this, `lives/count`),
-      wechat.configWeixin(this)
-    ]).then(values => {
-      this.totalPage = parseInt(values[0][0].count / 30) + 1
-      util.loaded(this)
-      wechat.showOptionMenu()
-      wechat.shareApp(this)
-
-    }).catch(util.promiseErrorFn(this))
-  },
-  methods: {
-    showNewLiveList () {
-      this.page = 1
-      this.tagNext = false
-      util.loading(this)
-      http.get(this, `lives/listOrderByPlanTs?limit=150`)
-      .then(data => {
-        this.lives = data
-        util.loaded(this)
-        this.curTab = 0
-      })
-    },
-
-    showHotLiveList () {
-      this.page = 1
-      this.tagNext = false
-      util.loading(this)
-      http.get(this, `lives/listOrderByAttendance?limit=150`)
-      .then(data => {
-        this.lives = data
-        util.loaded(this)
-        this.curTab = 1
-      })
-    },
-
-    goSubscribe () {
-      this.$router.go('/contact')
-    },
-    goCreate () {
-      this.$router.go('/scan')
-    },
-    getNewList (page) {
-      http.get(this, `lives/${this.curTab === 0 ? 'listOrderByPlanTs' : 'listOrderByAttendance'}?skip=${page * 30}&limit=30`)
-      .then(data => {
-        this.lives.push(...data)
-        this.tagNext = false
-      })
-    }
-  },
-  computed: {
-    makeHeight () {
-      // 40px为 tab-area 高度
-      return 40 + document.getElementsByClassName('live-item-li')[0].offsetHeight * (this.lives.length - 6)
-    },
-    tagNextFn () {
-      return this.tagNext
-    }
-  }
+const showNewLiveList = () => {
+  curTab.value = 0
+  get('lives/listOrderByPlanTs?limit=150')
+    .then(data => {
+      lives.value = data
+    })
+    .catch(() => {
+      // handle error
+    })
 }
 
+const showHotLiveList = () => {
+  curTab.value = 1
+  get('lives/listOrderByAttendance?limit=150')
+    .then(data => {
+      lives.value = data
+    })
+    .catch(() => {
+      // handle error
+    })
+}
 </script>
 
 <style lang="stylus">
+
 
 .list-view
   .live-container
@@ -157,5 +87,6 @@ export default {
       &.active
         color #00BDEF
         border-bottom 1px solid #00BDEF
+
 
 </style>

@@ -1,69 +1,51 @@
 <template>
-
-  <div class="reward-form" @click="stop($event)">
-
+  <div class="reward-form" @click.stop>
     <div class="close-btn" @click="close">x</div>
 
-    <div class="oval">
+    <div class="oval"></div>
 
-    </div>
+    <UserAvatar :user="live.owner" />
 
-    <user-avatar :user="live.owner"></user-avatar>
     <p class="ownername">
-      赞赏{{live.owner.username}}
+      赞赏{{ live.owner?.username }}
     </p>
 
     <ul class="amount-list">
-      <li class="amount-cell" v-for="amount in amounts" @click="reward(amount)">
-        <span class="amount-num">{{amount|moneyAsYuan}}</span>
+      <li class="amount-cell" v-for="amount in amounts" :key="amount" @click="reward(amount)">
+        <span class="amount-num">{{ amount / 100 }}</span>
         <span class="amount-unit">元</span>
       </li>
     </ul>
-
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import UserAvatar from './user-avatar.vue'
 
-import debugFn from 'debug'
-import util from '../common/util'
-import api from '../common/api'
-import wechat from '../common/wechat'
-import UserAvatar from '../components/user-avatar.vue'
-
-const debug = debugFn('RewardForm')
-
-export default {
-  name: 'RewardForm',
-  components: {
-    UserAvatar
-  },
-  props: ['live'],
-  data () {
-    return {
-      amounts: [2 * 100, 5 * 100, 8 * 100, 10 * 100, 20 * 100, 50 * 100]
-    }
-  },
-  methods: {
-    reward (amount) {
-      this.$dispatch('reward', amount)
-      this.$parent.overlay = false
-    },
-    stop (e) {
-      e.stopPropagation()
-    },
-    close() {
-      this.$parent.overlay = false
-    }
+const props = defineProps({
+  live: {
+    type: Object,
+    default: () => ({ owner: {} })
   }
+})
+
+const emit = defineEmits(['reward', 'close'])
+
+const amounts = [200, 500, 800, 1000, 2000, 5000]
+
+const reward = (amount) => {
+  emit('reward', amount)
+  emit('close')
 }
 
+const close = () => {
+  emit('close')
+}
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
 
-@import '../stylus/base.styl'
+
 
 .reward-form
   @extend .absolute-center
@@ -111,5 +93,6 @@ export default {
       padding 5px
       .amount-num
         font-size 24px
+
 
 </style>

@@ -6,7 +6,17 @@
   </div>
 </template>
 
+<script setup>
+defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  }
+})
+</script>
+
 <style lang="stylus">
+
 
 .logo
   position relative
@@ -83,5 +93,6 @@
       animation-delay .8s
   &.center
     margin 100px auto
+
 
 </style>

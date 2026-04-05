@@ -1,27 +1,28 @@
 <template>
-  <div class="overlay" @click="hide" v-if="overlay" transition="overExpand">
-    <slot></slot>
-  </div>
+  <Teleport to="body">
+    <div class="overlay" @click.self="close" v-if="overlay">
+      <slot></slot>
+    </div>
+  </Teleport>
 </template>
 
-<script>
+<script setup>
+defineProps({
+  overlay: {
+    type: Boolean,
+    default: false
+  }
+})
 
-import debugFn from 'debug'
-const debug = debugFn('overlay')
+const emit = defineEmits(['close'])
 
-  module.exports = {
-    props: ['overlay'],
-    methods:{
-      hide (e){
-        debug('hide')
-        debug(e)
-        this.overlay = false
-      }
-    }
-  };
+const close = () => {
+  emit('close')
+}
 </script>
 
 <style lang="stylus">
+
 .overlay
   position fixed
   left 0
@@ -31,11 +32,12 @@ const debug = debugFn('overlay')
   z-index 9998
   background-color rgba(0,0,0,.5)
 
-.overExpand-transition {
+.overlay-leave-active {
   transition: all .5s ease;
   overflow: hidden;
 }
 
-.overExpand-enter,.overExpand-leave
+.overlay-enter-from,.overlay-leave-to
   opacity 0;
+
 </style>

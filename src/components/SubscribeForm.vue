@@ -1,77 +1,66 @@
 <template>
-  <div class="subscribe-form" @click="stop($event)">
-
+  <div class="subscribe-form" @click.stop>
     <div class="close-btn" @click="close">x</div>
 
-    <h3 class="title">{{explainWord}}</h3>
+    <h3 class="title">{{ explainWord }}</h3>
 
-    <img v-if="showPic" class="notify" alt="" src="../img/wechat_notify.jpg">
+    <img v-if="showPic" class="notify" alt="" src="/img/wechat_notify.jpg">
 
     <h3>请先长按关注公众号</h3>
 
-    <img :src="'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + this.ticket" alt="">
-
+    <img v-if="ticket" :src="'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + ticket" alt="">
   </div>
-
 </template>
 
-<script type="text/javascript">
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { get } from '@/common/api'
 
-import api from '../common/api'
-import util from '../common/util'
-import debugFn from 'debug'
-
-const debug = debugFn('SubscribeForm')
-
-export default {
-  name: 'SubscribeForm',
-  props: ['type', 'liveId'],
-  data() {
-    return {
-      ticket: ''
-    }
+const props = defineProps({
+  type: {
+    type: String,
+    default: 'live'
   },
-  computed: {
-    showPic () {
-      if (this.type === 'live'){
-        return true
-      } else if(this.type === 'share') {
-        return false
-      }
-    },
-    explainWord () {
-      if (this.type === 'live'){
-        return '为了方便微信通知您'
-      } else if(this.type === 'share') {
-        return '为了给您推送邀请的收益通知'
-      }
-    }
-  },
-  ready () {
-    util.loading(this)
-    api.get(this, 'wechat/qrcode', {
-      'type': this.type,
-      'liveId': this.liveId
-    }).then(data => {
-      util.loaded(this)
-      this.ticket = encodeURIComponent(data.ticket)
-    }, util.promiseErrorFn(this))
-  },
-  methods: {
-    stop (e) {
-      e.stopPropagation()
-    },
-    close () {
-      this.$parent.overlay = false
-    }
+  liveId: {
+    type: [Number, String],
+    default: 0
   }
+})
+
+const emit = defineEmits(['close'])
+
+const ticket = ref('')
+
+const showPic = computed(() => props.type === 'live')
+
+const explainWord = computed(() => {
+  if (props.type === 'live') {
+    return '为了方便微信通知您'
+  } else if (props.type === 'share') {
+    return '为了给您推送邀请的收益通知'
+  }
+  return ''
+})
+
+const close = () => {
+  emit('close')
 }
 
+onMounted(() => {
+  get('wechat/qrcode', {
+    type: props.type,
+    liveId: props.liveId
+  }).then(data => {
+    ticket.value = encodeURIComponent(data.ticket)
+  }).catch(() => {
+    // handle error
+  })
+})
 </script>
 
-<style media="screen" lang="stylus">
+<style lang="stylus">
 
-@import '../stylus/base.styl'
+
 
 .subscribe-form
   @extend .base-form
@@ -89,5 +78,6 @@ export default {
     color #000
     margin-right 5px
     line-height 10px
+
 
 </style>
