@@ -44,7 +44,7 @@ const routes = [
   { path: '/room/:userId', component: RoomView },
   { path: '/editLive/:liveId', component: EditLiveView },
   { path: '/editDetail/:liveId/:type', component: EditDetailView },
-  { path: '*', redirect: '/' }
+  { path: '/:pathMatch(.*)*', redirect: '/' }
 ]
 
 const router = createRouter({
