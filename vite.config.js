@@ -22,7 +22,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://api.quzhiboapp.com',
+        target: process.env.VITE_API_PROXY || 'https://api.quzhiboapp.com',
         changeOrigin: true
       }
     }
